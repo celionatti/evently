@@ -1,0 +1,35 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Trees\database\migrations;
+
+use Trees\Database\Migration\Migration;
+use Trees\Database\Schema\Schema;
+
+class {{MigrationName}} extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('{{TableName}}', function ($table) {
+            $table->id();
+            {{Fields}}
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('{{TableName}}');
+    }
+}

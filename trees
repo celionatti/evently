@@ -1,0 +1,24 @@
+<?php
+
+declare(strict_types=1);
+
+use Trees\Command\Commands\ControllerCommand;
+use Trees\Command\Commands\ModelCommand;
+use Trees\Command\Commands\ViewCommand;
+
+/**
+ * =======================================
+ * ***************************************
+ * ============ Trees CLI ================
+ * ***************************************
+ * =======================================
+ */
+
+$runner = require __DIR__ . '/bootstrap/console.php';
+
+$runner->register(new ControllerCommand());
+$runner->register(new ModelCommand());
+$runner->register(new ViewCommand());
+
+// Run the application
+exit($runner->run());

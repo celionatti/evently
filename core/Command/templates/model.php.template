@@ -1,0 +1,76 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\models;
+
+use Trees\Database\Model\Model;
+use Trees\Database\Interface\ModelInterface;
+use Trees\Database\QueryBuilder\QueryBuilder;
+
+class {{ModelName}} extends Model implements ModelInterface
+{
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected string $table = '{{TableName}}';
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected array $fillable = [
+        {{Fields}}
+    ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected array $casts = [
+        // Add your casts here
+    ];
+
+    /**
+     * @var array Hidden attributes
+     */
+    protected array $hidden = [
+        'password'
+    ];
+
+    /**
+     * Get the validation rules for this model.
+     *
+     * @return array
+     */
+    public static function rules()
+    {
+        return [
+            // Add validation rules here
+        ];
+    }
+
+    public function applySearch(QueryBuilder $query, string $searchTerm): void
+    {
+        $query->whereRaw(
+            '(name LIKE :search OR email LIKE :search)',
+            ['search' => "%$searchTerm%"]
+        );
+    }
+
+    /**
+     * Find a user by email
+     *
+     * @param string $email User email
+     * @return static|null The found user or null
+     */
+    public static function findByEmail(string $email): ?self
+    {
+        $results = static::where(['email' => $email]);
+        return $results ? $results[0] : null;
+    }
+}
