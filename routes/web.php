@@ -21,4 +21,5 @@ $router->get('/events', [EventController::class, 'events']);
 $router->get('/events/{id}', [EventController::class, 'event']);
 
 // Auth: Login/SignUp
-$router->get('/auth', [AuthController::class, 'auth']);
+$router->get('/login', [AuthController::class, 'login']);
+$router->get('/sign-up', [AuthController::class, 'signup']);

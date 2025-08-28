@@ -10,42 +10,51 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // Improved toast notification function
-function showToast(message, type = "success") {
-  // Remove existing toasts
-  $(".toast-container").remove();
+function showToast(message, type = "info") {
+  // Remove any existing toasts
+  const existingToasts = document.querySelectorAll(".toast");
+  existingToasts.forEach((toast) => toast.remove());
 
-  // Create container if it doesn't exist
-  if ($(".toast-container").length === 0) {
-    $("body").append(
-      '<div class="toast-container position-fixed bottom-0 end-0 p-3"></div>'
-    );
-  }
+  const toast = document.createElement("div");
+  toast.className = `toast align-items-center text-bg-${type} border-0`;
+  toast.setAttribute("role", "alert");
+  toast.setAttribute("aria-live", "assertive");
+  toast.setAttribute("aria-atomic", "true");
+  toast.innerHTML = `
+        <div class="d-flex">
+          <div class="toast-body">
+            <i class="bi ${
+              type === "success"
+                ? "bi-check-circle-fill"
+                : "bi-info-circle-fill"
+            } me-2"></i> ${message}
+          </div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+      `;
 
-  // Determine icon and background
-  const icons = {
-    success: "check-circle",
-    error: "exclamation-circle",
-    warning: "exclamation-triangle",
-    info: "info-circle",
-  };
+  document.body.appendChild(toast);
+  const bsToast = new bootstrap.Toast(toast);
+  bsToast.show();
 
-  const bgClass = `bg-${type}`;
-  const icon = icons[type] || "info-circle";
+  // Remove toast after it's hidden
+  toast.addEventListener("hidden.bs.toast", function () {
+    document.body.removeChild(toast);
+  });
+}
 
-  // Create toast
-  const toast = $(
-    `<div class="toast show align-items-center text-white ${bgClass} border-0" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="d-flex">
-                <div class="toast-body">
-                    <i class="fas fa-${icon} me-2"></i>
-                    ${message}
-                </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-        </div>`
-  );
+// Toggle password visibility
+function setupPasswordToggle(toggleId, inputId) {
+  const toggle = document.getElementById(toggleId);
+  const input = document.getElementById(inputId);
 
-  // Append and auto-remove
-  $(".toast-container").append(toast);
-  setTimeout(() => toast.remove(), 5000);
+  toggle.addEventListener("click", function () {
+    if (input.type === "password") {
+      input.type = "text";
+      toggle.innerHTML = '<i class="bi bi-eye-slash"></i>';
+    } else {
+      input.type = "password";
+      toggle.innerHTML = '<i class="bi bi-eye"></i>';
+    }
+  });
 }

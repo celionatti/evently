@@ -17,12 +17,21 @@ class AuthController extends Controller
         $this->view->setTitle("Authentication | {$name}");
     }
 
-    public function auth()
+    public function login()
     {
         $view = [
 
         ];
 
-        return $this->render('auth/auth', $view);
+        return $this->render('auth/login', $view);
+    }
+
+    public function signup()
+    {
+        $view = [
+
+        ];
+
+        return $this->render('auth/signup', $view);
     }
 }
