@@ -21,7 +21,9 @@
 
     <div class="d-flex">
         <?php $this->partial('admin-sidebar'); ?>
-        <?php $this->content('content'); ?>
+        <main class="main-content">
+            <?php $this->content('content'); ?>
+        </main>
     </div>
 
     <script src="/dist/js/jquery-3.7.1.min.js"></script>
