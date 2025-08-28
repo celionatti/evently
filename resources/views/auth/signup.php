@@ -7,6 +7,10 @@
 <!-- AUTH CONTAINER -->
 <div class="auth-container">
     <div class="auth-card">
+        <a class="navbar-brand d-flex align-items-center gap-1" href="<?= url("/") ?>">
+            <span class="brand-mark">E</span>
+            <span class="fw-bold text-white">ventlyy.</span>
+        </a>
         <!-- Signup Form -->
         <form class="auth-form" id="signupForm">
             <div class="auth-header">
@@ -81,5 +85,28 @@
         </form>
     </div>
 </div>
+@endsection
 
+@section('scripts')
+<script>
+    // Toggle password visibility
+    function setupPasswordToggle(toggleId, inputId) {
+        const toggle = document.getElementById(toggleId);
+        const input = document.getElementById(inputId);
+
+        toggle.addEventListener('click', function() {
+            if (input.type === 'password') {
+                input.type = 'text';
+                toggle.innerHTML = '<i class="bi bi-eye-slash"></i>';
+            } else {
+                input.type = 'password';
+                toggle.innerHTML = '<i class="bi bi-eye"></i>';
+            }
+        });
+    }
+
+    // Set up password toggles
+    setupPasswordToggle('signupPasswordToggle', 'signupPassword');
+    setupPasswordToggle('confirmPasswordToggle', 'confirmPassword');
+</script>
 @endsection

@@ -4,33 +4,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $this->getTitle() }}</title>
-    @yield('header')
+    <title><?php echo $this->escape($this->getTitle()); ?></title>
+    <?php $this->content('header'); ?>
     <link rel="stylesheet" href="/dist/css/bootstrap-icons.css">
     <!-- Bootstrap CSS -->
     <link href="/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="/dist/css/admin.css" rel="stylesheet">
-    @yield('styles')
+    <?php $this->content('styles'); ?>
 </head>
 
 <body>
-    @include('admin-nav')
-    {{ display_flash_message() }}
+    <?php $this->partial('admin-nav'); ?>
+    <?php echo $this->escape(display_flash_message()); ?>
 
     <div class="d-flex">
-        @include('admin-sidebar')
-        <main class="main-content">
-            @yield('content')
-        </main>
+        <?php $this->partial('admin-sidebar'); ?>
+        <?php $this->content('content'); ?>
     </div>
 
     <script src="/dist/js/jquery-3.7.1.min.js"></script>
     <script src="/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/dist/js/trees.js"></script>
     <script src="/dist/js/admin.js"></script>
-    @yield('scripts')
+    <?php $this->content('scripts'); ?>
 </body>
 
 </html>

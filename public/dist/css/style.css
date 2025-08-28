@@ -723,7 +723,7 @@ section {
   padding: 2.5rem;
   box-shadow: var(--shadow-1);
   width: 100%;
-  max-width: 550px;
+  max-width: 650px;
 }
 
 .auth-header {
@@ -757,7 +757,7 @@ section {
 .auth-form .form-control {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  color: white;
+  color: white !important;
   border-radius: var(--radius-md);
   padding: 0.75rem 1rem;
 }
@@ -765,7 +765,7 @@ section {
 .auth-form .form-control:focus {
   background: rgba(255, 255, 255, 0.15);
   border-color: var(--blue-1);
-  color: white;
+  color: white !important;
   box-shadow: var(--shadow-focus);
 }
 

@@ -42,19 +42,3 @@ function showToast(message, type = "info") {
     document.body.removeChild(toast);
   });
 }
-
-// Toggle password visibility
-function setupPasswordToggle(toggleId, inputId) {
-  const toggle = document.getElementById(toggleId);
-  const input = document.getElementById(inputId);
-
-  toggle.addEventListener("click", function () {
-    if (input.type === "password") {
-      input.type = "text";
-      toggle.innerHTML = '<i class="bi bi-eye-slash"></i>';
-    } else {
-      input.type = "password";
-      toggle.innerHTML = '<i class="bi bi-eye"></i>';
-    }
-  });
-}
