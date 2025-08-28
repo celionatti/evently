@@ -8,11 +8,11 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h1 class="h2 mb-1">Dashboard</h1>
-            <p class="text-secondary">Welcome back! Here's what's happening with your events.</p>
+            <p class="text-secondary">Welcome back {{$name ?? 'Amisu usman' }}! Here's what's happening with your events.</p>
         </div>
-        <button class="btn btn-pulse" data-section="create-event">
+        <a href="<?= url("/admin/events/create") ?>" class="btn btn-pulse" data-section="create-event">
             <i class="bi bi-plus-circle me-2"></i>Create Event
-        </button>
+        </a>
     </div>
 
     <!-- Stats Cards -->

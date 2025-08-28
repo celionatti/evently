@@ -25,4 +25,13 @@ class AdminEventController extends Controller
 
         return $this->render('admin/events/manage', $view);
     }
+
+    public function create()
+    {
+        $view = [
+
+        ];
+
+        return $this->render('admin/events/create', $view);
+    }
 }

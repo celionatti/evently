@@ -13,13 +13,13 @@
                 </a>
             </li>
             <li class="sidebar-item">
-                <a href="<?= url("/admin/events/manage") ?>" class="sidebar-link" data-section="events">
+                <a href="<?= url("/admin/events/manage") ?>" class="sidebar-link">
                     <i class="bi bi-calendar-event"></i>
                     <span>My Events</span>
                 </a>
             </li>
             <li class="sidebar-item">
-                <a href="#" class="sidebar-link" data-section="create-event">
+                <a href="<?= url("/admin/events/create") ?>" class="sidebar-link">
                     <i class="bi bi-plus-circle"></i>
                     <span>Create Event</span>
                 </a>
