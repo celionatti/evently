@@ -31,11 +31,11 @@
                     <tbody>
                         <?php foreach ($categories as $k => $category): ?>
                             <tr>
-                                <td><?php echo $k + 1; ?></td>
-                                <td class="text-capitalize"><?php echo $category->name; ?></td>
-                                <td><?php echo getExcerpt($category->description ?? ''); ?></td>
-                                <td class="text-capitalize"><span class="badge <?php echo $this->escape($category->status === 'active' ? 'bg-success' : 'bg-warning'); ?>"><?php echo $category->status; ?></span></td>
-                                <td>
+                                <td data-label="#"><?php echo $k + 1; ?></td>
+                                <td data-label="Category Name" class="text-capitalize"><?php echo $category->name; ?></td>
+                                <td data-label="Category Description"><?php echo getExcerpt($category->description ?? ''); ?></td>
+                                <td data-label="Category Status" class="text-capitalize"><span class="badge <?php echo $this->escape($category->status === 'active' ? 'bg-success' : 'bg-warning'); ?>"><?php echo $category->status; ?></span></td>
+                                <td data-label="Actions">
                                     <div class="dropdown">
                                         <button class="btn btn-ghost btn-sm dropdown-toggle"
                                             data-bs-toggle="dropdown">
@@ -47,8 +47,12 @@
                                             <li>
                                                 <hr class="dropdown-divider">
                                             </li>
-                                            <li><a class="dropdown-item text-danger" href="<?= url("/admin/categories/delete/{$category->slug}") ?>"><i
-                                                        class="bi bi-trash me-2"></i>Delete</a></li>
+                                            <form action="<?php echo $this->escape(url("/admin/categories/delete/{$category->slug}")); ?>" method="post" onsubmit="return confirm('Are you sure you want to delete this category?');">
+                                                <button type="submit" class="dropdown-item text-danger">
+                                                    <i class="bi bi-trash me-2"></i>
+                                                    Delete
+                                                </button>
+                                            </form>
                                         </ul>
                                     </div>
                                 </td>

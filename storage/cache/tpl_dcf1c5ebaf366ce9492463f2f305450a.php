@@ -2,12 +2,12 @@
 
 ?>
 
-@section('content')
+<?php $this->start('content'); ?>
 <!-- Create Event Section -->
 <div id="create-event-section" class="content-section">
     <div class="mb-4">
-        <h1 class="h2 mb-1">Create New Category</h1>
-        <p class="text-secondary">Fill in the details below to create category.</p>
+        <h1 class="h2 mb-1">Update Category</h1>
+        <p class="text-secondary">Fill in the details below to update category.</p>
     </div>
 
     <div class="dashboard-card">
@@ -16,7 +16,7 @@
             <div class="row g-4">
                 <div class="col-md-8">
                     <label class="form-label">Category Name *</label>
-                    <input type="text" name="name" value="<?= old('name') ?>" class="form-control <?= has_error('name') ? 'is-invalid' : '' ?>" placeholder="Enter your event title">
+                    <input type="text" name="name" value="<?= old('name', $category->name) ?>" class="form-control <?= has_error('name') ? 'is-invalid' : '' ?>" placeholder="Enter your event title">
                     <?php if (has_error('name')): ?>
                         <div class="invalid-feedback"><?= get_error('name') ?></div>
                     <?php endif; ?>
@@ -25,8 +25,8 @@
                     <label class="form-label">Status *</label>
                     <select class="form-select <?= has_error('status') ? 'is-invalid' : '' ?>" name="status">
                         <option value="">Select Status</option>
-                        <option value="active" <?= old('status') == 'active' ? 'selected' : '' ?>>Active</option>
-                        <option value="inactive" <?= old('status') == 'inactive' ? 'selected' : '' ?>>Inactive</option>
+                        <option value="active" <?= old('status', $category->status) == $category->status ? 'selected' : '' ?>>Active</option>
+                        <option value="inactive" <?= old('status', $category->status) == $category->status ? 'selected' : '' ?>>Inactive</option>
                     </select>
                     <?php if (has_error('status')): ?>
                         <div class="invalid-feedback"><?= get_error('status') ?></div>
@@ -34,7 +34,7 @@
                 </div>
                 <div class="col-12">
                     <label class="form-label">Description *</label>
-                    <textarea class="form-control <?= has_error('description') ? 'is-invalid' : '' ?>" name="description" rows="4" placeholder="Describe category..."><?= old('description') ?></textarea>
+                    <textarea class="form-control <?= has_error('description') ? 'is-invalid' : '' ?>" name="description" rows="4" placeholder="Describe category..."><?= old('description', $category->description) ?></textarea>
                     <?php if (has_error('description')): ?>
                         <div class="invalid-feedback"><?= get_error('description') ?></div>
                     <?php endif; ?>
@@ -43,17 +43,17 @@
 
             <div class="mt-4 d-flex gap-2">
                 <button type="submit" class="btn btn-pulse">
-                    <i class="bi bi-check-circle me-2"></i>Create Category
+                    <i class="bi bi-check-circle me-2"></i>Update Category
                 </button>
-                <button type="reset" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-clockwise me-2"></i>Reset
-                </button>
+                <a href="<?php echo $this->escape(url("/admin/categories/manage")); ?>" class="btn btn-outline-danger">
+                    <i class="bi bi-arrow-left me-2"></i>Cancel
+                </a>
             </div>
         </form>
     </div>
 </div>
-@endsection
+<?php $this->end(); ?>
 
-@section('scripts')
+<?php $this->start('scripts'); ?>
 
-@endsection
+<?php $this->end(); ?>

@@ -82,4 +82,85 @@ class AdminCategoryController extends Controller
             return $response->redirect("/admin/categories/create");
         }
     }
+
+    public function edit(Request $request, Response $response, $slug)
+    {
+        $category = Categories::findBySlug($slug);
+
+        if (!$category) {
+            FlashMessage::setMessage("Category Not Found!", 'danger');
+            return $response->redirect("/admin/categories/manage");
+        }
+
+        $view = [
+            'category' => $category
+        ];
+
+        return $this->render('admin/categories/edit', $view);
+    }
+
+    public function update(Request $request, Response $response, $slug)
+    {
+        if ("POST" !== $request->getMethod()) {
+            return;
+        }
+
+        $category = Categories::findBySlug($slug);
+
+        if (!$category) {
+            FlashMessage::setMessage("Category Not Found!", 'danger');
+            return $response->redirect("/admin/categories/manage");
+        }
+
+        $rules = [
+            'name' => "required|min:3|unique:categories.name, name!={$category->name}",
+            'description' => 'required|min:10|string',
+            'status' => 'required'
+        ];
+
+        if (!$request->validate($rules, false)) {
+            set_form_data($request->all());
+            set_form_error($request->getErrors());
+            return $response->redirect("/admin/categories/edit/{$slug}");
+        }
+
+        try {
+            $data = $request->all();
+            if ($category->update($data)) {
+                FlashMessage::setMessage("Category Updated!");
+                return $response->redirect("/admin/categories/manage");
+            }
+            throw new \RuntimeException('Update operation failed');
+        } catch (TreesException $e) {
+            set_form_data($request->all());
+            FlashMessage::setMessage("Update Failed! Please try again. Error: " . $e->getMessage(), "danger");
+            return $response->redirect("/admin/categories/edit/{$slug}");
+        }
+    }
+
+    public function delete(Request $request, Response $response, $slug)
+    {
+        if ("POST" !== $request->getMethod()) {
+            return;
+        }
+
+        $category = Categories::findBySlug($slug);
+
+        if (!$category) {
+            FlashMessage::setMessage("Category Not Found!", 'danger');
+            return $response->redirect("/admin/categories/manage");
+        }
+
+        try {
+            if ($category->delete()) {
+                FlashMessage::setMessage("Category Deleted!");
+                return $response->redirect("/admin/categories/manage");
+            }
+
+            throw new \RuntimeException('Delete operation failed');
+        } catch (\Exception $e) {
+            FlashMessage::setMessage("Delete Failed! Please try again.", "danger");
+            return $response->redirect("/admin/categories/manage");
+        }
+    }
 }

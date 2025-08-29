@@ -50,4 +50,7 @@ $router->group(['prefix' => '/admin/categories'], function ($router) {
     $router->get('/manage', [AdminCategoryController::class, 'manage']);
     $router->get('/create', [AdminCategoryController::class, 'create']);
     $router->post('/create', [AdminCategoryController::class, 'insert']);
+    $router->get('/edit/{slug}', [AdminCategoryController::class, 'edit']);
+    $router->post('/edit/{slug}', [AdminCategoryController::class, 'update']);
+    $router->post('/delete/{slug}', [AdminCategoryController::class, 'delete']);
 });

@@ -260,6 +260,18 @@ body {
   display: none;
 }
 
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+}
+
+.empty-state-icon {
+  font-size: 4rem;
+  color: var(--blue-1);
+  margin-bottom: 1.5rem;
+}
+
 /* Responsive */
 @media (max-width: 991.98px) {
   .sidebar {
@@ -295,6 +307,84 @@ body {
 
   .stat-card {
     margin-bottom: 1rem;
+  }
+
+  /* Stack table rows on mobile */
+  table.table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  table.table thead {
+    display: none;
+  }
+
+  table.table tr {
+    display: block;
+    margin-bottom: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+
+  table.table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    text-align: right;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    position: relative;
+  }
+
+  table.table td:before {
+    content: attr(data-label);
+    font-weight: bold;
+    text-transform: uppercase;
+    color: var(--blue-1);
+    margin-right: 1rem;
+    font-size: 0.8rem;
+  }
+
+  table.table td:last-child {
+    border-bottom: none;
+  }
+
+  /* Adjust dropdown for mobile */
+  .dropdown-menu {
+    position: absolute;
+    right: 0;
+    left: auto;
+    transform: translate(0, 38px);
+  }
+
+  /* Make sure event images are properly sized on mobile */
+  .table td .d-flex.align-items-center.gap-3 img {
+    width: 50px;
+    height: 35px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .table td .d-flex.align-items-center.gap-3 {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 0.5rem !important;
+  }
+
+  .table td .d-flex.align-items-center.gap-3 img {
+    align-self: center;
+  }
+
+  .btn-pulse {
+    width: 100%;
+    margin-top: 1rem;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 

@@ -25,8 +25,8 @@
                     <label class="form-label">Status *</label>
                     <select class="form-select <?= has_error('status') ? 'is-invalid' : '' ?>" name="status">
                         <option value="">Select Status</option>
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
+                        <option value="active" <?= old('status', $category->status) == $category->status ? 'selected' : '' ?>>Active</option>
+                        <option value="inactive" <?= old('status', $category->status) == $category->status ? 'selected' : '' ?>>Inactive</option>
                     </select>
                     <?php if (has_error('status')): ?>
                         <div class="invalid-feedback"><?= get_error('status') ?></div>
@@ -43,11 +43,11 @@
 
             <div class="mt-4 d-flex gap-2">
                 <button type="submit" class="btn btn-pulse">
-                    <i class="bi bi-check-circle me-2"></i>Create Category
+                    <i class="bi bi-check-circle me-2"></i>Update Category
                 </button>
-                <button type="reset" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-clockwise me-2"></i>Reset
-                </button>
+                <a href="{{ url("/admin/categories/manage") }}" class="btn btn-outline-danger">
+                    <i class="bi bi-arrow-left me-2"></i>Cancel
+                </a>
             </div>
         </form>
     </div>
