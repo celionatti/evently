@@ -25,7 +25,8 @@ class AdminCategoryController extends Controller
     {
         $categories = Categories::paginate([
             'per_page' => $request->query('per_page', 5),
-            'page' => $request->query('page', 1)
+            'page' => $request->query('page', 1),
+            'order_by' => ['id' => 'DESC']
         ]);
 
         $pagination = new Paginator($categories['meta']);

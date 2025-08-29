@@ -33,7 +33,7 @@
                             <tr>
                                 <td><?php echo $k + 1; ?></td>
                                 <td class="text-capitalize"><?php echo $category->name; ?></td>
-                                <td><?php echo $category->description; ?></td>
+                                <td><?php echo getExcerpt($category->description ?? ''); ?></td>
                                 <td class="text-capitalize"><span class="badge <?php echo $this->escape($category->status === 'active' ? 'bg-success' : 'bg-warning'); ?>"><?php echo $category->status; ?></span></td>
                                 <td>
                                     <div class="dropdown">

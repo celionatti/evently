@@ -646,55 +646,6 @@ if (!function_exists('format_currency')) {
     }
 }
 
-// if (!function_exists('get_image')) {
-//     /**
-//      * Retrieves an image URL with fallback to default images based on type
-//      * 
-//      * @param string|null $path Relative path to the image file (optional)
-//      * @param string $type Image type for fallback determination (default: 'post')
-//      * @return string Full URL to the image or fallback image
-//      * @throws InvalidArgumentException If invalid type is provided
-//      */
-//     function get_image(?string $path = null, string $type = 'post'): string
-//     {
-//         // Define default image paths (could be moved to config if frequently changed)
-//         static $defaultImageMap = [
-//             'post' => '/assets/img/no_image.jpg',
-//             'avatar' => '/assets/img/avatar.jpg',
-//             'icon' => '/assets/img/favicon.ico',
-//             'default' => '/assets/img/default.jpg',
-//         ];
-
-//         // Validate the type parameter
-//         if (!array_key_exists($type, $defaultImageMap) && $type !== '') {
-//             throw new InvalidArgumentException("Invalid image type: {$type}");
-//         }
-
-//         // Base paths configuration
-//         $publicPath = env('APP_ENV') === 'production'
-//             ? 'fundlein/public/'
-//             : 'public/';
-
-//         $baseUrl = rtrim(env('APP_URL'), '/');
-
-//         // Handle empty path case
-//         if (empty($path)) {
-//             return $baseUrl . ($defaultImageMap[$type] ?? $defaultImageMap['default']);
-//         }
-
-//         // Normalize and check file path
-//         $normalizedPath = ltrim($path, '/');
-//         $fullPath = base_path($publicPath . $normalizedPath);
-
-//         if (file_exists($fullPath)) {
-//             return $baseUrl . '/' . $normalizedPath;
-//         }
-
-//         // Fallback to default image
-//         return $baseUrl . ($defaultImageMap[$type] ?? $defaultImageMap['default']);
-//     }
-// }
-
 if (!function_exists('get_image')) {
     /**
      * Retrieves an image URL or empty string if not found

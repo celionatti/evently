@@ -30,6 +30,8 @@ class View
 
     // Directives
     private array $directives = [];
+    private array $templateDependencies = [];
+    private bool $cacheDirty = false;
 
     // Properties
     private string $title = 'Trees PHP Framework | Welcome';
@@ -40,13 +42,17 @@ class View
     private string $layout = 'default';
     private string $baseTemplatePath;
     private string $baseCachePath;
-    private bool $debug = false;
+    private bool $debug = true;
     private bool $cacheEnabled = true;
 
     public function __construct(?string $templatesPath = null, ?string $cachePath = null)
     {
         $this->baseTemplatePath = $templatesPath ?? ROOT_PATH . '/resources';
         $this->baseCachePath = $cachePath ?? ROOT_PATH . '/storage/cache';
+        
+        // Ensure cache directory exists
+        $this->ensureDirectoryExists($this->baseCachePath);
+        
         $this->registerDirectives();
     }
 
@@ -118,6 +124,7 @@ class View
     public function setCachePath(string $path): self
     {
         $this->baseCachePath = rtrim($path, '/\\');
+        $this->ensureDirectoryExists($this->baseCachePath);
         return $this;
     }
 
@@ -316,27 +323,81 @@ class View
 
     protected function getCompiledTemplate(string $templatePath): string
     {
-        if ($this->cacheEnabled) {
-            $cachePath = $this->getCachePath($templatePath);
+        if (!$this->cacheEnabled) {
+            return $this->compileTemplate(file_get_contents($templatePath));
+        }
 
-            if ($this->isCacheValid($templatePath, $cachePath)) {
-                return file_get_contents($cachePath);
-            }
+        $cachePath = $this->getCachePath($templatePath);
 
-            $compiled = $this->compileTemplate(file_get_contents($templatePath));
+        // Check if cache is valid
+        if ($this->isCacheValid($templatePath, $cachePath)) {
+            // Store dependency information
+            $this->templateDependencies[$cachePath] = [
+                'template' => $templatePath,
+                'mtime' => filemtime($templatePath)
+            ];
+            return file_get_contents($cachePath);
+        }
 
-            // Only store if cache is invalid or content changed
-            if (
-                !$this->isCacheValid($templatePath, $cachePath) ||
-                $this->hasContentChanged($cachePath, $compiled)
-            ) {
-                $this->storeCache($cachePath, $compiled);
-            }
+        $compiled = $this->compileTemplate(file_get_contents($templatePath));
 
+        // Only update cache if content has changed
+        if (!$this->hasContentChanged($cachePath, $compiled)) {
+            // Update modification time to extend cache validity
+            touch($cachePath);
+            $this->templateDependencies[$cachePath] = [
+                'template' => $templatePath,
+                'mtime' => filemtime($templatePath)
+            ];
             return $compiled;
         }
 
-        return $this->compileTemplate(file_get_contents($templatePath));
+        $this->storeCache($cachePath, $compiled);
+        $this->cacheDirty = true;
+        $this->templateDependencies[$cachePath] = [
+            'template' => $templatePath,
+            'mtime' => filemtime($templatePath)
+        ];
+
+        return $compiled;
+    }
+
+    // Add a method to check multiple templates at once
+    public function isCacheFresh(array $templates): bool
+    {
+        if (!$this->cacheEnabled) {
+            return false;
+        }
+
+        foreach ($templates as $template) {
+            $templatePath = $this->resolvePath($template);
+            $cachePath = $this->getCachePath($templatePath);
+
+            if (!$this->isCacheValid($templatePath, $cachePath)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    // Add a method to clear stale cache files
+    public function clearStaleCache(): int
+    {
+        $files = glob($this->baseCachePath . '/' . self::CACHE_FILE_PREFIX . '*');
+        $cleared = 0;
+        $now = time();
+
+        foreach ($files as $file) {
+            if (is_file($file) && ($now - filemtime($file)) > self::CACHE_TTL) {
+                if (unlink($file)) {
+                    $cleared++;
+                    unset($this->templateDependencies[$file]);
+                }
+            }
+        }
+
+        return $cleared;
     }
 
     protected function compileTemplate(string $template): string
@@ -346,14 +407,14 @@ class View
             $template = $this->compileDirectives($template, $pattern, $callback);
         }
 
+        // Process {{{ }}} expressions (raw) - changed from {!! !!}
+        $template = preg_replace_callback('/\{\{\{\s*(.+?)\s*\}\}\}/', function ($matches) {
+            return '<?php echo ' . $matches[1] . '; ?>';
+        }, $template);
+
         // Process {{ }} expressions (escaped)
         $template = preg_replace_callback('/\{\{\s*(.+?)\s*\}\}/', function ($matches) {
             return '<?php echo $this->escape(' . $matches[1] . '); ?>';
-        }, $template);
-
-        // Process {!! !!} expressions (raw)
-        $template = preg_replace_callback('/\{!!\s*(.+?)\s*!!\}/', function ($matches) {
-            return '<?php echo ' . $matches[1] . '; ?>';
         }, $template);
 
         return $template;
@@ -414,6 +475,13 @@ class View
 
         // Security check - verify the resolved path is within base directory
         $normalizedBase = realpath($basePath);
+        
+        // If the base path doesn't exist, create it for cache directories
+        if ($normalizedBase === false && $type === 'cache') {
+            $this->ensureDirectoryExists($basePath);
+            $normalizedBase = realpath($basePath);
+        }
+        
         $normalizedFull = realpath(dirname($fullPath)) ?: $fullPath;
 
         if ($normalizedBase === false || strpos($normalizedFull, $normalizedBase) !== 0) {
@@ -442,12 +510,6 @@ class View
             (time() - filemtime($cachePath)) < self::CACHE_TTL;
     }
 
-    // protected function storeCache(string $cachePath, string $content): void
-    // {
-    //     $this->ensureDirectoryExists(dirname($cachePath));
-    //     file_put_contents($cachePath, $content, LOCK_EX);
-    // }
-
     protected function storeCache(string $cachePath, string $content): void
     {
         if (!$this->hasContentChanged($cachePath, $content)) {
@@ -455,7 +517,18 @@ class View
         }
 
         $this->ensureDirectoryExists(dirname($cachePath));
-        file_put_contents($cachePath, $content, LOCK_EX);
+
+        // Atomic write to prevent race conditions
+        $tempFile = tempnam($this->baseCachePath, self::TEMP_FILE_PREFIX);
+
+        if (file_put_contents($tempFile, $content, LOCK_EX) !== false) {
+            if (rename($tempFile, $cachePath)) {
+                return;
+            }
+            unlink($tempFile);
+        }
+
+        throw new TreesException("Failed to write cache file: $cachePath");
     }
 
     protected function evaluateTemplate(string $compiledContent, array $data, string $templatePath): string
@@ -524,31 +597,48 @@ class View
     protected function handleError(TreesException $e): void
     {
         if ($this->debug) {
-            // Try to load debug error template
-            try {
-                $errorTemplate = $this->resolvePath('errors/debug');
-                extract(['error' => $e]);
-                include $errorTemplate;
-            } catch (TreesException $debugError) {
-                // Fallback to simple error display if debug template doesn't exist
-                echo '<pre>';
-                echo 'Debug Error: ' . $e->getMessage() . "\n";
-                echo 'File: ' . $e->getFile() . ':' . $e->getLine() . "\n";
-                echo 'Stack Trace: ' . $e->getTraceAsString();
+            // Enhanced debug output
+            echo '<div style="padding: 20px; background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 5px; font-family: monospace;">';
+            echo '<h2 style="margin-top: 0;">Template Error</h2>';
+            echo '<p><strong>Message:</strong> ' . htmlspecialchars($e->getMessage()) . '</p>';
+            echo '<p><strong>File:</strong> ' . htmlspecialchars($e->getFile()) . ':' . $e->getLine() . '</p>';
+
+            if ($e->getPrevious()) {
+                echo '<p><strong>Previous Exception:</strong> ' . htmlspecialchars($e->getPrevious()->getMessage()) . '</p>';
+            }
+
+            echo '<h3>Stack Trace:</h3>';
+            echo '<pre style="background: #fff; padding: 10px; border-radius: 3px; overflow: auto;">';
+            echo htmlspecialchars($e->getTraceAsString());
+            echo '</pre>';
+
+            // Show template context if available
+            if (isset($templatePath)) {
+                echo '<h3>Template:</h3>';
+                echo '<pre style="background: #fff; padding: 10px; border-radius: 3px; overflow: auto;">';
+                $lines = file($templatePath);
+                $start = max(0, $e->getLine() - 5);
+                $end = min(count($lines), $e->getLine() + 5);
+
+                for ($i = $start; $i < $end; $i++) {
+                    $lineNum = $i + 1;
+                    $highlight = ($lineNum === $e->getLine()) ? 'background: #ffeb3b;' : '';
+                    echo "<span style='{$highlight}'>" . sprintf("%4d", $lineNum) . " | " . htmlspecialchars($lines[$i]) . "</span>";
+                }
                 echo '</pre>';
             }
+
+            echo '</div>';
         } else {
-            // Try to load specific error template based on status code
+            // Your existing production error handling
             try {
                 $statusCode = $e->getCode() ?: 500;
                 $errorTemplate = $this->resolvePath('errors/' . $statusCode);
                 include $errorTemplate;
             } catch (TreesException $templateError) {
-                // Fallback to generic error message if specific template doesn't exist
                 echo '<h1>An error occurred</h1>';
                 echo '<p>Sorry, something went wrong.</p>';
 
-                // For 404 errors specifically
                 if ($e->getCode() === 404) {
                     echo '<p>The requested page could not be found.</p>';
                 }

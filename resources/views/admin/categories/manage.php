@@ -31,10 +31,10 @@
                     <tbody>
                         <?php foreach ($categories as $k => $category): ?>
                             <tr>
-                                <td>{!! $k + 1 !!}</td>
-                                <td class="text-capitalize">{!! $category->name !!}</td>
-                                <td>{!! $category->description !!}</td>
-                                <td class="text-capitalize"><span class="badge {{ $category->status === 'active' ? 'bg-success' : 'bg-warning' }}">{!! $category->status !!}</span></td>
+                                <td>{{{ $k + 1 }}}</td>
+                                <td class="text-capitalize">{{{ $category->name }}}</td>
+                                <td>{{{ getExcerpt($category->description ?? '') }}}</td>
+                                <td class="text-capitalize"><span class="badge {{ $category->status === 'active' ? 'bg-success' : 'bg-warning' }}">{{{ $category->status }}}</span></td>
                                 <td>
                                     <div class="dropdown">
                                         <button class="btn btn-ghost btn-sm dropdown-toggle"
@@ -56,7 +56,7 @@
                         <?php endforeach; ?>
                     </tbody>
                 </table>
-                {!! $pagination !!}
+                {{{ $pagination }}}
             </div>
         <?php else: ?>
             <div class="empty-state">
