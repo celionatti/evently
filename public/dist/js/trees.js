@@ -16,7 +16,7 @@ function showToast(message, type = "info") {
   existingToasts.forEach((toast) => toast.remove());
 
   const toast = document.createElement("div");
-  toast.className = `toast align-items-center text-bg-${type} border-0`;
+  toast.className = `toast align-items-center text-bg-${type} border-0 position-fixed bottom-0 end-0 p-2 m-2`;
   toast.setAttribute("role", "alert");
   toast.setAttribute("aria-live", "assertive");
   toast.setAttribute("aria-atomic", "true");

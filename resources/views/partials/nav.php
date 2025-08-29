@@ -17,6 +17,7 @@
             <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
                 <li class="nav-item"><a class="nav-link" href="<?= url("/events") ?>">Discover Events</a></li>
                 <li class="nav-item"><a class="nav-link" href="<?= url("/about-us") ?>">About Us</a></li>
+                <li class="nav-item"><a class="nav-link" href="<?= url("/admin") ?>">Dashboard</a></li>
                 <li class="nav-item"><a class="btn btn-ghost ms-lg-2" href="<?= url("/login") ?>">Login</a></li>
                 <li class="nav-item"><a class="btn btn-pulse ms-lg-2" href="<?= url("/sign-up") ?>">Sign Up</a></li>
             </ul>
@@ -33,6 +34,7 @@
     <div class="offcanvas-body">
         <a class="nav-link py-2" href="<?= url("/events") ?>" data-bs-dismiss="offcanvas">Discover Events</a>
         <a class="nav-link py-2" href="<?= url("/about-us") ?>" data-bs-dismiss="offcanvas">About Us</a>
+        <a class="nav-link py-2" href="<?= url("/admin") ?>" data-bs-dismiss="offcanvas">Dashboard</a>
         <a class="btn btn-ghost w-100 mt-3" href="<?= url("/login") ?>" data-bs-dismiss="offcanvas">Login</a>
         <a class="btn btn-pulse w-100 mt-3" href="<?= url("/sign-up") ?>" data-bs-dismiss="offcanvas">Sign up</a>
     </div>

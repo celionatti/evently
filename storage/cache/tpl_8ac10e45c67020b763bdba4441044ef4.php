@@ -2,7 +2,7 @@
 
 ?>
 
-@section('content')
+<?php $this->start('content'); ?>
 <!-- Events Section -->
 <div id="events-section" class="content-section">
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -145,8 +145,8 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $this->end(); ?>
 
-@section('scripts')
+<?php $this->start('scripts'); ?>
 
-@endsection
+<?php $this->end(); ?>

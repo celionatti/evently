@@ -6,7 +6,9 @@ use App\controllers\AuthController;
 use App\controllers\SiteController;
 use App\controllers\AdminController;
 use App\controllers\EventController;
+use App\controllers\AdminUserController;
 use App\controllers\AdminEventController;
+use App\controllers\AdminCategoryController;
 
 /** @var \Trees\Router\Router $router */
 
@@ -36,4 +38,16 @@ $router->group(['prefix' => '/admin'], function ($router) {
 $router->group(['prefix' => '/admin/events'], function ($router) {
     $router->get('/manage', [AdminEventController::class, 'manage']);
     $router->get('/create', [AdminEventController::class, 'create']);
+});
+
+// Admin: Users Routes
+$router->group(['prefix' => '/admin/users'], function ($router) {
+    $router->get('/manage', [AdminUserController::class, 'manage']);
+});
+
+// Admin: Categories Routes
+$router->group(['prefix' => '/admin/categories'], function ($router) {
+    $router->get('/manage', [AdminCategoryController::class, 'manage']);
+    $router->get('/create', [AdminCategoryController::class, 'create']);
+    $router->post('/create', [AdminCategoryController::class, 'insert']);
 });

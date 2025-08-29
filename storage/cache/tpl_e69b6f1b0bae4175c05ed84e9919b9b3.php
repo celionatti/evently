@@ -2,16 +2,16 @@
 
 ?>
 
-@section('content')
+<?php $this->start('content'); ?>
 <!-- Events Section -->
 <div id="events-section" class="content-section">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h1 class="h2 mb-1">My Events</h1>
-            <p class="text-secondary">Manage your event listings and track performance.</p>
+            <h1 class="h2 mb-1">Manage Users</h1>
+            <p class="text-secondary">Manage all users listings.</p>
         </div>
-        <a href="<?= url("/admin/events/create") ?>" class="btn btn-pulse flex-end" data-section="create-event">
-            <i class="bi bi-plus-circle me-2"></i>Create Event
+        <a href="<?= url("/admin/users/create") ?>" class="btn btn-pulse flex-end" data-section="create-user">
+            <i class="bi bi-plus-circle me-2"></i>Create User
         </a>
     </div>
 
@@ -145,8 +145,8 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $this->end(); ?>
 
-@section('scripts')
+<?php $this->start('scripts'); ?>
 
-@endsection
+<?php $this->end(); ?>

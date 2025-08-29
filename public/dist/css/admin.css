@@ -7,6 +7,7 @@
   --bg-2: #101a30;
   --text-1: #e2e8f0;
   --text-2: #9fb3c8;
+  --text-3: #000000;
   --radius-lg: 18px;
   --radius-md: 14px;
   --radius-sm: 10px;
@@ -84,6 +85,10 @@ body {
 .btn-ghost:hover {
   background: rgba(100, 181, 246, 0.1);
   color: white;
+}
+
+.toast {
+  z-index: 9999 !important;
 }
 
 /* Sidebar */
@@ -180,7 +185,7 @@ body {
 /* Forms */
 .form-control,
 .form-select {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.08) !important;
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: var(--radius-md);
   color: var(--text-1) !important;
@@ -189,10 +194,17 @@ body {
 
 .form-control:focus,
 .form-select:focus {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.12) !important;
   border-color: var(--blue-1);
   box-shadow: var(--shadow-focus);
   color: var(--text-1) !important;
+}
+
+.form-select:focus {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-color: var(--blue-1);
+  box-shadow: var(--shadow-focus);
+  color: var(--text-3) !important;
 }
 
 .form-control::placeholder {
@@ -215,6 +227,32 @@ body {
 .table-dark th {
   border-bottom: 2px solid rgba(255, 255, 255, 0.1);
   color: var(--blue-1);
+}
+
+/* Pagination */
+.pagination {
+  justify-content: center;
+  margin-bottom: 4rem;
+}
+
+.page-link {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-2);
+  margin: 0 0.25rem;
+  border-radius: var(--radius-md);
+}
+
+.page-link:hover {
+  background: rgba(30, 136, 229, 0.2);
+  color: var(--blue-1);
+  border-color: var(--blue-1);
+}
+
+.page-item.active .page-link {
+  background: rgba(30, 136, 229, 0.3);
+  color: var(--blue-1);
+  border-color: var(--blue-1);
 }
 
 /* Mobile sidebar */
