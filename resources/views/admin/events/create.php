@@ -43,8 +43,8 @@
 
             <div class="row g-4">
                 <div class="col-md-8">
-                    <label class="form-label">Event Title *</label>
-                    <input type="text" name="event_title" class="form-control <?= has_error('event_title') ? 'is-invalid' : '' ?>"
+                    <label for="event_title" class="form-label">Event Title *</label>
+                    <input type="text" name="event_title" id="event_title" class="form-control <?= has_error('event_title') ? 'is-invalid' : '' ?>"
                         placeholder="Enter your event title" value="<?= old('event_title') ?>">
                     <?php if (has_error('event_title')): ?>
                         <div class="invalid-feedback"><?= get_error('event_title') ?></div>
