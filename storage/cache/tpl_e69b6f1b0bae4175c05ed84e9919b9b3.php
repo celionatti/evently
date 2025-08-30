@@ -2,7 +2,7 @@
 
 ?>
 
-@section('content')
+<?php $this->start('content'); ?>
 <!-- Events Section -->
 <div id="events-section" class="content-section">
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -34,13 +34,13 @@
                     <tbody>
                         <?php foreach ($users as $k => $user): ?>
                             <tr>
-                                <td data-label="#">{{{ $k + 1 }}}</td>
-                                <td data-label="First Name" class="text-capitalize">{{{ $user->first_name }}}</td>
-                                <td data-label="Last Name" class="text-capitalize">{{{ $user->last_name }}}</td>
-                                <td data-label="Email">{{{ $user->email }}}</td>
-                                <td data-label="Phone">{{{ $user->phone ?? "+234X-XXX" }}}</td>
-                                <td data-label="Role" class="text-capitalize"><span class="badge {{ $user->role === 'admin' ? 'bg-success' : 'bg-info' }}">{{{ $user->role }}}</span></td>
-                                <td data-label="Business Name">{{{ $user->business_name ?? "None" }}}</td>
+                                <td data-label="#"><?php echo $k + 1; ?></td>
+                                <td data-label="First Name" class="text-capitalize"><?php echo $user->first_name; ?></td>
+                                <td data-label="Last Name" class="text-capitalize"><?php echo $user->last_name; ?></td>
+                                <td data-label="Email"><?php echo $user->email; ?></td>
+                                <td data-label="Phone"><?php echo $user->phone ?? "+234X-XXX"; ?></td>
+                                <td data-label="Role" class="text-capitalize"><span class="badge <?php echo $this->escape($user->role === 'admin' ? 'bg-success' : 'bg-info'); ?>"><?php echo $user->role; ?></span></td>
+                                <td data-label="Business Name"><?php echo $user->business_name ?? "None"; ?></td>
                                 <td data-label="Actions">
                                     <div class="dropdown">
                                         <button class="btn btn-ghost btn-sm dropdown-toggle"
@@ -50,7 +50,7 @@
                                         <ul class="dropdown-menu">
                                             <hr class="dropdown-divider">
                                             </li>
-                                            <form action="{{ url("/admin/users/delete/{$user->slug}") }}" method="post" onsubmit="return confirm('Are you sure you want to delete this user?');">
+                                            <form action="<?php echo $this->escape(url("/admin/users/delete/{$user->slug}")); ?>" method="post" onsubmit="return confirm('Are you sure you want to delete this user?');">
                                                 <button type="submit" class="dropdown-item text-danger">
                                                     <i class="bi bi-trash me-2"></i>
                                                     Delete
@@ -63,7 +63,7 @@
                         <?php endforeach; ?>
                     </tbody>
                 </table>
-                {{{ $pagination }}}
+                <?php echo $pagination; ?>
             </div>
         <?php else: ?>
             <div class="empty-state">
@@ -79,8 +79,8 @@
         <?php endif; ?>
     </div>
 </div>
-@endsection
+<?php $this->end(); ?>
 
-@section('scripts')
+<?php $this->start('scripts'); ?>
 
-@endsection
+<?php $this->end(); ?>

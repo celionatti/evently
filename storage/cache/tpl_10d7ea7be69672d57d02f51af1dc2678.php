@@ -2,7 +2,7 @@
 
 ?>
 
-@section('content')
+<?php $this->start('content'); ?>
 <!-- Create Event Section -->
 <div id="create-event-section" class="content-section">
     <div class="mb-4">
@@ -244,9 +244,9 @@
         </form>
     </div>
 </div>
-@endsection
+<?php $this->end(); ?>
 
-@section('scripts')
+<?php $this->start('scripts'); ?>
 <script>
     // Add Ticket Tier dynamically
     const addTicketTier = document.getElementById('addTicketTier');
@@ -319,4 +319,4 @@
         });
     });
 </script>
-@endsection
+<?php $this->end(); ?>

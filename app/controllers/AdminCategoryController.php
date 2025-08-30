@@ -18,7 +18,7 @@ class AdminCategoryController extends Controller
     {
         $this->view->setLayout('admin');
         $name = "Eventlyy";
-        $this->view->setTitle("{$name} Admin | Dashboard");
+        $this->view->setTitle("{$name} Admin Category | Dashboard");
     }
 
     public function manage(Request $request, Response $response)

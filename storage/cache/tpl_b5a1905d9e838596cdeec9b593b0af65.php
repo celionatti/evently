@@ -5,8 +5,8 @@
 <?php $this->start('content'); ?>
 <!-- Events Section -->
 <div id="events-section" class="content-section">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
+    <div class="d-flex justify-content-between align-items-center mb-4 gap-3">
+        <div class="">
             <h1 class="h2 mb-1">Manage Categories</h1>
             <p class="text-secondary">Manage all categories.</p>
         </div>

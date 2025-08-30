@@ -1,8 +1,8 @@
 <?php
-
+dd($cities);
 ?>
 
-@section('content')
+<?php $this->start('content'); ?>
 <!-- Create Event Section -->
 <div id="create-event-section" class="content-section">
     <div class="mb-4">
@@ -58,9 +58,9 @@
                     <select name="city" class="form-select <?= has_error('city') ? 'is-invalid' : '' ?>" required>
                         <option value="">Select City</option>
                         <option value="other" <?= old('city') === 'other' ? 'selected' : '' ?>>Other</option>
-                        <?php foreach ($cities as $city): ?>
-                            <option value="<?= strtolower(str_replace(" ", "_", $city['name'])) ?>" <?= old('city') == $city['name'] ? 'selected' : '' ?>>
-                                <?= $city['name'] . ' - ' . $city['state'] ?>
+                        <?php foreach ($cities as $code => $city): ?>
+                            <option value="<?= $city[$code] ?>" <?= old('city') == $city['name'] ? 'selected' : '' ?>>
+                                <?= $city['name'] ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -244,9 +244,9 @@
         </form>
     </div>
 </div>
-@endsection
+<?php $this->end(); ?>
 
-@section('scripts')
+<?php $this->start('scripts'); ?>
 <script>
     // Add Ticket Tier dynamically
     const addTicketTier = document.getElementById('addTicketTier');
@@ -319,4 +319,4 @@
         });
     });
 </script>
-@endsection
+<?php $this->end(); ?>

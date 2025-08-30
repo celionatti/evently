@@ -43,6 +43,7 @@ $router->group(['prefix' => '/admin/events'], function ($router) {
 // Admin: Users Routes
 $router->group(['prefix' => '/admin/users'], function ($router) {
     $router->get('/manage', [AdminUserController::class, 'manage']);
+    $router->post('/delete/{slug}', [AdminUserController::class, 'delete']);
 });
 
 // Admin: Categories Routes

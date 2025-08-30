@@ -30,7 +30,7 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>
+                        <td data-label="Event">
                             <div class="d-flex align-items-center gap-3">
                                 <img src="https://images.unsplash.com/photo-1506157786151-b8491531f063?q=80&w=100&auto=format&fit=crop"
                                     class="rounded" style="width: 60px; height: 40px; object-fit: cover;">
@@ -44,80 +44,6 @@
                         <td>450/500<br><small class="text-secondary">90% sold</small></td>
                         <td>₦675,000</td>
                         <td><span class="badge bg-success">Active</span></td>
-                        <td>
-                            <div class="dropdown">
-                                <button class="btn btn-ghost btn-sm dropdown-toggle"
-                                    data-bs-toggle="dropdown">
-                                    Actions
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="#"><i
-                                                class="bi bi-eye me-2"></i>View</a></li>
-                                    <li><a class="dropdown-item" href="#"><i
-                                                class="bi bi-pencil me-2"></i>Edit</a></li>
-                                    <li><a class="dropdown-item" href="#"><i
-                                                class="bi bi-graph-up me-2"></i>Analytics</a></li>
-                                    <li>
-                                        <hr class="dropdown-divider">
-                                    </li>
-                                    <li><a class="dropdown-item text-danger" href="#"><i
-                                                class="bi bi-trash me-2"></i>Delete</a></li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="d-flex align-items-center gap-3">
-                                <img src="https://images.unsplash.com/photo-1557800636-894a64c1696f?q=80&w=100&auto=format&fit=crop"
-                                    class="rounded" style="width: 60px; height: 40px; object-fit: cover;">
-                                <div>
-                                    <div class="fw-semibold">TechCon Africa 2025</div>
-                                    <small class="text-secondary">Tech • Landmark Centre</small>
-                                </div>
-                            </div>
-                        </td>
-                        <td>Nov 2, 2024<br><small class="text-secondary">9:00 AM</small></td>
-                        <td>320/800<br><small class="text-secondary">40% sold</small></td>
-                        <td>₦960,000</td>
-                        <td><span class="badge bg-warning">Selling</span></td>
-                        <td>
-                            <div class="dropdown">
-                                <button class="btn btn-ghost btn-sm dropdown-toggle"
-                                    data-bs-toggle="dropdown">
-                                    Actions
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="#"><i
-                                                class="bi bi-eye me-2"></i>View</a></li>
-                                    <li><a class="dropdown-item" href="#"><i
-                                                class="bi bi-pencil me-2"></i>Edit</a></li>
-                                    <li><a class="dropdown-item" href="#"><i
-                                                class="bi bi-graph-up me-2"></i>Analytics</a></li>
-                                    <li>
-                                        <hr class="dropdown-divider">
-                                    </li>
-                                    <li><a class="dropdown-item text-danger" href="#"><i
-                                                class="bi bi-trash me-2"></i>Delete</a></li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="d-flex align-items-center gap-3">
-                                <img src="https://images.unsplash.com/photo-1520975918311-56c45b53b7bf?q=80&w=100&auto=format&fit=crop"
-                                    class="rounded" style="width: 60px; height: 40px; object-fit: cover;">
-                                <div>
-                                    <div class="fw-semibold">Laughs & Lagos</div>
-                                    <small class="text-secondary">Comedy • Terra Kulture Arena</small>
-                                </div>
-                            </div>
-                        </td>
-                        <td>Dec 14, 2024<br><small class="text-secondary">7:30 PM</small></td>
-                        <td>89/200<br><small class="text-secondary">44% sold</small></td>
-                        <td>₦133,500</td>
-                        <td><span class="badge bg-warning">Selling</span></td>
                         <td>
                             <div class="dropdown">
                                 <button class="btn btn-ghost btn-sm dropdown-toggle"
