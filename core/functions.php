@@ -579,15 +579,17 @@ if (!function_exists('csrf_token')) {
     function csrf_token()
     {
         $now = time();
-        
+
         // Generate new token if none exists or if expired
-        if (empty($_SESSION['csrf_token']) || empty($_SESSION['csrf_token_expiry']) || 
-            $now >= $_SESSION['csrf_token_expiry']) {
+        if (
+            empty($_SESSION['csrf_token']) || empty($_SESSION['csrf_token_expiry']) ||
+            $now >= $_SESSION['csrf_token_expiry']
+        ) {
             $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
             // Set expiration to 1 minute from now
             $_SESSION['csrf_token_expiry'] = $now + 60;
         }
-        
+
         return $_SESSION['csrf_token'];
     }
 }
@@ -597,7 +599,7 @@ if (!function_exists('verify_csrf_token')) {
     function verify_csrf_token($token)
     {
         $now = time();
-        
+
         // Check if token exists and hasn't expired
         if (empty($_SESSION['csrf_token']) || empty($_SESSION['csrf_token_expiry'])) {
             return false;
@@ -609,7 +611,7 @@ if (!function_exists('verify_csrf_token')) {
             unset($_SESSION['csrf_token_expiry']);
             return false;
         }
-        
+
         // Use hash_equals for timing attack prevention
         if (hash_equals($_SESSION['csrf_token'], $token)) {
             // Generate a new token after successful verification
@@ -617,7 +619,7 @@ if (!function_exists('verify_csrf_token')) {
             $_SESSION['csrf_token_expiry'] = $now + 60;
             return true;
         }
-        
+
         return false;
     }
 }
@@ -695,32 +697,20 @@ if (!function_exists('format_currency')) {
 }
 
 if (!function_exists('get_image')) {
-    /**
-     * Retrieves an image URL or empty string if not found
-     * 
-     * @param string|null $path Relative path to the image file
-     * @return string Full URL to the image or empty string
-     */
-    function get_image(?string $path = null, string $defaultImage = ''): string
+    function get_image(?string $path = null, string $default = ''): string
     {
-        // Return default image if no path provided
-        if (empty($path)) {
-            return $defaultImage;
+        // If path is provided and file exists, return full URL
+        if (!empty($path) && file_exists($path)) {
+            return env("APP_URL") . '/' . ltrim($path, '/');
         }
 
-        // Normalize the path (remove leading slashes)
-        $normalizedPath = ltrim($path, '/');
+        // If path is not found or empty, return default path
+        if (!empty($default)) {
+            return env("APP_URL") . '/' . ltrim($default, '/');
+        }
 
-        // Define public directory path
-        $publicDir = "/home1/fundlein/public_html";
-
-        // Construct full filesystem path
-        $fullPath = rtrim($publicDir, '/') . '/' . $normalizedPath;
-
-        // Return URL if file exists, otherwise default image
-        return file_exists($fullPath)
-            ? rtrim(env('APP_URL'), '/') . '/' . $normalizedPath
-            : $defaultImage;
+        // Return empty string if no default is provided
+        return '';
     }
 }
 

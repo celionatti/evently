@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace App\controllers;
 
 use App\models\Event;
+use App\models\Ticket;
+use Dotenv\Util\Regex;
 use Trees\Http\Request;
 use Trees\Http\Response;
 use App\models\Categories;
-use App\models\Ticket;
 use Trees\Helper\Cities\Cities;
 use Trees\Helper\Support\Image;
+use Trees\Pagination\Paginator;
 use Trees\Controller\Controller;
 use Trees\Exception\TreesException;
 use Trees\Helper\Support\FileUploader;
@@ -50,9 +52,24 @@ class AdminEventController extends Controller
         );
     }
 
-    public function manage()
+    public function manage(Request $request, Response $response)
     {
-        $view = [];
+        $events = $this->eventModel::paginate([
+            'per_page' => $request->query('per_page', 10),
+            'page' => $request->query('page', 1),
+            'order_by' => ['created_at' => 'DESC']
+        ]);
+
+        // Create pagination instance
+        $pagination = new Paginator($events['meta']);
+
+        // Render the pagination links
+        $paginationLinks = $pagination->render('bootstrap');
+
+        $view = [
+            'events' => $events['data'],
+            'pagination' => $paginationLinks
+        ];
 
         return $this->render('admin/events/manage', $view);
     }
@@ -140,5 +157,10 @@ class AdminEventController extends Controller
             FlashMessage::setMessage("Creation Failed! Please try again. Error: " . $e->getMessage(), 'danger');
             return $response->redirect("/admin/events/create");
         }
+    }
+
+    public function edit(Request $request, Response $response, $slug)
+    {
+
     }
 }
