@@ -38,6 +38,7 @@ $router->group(['prefix' => '/admin'], function ($router) {
 $router->group(['prefix' => '/admin/events'], function ($router) {
     $router->get('/manage', [AdminEventController::class, 'manage']);
     $router->get('/create', [AdminEventController::class, 'create']);
+    $router->post('/create', [AdminEventController::class, 'insert']);
 });
 
 // Admin: Users Routes

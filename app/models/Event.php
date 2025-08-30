@@ -33,6 +33,7 @@ class Event extends Model implements ModelInterface
         'event_title',
         'event_image',
         'description',
+        'event_link',
         'venue',
         'city',
         'event_date',
@@ -41,7 +42,7 @@ class Event extends Model implements ModelInterface
         'end_time',
         'phone',
         'mail',
-        'socials',
+        'social',
         'featured',
         'ticket_sales',
         'status'

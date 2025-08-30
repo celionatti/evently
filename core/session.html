@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSRF Token Implementation with Time Validation</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 600px;
+            padding: 30px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        .token-section {
+            background: #f5f9ff;
+            border: 2px dashed #2575fc;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .token-display {
+            word-break: break-all;
+            font-family: monospace;
+            text-align: center;
+            color: #2575fc;
+            font-weight: 500;
+            margin: 10px 0;
+            padding: 10px;
+            background: #e8f4fd;
+            border-radius: 6px;
+        }
+        .token-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            color: #666;
+            font-size: 14px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #444;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input[type="text"]:focus {
+            border-color: #2575fc;
+            outline: none;
+        }
+        .btn {
+            background: #2575fc;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            width: 100%;
+            transition: background 0.3s;
+            margin: 5px 0;
+        }
+        .btn:hover {
+            background: #1c64e0;
+        }
+        .btn-secondary {
+            background: #6c757d;
+        }
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        .message {
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info-box {
+            background: #e8f4fd;
+            border-left: 4px solid #2575fc;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .info-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2575fc;
+        }
+        .instructions {
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        .instructions h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .instructions ol {
+            padding-left: 20px;
+        }
+        .instructions li {
+            margin-bottom: 8px;
+            color: #555;
+        }
+        .expiry-warning {
+            color: #dc3545;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CSRF Token with Time Validation</h1>
+        
+        <div class="info-box">
+            <div class="info-title">Enhanced CSRF Protection</div>
+            <p>This implementation includes time validation - tokens expire after 1 minute for added security.</p>
+        </div>
+        
+        <div class="token-section">
+            <label>Current CSRF Token:</label>
+            <div class="token-display" id="current-token">Loading token...</div>
+            
+            <div class="token-info">
+                <span>Generated: <span id="generated-time">--:--:--</span></span>
+                <span>Expires: <span id="expiry-time" class="expiry-warning">--:--:--</span></span>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="token-input">Verify Token (Simulated):</label>
+            <input type="text" id="token-input" placeholder="Paste token here to verify">
+        </div>
+        
+        <button class="btn" id="verify-btn">Verify Token</button>
+        <button class="btn btn-secondary" id="new-token-btn">Generate New Token</button>
+        
+        <div id="message" class="message"></div>
+        
+        <div class="instructions">
+            <h3>How It Works:</h3>
+            <ol>
+                <li>A unique token is generated with a 1-minute expiration time</li>
+                <li>This token should be included in forms as a hidden field</li>
+                <li>When the form is submitted, the token is verified for both value and expiration</li>
+                <li>After verification, a new token is generated for the next request</li>
+                <li>Expired tokens are automatically rejected</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        // Simulated PHP session storage
+        let sessionStorage = {
+            csrf_token: null,
+            csrf_token_expiry: null
+        };
+
+        // Function to generate a secure random token
+        function generateToken() {
+            const randomBytes = new Uint8Array(32);
+            window.crypto.getRandomValues(randomBytes);
+            return Array.from(randomBytes, byte => byte.toString(16).padStart(2, '0')).join('');
+        }
+
+        // Function to get the current CSRF token
+        function csrf_token() {
+            const now = Math.floor(Date.now() / 1000);
+            
+            // Generate new token if none exists or if expired
+            if (!sessionStorage.csrf_token || !sessionStorage.csrf_token_expiry || 
+                now >= sessionStorage.csrf_token_expiry) {
+                sessionStorage.csrf_token = generateToken();
+                // Set expiration to 1 minute from now
+                sessionStorage.csrf_token_expiry = now + 60;
+            }
+            
+            return sessionStorage.csrf_token;
+        }
+
+        // Function to verify CSRF token (with time validation)
+        function verifyCsrfToken(token) {
+            const now = Math.floor(Date.now() / 1000);
+            const currentToken = sessionStorage.csrf_token;
+            const tokenExpiry = sessionStorage.csrf_token_expiry;
+            
+            // Check if token exists and hasn't expired
+            if (!currentToken || !tokenExpiry) {
+                return { isValid: false, message: "No token exists" };
+            }
+            
+            if (now >= tokenExpiry) {
+                return { isValid: false, message: "Token has expired" };
+            }
+            
+            // In a real implementation, you would use a time-safe comparison function
+            if (token === currentToken) {
+                // Generate a new token after successful verification
+                sessionStorage.csrf_token = generateToken();
+                sessionStorage.csrf_token_expiry = now + 60;
+                return { isValid: true, message: "Token verified successfully!" };
+            }
+            
+            return { isValid: false, message: "Invalid token" };
+        }
+
+        // Update the token display and expiry information
+        function updateTokenDisplay() {
+            const token = csrf_token();
+            document.getElementById('current-token').textContent = token;
+            
+            const generatedTime = new Date();
+            document.getElementById('generated-time').textContent = generatedTime.toLocaleTimeString();
+            
+            const expiryTime = new Date(sessionStorage.csrf_token_expiry * 1000);
+            document.getElementById('expiry-time').textContent = expiryTime.toLocaleTimeString();
+            
+            // Update color based on expiry time
+            const timeUntilExpiry = sessionStorage.csrf_token_expiry - Math.floor(Date.now() / 1000);
+            if (timeUntilExpiry < 30) {
+                document.getElementById('expiry-time').className = 'expiry-warning';
+            } else {
+                document.getElementById('expiry-time').className = '';
+            }
+        }
+
+        // Generate a new token manually
+        function generateNewToken() {
+            sessionStorage.csrf_token = generateToken();
+            sessionStorage.csrf_token_expiry = Math.floor(Date.now() / 1000) + 60;
+            updateTokenDisplay();
+            
+            const messageEl = document.getElementById('message');
+            messageEl.textContent = 'New token generated successfully!';
+            messageEl.className = 'message success';
+            messageEl.style.display = 'block';
+            
+            // Hide message after 3 seconds
+            setTimeout(() => {
+                messageEl.style.display = 'none';
+            }, 3000);
+        }
+
+        // Simulate form verification
+        document.getElementById('verify-btn').addEventListener('click', function() {
+            const inputToken = document.getElementById('token-input').value;
+            const messageEl = document.getElementById('message');
+            
+            if (!inputToken) {
+                messageEl.textContent = 'Please enter a token to verify';
+                messageEl.className = 'message error';
+                messageEl.style.display = 'block';
+                return;
+            }
+            
+            const result = verifyCsrfToken(inputToken);
+            
+            if (result.isValid) {
+                messageEl.textContent = result.message + ' A new token has been generated.';
+                messageEl.className = 'message success';
+                messageEl.style.display = 'block';
+                updateTokenDisplay();
+            } else {
+                messageEl.textContent = 'Error: ' + result.message;
+                messageEl.className = 'message error';
+                messageEl.style.display = 'block';
+            }
+        });
+
+        // Generate new token button
+        document.getElementById('new-token-btn').addEventListener('click', generateNewToken);
+
+        // Initialize the page
+        updateTokenDisplay();
+        
+        // Update the expiry countdown every second
+        setInterval(updateTokenDisplay, 1000);
+    </script>
+</body>
+</html>

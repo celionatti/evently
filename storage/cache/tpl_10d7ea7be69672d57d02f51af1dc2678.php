@@ -2,6 +2,33 @@
 
 ?>
 
+<?php $this->start('styles'); ?>
+<style>
+    .content-section {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+
+    .image-preview-container {
+        display: none;
+        margin-top: 1rem;
+        text-align: center;
+    }
+
+    .image-preview {
+        max-width: 100%;
+        max-height: 300px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .invalid-feedback {
+        display: block;
+    }
+</style>
+<?php $this->end(); ?>
+
 <?php $this->start('content'); ?>
 <!-- Create Event Section -->
 <div id="create-event-section" class="content-section">
@@ -11,21 +38,21 @@
     </div>
 
     <div class="dashboard-card">
-        <form action="/admin/events/insert" method="post" enctype="multipart/form-data" id="createEventForm">
-            <input type="hidden" name="csrf_token" value="<?= csrf_token() ?>">
+        <form action="" method="post" enctype="multipart/form-data" id="createEventForm">
+            <!-- <?php echo $this->escape(csrf_field()); ?> -->
 
             <div class="row g-4">
                 <div class="col-md-8">
                     <label class="form-label">Event Title *</label>
                     <input type="text" name="event_title" class="form-control <?= has_error('event_title') ? 'is-invalid' : '' ?>"
-                        placeholder="Enter your event title" value="<?= old('event_title') ?>" required>
+                        placeholder="Enter your event title" value="<?= old('event_title') ?>">
                     <?php if (has_error('event_title')): ?>
                         <div class="invalid-feedback"><?= get_error('event_title') ?></div>
                     <?php endif; ?>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Category *</label>
-                    <select name="category" class="form-select <?= has_error('category') ? 'is-invalid' : '' ?>" required>
+                    <select name="category" class="form-select <?= has_error('category') ? 'is-invalid' : '' ?>">
                         <option value="">Select Category</option>
                         <?php foreach ($categories as $category): ?>
                             <option value="<?= $category->id ?>" <?= old('category_id') == $category->id ? 'selected' : '' ?>>
@@ -40,22 +67,38 @@
                 <div class="col-12">
                     <label class="form-label">Description *</label>
                     <textarea class="form-control <?= has_error('description') ? 'is-invalid' : '' ?>"
-                        name="description" rows="4" placeholder="Describe your event..." required><?= old('description') ?></textarea>
+                        name="description" rows="4" placeholder="Describe your event..."><?= old('description') ?></textarea>
                     <?php if (has_error('description')): ?>
                         <div class="invalid-feedback"><?= get_error('description') ?></div>
+                    <?php endif; ?>
+                </div>
+                <div class="col-md-8">
+                    <label class="form-label">Event Link</label>
+                    <input type="url" name="event_link" class="form-control <?= has_error('event_link') ? 'is-invalid' : '' ?>"
+                        placeholder="Enter your event link" value="<?= old('event_link') ?>">
+                    <?php if (has_error('event_link')): ?>
+                        <div class="invalid-feedback"><?= get_error('event_link') ?></div>
+                    <?php endif; ?>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Event Tags</label>
+                    <input type="text" name="tags" class="form-control <?= has_error('tags') ? 'is-invalid' : '' ?>"
+                        placeholder="Enter your event link" value="<?= old('tags') ?>">
+                    <?php if (has_error('tags')): ?>
+                        <div class="invalid-feedback"><?= get_error('tags') ?></div>
                     <?php endif; ?>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Venue *</label>
                     <input type="text" name="venue" class="form-control <?= has_error('venue') ? 'is-invalid' : '' ?>"
-                        placeholder="Event venue" value="<?= old('venue') ?>" required>
+                        placeholder="Event venue" value="<?= old('venue') ?>">
                     <?php if (has_error('venue')): ?>
                         <div class="invalid-feedback"><?= get_error('venue') ?></div>
                     <?php endif; ?>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">City *</label>
-                    <select name="city" class="form-select <?= has_error('city') ? 'is-invalid' : '' ?>" required>
+                    <select name="city" class="form-select <?= has_error('city') ? 'is-invalid' : '' ?>">
                         <option value="">Select City</option>
                         <option value="other" <?= old('city') === 'other' ? 'selected' : '' ?>>Other</option>
                         <?php foreach ($cities as $city): ?>
@@ -71,7 +114,7 @@
                 <div class="col-md-6">
                     <label class="form-label">Event Date *</label>
                     <input type="date" name="event_date" class="form-control <?= has_error('event_date') ? 'is-invalid' : '' ?>"
-                        value="<?= old('event_date') ?>" required>
+                        value="<?= old('event_date') ?>">
                     <?php if (has_error('event_date')): ?>
                         <div class="invalid-feedback"><?= get_error('event_date') ?></div>
                     <?php endif; ?>
@@ -79,7 +122,7 @@
                 <div class="col-md-6">
                     <label class="form-label">Start Time *</label>
                     <input type="time" name="start_time" class="form-control <?= has_error('start_time') ? 'is-invalid' : '' ?>"
-                        value="<?= old('start_time') ?>" required>
+                        value="<?= old('start_time') ?>">
                     <?php if (has_error('start_time')): ?>
                         <div class="invalid-feedback"><?= get_error('start_time') ?></div>
                     <?php endif; ?>
@@ -94,13 +137,21 @@
                 </div>
                 <div class="col-12">
                     <label class="form-label">Event Image</label>
-                    <input type="file" name="event_image" class="form-control" accept="image/*">
+                    <input type="file" name="event_image" id="eventImageUpload" class="form-control <?= has_error('event_image') ? 'is-invalid' : '' ?>" accept="image/*">
                     <small class="form-text text-secondary">Upload a high-quality image (recommended: 1200x630px)</small>
+                    <?php if (has_error('event_image')): ?>
+                        <div class="invalid-feedback"><?= get_error('event_image') ?></div>
+                    <?php endif; ?>
+
+                    <div class="image-preview-container mt-3" id="imagePreviewContainer">
+                        <div class="mb-2">Image Preview:</div>
+                        <img src="#" alt="Image Preview" class="image-preview" id="imagePreview">
+                    </div>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Phone *</label>
                     <input type="text" name="phone" class="form-control <?= has_error('phone') ? 'is-invalid' : '' ?>"
-                        placeholder="Enter your contact phone" value="<?= old('phone') ?>" required>
+                        placeholder="Enter your contact phone" value="<?= old('phone') ?>">
                     <?php if (has_error('phone')): ?>
                         <div class="invalid-feedback"><?= get_error('phone') ?></div>
                     <?php endif; ?>
@@ -108,7 +159,7 @@
                 <div class="col-md-6">
                     <label class="form-label">Mail *</label>
                     <input type="email" name="mail" class="form-control <?= has_error('mail') ? 'is-invalid' : '' ?>"
-                        placeholder="Enter your contact mail" value="<?= old('mail') ?>" required>
+                        placeholder="Enter your contact mail" value="<?= old('mail') ?>">
                     <?php if (has_error('mail')): ?>
                         <div class="invalid-feedback"><?= get_error('mail') ?></div>
                     <?php endif; ?>
@@ -116,14 +167,14 @@
                 <div class="col-md-12">
                     <label class="form-label">Social *</label>
                     <input type="url" name="social" class="form-control <?= has_error('social') ? 'is-invalid' : '' ?>"
-                        placeholder="Enter your event social link" value="<?= old('social') ?>" required>
+                        placeholder="Enter your event social link" value="<?= old('social') ?>">
                     <?php if (has_error('social')): ?>
                         <div class="invalid-feedback"><?= get_error('social') ?></div>
                     <?php endif; ?>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Ticket Sales *</label>
-                    <select name="ticket_sales" class="form-select <?= has_error('ticket_sales') ? 'is-invalid' : '' ?>" required>
+                    <select name="ticket_sales" class="form-select <?= has_error('ticket_sales') ? 'is-invalid' : '' ?>">
                         <option value="">Select Option</option>
                         <option value="close" <?= old('ticket_sales') === 'close' ? 'selected' : '' ?>>Close</option>
                         <option value="open" <?= old('ticket_sales') === 'open' ? 'selected' : '' ?>>Open</option>
@@ -134,7 +185,7 @@
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">Event Status *</label>
-                    <select name="status" class="form-select <?= has_error('status') ? 'is-invalid' : '' ?>" required>
+                    <select name="status" class="form-select <?= has_error('status') ? 'is-invalid' : '' ?>">
                         <option value="">Select Option</option>
                         <option value="disable" <?= old('status') === 'disable' ? 'selected' : '' ?>>Disable</option>
                         <option value="active" <?= old('status') === 'active' ? 'selected' : '' ?>>Active</option>
@@ -162,19 +213,32 @@
                     if (!empty($oldTickets)) {
                         foreach ($oldTickets as $index => $ticket) {
                             if (!empty($ticket['ticket_name'])) {
+                                $hasTicketNameError = has_error("tickets.{$index}.ticket_name");
+                                $hasPriceError = has_error("tickets.{$index}.price");
+                                $hasQuantityError = has_error("tickets.{$index}.quantity");
+
                                 echo '<div class="ticket-tier mb-3 p-3 border rounded">';
                                 echo '<div class="row g-3">';
                                 echo '<div class="col-md-3">';
                                 echo '<label class="form-label">Ticket Name *</label>';
-                                echo '<input type="text" name="tickets[' . $index . '][ticket_name]" class="form-control" placeholder="e.g., General" value="' . htmlspecialchars($ticket['ticket_name']) . '" required>';
+                                echo '<input type="text" name="tickets[' . $index . '][ticket_name]" class="form-control ' . ($hasTicketNameError ? 'is-invalid' : '') . '" placeholder="e.g., General" value="' . htmlspecialchars($ticket['ticket_name']) . '">';
+                                if ($hasTicketNameError) {
+                                    echo '<div class="invalid-feedback">' . get_error("tickets.{$index}.ticket_name") . '</div>';
+                                }
                                 echo '</div>';
                                 echo '<div class="col-md-3">';
                                 echo '<label class="form-label">Price (₦) *</label>';
-                                echo '<input type="number" name="tickets[' . $index . '][price]" class="form-control" placeholder="0" min="0" step="0.01" value="' . htmlspecialchars($ticket['price']) . '" required>';
+                                echo '<input type="number" name="tickets[' . $index . '][price]" class="form-control ' . ($hasPriceError ? 'is-invalid' : '') . '" placeholder="0" min="0" step="0.01" value="' . htmlspecialchars($ticket['price']) . '">';
+                                if ($hasPriceError) {
+                                    echo '<div class="invalid-feedback">' . get_error("tickets.{$index}.price") . '</div>';
+                                }
                                 echo '</div>';
                                 echo '<div class="col-md-3">';
                                 echo '<label class="form-label">Quantity *</label>';
-                                echo '<input type="number" name="tickets[' . $index . '][quantity]" class="form-control" placeholder="100" min="1" value="' . htmlspecialchars($ticket['quantity']) . '" required>';
+                                echo '<input type="number" name="tickets[' . $index . '][quantity]" class="form-control ' . ($hasQuantityError ? 'is-invalid' : '') . '" placeholder="100" min="1" value="' . htmlspecialchars($ticket['quantity']) . '">';
+                                if ($hasQuantityError) {
+                                    echo '<div class="invalid-feedback">' . get_error("tickets.{$index}.quantity") . '</div>';
+                                }
                                 echo '</div>';
                                 echo '<div class="col-md-3">';
                                 echo '<label class="form-label">Actions</label>';
@@ -200,15 +264,15 @@
                         echo '<div class="row g-3">';
                         echo '<div class="col-md-3">';
                         echo '<label class="form-label">Ticket Name *</label>';
-                        echo '<input type="text" name="tickets[0][ticket_name]" class="form-control" placeholder="e.g., General" required>';
+                        echo '<input type="text" name="tickets[0][ticket_name]" class="form-control" placeholder="e.g., General">';
                         echo '</div>';
                         echo '<div class="col-md-3">';
                         echo '<label class="form-label">Price (₦) *</label>';
-                        echo '<input type="number" name="tickets[0][price]" class="form-control" placeholder="0" min="0" step="0.01" required>';
+                        echo '<input type="number" name="tickets[0][price]" class="form-control" placeholder="0" min="0" step="0.01">';
                         echo '</div>';
                         echo '<div class="col-md-3">';
                         echo '<label class="form-label">Quantity *</label>';
-                        echo '<input type="number" name="tickets[0][quantity]" class="form-control" placeholder="100" min="1" required>';
+                        echo '<input type="number" name="tickets[0][quantity]" class="form-control" placeholder="100" min="1">';
                         echo '</div>';
                         echo '<div class="col-md-3">';
                         echo '<label class="form-label">Actions</label>';
@@ -231,10 +295,10 @@
             </div>
 
             <div class="mt-4 d-flex gap-2">
-                <button type="submit" class="btn btn-pulse" name="action" value="publish">
+                <button type="submit" class="btn btn-pulse">
                     <i class="bi bi-check-circle me-2"></i>Create Event
                 </button>
-                <button type="submit" class="btn btn-ghost" name="action" value="draft">
+                <button type="submit" class="btn btn-ghost">
                     <i class="bi bi-save me-2"></i>Save as Draft
                 </button>
                 <button type="reset" class="btn btn-outline-secondary">
@@ -248,6 +312,25 @@
 
 <?php $this->start('scripts'); ?>
 <script>
+    // Image preview functionality
+    const eventImageUpload = document.getElementById('eventImageUpload');
+    const imagePreview = document.getElementById('imagePreview');
+    const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+
+    eventImageUpload.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.addEventListener('load', function() {
+                imagePreview.src = reader.result;
+                imagePreviewContainer.style.display = 'block';
+            });
+            reader.readAsDataURL(file);
+        } else {
+            imagePreviewContainer.style.display = 'none';
+        }
+    });
+
     // Add Ticket Tier dynamically
     const addTicketTier = document.getElementById('addTicketTier');
     const ticketTiers = document.getElementById('ticketTiers');
@@ -260,15 +343,15 @@
             <div class="row g-3">
                 <div class="col-md-3">
                     <label class="form-label">Ticket Name *</label>
-                    <input type="text" name="tickets[${ticketIndex}][ticket_name]" class="form-control" placeholder="e.g., VIP" required>
+                    <input type="text" name="tickets[${ticketIndex}][ticket_name]" class="form-control" placeholder="e.g., VIP" >
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Price (₦) *</label>
-                    <input type="number" name="tickets[${ticketIndex}][price]" class="form-control" placeholder="0" min="0" step="0.01" required>
+                    <input type="number" name="tickets[${ticketIndex}][price]" class="form-control" placeholder="0" min="0" step="0.01" >
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Quantity *</label>
-                    <input type="number" name="tickets[${ticketIndex}][quantity]" class="form-control" placeholder="50" min="1" required>
+                    <input type="number" name="tickets[${ticketIndex}][quantity]" class="form-control" placeholder="50" min="1" >
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Actions</label>

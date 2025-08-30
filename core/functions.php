@@ -578,7 +578,55 @@ if (!function_exists('getUrl')) {
 if (!function_exists('csrf_token')) {
     function csrf_token()
     {
-        return 'csrf token function';
+        $now = time();
+        
+        // Generate new token if none exists or if expired
+        if (empty($_SESSION['csrf_token']) || empty($_SESSION['csrf_token_expiry']) || 
+            $now >= $_SESSION['csrf_token_expiry']) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+            // Set expiration to 1 minute from now
+            $_SESSION['csrf_token_expiry'] = $now + 60;
+        }
+        
+        return $_SESSION['csrf_token'];
+    }
+}
+
+// Verify CSRF token
+if (!function_exists('verify_csrf_token')) {
+    function verify_csrf_token($token)
+    {
+        $now = time();
+        
+        // Check if token exists and hasn't expired
+        if (empty($_SESSION['csrf_token']) || empty($_SESSION['csrf_token_expiry'])) {
+            return false;
+        }
+
+        if ($now >= $_SESSION['csrf_token_expiry']) {
+            // Clear expired token
+            unset($_SESSION['csrf_token']);
+            unset($_SESSION['csrf_token_expiry']);
+            return false;
+        }
+        
+        // Use hash_equals for timing attack prevention
+        if (hash_equals($_SESSION['csrf_token'], $token)) {
+            // Generate a new token after successful verification
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+            $_SESSION['csrf_token_expiry'] = $now + 60;
+            return true;
+        }
+        
+        return false;
+    }
+}
+
+// Generate CSRF token HTML field
+if (!function_exists('csrf_field')) {
+    function csrf_field()
+    {
+        return '<input type="hidden" name="csrf_token" value="' . csrf_token() . '">';
     }
 }
 
