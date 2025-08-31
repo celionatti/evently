@@ -6,7 +6,6 @@ namespace App\controllers;
 
 use App\models\Event;
 use App\models\Ticket;
-use Dotenv\Util\Regex;
 use Trees\Http\Request;
 use Trees\Http\Response;
 use App\models\Categories;
@@ -129,22 +128,22 @@ class AdminEventController extends Controller
                     $data['event_image'] = str_replace(ROOT_PATH . '/public', '', $uploadedFile);
                 }
             }
-            
+
             // Use transaction to save event and tickets
-            $this->eventModel->transaction(function() use ($data, $ticketsData) {
+            $this->eventModel->transaction(function () use ($data, $ticketsData) {
                 $event = Event::create($data);
-                
+
                 if (!$event) {
                     throw new \RuntimeException('Event creation failed');
                 }
-                
+
                 // Save tickets
                 foreach ($ticketsData as $ticketData) {
                     $ticketData['slug'] = str_slug($ticketData['ticket_name'] . '-' . $event->slug, "_");
                     $ticketData['event_id'] = $event->id;
-                    
+
                     $ticket = Ticket::create($ticketData);
-                    
+
                     if (!$ticket) {
                         throw new \RuntimeException('Ticket creation failed: ' . $ticketData['ticket_name']);
                     }
@@ -161,6 +160,186 @@ class AdminEventController extends Controller
 
     public function edit(Request $request, Response $response, $slug)
     {
+        $event = Event::findBySlug($slug);
 
+        if (!$event) {
+            FlashMessage::setMessage("Event Not Found!", 'danger');
+            return $response->redirect("/admin/events/manage");
+        }
+
+        // Load tickets with the event
+        // $event->tickets = Ticket::where(['event_id' => $event->id]);
+        $tickets = Ticket::where(['event_id' => $event->id]);
+
+        // Ensure tickets is always an array
+        $event->tickets = is_array($tickets) ? $tickets : [];
+
+        $view = [
+            'event' => $event,
+            'categories' => Categories::all(),
+            'cities' => Cities::getAll('NG')
+        ];
+
+        return $this->render('admin/events/edit', $view);
+    }
+
+    public function update(Request $request, Response $response, $slug)
+    {
+        if ("POST" !== $request->getMethod()) {
+            return;
+        }
+
+        $event = Event::findBySlug($slug);
+        if (!$event) {
+            FlashMessage::setMessage("Event Not Found!", 'danger');
+            return $response->redirect("/admin/events/manage");
+        }
+
+        $rules = [
+            'event_title' => 'required|min:3',
+            'category' => 'required',
+            'description' => 'required|min:10',
+            'event_link' => "unique:events.event_link,event_link!={$event->event_link}",
+            'event_image' => 'file|mimes:image/jpg,image/jpeg,image/png|maxSize:5120|max:' . self::MAX_UPLOAD_FILES,
+            'venue' => 'required',
+            'city' => 'required',
+            'event_date' => 'required',
+            'start_time' => 'required',
+            'phone' => 'required',
+            'mail' => 'required|email',
+            'social' => 'required|url',
+            'ticket_sales' => 'required',
+            'status' => 'required'
+        ];
+
+        if (!$request->validate($rules, false)) {
+            set_form_data($request->all());
+            set_form_error($request->getErrors());
+            return $response->redirect("/admin/events/edit/{$slug}");
+        }
+
+        try {
+            $data = $request->all();
+            $ticketsData = $data['tickets'] ?? [];
+            // $ticketsToDelete = $data['tickets_to_delete'] ?? [];
+            $ticketsToDelete = $data['tickets_to_delete'] ?? [];
+            if (is_string($ticketsToDelete) && !empty($ticketsToDelete)) {
+                $ticketsToDelete = explode(',', $ticketsToDelete);
+                $ticketsToDelete = array_filter($ticketsToDelete, function ($value) {
+                    return !empty(trim($value));
+                });
+            }
+            unset($data['tickets'], $data['tickets_to_delete']);
+
+            // Update slug if title changed
+            if ($data['event_title'] !== $event->event_title) {
+                $data['slug'] = str_slug($data['event_title'], "_");
+            }
+
+            // Handle file upload
+            if ($request->hasFile('event_image') && $request->file('event_image')->isValid()) {
+                $uploadedFile = $this->uploader->uploadFromRequest($request, 'event_image');
+                if ($uploadedFile !== null) {
+                    // Delete old image if exists
+                    if ($event->event_image && file_exists(ROOT_PATH . '/public' . $event->event_image)) {
+                        unlink(ROOT_PATH . '/public' . $event->event_image);
+                    }
+                    $data['event_image'] = str_replace(ROOT_PATH . '/public', '', $uploadedFile);
+                }
+            }
+
+            // Use transaction to update event and tickets
+            $this->eventModel->transaction(function () use ($event, $data, $ticketsData, $ticketsToDelete) {
+                // Update event
+                $updated = $event->update($data);
+                if (!$updated) {
+                    throw new \RuntimeException('Event update failed');
+                }
+
+                // Delete marked tickets
+                if (!empty($ticketsToDelete)) {
+                    foreach ($ticketsToDelete as $ticketId) {
+                        $ticketId = (int) $ticketId; // Ensure it's an integer
+                        if ($ticketId > 0) {
+                            $ticket = Ticket::find($ticketId);
+                            if ($ticket && $ticket->event_id == $event->id) {
+                                $ticket->delete();
+                            }
+                        }
+                    }
+                }
+
+                // Process tickets (update existing, create new)
+                foreach ($ticketsData as $ticketData) {
+                    if (!empty($ticketData['ticket_name'])) {
+                        if (isset($ticketData['id']) && !empty($ticketData['id'])) {
+                            // Update existing ticket
+                            $ticket = Ticket::find($ticketData['id']);
+                            if ($ticket && $ticket->event_id == $event->id) {
+                                unset($ticketData['id']); // Remove ID from update data
+                                $ticketData['slug'] = str_slug($ticketData['ticket_name'] . '-' . $event->slug, "_");
+
+                                if (!$ticket->update($ticketData)) {
+                                    throw new \RuntimeException('Ticket update failed: ' . $ticketData['ticket_name']);
+                                }
+                            }
+                        } else {
+                            // Create new ticket
+                            $ticketData['slug'] = str_slug($ticketData['ticket_name'] . '-' . $event->slug, "_");
+                            $ticketData['event_id'] = $event->id;
+                            unset($ticketData['id']); // Make sure no ID is passed
+
+                            $ticket = Ticket::create($ticketData);
+                            if (!$ticket) {
+                                throw new \RuntimeException('New ticket creation failed: ' . $ticketData['ticket_name']);
+                            }
+                        }
+                    }
+                }
+            });
+
+            FlashMessage::setMessage("Event Updated Successfully!");
+            return $response->redirect("/admin/events/manage");
+        } catch (TreesException $e) {
+            set_form_data($request->all());
+            FlashMessage::setMessage("Update Failed! Please try again. Error: " . $e->getMessage(), 'danger');
+            return $response->redirect("/admin/events/edit/{$slug}");
+        }
+    }
+
+    public function deleteTicket(Request $request, Response $response)
+    {
+        if ("POST" !== $request->getMethod()) {
+            return $response->json(['success' => false, 'message' => 'Invalid request method'], 405);
+        }
+
+        $ticketId = $request->input('ticket_id');
+        $eventId = $request->input('event_id');
+
+        if (!$ticketId || !$eventId) {
+            return $response->json(['success' => false, 'message' => 'Missing required parameters'], 400);
+        }
+
+        try {
+            $ticket = Ticket::find($ticketId);
+
+            if (!$ticket || $ticket->event_id != $eventId) {
+                return $response->json(['success' => false, 'message' => 'Ticket not found'], 404);
+            }
+
+            // Check if this is the last ticket for the event
+            $ticketCount = Ticket::where(['event_id' => $eventId]);
+            if (count($ticketCount) <= 1) {
+                return $response->json(['success' => false, 'message' => 'Cannot delete the last ticket. Event must have at least one ticket.'], 400);
+            }
+
+            if ($ticket->delete()) {
+                return $response->json(['success' => true, 'message' => 'Ticket deleted successfully']);
+            } else {
+                return $response->json(['success' => false, 'message' => 'Failed to delete ticket'], 500);
+            }
+        } catch (TreesException $e) {
+            return $response->json(['success' => false, 'message' => 'Error: ' . $e->getMessage()], 500);
+        }
     }
 }

@@ -55,7 +55,7 @@
                     <select name="category" class="form-select <?= has_error('category') ? 'is-invalid' : '' ?>">
                         <option value="">Select Category</option>
                         <?php foreach ($categories as $category): ?>
-                            <option value="<?= $category->id ?>" <?= old('category_id') == $category->id ? 'selected' : '' ?>>
+                            <option value="<?= $category->id ?>" <?= old('category') == $category->id ? 'selected' : '' ?>>
                                 <?= $category->name ?>
                             </option>
                         <?php endforeach; ?>
@@ -297,9 +297,6 @@
             <div class="mt-4 d-flex gap-2">
                 <button type="submit" class="btn btn-pulse">
                     <i class="bi bi-check-circle me-2"></i>Create Event
-                </button>
-                <button type="submit" class="btn btn-ghost">
-                    <i class="bi bi-save me-2"></i>Save as Draft
                 </button>
                 <button type="reset" class="btn btn-outline-secondary">
                     <i class="bi bi-arrow-clockwise me-2"></i>Reset

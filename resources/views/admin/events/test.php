@@ -26,75 +26,20 @@
     .invalid-feedback {
         display: block;
     }
-
-    .current-image {
-        max-width: 200px;
-        max-height: 150px;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .ticket-tier {
-        position: relative;
-        border: 2px solid #e9ecef;
-        transition: border-color 0.3s ease;
-    }
-
-    .ticket-tier.existing-ticket {
-        border-color: #28a745;
-    }
-
-    .ticket-tier.new-ticket {
-        border-color: #007bff;
-    }
-
-    .ticket-tier.marked-for-deletion {
-        border-color: #dc3545;
-        opacity: 0.7;
-    }
-
-    .ticket-badge {
-        position: absolute;
-        top: -1px;
-        right: -1px;
-        padding: 2px 8px;
-        border-radius: 0 6px 0 6px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        text-transform: uppercase;
-    }
-
-    .ticket-badge.existing {
-        background-color: #28a745;
-        color: white;
-    }
-
-    .ticket-badge.new {
-        background-color: #007bff;
-        color: white;
-    }
-
-    .ticket-badge.delete {
-        background-color: #dc3545;
-        color: white;
-    }
 </style>
 @endsection
 
 @section('content')
-<!-- Edit Event Section -->
-<div id="edit-event-section" class="content-section">
+<!-- Create Event Section -->
+<div id="create-event-section" class="content-section">
     <div class="mb-4">
         <h1 class="h2 mb-1">Edit Event: {{{ $event->event_title }}}</h1>
-        <p class="text-secondary">Update the details below to modify your event.</p>
+        <p class="text-secondary">Fill in the details below to edit/update your event.</p>
     </div>
 
     <div class="dashboard-card">
-        <form action="" method="post" enctype="multipart/form-data" id="editEventForm">
+        <form action="" method="post" enctype="multipart/form-data" id="createEventForm">
             <!-- {{ csrf_field() }} -->
-
-            <!-- Hidden input for tickets to delete -->
-            <input type="hidden" name="tickets_to_delete" id="ticketsToDelete" value="">
 
             <div class="row g-4">
                 <div class="col-md-8">
@@ -138,7 +83,7 @@
                 <div class="col-md-4">
                     <label class="form-label">Event Tags</label>
                     <input type="text" name="tags" class="form-control <?= has_error('tags') ? 'is-invalid' : '' ?>"
-                        placeholder="Enter event tags" value="<?= old('tags', $event->tags) ?>">
+                        placeholder="Enter your event link" value="<?= old('tags', $event->tags) ?>">
                     <?php if (has_error('tags')): ?>
                         <div class="invalid-feedback"><?= get_error('tags') ?></div>
                     <?php endif; ?>
@@ -157,7 +102,7 @@
                         <option value="">Select City</option>
                         <option value="other" <?= old('city', $event->city) === 'other' ? 'selected' : '' ?>>Other</option>
                         <?php foreach ($cities as $city): ?>
-                            <option value="<?= strtolower(str_replace(" ", "_", $city['name'])) ?>" <?= old('city', $event->city) == strtolower(str_replace(" ", "_", $city['name'])) ? 'selected' : '' ?>>
+                            <option value="<?= strtolower(str_replace(" ", "_", $city['name'])) ?>" <?= old('city', $event->city) == $city['name'] ? 'selected' : '' ?>>
                                 <?= $city['name'] . ' - ' . $city['state'] ?>
                             </option>
                         <?php endforeach; ?>
@@ -192,20 +137,14 @@
                 </div>
                 <div class="col-12">
                     <label class="form-label">Event Image</label>
-                    <?php if (!empty($event->event_image)): ?>
-                        <div class="mb-2">
-                            <small class="form-text text-secondary">Current image:</small><br>
-                            <img src="<?= $event->event_image ?>" alt="Current Event Image" class="current-image">
-                        </div>
-                    <?php endif; ?>
                     <input type="file" name="event_image" id="eventImageUpload" class="form-control <?= has_error('event_image') ? 'is-invalid' : '' ?>" accept="image/*">
-                    <small class="form-text text-secondary">Upload a new image to replace the current one (recommended: 1200x630px)</small>
+                    <small class="form-text text-secondary">Upload a high-quality image (recommended: 1200x630px)</small>
                     <?php if (has_error('event_image')): ?>
                         <div class="invalid-feedback"><?= get_error('event_image') ?></div>
                     <?php endif; ?>
 
                     <div class="image-preview-container mt-3" id="imagePreviewContainer">
-                        <div class="mb-2">New Image Preview:</div>
+                        <div class="mb-2">Image Preview:</div>
                         <img src="#" alt="Image Preview" class="image-preview" id="imagePreview">
                     </div>
                 </div>
@@ -262,7 +201,7 @@
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5>Ticket Configuration</h5>
                     <button type="button" class="btn btn-ghost btn-sm" id="addTicketTier">
-                        <i class="bi bi-plus-circle me-1"></i>Add New Ticket
+                        <i class="bi bi-plus-circle me-1"></i>Add Ticket
                     </button>
                 </div>
 
@@ -270,49 +209,43 @@
                     <?php
                     $ticketIndex = 0;
                     $oldTickets = old('tickets', []);
-                    $existingTickets = is_array($event->tickets) ? $event->tickets : [];
 
-                    // If we have form errors, prioritize old input
                     if (!empty($oldTickets)) {
                         foreach ($oldTickets as $index => $ticket) {
                             if (!empty($ticket['ticket_name'])) {
-                                $isExisting = !empty($ticket['id']);
-                                $tierClass = $isExisting ? 'existing-ticket' : 'new-ticket';
-                                $badgeClass = $isExisting ? 'existing' : 'new';
-                                $badgeText = $isExisting ? 'Existing' : 'New';
+                                $hasTicketNameError = has_error("tickets.{$index}.ticket_name");
+                                $hasPriceError = has_error("tickets.{$index}.price");
+                                $hasQuantityError = has_error("tickets.{$index}.quantity");
 
-                                echo '<div class="ticket-tier mb-3 p-3 border rounded ' . $tierClass . '" data-ticket-id="' . ($ticket['id'] ?? '') . '">';
-                                echo '<div class="ticket-badge ' . $badgeClass . '">' . $badgeText . '</div>';
-                                
-                                if ($isExisting) {
-                                    echo '<input type="hidden" name="tickets[' . $index . '][id]" value="' . $ticket['id'] . '">';
-                                }
-                                
+                                echo '<div class="ticket-tier mb-3 p-3 border rounded">';
                                 echo '<div class="row g-3">';
                                 echo '<div class="col-md-3">';
                                 echo '<label class="form-label">Ticket Name *</label>';
-                                echo '<input type="text" name="tickets[' . $index . '][ticket_name]" class="form-control" placeholder="e.g., General" value="' . htmlspecialchars($ticket['ticket_name']) . '">';
-                                echo '</div>';
-                                echo '<div class="col-md-2">';
-                                echo '<label class="form-label">Price (₦) *</label>';
-                                echo '<input type="number" name="tickets[' . $index . '][price]" class="form-control" placeholder="0" min="0" step="0.01" value="' . htmlspecialchars($ticket['price']) . '">';
-                                echo '</div>';
-                                echo '<div class="col-md-2">';
-                                echo '<label class="form-label">Quantity *</label>';
-                                echo '<input type="number" name="tickets[' . $index . '][quantity]" class="form-control" placeholder="100" min="1" value="' . htmlspecialchars($ticket['quantity']) . '">';
-                                echo '</div>';
-                                echo '<div class="col-md-5">';
-                                echo '<label class="form-label">Actions</label>';
-                                echo '<div class="tier-controls d-flex gap-2">';
-                                if ($isExisting) {
-                                    echo '<button type="button" class="btn btn-outline-danger btn-sm delete-existing-ticket" data-ticket-id="' . $ticket['id'] . '">';
-                                    echo '<i class="bi bi-trash"></i> Delete';
-                                    echo '</button>';
-                                } else {
-                                    echo '<button type="button" class="btn btn-outline-danger btn-sm remove-tier">';
-                                    echo '<i class="bi bi-trash"></i> Remove';
-                                    echo '</button>';
+                                echo '<input type="text" name="tickets[' . $index . '][ticket_name]" class="form-control ' . ($hasTicketNameError ? 'is-invalid' : '') . '" placeholder="e.g., General" value="' . htmlspecialchars($ticket['ticket_name']) . '">';
+                                if ($hasTicketNameError) {
+                                    echo '<div class="invalid-feedback">' . get_error("tickets.{$index}.ticket_name") . '</div>';
                                 }
+                                echo '</div>';
+                                echo '<div class="col-md-3">';
+                                echo '<label class="form-label">Price (₦) *</label>';
+                                echo '<input type="number" name="tickets[' . $index . '][price]" class="form-control ' . ($hasPriceError ? 'is-invalid' : '') . '" placeholder="0" min="0" step="0.01" value="' . htmlspecialchars($ticket['price']) . '">';
+                                if ($hasPriceError) {
+                                    echo '<div class="invalid-feedback">' . get_error("tickets.{$index}.price") . '</div>';
+                                }
+                                echo '</div>';
+                                echo '<div class="col-md-3">';
+                                echo '<label class="form-label">Quantity *</label>';
+                                echo '<input type="number" name="tickets[' . $index . '][quantity]" class="form-control ' . ($hasQuantityError ? 'is-invalid' : '') . '" placeholder="100" min="1" value="' . htmlspecialchars($ticket['quantity']) . '">';
+                                if ($hasQuantityError) {
+                                    echo '<div class="invalid-feedback">' . get_error("tickets.{$index}.quantity") . '</div>';
+                                }
+                                echo '</div>';
+                                echo '<div class="col-md-3">';
+                                echo '<label class="form-label">Actions</label>';
+                                echo '<div class="tier-controls">';
+                                echo '<button type="button" class="btn btn-outline-danger btn-sm remove-tier">';
+                                echo '<i class="bi bi-trash"></i>';
+                                echo '</button>';
                                 echo '</div>';
                                 echo '</div>';
                                 echo '<div class="col-12">';
@@ -324,66 +257,28 @@
                                 $ticketIndex = $index + 1;
                             }
                         }
-                    } else {
-                        // No form errors, show existing tickets from database
-                        foreach ($existingTickets as $index => $ticket) {
-                            echo '<div class="ticket-tier mb-3 p-3 border rounded existing-ticket" data-ticket-id="' . $ticket->id . '">';
-                            echo '<div class="ticket-badge existing">Existing</div>';
-                            echo '<input type="hidden" name="tickets[' . $index . '][id]" value="' . $ticket->id . '">';
-                            
-                            echo '<div class="row g-3">';
-                            echo '<div class="col-md-3">';
-                            echo '<label class="form-label">Ticket Name *</label>';
-                            echo '<input type="text" name="tickets[' . $index . '][ticket_name]" class="form-control" placeholder="e.g., General" value="' . htmlspecialchars($ticket->ticket_name) . '">';
-                            echo '</div>';
-                            echo '<div class="col-md-2">';
-                            echo '<label class="form-label">Price (₦) *</label>';
-                            echo '<input type="number" name="tickets[' . $index . '][price]" class="form-control" placeholder="0" min="0" step="0.01" value="' . htmlspecialchars($ticket->price) . '">';
-                            echo '</div>';
-                            echo '<div class="col-md-2">';
-                            echo '<label class="form-label">Quantity *</label>';
-                            echo '<input type="number" name="tickets[' . $index . '][quantity]" class="form-control" placeholder="100" min="1" value="' . htmlspecialchars($ticket->quantity) . '">';
-                            echo '</div>';
-                            echo '<div class="col-md-5">';
-                            echo '<label class="form-label">Actions</label>';
-                            echo '<div class="tier-controls d-flex gap-2">';
-                            echo '<button type="button" class="btn btn-outline-danger btn-sm delete-existing-ticket" data-ticket-id="' . $ticket->id . '">';
-                            echo '<i class="bi bi-trash"></i> Delete';
-                            echo '</button>';
-                            echo '</div>';
-                            echo '</div>';
-                            echo '<div class="col-12">';
-                            echo '<label class="form-label">Ticket Description</label>';
-                            echo '<textarea class="form-control" name="tickets[' . $index . '][description]" rows="2" placeholder="What\'s included in this ticket?">' . htmlspecialchars($ticket->description ?? '') . '</textarea>';
-                            echo '</div>';
-                            echo '</div>';
-                            echo '</div>';
-                        }
-                        $ticketIndex = count($existingTickets);
                     }
 
-                    // If no tickets exist, create a default one
                     if ($ticketIndex === 0) {
-                        echo '<div class="ticket-tier mb-3 p-3 border rounded new-ticket">';
-                        echo '<div class="ticket-badge new">New</div>';
+                        echo '<div class="ticket-tier mb-3 p-3 border rounded">';
                         echo '<div class="row g-3">';
                         echo '<div class="col-md-3">';
                         echo '<label class="form-label">Ticket Name *</label>';
                         echo '<input type="text" name="tickets[0][ticket_name]" class="form-control" placeholder="e.g., General">';
                         echo '</div>';
-                        echo '<div class="col-md-2">';
+                        echo '<div class="col-md-3">';
                         echo '<label class="form-label">Price (₦) *</label>';
                         echo '<input type="number" name="tickets[0][price]" class="form-control" placeholder="0" min="0" step="0.01">';
                         echo '</div>';
-                        echo '<div class="col-md-2">';
+                        echo '<div class="col-md-3">';
                         echo '<label class="form-label">Quantity *</label>';
                         echo '<input type="number" name="tickets[0][quantity]" class="form-control" placeholder="100" min="1">';
                         echo '</div>';
-                        echo '<div class="col-md-5">';
+                        echo '<div class="col-md-3">';
                         echo '<label class="form-label">Actions</label>';
                         echo '<div class="tier-controls">';
                         echo '<button type="button" class="btn btn-outline-danger btn-sm remove-tier" disabled>';
-                        echo '<i class="bi bi-trash"></i> Remove';
+                        echo '<i class="bi bi-trash"></i>';
                         echo '</button>';
                         echo '</div>';
                         echo '</div>';
@@ -401,32 +296,13 @@
 
             <div class="mt-4 d-flex gap-2">
                 <button type="submit" class="btn btn-pulse">
-                    <i class="bi bi-check-circle me-2"></i>Update Event
+                    <i class="bi bi-check-circle me-2"></i>Create Event
                 </button>
-                <a href="/admin/events/manage" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left me-2"></i>Back to Events
-                </a>
+                <button type="reset" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-clockwise me-2"></i>Reset
+                </button>
             </div>
         </form>
-    </div>
-</div>
-
-<!-- Delete Confirmation Modal -->
-<div class="modal fade" id="deleteTicketModal" tabindex="-1" aria-labelledby="deleteTicketModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content bg-white">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteTicketModalLabel">Delete Ticket</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Are you sure you want to delete this ticket? This action cannot be undone.
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-danger" id="confirmDeleteTicket">Delete Ticket</button>
-            </div>
-        </div>
     </div>
 </div>
 @endsection
@@ -452,37 +328,33 @@
         }
     });
 
-    // Ticket management variables
+    // Add Ticket Tier dynamically
     const addTicketTier = document.getElementById('addTicketTier');
     const ticketTiers = document.getElementById('ticketTiers');
-    const ticketsToDeleteInput = document.getElementById('ticketsToDelete');
     let ticketIndex = <?= $ticketIndex ?>;
-    let ticketsToDelete = [];
 
-    // Add new ticket tier
     addTicketTier.addEventListener('click', () => {
         const tier = document.createElement('div');
-        tier.classList.add('ticket-tier', 'mb-3', 'p-3', 'border', 'rounded', 'new-ticket');
+        tier.classList.add('ticket-tier', 'mb-3', 'p-3', 'border', 'rounded');
         tier.innerHTML = `
-            <div class="ticket-badge new">New</div>
             <div class="row g-3">
                 <div class="col-md-3">
                     <label class="form-label">Ticket Name *</label>
-                    <input type="text" name="tickets[${ticketIndex}][ticket_name]" class="form-control" placeholder="e.g., VIP">
+                    <input type="text" name="tickets[${ticketIndex}][ticket_name]" class="form-control" placeholder="e.g., VIP" >
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <label class="form-label">Price (₦) *</label>
-                    <input type="number" name="tickets[${ticketIndex}][price]" class="form-control" placeholder="0" min="0" step="0.01">
+                    <input type="number" name="tickets[${ticketIndex}][price]" class="form-control" placeholder="0" min="0" step="0.01" >
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <label class="form-label">Quantity *</label>
-                    <input type="number" name="tickets[${ticketIndex}][quantity]" class="form-control" placeholder="50" min="1">
+                    <input type="number" name="tickets[${ticketIndex}][quantity]" class="form-control" placeholder="50" min="1" >
                 </div>
-                <div class="col-md-5">
+                <div class="col-md-3">
                     <label class="form-label">Actions</label>
                     <div class="tier-controls">
                         <button type="button" class="btn btn-outline-danger btn-sm remove-tier">
-                            <i class="bi bi-trash"></i> Remove
+                            <i class="bi bi-trash"></i>
                         </button>
                     </div>
                 </div>
@@ -495,140 +367,36 @@
         ticketTiers.appendChild(tier);
         ticketIndex++;
 
-        // Update remove button states
-        updateRemoveButtonStates();
+        // Enable remove button for all tickets if there's more than one
+        document.querySelectorAll('.remove-tier').forEach(button => {
+            button.disabled = document.querySelectorAll('.ticket-tier').length <= 1;
+        });
 
         // Add event listener to the new remove button
         tier.querySelector('.remove-tier').addEventListener('click', function() {
-            tier.remove();
-            updateRemoveButtonStates();
+            if (document.querySelectorAll('.ticket-tier').length > 1) {
+                tier.remove();
+
+                // Disable remove button if only one ticket remains
+                document.querySelectorAll('.remove-tier').forEach(button => {
+                    button.disabled = document.querySelectorAll('.ticket-tier').length <= 1;
+                });
+            }
         });
     });
 
-    // Handle existing ticket deletion
-    let ticketToDelete = null;
-    
-    document.addEventListener('click', function(e) {
-        if (e.target.classList.contains('delete-existing-ticket') || e.target.closest('.delete-existing-ticket')) {
-            const button = e.target.classList.contains('delete-existing-ticket') ? e.target : e.target.closest('.delete-existing-ticket');
-            ticketToDelete = {
-                id: button.getAttribute('data-ticket-id'),
-                element: button.closest('.ticket-tier')
-            };
-            
-            // Show modal
-            const modal = new bootstrap.Modal(document.getElementById('deleteTicketModal'));
-            modal.show();
-        }
-    });
+    // Add event listeners to existing remove buttons
+    document.querySelectorAll('.remove-tier').forEach(button => {
+        button.addEventListener('click', function() {
+            if (document.querySelectorAll('.ticket-tier').length > 1) {
+                this.closest('.ticket-tier').remove();
 
-    // Confirm ticket deletion
-    document.getElementById('confirmDeleteTicket').addEventListener('click', function() {
-        if (ticketToDelete) {
-            // Add ticket ID to deletion list
-            ticketsToDelete.push(ticketToDelete.id);
-            ticketsToDeleteInput.value = ticketsToDelete.join(',');
-            
-            // Mark ticket tier for deletion visually
-            const ticketTier = ticketToDelete.element;
-            ticketTier.classList.remove('existing-ticket');
-            ticketTier.classList.add('marked-for-deletion');
-            
-            // Update badge
-            const badge = ticketTier.querySelector('.ticket-badge');
-            badge.textContent = 'To Delete';
-            badge.classList.remove('existing');
-            badge.classList.add('delete');
-            
-            // Disable all inputs in this tier
-            const inputs = ticketTier.querySelectorAll('input, textarea');
-            inputs.forEach(input => {
-                input.disabled = true;
-            });
-            
-            // Replace delete button with undo button
-            const deleteButton = ticketTier.querySelector('.delete-existing-ticket');
-            deleteButton.outerHTML = `
-                <button type="button" class="btn btn-outline-success btn-sm undo-delete-ticket" data-ticket-id="${ticketToDelete.id}">
-                    <i class="bi bi-arrow-counterclockwise"></i> Undo
-                </button>
-            `;
-            
-            // Hide modal
-            const modal = bootstrap.Modal.getInstance(document.getElementById('deleteTicketModal'));
-            modal.hide();
-            
-            ticketToDelete = null;
-        }
-    });
-
-    // Handle undo deletion
-    document.addEventListener('click', function(e) {
-        if (e.target.classList.contains('undo-delete-ticket') || e.target.closest('.undo-delete-ticket')) {
-            const button = e.target.classList.contains('undo-delete-ticket') ? e.target : e.target.closest('.undo-delete-ticket');
-            const ticketId = button.getAttribute('data-ticket-id');
-            const ticketTier = button.closest('.ticket-tier');
-            
-            // Remove from deletion list
-            ticketsToDelete = ticketsToDelete.filter(id => id !== ticketId);
-            ticketsToDeleteInput.value = ticketsToDelete.join(',');
-            
-            // Restore visual state
-            ticketTier.classList.remove('marked-for-deletion');
-            ticketTier.classList.add('existing-ticket');
-            
-            // Update badge
-            const badge = ticketTier.querySelector('.ticket-badge');
-            badge.textContent = 'Existing';
-            badge.classList.remove('delete');
-            badge.classList.add('existing');
-            
-            // Re-enable inputs
-            const inputs = ticketTier.querySelectorAll('input, textarea');
-            inputs.forEach(input => {
-                input.disabled = false;
-            });
-            
-            // Replace undo button with delete button
-            button.outerHTML = `
-                <button type="button" class="btn btn-outline-danger btn-sm delete-existing-ticket" data-ticket-id="${ticketId}">
-                    <i class="bi bi-trash"></i> Delete
-                </button>
-            `;
-        }
-    });
-
-    // Handle remove tier for new tickets
-    document.addEventListener('click', function(e) {
-        if (e.target.classList.contains('remove-tier') || e.target.closest('.remove-tier')) {
-            const button = e.target.classList.contains('remove-tier') ? e.target : e.target.closest('.remove-tier');
-            const ticketTier = button.closest('.ticket-tier');
-            ticketTier.remove();
-            updateRemoveButtonStates();
-        }
-    });
-
-    // Update remove button states
-    function updateRemoveButtonStates() {
-        const allTiers = document.querySelectorAll('.ticket-tier:not(.marked-for-deletion)');
-        const removeTierButtons = document.querySelectorAll('.remove-tier');
-        
-        // Disable remove buttons if only one active tier remains
-        removeTierButtons.forEach(button => {
-            button.disabled = allTiers.length <= 1;
+                // Disable remove button if only one ticket remains
+                document.querySelectorAll('.remove-tier').forEach(btn => {
+                    btn.disabled = document.querySelectorAll('.ticket-tier').length <= 1;
+                });
+            }
         });
-    }
-
-    // Initial state update
-    updateRemoveButtonStates();
-
-    // Form validation
-    document.getElementById('editEventForm').addEventListener('submit', function(e) {
-        const activeTiers = document.querySelectorAll('.ticket-tier:not(.marked-for-deletion)');
-        if (activeTiers.length === 0) {
-            e.preventDefault();
-            alert('Event must have at least one ticket tier.');
-        }
     });
 </script>
 @endsection

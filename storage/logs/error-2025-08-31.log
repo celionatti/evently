@@ -1,0 +1,143 @@
+[2025-08-31 00:24:47] Trees\Exception\TreesException: Route not found for path: /admin/events/update/lagos_night_rave in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-08-31 00:28:08] Trees\Exception\TreesException: Invalid condition format in unique validation. in C:\xampp\htdocs\evently\core\Validation\Validator.php on line 354
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Validation\Validator.php(83): Trees\Validation\Validator->validateUnique('event_link', 'events.event_li...')
+#1 C:\xampp\htdocs\evently\core\Validation\Validator.php(97): Trees\Validation\Validator->passes()
+#2 C:\xampp\htdocs\evently\core\Http\Request.php(85): Trees\Validation\Validator->fails()
+#3 C:\xampp\htdocs\evently\app\controllers\AdminEventController.php(211): Trees\Http\Request->validate(Array, false)
+#4 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminEventController->update(Object(Trees\Http\Request), Object(Trees\Http\Response), 'lagos_night_rav...')
+#5 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'update', Array)
+#6 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#7 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#8 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#9 {main}
+
+[2025-08-31 00:29:10] Trees\Exception\TreesException: Invalid condition format in unique validation. in C:\xampp\htdocs\evently\core\Validation\Validator.php on line 354
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Validation\Validator.php(83): Trees\Validation\Validator->validateUnique('event_link', 'events.event_li...')
+#1 C:\xampp\htdocs\evently\core\Validation\Validator.php(97): Trees\Validation\Validator->passes()
+#2 C:\xampp\htdocs\evently\core\Http\Request.php(85): Trees\Validation\Validator->fails()
+#3 C:\xampp\htdocs\evently\app\controllers\AdminEventController.php(211): Trees\Http\Request->validate(Array, false)
+#4 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminEventController->update(Object(Trees\Http\Request), Object(Trees\Http\Response), 'lagos_night_rav...')
+#5 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'update', Array)
+#6 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#7 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#8 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#9 {main}
+
+[2025-08-31 00:42:42] Trees\Exception\TreesException: Invalid condition format in unique validation. in C:\xampp\htdocs\evently\core\Validation\Validator.php on line 720
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Validation\Validator.php(171): Trees\Validation\Validator->validateUnique('event_link', 'events.event_li...')
+#1 C:\xampp\htdocs\evently\core\Validation\Validator.php(107): Trees\Validation\Validator->applyRule('event_link', 'unique:events.e...')
+#2 C:\xampp\htdocs\evently\core\Validation\Validator.php(181): Trees\Validation\Validator->passes()
+#3 C:\xampp\htdocs\evently\core\Http\Request.php(85): Trees\Validation\Validator->fails()
+#4 C:\xampp\htdocs\evently\app\controllers\AdminEventController.php(211): Trees\Http\Request->validate(Array, false)
+#5 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminEventController->update(Object(Trees\Http\Request), Object(Trees\Http\Response), 'lagos_night_rav...')
+#6 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'update', Array)
+#7 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#8 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#9 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#10 {main}
+
+[2025-08-31 00:49:57] ErrorException: foreach() argument must be of type array|object, string given in C:\xampp\htdocs\evently\app\controllers\AdminEventController.php on line 250
+Stack trace:
+#0 C:\xampp\htdocs\evently\app\controllers\AdminEventController.php(250): Trees\Exception\Handler\ExceptionHandler->handleError(2, 'foreach() argum...', 'C:\\xampp\\htdocs...', 250)
+#1 C:\xampp\htdocs\evently\core\Database\Model\Model.php(249): App\controllers\AdminEventController->App\controllers\{closure}(Object(App\models\Event))
+#2 C:\xampp\htdocs\evently\app\controllers\AdminEventController.php(241): Trees\Database\Model\Model->transaction(Object(Closure))
+#3 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminEventController->update(Object(Trees\Http\Request), Object(Trees\Http\Response), 'lagos_night_rav...')
+#4 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'update', Array)
+#5 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#6 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#7 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#8 {main}
+
+[2025-08-31 00:56:39] ErrorException: foreach() argument must be of type array|object, string given in C:\xampp\htdocs\evently\app\controllers\AdminEventController.php on line 254
+Stack trace:
+#0 C:\xampp\htdocs\evently\app\controllers\AdminEventController.php(254): Trees\Exception\Handler\ExceptionHandler->handleError(2, 'foreach() argum...', 'C:\\xampp\\htdocs...', 254)
+#1 C:\xampp\htdocs\evently\core\Database\Model\Model.php(249): App\controllers\AdminEventController->App\controllers\{closure}(Object(App\models\Event))
+#2 C:\xampp\htdocs\evently\app\controllers\AdminEventController.php(245): Trees\Database\Model\Model->transaction(Object(Closure))
+#3 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminEventController->update(Object(Trees\Http\Request), Object(Trees\Http\Response), 'lagos_night_rav...')
+#4 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'update', Array)
+#5 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#6 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#7 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#8 {main}
+
+[2025-08-31 01:02:38] ErrorException: Undefined array key "ticket_name" in C:\xampp\htdocs\evently\storage\cache\temp_68b39f2e282d80.95165895.php on line 2
+Stack trace:
+#0 C:\xampp\htdocs\evently\storage\cache\temp_68b39f2e282d80.95165895.php(2): Trees\Exception\Handler\ExceptionHandler->handleError(2, 'Undefined array...', 'C:\\xampp\\htdocs...', 2)
+#1 C:\xampp\htdocs\evently\core\View\View.php(559): include('C:\\xampp\\htdocs...')
+#2 C:\xampp\htdocs\evently\core\View\View.php(298): Trees\View\View->evaluateTemplate('<?php\r\ndd($even...', Array, 'C:\\xampp\\htdocs...')
+#3 C:\xampp\htdocs\evently\core\View\View.php(147): Trees\View\View->renderTemplate('admin/events/ed...', Array)
+#4 C:\xampp\htdocs\evently\core\Controller\Controller.php(34): Trees\View\View->render('admin/events/ed...', Array)
+#5 C:\xampp\htdocs\evently\app\controllers\AdminEventController.php(183): Trees\Controller\Controller->render('admin/events/ed...', Array)
+#6 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminEventController->edit(Object(Trees\Http\Request), Object(Trees\Http\Response), 'lagos_night_rav...')
+#7 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'edit', Array)
+#8 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#9 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#10 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#11 {main}
+
+[2025-08-31 01:02:55] ErrorException: Undefined array key "id" in C:\xampp\htdocs\evently\storage\cache\temp_68b39f3f0172a5.00216414.php on line 2
+Stack trace:
+#0 C:\xampp\htdocs\evently\storage\cache\temp_68b39f3f0172a5.00216414.php(2): Trees\Exception\Handler\ExceptionHandler->handleError(2, 'Undefined array...', 'C:\\xampp\\htdocs...', 2)
+#1 C:\xampp\htdocs\evently\core\View\View.php(559): include('C:\\xampp\\htdocs...')
+#2 C:\xampp\htdocs\evently\core\View\View.php(298): Trees\View\View->evaluateTemplate('<?php\r\ndd($even...', Array, 'C:\\xampp\\htdocs...')
+#3 C:\xampp\htdocs\evently\core\View\View.php(147): Trees\View\View->renderTemplate('admin/events/ed...', Array)
+#4 C:\xampp\htdocs\evently\core\Controller\Controller.php(34): Trees\View\View->render('admin/events/ed...', Array)
+#5 C:\xampp\htdocs\evently\app\controllers\AdminEventController.php(183): Trees\Controller\Controller->render('admin/events/ed...', Array)
+#6 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminEventController->edit(Object(Trees\Http\Request), Object(Trees\Http\Response), 'lagos_night_rav...')
+#7 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'edit', Array)
+#8 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#9 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#10 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#11 {main}
+
+[2025-08-31 01:03:44] ErrorException: Attempt to read property "id" on array in C:\xampp\htdocs\evently\storage\cache\temp_68b39f709a9a48.79257572.php on line 2
+Stack trace:
+#0 C:\xampp\htdocs\evently\storage\cache\temp_68b39f709a9a48.79257572.php(2): Trees\Exception\Handler\ExceptionHandler->handleError(2, 'Attempt to read...', 'C:\\xampp\\htdocs...', 2)
+#1 C:\xampp\htdocs\evently\core\View\View.php(559): include('C:\\xampp\\htdocs...')
+#2 C:\xampp\htdocs\evently\core\View\View.php(298): Trees\View\View->evaluateTemplate('<?php\r\ndd($even...', Array, 'C:\\xampp\\htdocs...')
+#3 C:\xampp\htdocs\evently\core\View\View.php(147): Trees\View\View->renderTemplate('admin/events/ed...', Array)
+#4 C:\xampp\htdocs\evently\core\Controller\Controller.php(34): Trees\View\View->render('admin/events/ed...', Array)
+#5 C:\xampp\htdocs\evently\app\controllers\AdminEventController.php(183): Trees\Controller\Controller->render('admin/events/ed...', Array)
+#6 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminEventController->edit(Object(Trees\Http\Request), Object(Trees\Http\Response), 'lagos_night_rav...')
+#7 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'edit', Array)
+#8 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#9 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#10 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#11 {main}
+
+[2025-08-31 01:04:08] ErrorException: Undefined array key "id" in C:\xampp\htdocs\evently\storage\cache\temp_68b39f8886bd82.47543101.php on line 2
+Stack trace:
+#0 C:\xampp\htdocs\evently\storage\cache\temp_68b39f8886bd82.47543101.php(2): Trees\Exception\Handler\ExceptionHandler->handleError(2, 'Undefined array...', 'C:\\xampp\\htdocs...', 2)
+#1 C:\xampp\htdocs\evently\core\View\View.php(559): include('C:\\xampp\\htdocs...')
+#2 C:\xampp\htdocs\evently\core\View\View.php(298): Trees\View\View->evaluateTemplate('<?php\r\ndd($even...', Array, 'C:\\xampp\\htdocs...')
+#3 C:\xampp\htdocs\evently\core\View\View.php(147): Trees\View\View->renderTemplate('admin/events/ed...', Array)
+#4 C:\xampp\htdocs\evently\core\Controller\Controller.php(34): Trees\View\View->render('admin/events/ed...', Array)
+#5 C:\xampp\htdocs\evently\app\controllers\AdminEventController.php(183): Trees\Controller\Controller->render('admin/events/ed...', Array)
+#6 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminEventController->edit(Object(Trees\Http\Request), Object(Trees\Http\Response), 'lagos_night_rav...')
+#7 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'edit', Array)
+#8 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#9 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#10 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#11 {main}
+
+[2025-08-31 01:06:09] ErrorException: foreach() argument must be of type array|object, string given in C:\xampp\htdocs\evently\app\controllers\AdminEventController.php on line 254
+Stack trace:
+#0 C:\xampp\htdocs\evently\app\controllers\AdminEventController.php(254): Trees\Exception\Handler\ExceptionHandler->handleError(2, 'foreach() argum...', 'C:\\xampp\\htdocs...', 254)
+#1 C:\xampp\htdocs\evently\core\Database\Model\Model.php(249): App\controllers\AdminEventController->App\controllers\{closure}(Object(App\models\Event))
+#2 C:\xampp\htdocs\evently\app\controllers\AdminEventController.php(245): Trees\Database\Model\Model->transaction(Object(Closure))
+#3 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminEventController->update(Object(Trees\Http\Request), Object(Trees\Http\Response), 'lagos_night_rav...')
+#4 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'update', Array)
+#5 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#6 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#7 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#8 {main}
+

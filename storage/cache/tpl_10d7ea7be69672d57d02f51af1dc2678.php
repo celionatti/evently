@@ -298,9 +298,6 @@
                 <button type="submit" class="btn btn-pulse">
                     <i class="bi bi-check-circle me-2"></i>Create Event
                 </button>
-                <button type="submit" class="btn btn-ghost">
-                    <i class="bi bi-save me-2"></i>Save as Draft
-                </button>
                 <button type="reset" class="btn btn-outline-secondary">
                     <i class="bi bi-arrow-clockwise me-2"></i>Reset
                 </button>

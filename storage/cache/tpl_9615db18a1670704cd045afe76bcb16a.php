@@ -2,7 +2,7 @@
 
 ?>
 
-@section('styles')
+<?php $this->start('styles'); ?>
 <style>
     .content-section {
         max-width: 1200px;
@@ -79,19 +79,19 @@
         color: white;
     }
 </style>
-@endsection
+<?php $this->end(); ?>
 
-@section('content')
+<?php $this->start('content'); ?>
 <!-- Edit Event Section -->
 <div id="edit-event-section" class="content-section">
     <div class="mb-4">
-        <h1 class="h2 mb-1">Edit Event: {{{ $event->event_title }}}</h1>
+        <h1 class="h2 mb-1">Edit Event: <?php echo $event->event_title; ?></h1>
         <p class="text-secondary">Update the details below to modify your event.</p>
     </div>
 
     <div class="dashboard-card">
         <form action="" method="post" enctype="multipart/form-data" id="editEventForm">
-            <!-- {{ csrf_field() }} -->
+            <!-- <?php echo $this->escape(csrf_field()); ?> -->
 
             <!-- Hidden input for tickets to delete -->
             <input type="hidden" name="tickets_to_delete" id="ticketsToDelete" value="">
@@ -429,9 +429,9 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $this->end(); ?>
 
-@section('scripts')
+<?php $this->start('scripts'); ?>
 <script>
     // Image preview functionality
     const eventImageUpload = document.getElementById('eventImageUpload');
@@ -631,4 +631,4 @@
         }
     });
 </script>
-@endsection
+<?php $this->end(); ?>

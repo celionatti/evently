@@ -8,3 +8,22 @@
 [2025-08-30 16:10:21] [INFO] File uploaded successfully: uploads/events/68b3226ca9553_c4b29757.jpg
 [2025-08-30 16:10:21] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
 [2025-08-30 16:10:21] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-08-31 00:47:59] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-08-31 00:47:59] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-08-31 00:49:19] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-08-31 00:49:19] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-08-31 00:49:57] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-08-31 00:56:39] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-08-31 01:06:09] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-08-31 01:06:50] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-08-31 01:07:38] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-08-31 01:07:39] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-08-31 01:08:05] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-08-31 01:21:17] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-08-31 01:21:18] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-08-31 01:21:50] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-08-31 01:21:50] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-08-31 01:28:34] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-08-31 01:28:35] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-08-31 01:29:32] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-08-31 01:29:32] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}

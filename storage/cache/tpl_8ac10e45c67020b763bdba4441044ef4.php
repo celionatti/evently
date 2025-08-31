@@ -134,7 +134,7 @@ use Trees\Helper\Utils\TimeDateUtils;
                                                         </a>
                                                     </li>
                                                     <li>
-                                                        <a class="dropdown-item" href="<?= url("/admin/events/edit/{$event->id}") ?>">
+                                                        <a class="dropdown-item" href="<?= url("/admin/events/edit/{$event->slug}") ?>">
                                                             <i class="bi bi-pencil me-2"></i>Edit Event
                                                         </a>
                                                     </li>
