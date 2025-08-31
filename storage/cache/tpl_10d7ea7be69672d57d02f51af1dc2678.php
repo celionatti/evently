@@ -55,7 +55,7 @@
                     <select name="category" class="form-select <?= has_error('category') ? 'is-invalid' : '' ?>">
                         <option value="">Select Category</option>
                         <?php foreach ($categories as $category): ?>
-                            <option value="<?= $category->id ?>" <?= old('category_id') == $category->id ? 'selected' : '' ?>>
+                            <option value="<?= $category->id ?>" <?= old('category') == $category->id ? 'selected' : '' ?>>
                                 <?= $category->name ?>
                             </option>
                         <?php endforeach; ?>

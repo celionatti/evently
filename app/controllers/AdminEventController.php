@@ -24,6 +24,7 @@ class AdminEventController extends Controller
     protected ?Ticket $ticketModel;
     protected const MAX_UPLOAD_FILES = 1;
     protected const UPLOAD_DIR = 'uploads/events/';
+    protected const IMAGE_DIR = ROOT_PATH . '/public' . DIRECTORY_SEPARATOR;
     public function onConstruct()
     {
         $this->view->setLayout('admin');
@@ -241,10 +242,10 @@ class AdminEventController extends Controller
                 $uploadedFile = $this->uploader->uploadFromRequest($request, 'event_image');
                 if ($uploadedFile !== null) {
                     // Delete old image if exists
-                    if ($event->event_image && file_exists(ROOT_PATH . '/public' . $event->event_image)) {
-                        unlink(ROOT_PATH . '/public' . $event->event_image);
+                    if ($event->event_image && file_exists(self::IMAGE_DIR . $event->event_image)) {
+                        @unlink(self::IMAGE_DIR . $event->event_image);
                     }
-                    $data['event_image'] = str_replace(ROOT_PATH . '/public', '', $uploadedFile);
+                    $data['event_image'] = str_replace(self::IMAGE_DIR, '', $uploadedFile);
                 }
             }
 
@@ -340,6 +341,123 @@ class AdminEventController extends Controller
             }
         } catch (TreesException $e) {
             return $response->json(['success' => false, 'message' => 'Error: ' . $e->getMessage()], 500);
+        }
+    }
+
+    // public function delete(Request $request, Response $response, $slug)
+    // {
+    //     if ("POST" !== $request->getMethod()) {
+    //         return;
+    //     }
+
+    //     $event = Event::findBySlug($slug);
+
+    //     if (!$event) {
+    //         FlashMessage::setMessage("Event Not Found!", 'danger');
+    //         return $response->redirect("/admin/events/manage");
+    //     }
+
+    //     try {
+    //         // Use transaction to ensure all deletions succeed or fail together
+    //         $this->eventModel->transaction(function () use ($event) {
+    //             // Get all tickets associated with this event
+    //             $tickets = Ticket::where(['event_id' => $event->id]);
+
+    //             // Delete all tickets
+    //             if (!empty($tickets)) {
+    //                 foreach ($tickets as $ticket) {
+    //                     if (!$ticket->delete()) {
+    //                         throw new \RuntimeException('Failed to delete ticket: ' . $ticket->id);
+    //                     }
+    //                 }
+    //             }
+
+    //             // Delete event image if exists
+    //             if (!empty($event->event_image)) {
+    //                 $imagePath = self::IMAGE_DIR . $event->event_image;
+    //                 dd($imagePath);
+    //                 if (file_exists($imagePath) && is_file($imagePath)) {
+    //                     if (!@unlink($imagePath)) {
+    //                         throw new \RuntimeException('Failed to delete event image');
+    //                     }
+    //                 }
+    //             }
+
+    //             // Delete the event itself
+    //             if (!$event->delete()) {
+    //                 throw new \RuntimeException('Failed to delete event');
+    //             }
+    //         });
+
+    //         FlashMessage::setMessage("Event and all associated tickets deleted successfully!");
+    //         return $response->redirect("/admin/events/manage");
+    //     } catch (TreesException $e) {
+    //         FlashMessage::setMessage("Deletion Failed! Please try again. Error: " . $e->getMessage(), 'danger');
+    //         return $response->redirect("/admin/events/manage");
+    //     } catch (\RuntimeException $e) {
+    //         FlashMessage::setMessage("Deletion Failed! Please try again. Error: " . $e->getMessage(), 'danger');
+    //         return $response->redirect("/admin/events/manage");
+    //     }
+    // }
+
+    public function delete(Request $request, Response $response, $slug)
+    {
+        if ("POST" !== $request->getMethod()) {
+            return;
+        }
+
+        $event = Event::findBySlug($slug);
+
+        if (!$event) {
+            FlashMessage::setMessage("Event Not Found!", 'danger');
+            return $response->redirect("/admin/events/manage");
+        }
+
+        try {
+            // Store the image path BEFORE starting any operations
+            $imagePath = null;
+            if (!empty($event->event_image)) {
+                $imagePath = self::IMAGE_DIR . $event->event_image;
+            }
+
+            // Use transaction to ensure all database deletions succeed or fail together
+            $this->eventModel->transaction(function () use ($event) {
+                // Get all tickets associated with this event
+                $tickets = Ticket::where(['event_id' => $event->id]);
+
+                // Delete all tickets
+                if (!empty($tickets)) {
+                    foreach ($tickets as $ticket) {
+                        if (!$ticket->delete()) {
+                            throw new \RuntimeException('Failed to delete ticket: ' . $ticket->id);
+                        }
+                    }
+                }
+
+                // Delete the event itself
+                if (!$event->delete()) {
+                    throw new \RuntimeException('Failed to delete event');
+                }
+            });
+
+            // Delete event image file AFTER successful database operations
+            if ($imagePath && file_exists($imagePath) && is_file($imagePath)) {
+                if (!unlink($imagePath)) {
+                    // Log the error but don't fail the entire operation
+                    error_log("Failed to delete event image: " . $imagePath);
+                    // You could also add a flash message if you want to notify the user
+                    FlashMessage::setMessage("Event deleted but image file could not be removed", 'warning');
+                }
+            }
+
+            FlashMessage::setMessage("Event and all associated tickets deleted successfully!");
+            return $response->redirect("/admin/events/manage");
+        } catch (TreesException $e) {
+            FlashMessage::setMessage("Deletion Failed! Please try again. Error: " . $e->getMessage(), 'danger');
+            return $response->redirect("/admin/events/manage");
+        } catch (\RuntimeException $e) {
+            FlashMessage::setMessage("Deletion Failed! Please try again. Error: " . $e->getMessage(), 'danger');
+            return $response->redirect("/admin/events/manage");
         }
     }
 }

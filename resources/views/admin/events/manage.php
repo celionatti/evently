@@ -142,9 +142,11 @@ use Trees\Helper\Utils\TimeDateUtils;
                                                         <hr class="dropdown-divider">
                                                     </li>
                                                     <li>
-                                                        <a class="dropdown-item text-danger" href="#" onclick="deleteEvent(<?= $event->id ?>, '{{{ $event->event_title }}}')">
-                                                            <i class="bi bi-trash me-2"></i>Delete Event
-                                                        </a>
+                                                        <button type="button" class="btn btn-sm btn-outline-danger w-100"
+                                                            data-bs-toggle="modal" data-bs-target="#deleteEventModal"
+                                                            data-event-slug="{{ $event->slug }}">
+                                                            <i class="bi bi-trash"></i> Delete
+                                                        </button>
                                                     </li>
                                                 </ul>
                                             </div>
@@ -177,6 +179,34 @@ use Trees\Helper\Utils\TimeDateUtils;
                     </a>
                 </div>
             <?php endif; ?>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteEventModal" tabindex="-1" aria-labelledby="deleteEventModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content bg-white">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteEventModalLabel">Confirm Deletion</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete this event?</p>
+                    <p class="text-danger"><strong>Warning:</strong> This will permanently delete:</p>
+                    <ul class="text-danger">
+                        <li>The event details</li>
+                        <li>All associated tickets</li>
+                        <li>The event image</li>
+                    </ul>
+                    <p>This action cannot be undone.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form id="deleteEventForm" method="POST">
+                        <button type="submit" class="btn btn-danger">Delete Event</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -228,6 +258,17 @@ use Trees\Helper\Utils\TimeDateUtils;
 
 @section('scripts')
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const deleteEventModal = document.getElementById('deleteEventModal');
+        const deleteEventForm = document.getElementById('deleteEventForm');
+
+        deleteEventModal.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
+            const eventSlug = button.getAttribute('data-event-slug');
+            deleteEventForm.action = `/admin/events/delete/${eventSlug}`;
+        });
+    });
+
     // Copy to clipboard functionality
     function copyToClipboard(text) {
         navigator.clipboard.writeText(text).then(function() {
