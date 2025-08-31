@@ -49,3 +49,81 @@ Stack trace:
 #2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
 #3 {main}
 
+[2025-08-31 19:49:35] Trees\Exception\TreesException: Validation rule 'password.secure' does not exist. in C:\xampp\htdocs\evently\core\Validation\Validator.php on line 185
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Validation\Validator.php(115): Trees\Validation\Validator->applyRule('password', 'password.secure')
+#1 C:\xampp\htdocs\evently\core\Validation\Validator.php(191): Trees\Validation\Validator->passes()
+#2 C:\xampp\htdocs\evently\core\Http\Request.php(85): Trees\Validation\Validator->fails()
+#3 C:\xampp\htdocs\evently\app\controllers\AuthController.php(53): Trees\Http\Request->validate(Array, false)
+#4 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AuthController->create_user(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#5 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'create_user', Array)
+#6 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#7 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#8 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#9 {main}
+
+[2025-08-31 19:50:36] Trees\Exception\TreesException: Validation rule 'password.secure' does not exist. in C:\xampp\htdocs\evently\core\Validation\Validator.php on line 185
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Validation\Validator.php(115): Trees\Validation\Validator->applyRule('password', 'password.secure')
+#1 C:\xampp\htdocs\evently\core\Validation\Validator.php(191): Trees\Validation\Validator->passes()
+#2 C:\xampp\htdocs\evently\core\Http\Request.php(85): Trees\Validation\Validator->fails()
+#3 C:\xampp\htdocs\evently\app\controllers\AuthController.php(53): Trees\Http\Request->validate(Array, false)
+#4 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AuthController->create_user(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#5 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'create_user', Array)
+#6 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#7 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#8 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#9 {main}
+
+[2025-08-31 20:00:50] Trees\Exception\TreesException: Validation rule 'password_secure' does not exist. in C:\xampp\htdocs\evently\core\Validation\Validator.php on line 187
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Validation\Validator.php(115): Trees\Validation\Validator->applyRule('password', 'password_secure')
+#1 C:\xampp\htdocs\evently\core\Validation\Validator.php(193): Trees\Validation\Validator->passes()
+#2 C:\xampp\htdocs\evently\core\Http\Request.php(85): Trees\Validation\Validator->fails()
+#3 C:\xampp\htdocs\evently\app\controllers\AuthController.php(53): Trees\Http\Request->validate(Array, false)
+#4 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AuthController->create_user(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#5 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'create_user', Array)
+#6 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#7 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#8 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#9 {main}
+
+[2025-08-31 20:01:59] Trees\Exception\TreesException: Validation rule 'password_secure' does not exist. in C:\xampp\htdocs\evently\core\Validation\Validator.php on line 187
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Validation\Validator.php(115): Trees\Validation\Validator->applyRule('password', 'password_secure')
+#1 C:\xampp\htdocs\evently\core\Validation\Validator.php(193): Trees\Validation\Validator->passes()
+#2 C:\xampp\htdocs\evently\core\Http\Request.php(85): Trees\Validation\Validator->fails()
+#3 C:\xampp\htdocs\evently\app\controllers\AuthController.php(53): Trees\Http\Request->validate(Array, false)
+#4 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AuthController->create_user(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#5 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'create_user', Array)
+#6 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#7 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#8 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#9 {main}
+
+[2025-08-31 20:02:15] Trees\Exception\TreesException: Validation rule 'password.secure' does not exist. in C:\xampp\htdocs\evently\core\Validation\Validator.php on line 187
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Validation\Validator.php(115): Trees\Validation\Validator->applyRule('password', 'password.secure')
+#1 C:\xampp\htdocs\evently\core\Validation\Validator.php(193): Trees\Validation\Validator->passes()
+#2 C:\xampp\htdocs\evently\core\Http\Request.php(85): Trees\Validation\Validator->fails()
+#3 C:\xampp\htdocs\evently\app\controllers\AuthController.php(53): Trees\Http\Request->validate(Array, false)
+#4 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AuthController->create_user(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#5 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'create_user', Array)
+#6 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#7 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#8 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#9 {main}
+
+[2025-08-31 20:02:35] Trees\Exception\TreesException: Validation rule 'password_secure' does not exist. in C:\xampp\htdocs\evently\core\Validation\Validator.php on line 187
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Validation\Validator.php(115): Trees\Validation\Validator->applyRule('password', 'password_secure')
+#1 C:\xampp\htdocs\evently\core\Validation\Validator.php(193): Trees\Validation\Validator->passes()
+#2 C:\xampp\htdocs\evently\core\Http\Request.php(85): Trees\Validation\Validator->fails()
+#3 C:\xampp\htdocs\evently\app\controllers\AuthController.php(53): Trees\Http\Request->validate(Array, false)
+#4 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AuthController->create_user(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#5 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'create_user', Array)
+#6 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#7 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#8 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#9 {main}
+

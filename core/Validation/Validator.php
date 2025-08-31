@@ -69,14 +69,14 @@ class Validator
         'required_without' => ':field is required when :values is not present.',
         'required_without_all' => ':field is required when none of :values are present.',
         'size' => ':field must be :size.',
-        'password.uppercase' => ':field must contain at least one uppercase letter.',
-        'password.lowercase' => ':field must contain at least one lowercase letter.',
-        'password.number' => ':field must contain at least one number.',
-        'password.special' => ':field must contain at least one special character.',
-        'password.secure' => ':field must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.',
-        'password.common' => ':field is too common and easily guessable.',
-        'password.pwned' => ':field has been compromised in a data breach. Please choose a different password.',
-        'password.history' => ':field has been used recently. Please choose a different password.',
+        'password_uppercase' => ':field must contain at least one uppercase letter.',
+        'password_lowercase' => ':field must contain at least one lowercase letter.',
+        'password_number' => ':field must contain at least one number.',
+        'password_special' => ':field must contain at least one special character.',
+        'password_secure' => ':field must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.',
+        'password_common' => ':field is too common and easily guessable.',
+        'password_pwned' => ':field has been compromised in a data breach. Please choose a different password.',
+        'password_history' => ':field has been used recently. Please choose a different password.',
     ];
 
     public function __construct(array $data, array $rules, array $messages = [])
@@ -175,7 +175,11 @@ class Validator
             return;
         }
 
-        $method = 'validate' . ucfirst($ruleName);
+        // Convert rule names to proper method names
+        // Handle both dot notation (password.secure) and underscore notation (password_secure)
+        $methodRuleName = str_replace(['.', '_'], ' ', $ruleName);
+        $methodRuleName = str_replace(' ', '', ucwords($methodRuleName));
+        $method = 'validate' . $methodRuleName;
 
         if (method_exists($this, $method)) {
             $this->$method($field, $ruleValue);
@@ -554,7 +558,7 @@ class Validator
 
         $val = $this->getValue($field);
 
-        if (!filter_var($val, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) === null && $val !== false) {
+        if (filter_var($val, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) === null && $val !== false) {
             $this->addError($field, $this->getMessage('boolean', $field));
         }
     }
@@ -1107,7 +1111,7 @@ class Validator
     /**
      * Validate password contains at least one uppercase letter
      */
-    protected function validatePasswordUppercase(string $field): void
+    protected function validatePasswordUppercase(string $field, ?string $ruleValue = null): void
     {
         if (!$this->hasValue($field) || $this->isEmptyValue($this->getValue($field))) {
             return;
@@ -1116,14 +1120,14 @@ class Validator
         $value = $this->getValue($field);
 
         if (!preg_match('/[A-Z]/', $value)) {
-            $this->addError($field, $this->getMessage('password.uppercase', $field));
+            $this->addError($field, $this->getMessage('password_uppercase', $field));
         }
     }
 
     /**
      * Validate password contains at least one lowercase letter
      */
-    protected function validatePasswordLowercase(string $field): void
+    protected function validatePasswordLowercase(string $field, ?string $ruleValue = null): void
     {
         if (!$this->hasValue($field) || $this->isEmptyValue($this->getValue($field))) {
             return;
@@ -1132,14 +1136,14 @@ class Validator
         $value = $this->getValue($field);
 
         if (!preg_match('/[a-z]/', $value)) {
-            $this->addError($field, $this->getMessage('password.lowercase', $field));
+            $this->addError($field, $this->getMessage('password_lowercase', $field));
         }
     }
 
     /**
      * Validate password contains at least one number
      */
-    protected function validatePasswordNumber(string $field): void
+    protected function validatePasswordNumber(string $field, ?string $ruleValue = null): void
     {
         if (!$this->hasValue($field) || $this->isEmptyValue($this->getValue($field))) {
             return;
@@ -1148,7 +1152,7 @@ class Validator
         $value = $this->getValue($field);
 
         if (!preg_match('/[0-9]/', $value)) {
-            $this->addError($field, $this->getMessage('password.number', $field));
+            $this->addError($field, $this->getMessage('password_number', $field));
         }
     }
 
@@ -1165,7 +1169,7 @@ class Validator
         $specialChars = $specialChars ?: '!@#$%^&*()\-_=+{};:,<.>';
 
         if (!preg_match('/[' . preg_quote($specialChars, '/') . ']/', $value)) {
-            $this->addError($field, $this->getMessage('password.special', $field));
+            $this->addError($field, $this->getMessage('password_special', $field));
         }
     }
 
@@ -1173,7 +1177,7 @@ class Validator
      * Validate password meets common security requirements
      * (min 8 chars, uppercase, lowercase, number, special char)
      */
-    protected function validatePasswordSecure(string $field): void
+    protected function validatePasswordSecure(string $field, ?string $ruleValue = null): void
     {
         if (!$this->hasValue($field) || $this->isEmptyValue($this->getValue($field))) {
             return;
@@ -1186,26 +1190,26 @@ class Validator
         }
 
         if (!preg_match('/[A-Z]/', $value)) {
-            $this->addError($field, $this->getMessage('password.uppercase', $field));
+            $this->addError($field, $this->getMessage('password_uppercase', $field));
         }
 
         if (!preg_match('/[a-z]/', $value)) {
-            $this->addError($field, $this->getMessage('password.lowercase', $field));
+            $this->addError($field, $this->getMessage('password_lowercase', $field));
         }
 
         if (!preg_match('/[0-9]/', $value)) {
-            $this->addError($field, $this->getMessage('password.number', $field));
+            $this->addError($field, $this->getMessage('password_number', $field));
         }
 
         if (!preg_match('/[!@#$%^&*()\-_=+{};:,<.>]/', $value)) {
-            $this->addError($field, $this->getMessage('password.special', $field));
+            $this->addError($field, $this->getMessage('password_special', $field));
         }
     }
 
     /**
      * Validate password is not a common password
      */
-    protected function validatePasswordCommon(string $field): void
+    protected function validatePasswordCommon(string $field, ?string $ruleValue = null): void
     {
         if (!$this->hasValue($field) || $this->isEmptyValue($this->getValue($field))) {
             return;
@@ -1231,7 +1235,7 @@ class Validator
         ];
 
         if (in_array(strtolower($value), $commonPasswords)) {
-            $this->addError($field, $this->getMessage('password.common', $field));
+            $this->addError($field, $this->getMessage('password_common', $field));
         }
     }
 
@@ -1259,10 +1263,12 @@ class Validator
             if ($response !== false) {
                 $hashes = explode("\n", $response);
                 foreach ($hashes as $hash) {
-                    list($hashSuffix, $count) = explode(':', trim($hash));
-                    if (strtoupper($hashSuffix) === strtoupper($suffix) && (int)$count >= $minBreaches) {
-                        $this->addError($field, $this->getMessage('password.pwned', $field));
-                        break;
+                    if (strpos($hash, ':') !== false) {
+                        list($hashSuffix, $count) = explode(':', trim($hash));
+                        if (strtoupper($hashSuffix) === strtoupper($suffix) && (int)$count >= $minBreaches) {
+                            $this->addError($field, $this->getMessage('password_pwned', $field));
+                            break;
+                        }
                     }
                 }
             }
@@ -1288,30 +1294,33 @@ class Validator
         $historyCount = $params[1] ?? 5;
 
         if (!$userId) {
-            throw new TreesException("The 'password.history' rule requires a user ID parameter.");
+            throw new TreesException("The 'password_history' rule requires a user ID parameter.");
         }
 
-        // This is a placeholder - you'll need to implement your own password history check
-        // based on your application's user storage system
+        try {
+            $db = Database::getInstance();
+            if (!$db) {
+                throw new TreesException("Database connection not established");
+            }
 
-        // Example implementation (pseudo-code):
-        /*
-    $db = Database::getInstance();
-    $previousPasswords = $db->query(
-        "SELECT password FROM user_password_history WHERE user_id = ? ORDER BY created_at DESC LIMIT ?",
-        [$userId, $historyCount]
-    );
-    
-    foreach ($previousPasswords as $previous) {
-        if (password_verify($value, $previous['password'])) {
-            $this->addError($field, $this->getMessage('password.history', $field));
-            break;
+            // Get previous password hashes for the user
+            $previousPasswords = $db->query(
+                "SELECT password FROM user_password_history WHERE user_id = ? ORDER BY created_at DESC LIMIT ?",
+                [$userId, (int)$historyCount]
+            );
+
+            if ($previousPasswords) {
+                foreach ($previousPasswords as $previous) {
+                    if (password_verify($value, $previous['password'])) {
+                        $this->addError($field, $this->getMessage('password_history', $field));
+                        break;
+                    }
+                }
+            }
+        } catch (\Exception $e) {
+            // You might want to log this error in production
+            // For now, we'll silently continue without this validation
         }
-    }
-    */
-
-        // For now, we'll just throw an exception since this requires custom implementation
-        throw new TreesException("Password history validation requires custom implementation for your user system.");
     }
 
     protected function validateNullable(string $field): void

@@ -45,9 +45,16 @@ class AuthController extends Controller
             'name' => 'required|min:3',
             'other_name' => 'required|min:3',
             'email' => 'required|email|unique:users.email',
-            'password' => 'required|password.secure',
+            'password' => 'required|password_secure',
             'password_confirmation' => 'required',
             'terms' => 'required'
         ];
+
+        if (!$request->validate($rules, false)) {
+            set_form_data($request->all());
+            set_form_error($request->getErrors());
+            $response->redirect("/sign-up");
+            return;
+        }
     }
 }

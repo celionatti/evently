@@ -12,7 +12,7 @@
             <span class="fw-bold text-white">ventlyy.</span> -->
         </a>
         <!-- Signup Form -->
-        <form class="auth-form" id="signupForm">
+        <form action="" method="post" class="auth-form" id="signupForm">
             <div class="auth-header">
                 <a href="{{{ url("/") }}}" class="auth-icon">
                     <!-- <i class="bi bi-person-plus"></i> -->
@@ -54,13 +54,13 @@
                     <span class="input-group-text password-toggle" id="signupPasswordToggle">
                         <i class="bi bi-eye"></i>
                     </span>
+                    <?php if (has_error('password')): ?>
+                        <div class="invalid-feedback"><?= get_error('password') ?></div>
+                    <?php endif; ?>
                 </div>
                 <div class="form-text text-white">
                     Use 8 or more characters with a mix of letters, numbers & symbols
                 </div>
-                <?php if (has_error('password')): ?>
-                    <div class="invalid-feedback"><?= get_error('password') ?></div>
-                <?php endif; ?>
             </div>
 
             <div class="mb-3">
@@ -70,10 +70,10 @@
                     <span class="input-group-text password-toggle" id="confirmPasswordToggle">
                         <i class="bi bi-eye"></i>
                     </span>
+                    <?php if (has_error('password_confirmation')): ?>
+                        <div class="invalid-feedback"><?= get_error('password_confirmation') ?></div>
+                    <?php endif; ?>
                 </div>
-                <?php if (has_error('password_confirmation')): ?>
-                    <div class="invalid-feedback"><?= get_error('password_confirmation') ?></div>
-                <?php endif; ?>
             </div>
 
             <div class="form-check mb-4">
