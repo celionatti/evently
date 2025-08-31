@@ -12,11 +12,11 @@
             <span class="fw-bold text-white">ventlyy.</span> -->
         </a>
         <!-- Login Form -->
-        <form class="auth-form" id="loginForm">
+        <form action="" method="post" class="auth-form" id="loginForm">
             <div class="auth-header">
                 <a href="{{{ url("/") }}}" class="auth-icon">
                     <!-- <i class="bi bi-person-circle"></i> -->
-                     <img src="<?= get_image("dist/img/logo.png") ?>" class="img-fluid" width="40px">
+                    <img src="<?= get_image("dist/img/logo.png") ?>" class="img-fluid" width="40px">
                 </a>
                 <h2 class="auth-title">Welcome Back</h2>
                 <p class="auth-subtitle">Sign in to your account to continue</p>
@@ -24,19 +24,25 @@
 
             <div class="mb-3">
                 <label for="loginEmail" class="form-label">Email Address</label>
-                <input type="email" class="form-control" id="loginEmail" placeholder="name@example.com" required>
+                <input type="email" name="email" class="form-control <?= has_error('email') ? 'is-invalid' : '' ?>" value="<?= old('email') ?>" id="loginEmail" placeholder="name@example.com">
+                <?php if (has_error('email')): ?>
+                    <div class="invalid-feedback"><?= get_error('email') ?></div>
+                <?php endif; ?>
             </div>
 
             <div class="mb-3">
                 <label for="loginPassword" class="form-label">Password</label>
                 <div class="input-group">
-                    <input type="password" class="form-control" id="loginPassword" placeholder="Enter your password" required>
+                    <input type="password" class="form-control <?= has_error('password') ? 'is-invalid' : '' ?>" value="<?= old('password') ?>" id="loginPassword" placeholder="Enter your password">
                     <span class="input-group-text password-toggle" id="loginPasswordToggle">
                         <i class="bi bi-eye"></i>
                     </span>
+                    <?php if (has_error('password')): ?>
+                        <div class="invalid-feedback"><?= get_error('password') ?></div>
+                    <?php endif; ?>
                 </div>
                 <div class="form-text text-end">
-                    <a href="#" class="auth-link">Forgot password?</a>
+                    <a href="{{ url("/forget-password") }}" class="auth-link">Forgot password?</a>
                 </div>
             </div>
 
