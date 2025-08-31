@@ -549,6 +549,11 @@ use Trees\Helper\Utils\TimeDateUtils;
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
+                                <?php if (isset($pagination) && $pagination): ?>
+                                    <div class="card-footer">
+                                        <?= $pagination ?>
+                                    </div>
+                                <?php endif; ?>
                             <?php else: ?>
                                 <tr>
                                     <td colspan="6" class="text-center text-secondary py-4">

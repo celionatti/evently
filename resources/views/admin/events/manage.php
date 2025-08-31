@@ -51,7 +51,7 @@ use Trees\Helper\Utils\TimeDateUtils;
                                     <tr class="fade-in" style="animation-delay: <?= $k * 0.1 ?>s;">
                                         <td data-label="Event">
                                             <div class="d-flex align-items-center gap-3">
-                                                <img src="<?= get_image($event->event_image, "dist/img/evently.png") ?>"
+                                                <img src="<?= get_image($event->event_image, "dist/img/default.png") ?>"
                                                     class="rounded shadow-sm"
                                                     style="width: 60px; height: 40px; object-fit: cover; border: 1px solid rgba(255, 255, 255, 0.1);" loading="lazy">
                                                 <div>

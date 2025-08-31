@@ -27,6 +27,7 @@ $router->get('/events/{id}', [EventController::class, 'event']);
 // Auth: Login/SignUp
 $router->get('/login', [AuthController::class, 'login']);
 $router->get('/sign-up', [AuthController::class, 'signup']);
+$router->post('/sign-up', [AuthController::class, 'create_user']);
 
 // Admin: Routes
 $router->get('/admin', [AdminController::class, 'dashboard']);

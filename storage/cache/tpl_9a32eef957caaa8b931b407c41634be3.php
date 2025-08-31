@@ -2,7 +2,7 @@
 
 ?>
 
-@section('content')
+<?php $this->start('content'); ?>
 
 <!-- AUTH CONTAINER -->
 <div class="auth-container">
@@ -14,7 +14,7 @@
         <!-- Login Form -->
         <form class="auth-form" id="loginForm">
             <div class="auth-header">
-                <a href="{{{ url("/") }}}" class="auth-icon">
+                <a href="<?php echo url("/"); ?>" class="auth-icon">
                     <!-- <i class="bi bi-person-circle"></i> -->
                      <img src="<?= get_image("dist/img/logo.png") ?>" class="img-fluid" width="40px">
                 </a>
@@ -64,9 +64,9 @@
     </div>
 </div>
 
-@endsection
+<?php $this->end(); ?>
 
-@section('scripts')
+<?php $this->start('scripts'); ?>
 <script>
     // Toggle password visibility
     function setupPasswordToggle(toggleId, inputId) {
@@ -87,4 +87,4 @@
     // Set up password toggles
     setupPasswordToggle('loginPasswordToggle', 'loginPassword');
 </script>
-@endsection
+<?php $this->end(); ?>

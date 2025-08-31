@@ -69,6 +69,14 @@ class Validator
         'required_without' => ':field is required when :values is not present.',
         'required_without_all' => ':field is required when none of :values are present.',
         'size' => ':field must be :size.',
+        'password.uppercase' => ':field must contain at least one uppercase letter.',
+        'password.lowercase' => ':field must contain at least one lowercase letter.',
+        'password.number' => ':field must contain at least one number.',
+        'password.special' => ':field must contain at least one special character.',
+        'password.secure' => ':field must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.',
+        'password.common' => ':field is too common and easily guessable.',
+        'password.pwned' => ':field has been compromised in a data breach. Please choose a different password.',
+        'password.history' => ':field has been used recently. Please choose a different password.',
     ];
 
     public function __construct(array $data, array $rules, array $messages = [])
@@ -81,23 +89,23 @@ class Validator
     public function passes(): bool
     {
         $this->errors = [];
-        
+
         foreach ($this->rules as $field => $rules) {
             if (!is_string($rules)) {
                 throw new TreesException("Validation rules for field '{$field}' must be a string.");
             }
 
             $rules = explode('|', $rules);
-            
+
             // Check if field is an array with indexes (e.g., tickets.0.name)
             $isIndexedArray = preg_match('/\.\d+\./', $field) || preg_match('/\.\d+$/', $field);
             $isWildcardArray = strpos($field, '.*.') !== false;
-            
+
             if ($isWildcardArray) {
                 $this->validateWildcardArrayField($field, $rules);
                 continue;
             }
-            
+
             if ($isIndexedArray) {
                 $this->validateIndexedArrayField($field, $rules);
                 continue;
@@ -110,14 +118,14 @@ class Validator
 
         return empty($this->errors);
     }
-    
+
     protected function validateWildcardArrayField(string $field, array $rules): void
     {
         // Convert wildcard to regex pattern
         $pattern = str_replace('.*.', '\.\d+\.', $field);
         $pattern = str_replace('.*', '\.\d+', $pattern);
         $pattern = '/^' . $pattern . '$/';
-        
+
         // Find all matching fields in data
         $matchingFields = [];
         foreach (array_keys($this->data) as $dataField) {
@@ -125,7 +133,7 @@ class Validator
                 $matchingFields[] = $dataField;
             }
         }
-        
+
         // Apply rules to each matching field
         foreach ($matchingFields as $matchingField) {
             foreach ($rules as $rule) {
@@ -133,7 +141,7 @@ class Validator
             }
         }
     }
-    
+
     protected function validateIndexedArrayField(string $field, array $rules): void
     {
         // Check if the field exists in data
@@ -147,12 +155,12 @@ class Validator
             }
             return;
         }
-        
+
         foreach ($rules as $rule) {
             $this->applyRule($field, $rule);
         }
     }
-    
+
     protected function applyRule(string $field, string $rule): void
     {
         $parameters = explode(':', $rule, 2);
@@ -160,8 +168,10 @@ class Validator
         $ruleValue = $parameters[1] ?? null;
 
         // Skip validation if field is nullable and empty
-        if ($ruleName === 'nullable' && 
-            (!isset($this->data[$field]) || $this->data[$field] === null || $this->data[$field] === '')) {
+        if (
+            $ruleName === 'nullable' &&
+            (!isset($this->data[$field]) || $this->data[$field] === null || $this->data[$field] === '')
+        ) {
             return;
         }
 
@@ -185,12 +195,12 @@ class Validator
     {
         return $this->errors;
     }
-    
+
     public function first(string $field): ?string
     {
         return $this->errors[$field][0] ?? null;
     }
-    
+
     public function has(string $field): bool
     {
         return isset($this->errors[$field]);
@@ -240,31 +250,31 @@ class Validator
     {
         return ucwords(str_replace(['_', '-', '.'], ' ', $field));
     }
-    
+
     protected function getValue(string $field)
     {
         return $this->data[$field] ?? null;
     }
-    
+
     protected function hasValue(string $field): bool
     {
         return isset($this->data[$field]);
     }
-    
+
     protected function isEmptyValue($value): bool
     {
         if ($value === null || $value === '') {
             return true;
         }
-        
+
         if (is_array($value) && empty($value)) {
             return true;
         }
-        
+
         if (is_string($value) && trim($value) === '') {
             return true;
         }
-        
+
         return false;
     }
 
@@ -281,30 +291,30 @@ class Validator
             $this->addError($field, $this->getMessage('required', $field));
         }
     }
-    
+
     protected function validateFilled(string $field): void
     {
         if ($this->hasValue($field) && $this->isEmptyValue($this->getValue($field))) {
             $this->addError($field, $this->getMessage('filled', $field));
         }
     }
-    
+
     protected function validatePresent(string $field): void
     {
         if (!$this->hasValue($field)) {
             $this->addError($field, $this->getMessage('present', $field));
         }
     }
-    
+
     protected function validateAccepted(string $field): void
     {
         if (!$this->hasValue($field)) {
             return;
         }
-        
+
         $value = $this->getValue($field);
         $accepted = ['yes', 'on', '1', 1, true, 'true'];
-        
+
         if (!in_array($value, $accepted, true)) {
             $this->addError($field, $this->getMessage('accepted', $field));
         }
@@ -331,41 +341,41 @@ class Validator
             $this->addError($field, $this->getMessage('string', $field));
         }
     }
-    
+
     protected function validateAlpha(string $field): void
     {
         if (!$this->hasValue($field) || $this->isEmptyValue($this->getValue($field))) {
             return;
         }
-        
+
         $value = $this->getValue($field);
-        
+
         if (!is_string($value) || !preg_match('/^[\pL\pM]+$/u', $value)) {
             $this->addError($field, $this->getMessage('alpha', $field));
         }
     }
-    
+
     protected function validateAlphaNum(string $field): void
     {
         if (!$this->hasValue($field) || $this->isEmptyValue($this->getValue($field))) {
             return;
         }
-        
+
         $value = $this->getValue($field);
-        
+
         if (!is_string($value) || !preg_match('/^[\pL\pM\pN]+$/u', $value)) {
             $this->addError($field, $this->getMessage('alpha_num', $field));
         }
     }
-    
+
     protected function validateAlphaDash(string $field): void
     {
         if (!$this->hasValue($field) || $this->isEmptyValue($this->getValue($field))) {
             return;
         }
-        
+
         $value = $this->getValue($field);
-        
+
         if (!is_string($value) || !preg_match('/^[\pL\pM\pN_-]+$/u', $value)) {
             $this->addError($field, $this->getMessage('alpha_dash', $field));
         }
@@ -416,23 +426,23 @@ class Validator
             }
         }
     }
-    
+
     protected function validateBetween(string $field, string $values): void
     {
         if (!$this->hasValue($field) || $this->isEmptyValue($this->getValue($field))) {
             return;
         }
-        
+
         $value = $this->getValue($field);
         $values = explode(',', $values);
-        
+
         if (count($values) !== 2) {
             throw new TreesException("The 'between' rule requires exactly 2 values.");
         }
-        
+
         $min = trim($values[0]);
         $max = trim($values[1]);
-        
+
         if (is_string($value)) {
             $length = mb_strlen($value);
             if ($length < $min || $length > $max) {
@@ -449,15 +459,15 @@ class Validator
             }
         }
     }
-    
+
     protected function validateSize(string $field, string $size): void
     {
         if (!$this->hasValue($field) || $this->isEmptyValue($this->getValue($field))) {
             return;
         }
-        
+
         $value = $this->getValue($field);
-        
+
         if (is_string($value)) {
             if (mb_strlen($value) != $size) {
                 $this->addError($field, $this->getMessage('size', $field, $size));
@@ -483,43 +493,43 @@ class Validator
             $this->addError($field, $this->getMessage('numeric', $field));
         }
     }
-    
+
     protected function validateDigits(string $field, string $value): void
     {
         if (!$this->hasValue($field) || $this->isEmptyValue($this->getValue($field))) {
             return;
         }
-        
+
         $val = $this->getValue($field);
-        
+
         if (!ctype_digit((string) $val) || strlen((string) $val) != $value) {
             $this->addError($field, $this->getMessage('digits', $field, $value));
         }
     }
-    
+
     protected function validateDigitsBetween(string $field, string $values): void
     {
         if (!$this->hasValue($field) || $this->isEmptyValue($this->getValue($field))) {
             return;
         }
-        
+
         $val = $this->getValue($field);
         $values = explode(',', $values);
-        
+
         if (count($values) !== 2) {
             throw new TreesException("The 'digits_between' rule requires exactly 2 values.");
         }
-        
+
         $min = trim($values[0]);
         $max = trim($values[1]);
-        
+
         if (!ctype_digit((string) $val)) {
             $this->addError($field, $this->getMessage('digits_between', $field, ['min' => $min, 'max' => $max]));
             return;
         }
-        
+
         $length = strlen((string) $val);
-        
+
         if ($length < $min || $length > $max) {
             $this->addError($field, $this->getMessage('digits_between', $field, ['min' => $min, 'max' => $max]));
         }
@@ -559,19 +569,19 @@ class Validator
             $this->addError($field, $this->getMessage('array', $field));
         }
     }
-    
+
     protected function validateDistinct(string $field): void
     {
         if (!$this->hasValue($field) || $this->isEmptyValue($this->getValue($field))) {
             return;
         }
-        
+
         $value = $this->getValue($field);
-        
+
         if (!is_array($value)) {
             return;
         }
-        
+
         if (count($value) !== count(array_unique($value))) {
             $this->addError($field, $this->getMessage('distinct', $field));
         }
@@ -600,20 +610,20 @@ class Validator
             $this->addError($field, $this->getMessage('datetime', $field));
         }
     }
-    
+
     protected function validateDate(string $field): void
     {
         if (!$this->hasValue($field) || $this->isEmptyValue($this->getValue($field))) {
             return;
         }
-        
+
         $val = $this->getValue($field);
-        
+
         if (!strtotime($val)) {
             $this->addError($field, $this->getMessage('date', $field));
             return;
         }
-        
+
         try {
             $date = date_parse($val);
             if (!$date || $date['error_count'] > 0 || !checkdate($date['month'], $date['day'], $date['year'])) {
@@ -623,38 +633,38 @@ class Validator
             $this->addError($field, $this->getMessage('date', $field));
         }
     }
-    
+
     protected function validateBefore(string $field, string $dateField): void
     {
         if (!$this->hasValue($field) || $this->isEmptyValue($this->getValue($field))) {
             return;
         }
-        
+
         $fieldValue = $this->getValue($field);
         $dateValue = $this->hasValue($dateField) ? $this->getValue($dateField) : $dateField;
-        
+
         if (!strtotime($fieldValue) || !strtotime($dateValue)) {
             return; // Let other rules handle invalid dates
         }
-        
+
         if (strtotime($fieldValue) >= strtotime($dateValue)) {
             $this->addError($field, $this->getMessage('before', $field, $dateField));
         }
     }
-    
+
     protected function validateAfter(string $field, string $dateField): void
     {
         if (!$this->hasValue($field) || $this->isEmptyValue($this->getValue($field))) {
             return;
         }
-        
+
         $fieldValue = $this->getValue($field);
         $dateValue = $this->hasValue($dateField) ? $this->getValue($dateField) : $dateField;
-        
+
         if (!strtotime($fieldValue) || !strtotime($dateValue)) {
             return; // Let other rules handle invalid dates
         }
-        
+
         if (strtotime($fieldValue) <= strtotime($dateValue)) {
             $this->addError($field, $this->getMessage('after', $field, $dateField));
         }
@@ -750,7 +760,7 @@ class Validator
             $this->addError($field, $this->getMessage('in', $field, $values));
         }
     }
-    
+
     protected function validateNotIn(string $field, string $values): void
     {
         if (!$this->hasValue($field) || $this->isEmptyValue($this->getValue($field))) {
@@ -771,14 +781,20 @@ class Validator
         }
 
         if (!$this->hasValue($otherField)) {
-            $this->addError($field, str_replace(':other', $this->formatFieldName($otherField),
-                $this->getMessage('same', $field)));
+            $this->addError($field, str_replace(
+                ':other',
+                $this->formatFieldName($otherField),
+                $this->getMessage('same', $field)
+            ));
             return;
         }
 
         if ($this->getValue($field) !== $this->getValue($otherField)) {
-            $this->addError($field, str_replace(':other', $this->formatFieldName($otherField),
-                $this->getMessage('same', $field)));
+            $this->addError($field, str_replace(
+                ':other',
+                $this->formatFieldName($otherField),
+                $this->getMessage('same', $field)
+            ));
         }
     }
 
@@ -793,73 +809,86 @@ class Validator
         }
 
         if ($this->getValue($field) === $this->getValue($otherField)) {
-            $this->addError($field, str_replace(':other', $this->formatFieldName($otherField),
-                $this->getMessage('different', $field)));
+            $this->addError($field, str_replace(
+                ':other',
+                $this->formatFieldName($otherField),
+                $this->getMessage('different', $field)
+            ));
         }
     }
-    
+
     protected function validateRequiredIf(string $field, string $condition): void
     {
         $parts = explode(',', $condition);
-        
+
         if (count($parts) < 2) {
             throw new TreesException("The 'required_if' rule requires at least 2 parameters.");
         }
-        
+
         $otherField = trim($parts[0]);
         $requiredValue = trim($parts[1]);
-        
+
         if (!$this->hasValue($otherField)) {
             return;
         }
-        
+
         $otherValue = $this->getValue($otherField);
-        
-        if ($otherValue == $requiredValue && 
-            (!$this->hasValue($field) || $this->isEmptyValue($this->getValue($field)))) {
-            $this->addError($field, str_replace([':other', ':value'], 
+
+        if (
+            $otherValue == $requiredValue &&
+            (!$this->hasValue($field) || $this->isEmptyValue($this->getValue($field)))
+        ) {
+            $this->addError($field, str_replace(
+                [':other', ':value'],
                 [$this->formatFieldName($otherField), $requiredValue],
-                $this->getMessage('required_if', $field)));
+                $this->getMessage('required_if', $field)
+            ));
         }
     }
-    
+
     protected function validateRequiredUnless(string $field, string $condition): void
     {
         $parts = explode(',', $condition);
-        
+
         if (count($parts) < 2) {
             throw new TreesException("The 'required_unless' rule requires at least 2 parameters.");
         }
-        
+
         $otherField = trim($parts[0]);
         $excludedValues = array_slice($parts, 1);
         $excludedValues = array_map('trim', $excludedValues);
-        
+
         if (!$this->hasValue($otherField)) {
             // Other field is not present, so field is required
             if (!$this->hasValue($field) || $this->isEmptyValue($this->getValue($field))) {
-                $this->addError($field, str_replace([':other', ':values'], 
+                $this->addError($field, str_replace(
+                    [':other', ':values'],
                     [$this->formatFieldName($otherField), implode(', ', $excludedValues)],
-                    $this->getMessage('required_unless', $field)));
+                    $this->getMessage('required_unless', $field)
+                ));
             }
             return;
         }
-        
+
         $otherValue = $this->getValue($otherField);
-        
-        if (!in_array($otherValue, $excludedValues) && 
-            (!$this->hasValue($field) || $this->isEmptyValue($this->getValue($field)))) {
-            $this->addError($field, str_replace([':other', ':values'], 
+
+        if (
+            !in_array($otherValue, $excludedValues) &&
+            (!$this->hasValue($field) || $this->isEmptyValue($this->getValue($field)))
+        ) {
+            $this->addError($field, str_replace(
+                [':other', ':values'],
                 [$this->formatFieldName($otherField), implode(', ', $excludedValues)],
-                $this->getMessage('required_unless', $field)));
+                $this->getMessage('required_unless', $field)
+            ));
         }
     }
-    
+
     protected function validateRequiredWith(string $field, string $otherFields): void
     {
         $otherFields = explode(',', $otherFields);
         $otherFields = array_map('trim', $otherFields);
-        
+
         $hasOtherField = false;
         foreach ($otherFields as $otherField) {
             if ($this->hasValue($otherField) && !$this->isEmptyValue($this->getValue($otherField))) {
@@ -867,18 +896,21 @@ class Validator
                 break;
             }
         }
-        
+
         if ($hasOtherField && (!$this->hasValue($field) || $this->isEmptyValue($this->getValue($field)))) {
-            $this->addError($field, str_replace(':values', implode(', ', $otherFields),
-                $this->getMessage('required_with', $field)));
+            $this->addError($field, str_replace(
+                ':values',
+                implode(', ', $otherFields),
+                $this->getMessage('required_with', $field)
+            ));
         }
     }
-    
+
     protected function validateRequiredWithAll(string $field, string $otherFields): void
     {
         $otherFields = explode(',', $otherFields);
         $otherFields = array_map('trim', $otherFields);
-        
+
         $hasAllOtherFields = true;
         foreach ($otherFields as $otherField) {
             if (!$this->hasValue($otherField) || $this->isEmptyValue($this->getValue($otherField))) {
@@ -886,18 +918,21 @@ class Validator
                 break;
             }
         }
-        
+
         if ($hasAllOtherFields && (!$this->hasValue($field) || $this->isEmptyValue($this->getValue($field)))) {
-            $this->addError($field, str_replace(':values', implode(', ', $otherFields),
-                $this->getMessage('required_with_all', $field)));
+            $this->addError($field, str_replace(
+                ':values',
+                implode(', ', $otherFields),
+                $this->getMessage('required_with_all', $field)
+            ));
         }
     }
-    
+
     protected function validateRequiredWithout(string $field, string $otherFields): void
     {
         $otherFields = explode(',', $otherFields);
         $otherFields = array_map('trim', $otherFields);
-        
+
         $missingOtherField = false;
         foreach ($otherFields as $otherField) {
             if (!$this->hasValue($otherField) || $this->isEmptyValue($this->getValue($otherField))) {
@@ -905,18 +940,21 @@ class Validator
                 break;
             }
         }
-        
+
         if ($missingOtherField && (!$this->hasValue($field) || $this->isEmptyValue($this->getValue($field)))) {
-            $this->addError($field, str_replace(':values', implode(', ', $otherFields),
-                $this->getMessage('required_without', $field)));
+            $this->addError($field, str_replace(
+                ':values',
+                implode(', ', $otherFields),
+                $this->getMessage('required_without', $field)
+            ));
         }
     }
-    
+
     protected function validateRequiredWithoutAll(string $field, string $otherFields): void
     {
         $otherFields = explode(',', $otherFields);
         $otherFields = array_map('trim', $otherFields);
-        
+
         $allOtherFieldsMissing = true;
         foreach ($otherFields as $otherField) {
             if ($this->hasValue($otherField) && !$this->isEmptyValue($this->getValue($otherField))) {
@@ -924,10 +962,13 @@ class Validator
                 break;
             }
         }
-        
+
         if ($allOtherFieldsMissing && (!$this->hasValue($field) || $this->isEmptyValue($this->getValue($field)))) {
-            $this->addError($field, str_replace(':values', implode(', ', $otherFields),
-                $this->getMessage('required_without_all', $field)));
+            $this->addError($field, str_replace(
+                ':values',
+                implode(', ', $otherFields),
+                $this->getMessage('required_without_all', $field)
+            ));
         }
     }
 
@@ -1061,6 +1102,216 @@ class Validator
         if ($file['size'] < $minSizeBytes) {
             $this->addError($field, str_replace(':value', $minSizeKB, $this->getMessage('min_size', $field)));
         }
+    }
+
+    /**
+     * Validate password contains at least one uppercase letter
+     */
+    protected function validatePasswordUppercase(string $field): void
+    {
+        if (!$this->hasValue($field) || $this->isEmptyValue($this->getValue($field))) {
+            return;
+        }
+
+        $value = $this->getValue($field);
+
+        if (!preg_match('/[A-Z]/', $value)) {
+            $this->addError($field, $this->getMessage('password.uppercase', $field));
+        }
+    }
+
+    /**
+     * Validate password contains at least one lowercase letter
+     */
+    protected function validatePasswordLowercase(string $field): void
+    {
+        if (!$this->hasValue($field) || $this->isEmptyValue($this->getValue($field))) {
+            return;
+        }
+
+        $value = $this->getValue($field);
+
+        if (!preg_match('/[a-z]/', $value)) {
+            $this->addError($field, $this->getMessage('password.lowercase', $field));
+        }
+    }
+
+    /**
+     * Validate password contains at least one number
+     */
+    protected function validatePasswordNumber(string $field): void
+    {
+        if (!$this->hasValue($field) || $this->isEmptyValue($this->getValue($field))) {
+            return;
+        }
+
+        $value = $this->getValue($field);
+
+        if (!preg_match('/[0-9]/', $value)) {
+            $this->addError($field, $this->getMessage('password.number', $field));
+        }
+    }
+
+    /**
+     * Validate password contains at least one special character
+     */
+    protected function validatePasswordSpecial(string $field, ?string $specialChars = null): void
+    {
+        if (!$this->hasValue($field) || $this->isEmptyValue($this->getValue($field))) {
+            return;
+        }
+
+        $value = $this->getValue($field);
+        $specialChars = $specialChars ?: '!@#$%^&*()\-_=+{};:,<.>';
+
+        if (!preg_match('/[' . preg_quote($specialChars, '/') . ']/', $value)) {
+            $this->addError($field, $this->getMessage('password.special', $field));
+        }
+    }
+
+    /**
+     * Validate password meets common security requirements
+     * (min 8 chars, uppercase, lowercase, number, special char)
+     */
+    protected function validatePasswordSecure(string $field): void
+    {
+        if (!$this->hasValue($field) || $this->isEmptyValue($this->getValue($field))) {
+            return;
+        }
+
+        $value = $this->getValue($field);
+
+        if (strlen($value) < 8) {
+            $this->addError($field, $this->getMessage('min', $field, '8'));
+        }
+
+        if (!preg_match('/[A-Z]/', $value)) {
+            $this->addError($field, $this->getMessage('password.uppercase', $field));
+        }
+
+        if (!preg_match('/[a-z]/', $value)) {
+            $this->addError($field, $this->getMessage('password.lowercase', $field));
+        }
+
+        if (!preg_match('/[0-9]/', $value)) {
+            $this->addError($field, $this->getMessage('password.number', $field));
+        }
+
+        if (!preg_match('/[!@#$%^&*()\-_=+{};:,<.>]/', $value)) {
+            $this->addError($field, $this->getMessage('password.special', $field));
+        }
+    }
+
+    /**
+     * Validate password is not a common password
+     */
+    protected function validatePasswordCommon(string $field): void
+    {
+        if (!$this->hasValue($field) || $this->isEmptyValue($this->getValue($field))) {
+            return;
+        }
+
+        $value = $this->getValue($field);
+        $commonPasswords = [
+            'password',
+            '123456',
+            '12345678',
+            '123456789',
+            'qwerty',
+            'abc123',
+            'password1',
+            '12345',
+            '1234567',
+            '1234567890',
+            'admin',
+            'welcome',
+            'monkey',
+            'letmein',
+            'password123'
+        ];
+
+        if (in_array(strtolower($value), $commonPasswords)) {
+            $this->addError($field, $this->getMessage('password.common', $field));
+        }
+    }
+
+    /**
+     * Validate password against Have I Been Pwned API (optional)
+     * Note: This requires an internet connection and API call
+     */
+    protected function validatePasswordPwned(string $field, ?string $minBreaches = '1'): void
+    {
+        if (!$this->hasValue($field) || $this->isEmptyValue($this->getValue($field))) {
+            return;
+        }
+
+        $value = $this->getValue($field);
+        $minBreaches = (int)($minBreaches ?? '1');
+
+        try {
+            $sha1 = sha1($value);
+            $prefix = substr($sha1, 0, 5);
+            $suffix = substr($sha1, 5);
+
+            $url = "https://api.pwnedpasswords.com/range/" . $prefix;
+            $response = @file_get_contents($url);
+
+            if ($response !== false) {
+                $hashes = explode("\n", $response);
+                foreach ($hashes as $hash) {
+                    list($hashSuffix, $count) = explode(':', trim($hash));
+                    if (strtoupper($hashSuffix) === strtoupper($suffix) && (int)$count >= $minBreaches) {
+                        $this->addError($field, $this->getMessage('password.pwned', $field));
+                        break;
+                    }
+                }
+            }
+        } catch (\Exception $e) {
+            // Silently fail if the API is unavailable
+            // You might want to log this error in production
+        }
+    }
+
+    /**
+     * Validate password against user's password history
+     * This requires integration with your user system
+     */
+    protected function validatePasswordHistory(string $field, string $parameters): void
+    {
+        if (!$this->hasValue($field) || $this->isEmptyValue($this->getValue($field))) {
+            return;
+        }
+
+        $value = $this->getValue($field);
+        $params = explode(',', $parameters);
+        $userId = $params[0] ?? null;
+        $historyCount = $params[1] ?? 5;
+
+        if (!$userId) {
+            throw new TreesException("The 'password.history' rule requires a user ID parameter.");
+        }
+
+        // This is a placeholder - you'll need to implement your own password history check
+        // based on your application's user storage system
+
+        // Example implementation (pseudo-code):
+        /*
+    $db = Database::getInstance();
+    $previousPasswords = $db->query(
+        "SELECT password FROM user_password_history WHERE user_id = ? ORDER BY created_at DESC LIMIT ?",
+        [$userId, $historyCount]
+    );
+    
+    foreach ($previousPasswords as $previous) {
+        if (password_verify($value, $previous['password'])) {
+            $this->addError($field, $this->getMessage('password.history', $field));
+            break;
+        }
+    }
+    */
+
+        // For now, we'll just throw an exception since this requires custom implementation
+        throw new TreesException("Password history validation requires custom implementation for your user system.");
     }
 
     protected function validateNullable(string $field): void

@@ -8,14 +8,14 @@ use Trees\Database\Model\Model;
 use Trees\Database\Interface\ModelInterface;
 use Trees\Database\QueryBuilder\QueryBuilder;
 
-class User extends Model implements ModelInterface
+class Transaction extends Model implements ModelInterface
 {
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected string $table = 'users';
+    protected string $table = 'transactions';
 
     /**
      * The attributes that are mass assignable.
@@ -24,19 +24,16 @@ class User extends Model implements ModelInterface
      */
     protected array $fillable = [
         'id',
+        'transaction_id',
         'user_id',
-        'name',
-        'other_name',
+        'ticket_id',
+        'event_id',
+        'quantity',
         'email',
-        'password',
-        'role',
-        'business_name',
-        'is_blocked',
-        'remember_token',
-        'token',
-        'token_expire',
+        'amount',
+        'reference_id',
+        'status',
         'created_at',
-        'updated_at'
     ];
 
     /**
@@ -69,7 +66,7 @@ class User extends Model implements ModelInterface
     public function applySearch(QueryBuilder $query, string $searchTerm): void
     {
         $query->whereRaw(
-            '(name LIKE :search)',
+            '(email LIKE :search)',
             ['search' => "%$searchTerm%"]
         );
     }
@@ -77,12 +74,6 @@ class User extends Model implements ModelInterface
     public static function findByEmail(string $email): ?self
     {
         $results = static::where(['email' => $email]);
-        return $results ? $results[0] : null;
-    }
-
-    public static function findByUserId(string $user_id): ?self
-    {
-        $results = static::where(['user_id' => $user_id]);
         return $results ? $results[0] : null;
     }
 }

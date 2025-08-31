@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\controllers;
 
+use App\models\Attendees;
 use App\models\Event;
 use App\models\Ticket;
 use Trees\Http\Request;
@@ -23,6 +24,7 @@ class AdminEventController extends Controller
     protected $uploader;
     protected ?Event $eventModel;
     protected ?Ticket $ticketModel;
+    protected ?Attendees $attendeesModel;
     protected const MAX_UPLOAD_FILES = 1;
     protected const UPLOAD_DIR = 'uploads/events/';
     protected const IMAGE_DIR = ROOT_PATH . '/public' . DIRECTORY_SEPARATOR;
@@ -32,6 +34,7 @@ class AdminEventController extends Controller
         $imageProcessor = new Image();
         $this->eventModel = new Event();
         $this->ticketModel = new Ticket();
+        $this->attendeesModel = new Attendees();
         $name = "Eventlyy";
         $this->view->setTitle("{$name} Admin | Dashboard");
         $this->uploader = new FileUploader(
@@ -90,9 +93,22 @@ class AdminEventController extends Controller
         // Ensure tickets is always an array
         $event->tickets = is_array($tickets) ? $tickets : [];
 
+        $attendees = $this->attendeesModel::paginate([
+            'per_page' => $request->query('per_page', 5),
+            'page' => $request->query('page', 1),
+            'order_by' => ['created_at' => 'DESC']
+        ]);
+
+        // Create pagination instance
+        $pagination = new Paginator($attendees['meta']);
+
+        // Render the pagination links
+        $paginationLinks = $pagination->render('bootstrap');
+
         $view = [
             'event' => $event,
-            'recentAttendees' => [],
+            'recentAttendees' => $attendees['data'],
+            'pagination' => $paginationLinks
         ];
 
         return $this->render('admin/events/view', $view);
