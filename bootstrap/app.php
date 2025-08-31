@@ -32,7 +32,7 @@ try {
 }
 
 // Set default timezone
-date_default_timezone_set($_ENV['APP_TIMEZONE'] ?? 'UTC');
+date_default_timezone_set($_ENV['APP_TIMEZONE'] ?? 'Africa/Lagos');
 
 $trees = Trees::getInstance();
 

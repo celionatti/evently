@@ -52,7 +52,7 @@ class TimeDateUtils
         bool $immutable = false
     ) {
         $this->immutable = $immutable;
-        
+
         try {
             $timeZone = $timeZone instanceof DateTimeZone ? $timeZone : new DateTimeZone($timeZone);
         } catch (Exception $e) {
@@ -62,7 +62,7 @@ class TimeDateUtils
         try {
             if ($dateTime instanceof DateTimeInterface) {
                 if ($immutable) {
-                    $this->dateTime = $dateTime instanceof DateTimeImmutable 
+                    $this->dateTime = $dateTime instanceof DateTimeImmutable
                         ? $dateTime->setTimezone($timeZone)
                         : DateTimeImmutable::createFromInterface($dateTime)->setTimezone($timeZone);
                 } else {
@@ -102,7 +102,7 @@ class TimeDateUtils
     ): self {
         try {
             $timeZoneObj = $timeZone instanceof DateTimeZone ? $timeZone : new DateTimeZone($timeZone);
-            
+
             if ($immutable) {
                 $dateTime = new DateTimeImmutable('@' . $timestamp);
                 $dateTime = $dateTime->setTimezone($timeZoneObj);
@@ -128,7 +128,7 @@ class TimeDateUtils
     ): self {
         try {
             $timeZoneObj = $timeZone instanceof DateTimeZone ? $timeZone : new DateTimeZone($timeZone);
-            
+
             $dateTimeObj = $immutable
                 ? DateTimeImmutable::createFromFormat($format, $dateTime, $timeZoneObj)
                 : DateTime::createFromFormat($format, $dateTime, $timeZoneObj);
@@ -476,7 +476,7 @@ class TimeDateUtils
                 $dateTime = clone $this->dateTime;
                 $dateTime->setTimezone($timeZoneObj);
             }
-            
+
             return new static($dateTime, $timeZoneObj, $this->immutable);
         } catch (Exception $e) {
             throw new InvalidArgumentException("Invalid timezone: " . $e->getMessage());
@@ -489,9 +489,13 @@ class TimeDateUtils
     public function compareTo($compareDate): int
     {
         try {
-            $comparisonDate = $compareDate instanceof DateTimeInterface
-                ? $compareDate
-                : new DateTime($compareDate);
+            if ($compareDate instanceof self) {
+                $comparisonDate = $compareDate->getDateTime();
+            } else {
+                $comparisonDate = $compareDate instanceof DateTimeInterface
+                    ? $compareDate
+                    : new DateTime($compareDate);
+            }
 
             return $this->dateTime <=> $comparisonDate;
         } catch (Exception $e) {
@@ -613,9 +617,13 @@ class TimeDateUtils
     public function diff($compareDate, bool $absolute = false): DateInterval
     {
         try {
-            $comparisonDate = $compareDate instanceof DateTimeInterface
-                ? $compareDate
-                : new DateTime($compareDate);
+            if ($compareDate instanceof self) {
+                $comparisonDate = $compareDate->getDateTime();
+            } else {
+                $comparisonDate = $compareDate instanceof DateTimeInterface
+                    ? $compareDate
+                    : new DateTime($compareDate);
+            }
 
             return $this->dateTime->diff($comparisonDate, $absolute);
         } catch (Exception $e) {
@@ -639,9 +647,9 @@ class TimeDateUtils
     {
         $diff = $this->diff($compareDate, $absolute);
         return (int) $diff->format('%r') * (
-            ($diff->y * 365 * 24) + 
-            ($diff->m * 30 * 24) + 
-            ($diff->d * 24) + 
+            ($diff->y * 365 * 24) +
+            ($diff->m * 30 * 24) +
+            ($diff->d * 24) +
             $diff->h
         );
     }
@@ -651,8 +659,8 @@ class TimeDateUtils
      */
     public function diffInMinutes($compareDate, bool $absolute = false): int
     {
-        return $this->diffInHours($compareDate, $absolute) * 60 + 
-               (int) $this->diff($compareDate, $absolute)->format('%i');
+        return $this->diffInHours($compareDate, $absolute) * 60 +
+            (int) $this->diff($compareDate, $absolute)->format('%i');
     }
 
     /**
@@ -661,9 +669,13 @@ class TimeDateUtils
     public function diffInSeconds($compareDate, bool $absolute = false): int
     {
         try {
-            $comparisonDate = $compareDate instanceof DateTimeInterface
-                ? $compareDate
-                : new DateTime($compareDate);
+            if ($compareDate instanceof self) {
+                $comparisonDate = $compareDate->getDateTime();
+            } else {
+                $comparisonDate = $compareDate instanceof DateTimeInterface
+                    ? $compareDate
+                    : new DateTime($compareDate);
+            }
 
             $diff = $this->dateTime->getTimestamp() - $comparisonDate->getTimestamp();
             return $absolute ? abs($diff) : $diff;
@@ -707,7 +719,7 @@ class TimeDateUtils
     {
         $dayOfWeek = (int) $this->dateTime->format('w');
         $daysToSubtract = $dayOfWeek === 0 ? 6 : $dayOfWeek - 1; // Handle Sunday as 0
-        
+
         return $this->subDays($daysToSubtract)->startOfDay();
     }
 
@@ -718,7 +730,7 @@ class TimeDateUtils
     {
         $dayOfWeek = (int) $this->dateTime->format('w');
         $daysToAdd = $dayOfWeek === 0 ? 0 : 7 - $dayOfWeek;
-        
+
         return $this->addDays($daysToAdd)->endOfDay();
     }
 
@@ -751,7 +763,7 @@ class TimeDateUtils
     public function endOfMonth(): self
     {
         $lastDay = (int) $this->dateTime->format('t');
-        
+
         if ($this->immutable) {
             $dateTime = $this->dateTime->setDate(
                 (int) $this->dateTime->format('Y'),
@@ -831,7 +843,7 @@ class TimeDateUtils
     {
         try {
             $relativeTo = $relativeTo ?? new DateTime('now', $this->dateTime->getTimezone());
-            
+
             if ($this->isToday($relativeTo)) {
                 return 'Today, ' . $this->toCustomFormat('h:i A');
             }
@@ -916,6 +928,55 @@ class TimeDateUtils
     public function copy(): self
     {
         return new static($this->dateTime, $this->dateTime->getTimezone(), $this->immutable);
+    }
+
+    /**
+     * Get difference in days from now
+     */
+    public function diffInDaysFromNow(bool $absolute = false): int
+    {
+        return $this->diffInDays(static::now($this->getTimezone(), $this->immutable), $absolute);
+    }
+
+    /**
+     * Get human-readable time difference from now in ago format
+     */
+    public function diffFromNow(): string
+    {
+        $now = static::now($this->getTimezone(), $this->immutable);
+        $diff = $this->diff($now);
+
+        if ($diff->invert) {
+            // Future date
+            if ($diff->y > 0) {
+                return $diff->y === 1 ? 'in 1 year' : "in {$diff->y} years";
+            } elseif ($diff->m > 0) {
+                return $diff->m === 1 ? 'in 1 month' : "in {$diff->m} months";
+            } elseif ($diff->d > 0) {
+                return $diff->d === 1 ? 'tomorrow' : "in {$diff->d} days";
+            } elseif ($diff->h > 0) {
+                return $diff->h === 1 ? 'in 1 hour' : "in {$diff->h} hours";
+            } elseif ($diff->i > 0) {
+                return $diff->i === 1 ? 'in 1 minute' : "in {$diff->i} minutes";
+            } else {
+                return 'in a few seconds';
+            }
+        } else {
+            // Past date
+            if ($diff->y > 0) {
+                return $diff->y === 1 ? '1 year ago' : "{$diff->y} years ago";
+            } elseif ($diff->m > 0) {
+                return $diff->m === 1 ? '1 month ago' : "{$diff->m} months ago";
+            } elseif ($diff->d > 0) {
+                return $diff->d === 1 ? 'yesterday' : "{$diff->d} days ago";
+            } elseif ($diff->h > 0) {
+                return $diff->h === 1 ? '1 hour ago' : "{$diff->h} hours ago";
+            } elseif ($diff->i > 0) {
+                return $diff->i === 1 ? '1 minute ago' : "{$diff->i} minutes ago";
+            } else {
+                return 'just now';
+            }
+        }
     }
 
     /**

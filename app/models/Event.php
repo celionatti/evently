@@ -45,7 +45,8 @@ class Event extends Model implements ModelInterface
         'social',
         'featured',
         'ticket_sales',
-        'status'
+        'status',
+        'created_at'
     ];
 
     /**

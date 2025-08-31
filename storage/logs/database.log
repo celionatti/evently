@@ -34,3 +34,5 @@
 [2025-08-31 09:06:49] [INFO] File uploaded successfully: uploads/events/68b410a950937_e73e1bd6.jfif
 [2025-08-31 09:06:49] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
 [2025-08-31 09:06:49] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-08-31 13:19:36] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-08-31 13:19:36] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}

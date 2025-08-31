@@ -30,7 +30,8 @@ class Ticket extends Model implements ModelInterface
         'ticket_name',
         'description',
         'price',
-        'quantity'
+        'quantity',
+        'sold'
     ];
 
     /**

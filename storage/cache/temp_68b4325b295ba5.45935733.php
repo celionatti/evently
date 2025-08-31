@@ -152,7 +152,7 @@ use Trees\Helper\Utils\TimeDateUtils;
             <a href="<?= url("/admin/events/edit/{$event->slug}") ?>" class="btn btn-ghost btn-sm">
                 <i class="bi bi-pencil me-2"></i>Edit Event
             </a>
-            <a href="<?= url("/admin/events/manage") ?>" class="btn btn-pulse btn-sm">
+            <a href="<?= url("/admin/events") ?>" class="btn btn-pulse btn-sm">
                 <i class="bi bi-arrow-left me-2"></i>Back to Events
             </a>
         </div>
@@ -245,7 +245,7 @@ use Trees\Helper\Utils\TimeDateUtils;
                 Tickets Sold
             </div>
         </div>
-
+        
         <div class="stat-card">
             <div class="stat-number">500</div>
             <div class="stat-label">
@@ -253,7 +253,7 @@ use Trees\Helper\Utils\TimeDateUtils;
                 Total Tickets
             </div>
         </div>
-
+        
         <div class="stat-card">
             <div class="stat-number">₦675,000</div>
             <div class="stat-label">
@@ -261,7 +261,7 @@ use Trees\Helper\Utils\TimeDateUtils;
                 Revenue
             </div>
         </div>
-
+        
         <div class="stat-card">
             <div class="stat-number">90%</div>
             <div class="stat-label">
@@ -336,33 +336,33 @@ use Trees\Helper\Utils\TimeDateUtils;
 
     <!-- Event Link -->
     <?php if ($event->event_link): ?>
-        <div class="dashboard-grid-full">
-            <div class="dashboard-card table-card slide-up">
-                <div class="card-header">
-                    <h5 class="mb-0">
-                        <i class="bi bi-link-45deg me-2"></i>
-                        Event Link
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div class="event-link-display">
-                            <span class="text-break" style="font-family: monospace; color: var(--blue-1);">
-                                <?php echo $event->event_link; ?>
-                            </span>
-                        </div>
-                        <div class="d-flex gap-2">
-                            <button class="btn btn-ghost btn-sm" onclick="copyToClipboard('<?php echo $event->event_link; ?>')" title="Copy link">
-                                <i class="bi bi-clipboard me-1"></i>Copy
-                            </button>
-                            <a href="<?php echo $event->event_link; ?>" target="_blank" class="btn btn-ghost btn-sm" title="Open link">
-                                <i class="bi bi-box-arrow-up-right me-1"></i>Open
-                            </a>
-                        </div>
+    <div class="dashboard-grid-full">
+        <div class="dashboard-card table-card slide-up">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-link-45deg me-2"></i>
+                    Event Link
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="event-link-display">
+                        <span class="text-break" style="font-family: monospace; color: var(--blue-1);">
+                            <?php echo $event->event_link; ?>
+                        </span>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-ghost btn-sm" onclick="copyToClipboard('<?php echo $event->event_link; ?>')" title="Copy link">
+                            <i class="bi bi-clipboard me-1"></i>Copy
+                        </button>
+                        <a href="<?php echo $event->event_link; ?>" target="_blank" class="btn btn-ghost btn-sm" title="Open link">
+                            <i class="bi bi-box-arrow-up-right me-1"></i>Open
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
     <?php endif; ?>
 
     <!-- Ticket Tiers -->
@@ -393,7 +393,8 @@ use Trees\Helper\Utils\TimeDateUtils;
                             </tr>
                         </thead>
                         <tbody>
-                            <?php if ($event->tickets): ?>
+                            <?php dd($event->tickets); ?>
+                            <?php if (isset($event->tickets) && $event->tickets): ?>
                                 <?php foreach ($event->tickets as $k => $ticket): ?>
                                     <tr class="fade-in" style="animation-delay: <?= $k * 0.1 ?>s;">
                                         <td data-label="Ticket Type">
@@ -535,14 +536,14 @@ use Trees\Helper\Utils\TimeDateUtils;
                                                         </a>
                                                     </li>
                                                     <?php if ($attendee->payment_status !== 'paid'): ?>
-                                                        <li>
-                                                            <hr class="dropdown-divider">
-                                                        </li>
-                                                        <li>
-                                                            <a class="dropdown-item text-warning" href="#" onclick="markAsPaid(<?= $attendee->id ?>)">
-                                                                <i class="bi bi-check-circle me-2"></i>Mark as Paid
-                                                            </a>
-                                                        </li>
+                                                    <li>
+                                                        <hr class="dropdown-divider">
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item text-warning" href="#" onclick="markAsPaid(<?= $attendee->id ?>)">
+                                                            <i class="bi bi-check-circle me-2"></i>Mark as Paid
+                                                        </a>
+                                                    </li>
                                                     <?php endif; ?>
                                                 </ul>
                                             </div>
@@ -590,7 +591,7 @@ use Trees\Helper\Utils\TimeDateUtils;
                         <div class="progress-bar bg-success" style="width: 90%"></div>
                     </div>
                 </div>
-
+                
                 <div class="analytics-item mb-3">
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <span class="text-secondary">Revenue Target</span>
@@ -605,7 +606,10 @@ use Trees\Helper\Utils\TimeDateUtils;
                     <div class="d-flex justify-content-between align-items-center">
                         <span class="text-secondary">Days Until Event</span>
                         <span class="fw-semibold text-primary">
-                            <?= TimeDateUtils::create($event->event_date)->diffFromNow(); ?>
+                            <?php
+                            $daysUntil = $event->event_date;
+                            echo $daysUntil;
+                            ?>
                         </span>
                     </div>
                 </div>
@@ -642,7 +646,7 @@ use Trees\Helper\Utils\TimeDateUtils;
                     <div class="d-flex justify-content-between align-items-center">
                         <span class="text-secondary">Created</span>
                         <span class="text-white">
-                            <?= TimeDateUtils::create($event->created_at)->toFriendlyFormat() ?>
+                            <?= $event->created_at ?>
                         </span>
                     </div>
                 </div>
@@ -657,6 +661,9 @@ use Trees\Helper\Utils\TimeDateUtils;
                 <a href="<?= url("/admin/events/edit/{$event->slug}") ?>" class="btn btn-pulse">
                     <i class="bi bi-pencil me-2"></i>Edit Event
                 </a>
+                <button class="btn btn-ghost" onclick="duplicateEvent('<?= $event->slug ?>')">
+                    <i class="bi bi-files me-2"></i>Duplicate Event
+                </button>
                 <?php if ($event->ticket_sales === 'close'): ?>
                     <button class="btn btn-ghost" onclick="toggleTicketSales('<?= $event->slug ?>', 'open')">
                         <i class="bi bi-unlock me-2"></i>Open Ticket Sales
@@ -688,7 +695,7 @@ use Trees\Helper\Utils\TimeDateUtils;
                     <p class="text-danger"><strong>Warning:</strong> This will permanently delete:</p>
                     <ul class="text-danger">
                         <li>The event details</li>
-                        <li>All associated tickets (<?= $event->tickets ? count($event->tickets) : 0 ?> ticket types)</li>
+                        <li>All associated tickets (<?= isset($tickets) ? count($tickets) : 0 ?> ticket types)</li>
                         <li>All attendee records (<?= isset($recentAttendees) ? count($recentAttendees) : 0 ?> attendees)</li>
                         <li>The event image</li>
                         <li>All sales data and revenue records</li>
@@ -753,24 +760,24 @@ use Trees\Helper\Utils\TimeDateUtils;
     function sendTicket(attendeeId) {
         if (confirm('Send ticket confirmation email to this attendee?')) {
             fetch(`<?= url('/admin/attendees/send-ticket/') ?>${attendeeId}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        showToast('Ticket sent successfully!', 'success');
-                    } else {
-                        showToast('Failed to send ticket', 'error');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showToast('An error occurred', 'error');
-                });
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('Ticket sent successfully!', 'success');
+                } else {
+                    showToast('Failed to send ticket', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('An error occurred', 'error');
+            });
         }
     }
 
@@ -778,27 +785,27 @@ use Trees\Helper\Utils\TimeDateUtils;
     function markAsPaid(attendeeId) {
         if (confirm('Mark this attendee as paid?')) {
             fetch(`<?= url('/admin/attendees/mark-paid/') ?>${attendeeId}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        showToast('Payment status updated!', 'success');
-                        setTimeout(() => {
-                            location.reload();
-                        }, 1500);
-                    } else {
-                        showToast('Failed to update payment status', 'error');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showToast('An error occurred', 'error');
-                });
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('Payment status updated!', 'success');
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1500);
+                } else {
+                    showToast('Failed to update payment status', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('An error occurred', 'error');
+            });
         }
     }
 
@@ -807,30 +814,28 @@ use Trees\Helper\Utils\TimeDateUtils;
         const actionText = action === 'open' ? 'open' : 'close';
         if (confirm(`Are you sure you want to ${actionText} ticket sales for this event?`)) {
             fetch(`<?= url('/admin/events/toggle-sales/') ?>${eventSlug}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    body: JSON.stringify({
-                        action: action
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        showToast(`Ticket sales ${actionText}ed successfully!`, 'success');
-                        setTimeout(() => {
-                            location.reload();
-                        }, 1500);
-                    } else {
-                        showToast('Failed to update ticket sales', 'error');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showToast('An error occurred', 'error');
-                });
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({ action: action })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast(`Ticket sales ${actionText}ed successfully!`, 'success');
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1500);
+                } else {
+                    showToast('Failed to update ticket sales', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('An error occurred', 'error');
+            });
         }
     }
 
@@ -838,27 +843,27 @@ use Trees\Helper\Utils\TimeDateUtils;
     function duplicateEvent(eventSlug) {
         if (confirm('Create a duplicate of this event? You can modify the details after creation.')) {
             fetch(`<?= url('/admin/events/duplicate/') ?>${eventSlug}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        showToast('Event duplicated successfully!', 'success');
-                        setTimeout(() => {
-                            window.location.href = `<?= url('/admin/events/edit/') ?>${data.newEventSlug}`;
-                        }, 1500);
-                    } else {
-                        showToast('Failed to duplicate event', 'error');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showToast('An error occurred', 'error');
-                });
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('Event duplicated successfully!', 'success');
+                    setTimeout(() => {
+                        window.location.href = `<?= url('/admin/events/edit/') ?>${data.newEventSlug}`;
+                    }, 1500);
+                } else {
+                    showToast('Failed to duplicate event', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('An error occurred', 'error');
+            });
         }
     }
 
@@ -870,7 +875,7 @@ use Trees\Helper\Utils\TimeDateUtils;
     // Share event link
     function shareEvent() {
         const eventUrl = '<?= url("/events/{$event->slug}") ?>';
-
+        
         if (navigator.share) {
             navigator.share({
                 title: '<?= addslashes($event->event_title) ?>',
