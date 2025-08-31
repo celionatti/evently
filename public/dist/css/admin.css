@@ -143,11 +143,13 @@ body {
   border: 1px solid rgba(100, 181, 246, 0.35);
   background: rgba(255, 255, 255, 0.03);
   border-radius: 14px;
-  transition: 0.25s ease;
+  padding: 0.75rem 1.1rem;
+  transition: 0.25s ease, filter 0.3s ease;
 }
 
 .btn-ghost:hover {
   background: rgba(100, 181, 246, 0.1);
+  filter: brightness(1.05);
   color: white;
 }
 
@@ -665,6 +667,11 @@ body {
   }
 
   .btn-pulse {
+    width: 100%;
+    margin-top: 1rem;
+  }
+
+  .btn-ghost {
     width: 100%;
     margin-top: 1rem;
   }

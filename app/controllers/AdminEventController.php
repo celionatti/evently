@@ -75,6 +75,29 @@ class AdminEventController extends Controller
         return $this->render('admin/events/manage', $view);
     }
 
+    public function view(Request $request, Response $response, $slug)
+    {
+        $event = Event::findBySlug($slug);
+
+        if (!$event) {
+            FlashMessage::setMessage("Event Not Found!", 'danger');
+            return $response->redirect("/admin/events/manage");
+        }
+
+        // Load tickets with the event
+        $tickets = Ticket::where(['event_id' => $event->id]);
+
+        // Ensure tickets is always an array
+        $event->tickets = is_array($tickets) ? $tickets : [];
+
+        $view = [
+            'event' => $event,
+            'recentAttendees' => [],
+        ];
+
+        return $this->render('admin/events/view', $view);
+    }
+
     public function create()
     {
         $view = [
@@ -170,7 +193,6 @@ class AdminEventController extends Controller
         }
 
         // Load tickets with the event
-        // $event->tickets = Ticket::where(['event_id' => $event->id]);
         $tickets = Ticket::where(['event_id' => $event->id]);
 
         // Ensure tickets is always an array

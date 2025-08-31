@@ -129,7 +129,7 @@ use Trees\Helper\Utils\TimeDateUtils;
                                                 </button>
                                                 <ul class="dropdown-menu dropdown-menu-end">
                                                     <li>
-                                                        <a class="dropdown-item" href="#" onclick="viewEvent(<?= $event->id ?>)">
+                                                        <a class="dropdown-item" href="<?php echo url("/admin/events/view/{$event->slug}"); ?>">
                                                             <i class="bi bi-eye me-2"></i>View Details
                                                         </a>
                                                     </li>
@@ -278,11 +278,6 @@ use Trees\Helper\Utils\TimeDateUtils;
             console.error('Could not copy text: ', err);
             showToast('Failed to copy link', 'error');
         });
-    }
-
-    // View event details
-    function viewEvent(eventId) {
-        window.open(`<?= url('/admin/events/view/') ?>${eventId}`, '_blank');
     }
 
     // Delete event
