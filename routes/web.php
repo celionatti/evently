@@ -37,6 +37,7 @@ $router->group(['prefix' => '/admin'], function ($router) {
 // Admin: Events Routes
 $router->group(['prefix' => '/admin/events'], function ($router) {
     $router->get('/manage', [AdminEventController::class, 'manage']);
+    $router->get('/view/{slug}', [AdminEventController::class, 'view']);
     $router->get('/create', [AdminEventController::class, 'create']);
     $router->post('/create', [AdminEventController::class, 'insert']);
     $router->get('/edit/{slug}', [AdminEventController::class, 'edit']);

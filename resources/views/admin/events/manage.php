@@ -129,7 +129,7 @@ use Trees\Helper\Utils\TimeDateUtils;
                                                 </button>
                                                 <ul class="dropdown-menu dropdown-menu-end">
                                                     <li>
-                                                        <a class="dropdown-item" href="#" onclick="viewEvent(<?= $event->id ?>)">
+                                                        <a class="dropdown-item" href="#" onclick="viewEvent(<?= $event->slug ?>)">
                                                             <i class="bi bi-eye me-2"></i>View Details
                                                         </a>
                                                     </li>
@@ -281,8 +281,8 @@ use Trees\Helper\Utils\TimeDateUtils;
     }
 
     // View event details
-    function viewEvent(eventId) {
-        window.open(`<?= url('/admin/events/view/') ?>${eventId}`, '_blank');
+    function viewEvent(eventSlug) {
+        window.open(`<?= url('/admin/events/view/') ?>${eventSlug}`, '_blank');
     }
 
     // Delete event
