@@ -7,7 +7,7 @@ use Trees\Helper\Utils\TimeDateUtils;
 @section('content')
 <!-- Events Section -->
 <div id="events-section" class="content-section fade-in">
-    <div class="d-flex justify-content-between align-items-center mb-4 page-header">
+    <div class="d-flex justify-content-between align-items-center mb-4 gap-3 page-header">
         <div>
             <h1 class="h2 mb-1">My Events</h1>
             <p class="text-secondary">Manage your event listings and track performance.</p>
@@ -53,7 +53,7 @@ use Trees\Helper\Utils\TimeDateUtils;
                                             <div class="d-flex align-items-center gap-3">
                                                 <img src="<?= get_image($event->event_image, "dist/img/evently.png") ?>"
                                                     class="rounded shadow-sm"
-                                                    style="width: 60px; height: 40px; object-fit: cover; border: 1px solid rgba(255, 255, 255, 0.1);">
+                                                    style="width: 60px; height: 40px; object-fit: cover; border: 1px solid rgba(255, 255, 255, 0.1);" loading="lazy">
                                                 <div>
                                                     <div class="fw-semibold text-white">{{{ $event->event_title }}}</div>
                                                     <small class="text-secondary">

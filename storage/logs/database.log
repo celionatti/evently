@@ -1,2 +1,30 @@
 [2025-08-31 02:47:06] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
 [2025-08-31 02:47:06] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-08-31 07:45:43] [ERROR] Image processing failed: Unsupported image format: C:\xampp\tmp\php60AE.tmp_processed
+[2025-08-31 07:45:43] [INFO] File uploaded successfully: uploads/events/68b3fda745192_90ad45f2.png
+[2025-08-31 07:45:43] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-08-31 07:45:43] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-08-31 07:46:56] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-08-31 07:46:56] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-08-31 07:54:17] [ERROR] Image processing failed: Unsupported image format: C:\xampp\tmp\php3A55.tmp_processed
+[2025-08-31 07:54:17] [INFO] File uploaded successfully: uploads/events/68b3ffa991f60_fe4d77cd.png
+[2025-08-31 07:54:17] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-08-31 07:54:18] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-08-31 07:56:16] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-08-31 07:56:16] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-08-31 08:04:10] [ERROR] Image processing failed: Unsupported image format: C:\xampp\tmp\php4650.tmp_processed
+[2025-08-31 08:04:10] [INFO] File uploaded successfully: uploads/events/68b401fa79716_06bbf109.png
+[2025-08-31 08:04:10] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-08-31 08:04:11] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-08-31 08:06:29] [ERROR] Image processing failed: Unsupported image format: C:\xampp\tmp\php64EB.tmp_processed
+[2025-08-31 08:06:29] [INFO] File uploaded successfully: uploads/events/68b402856726f_cb741bcd.png
+[2025-08-31 08:06:29] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-08-31 08:06:30] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-08-31 08:09:53] [ERROR] Image processing failed: Unsupported image format: C:\xampp\tmp\php73A3.tmp_processed
+[2025-08-31 08:09:53] [INFO] File uploaded successfully: uploads/events/68b4034dd0242_43267160.jpg
+[2025-08-31 08:09:53] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-08-31 08:09:53] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-08-31 08:12:35] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-08-31 08:12:35] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-08-31 08:13:11] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-08-31 08:13:11] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
