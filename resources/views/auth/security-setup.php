@@ -2,24 +2,6 @@
 
 ?>
 
-@section('styles')
-<style>
-    .spin {
-        animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-        0% {
-            transform: rotate(0deg);
-        }
-
-        100% {
-            transform: rotate(360deg);
-        }
-    }
-</style>
-@endsection
-
 @section('content')
 <!-- SECURITY SETUP CONTENT -->
 <div class="container py-5 flex-grow-1">
@@ -59,7 +41,7 @@
             </button>
         </div>
 
-        <form action="{{{ url('/complete-security-setup') }}}" method="post" id="securitySetupForm">
+        <form action="{{ url('/complete-security-setup') }}" method="post" id="securitySetupForm">
             <div class="checkbox-group">
                 <input type="checkbox" id="phraseConfirm" name="recovery_phrase_confirmed" value="1" required>
                 <label for="phraseConfirm">

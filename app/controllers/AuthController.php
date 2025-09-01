@@ -7,16 +7,16 @@ namespace App\controllers;
 use App\models\User;
 use Trees\Http\Request;
 use Trees\Http\Response;
-use Trees\Mailer\MailService;
 use Trees\Controller\Controller;
 use Trees\Exception\TreesException;
-use Trees\Security\SecurityService;
 use Trees\Helper\FlashMessages\FlashMessage;
 
 class AuthController extends Controller
 {
     private ?User $userModel;
-    private ?SecurityService $securityService;
+    private const MAX_LOGIN_ATTEMPTS = 3;
+    private const BLOCK_DURATION_MINUTES = 30; // Block for 30 minutes after max attempts
+    private const REMEMBER_TOKEN_DAYS = 30;
 
     public function onConstruct()
     {
@@ -24,17 +24,104 @@ class AuthController extends Controller
         $name = "Eventlyy";
         $this->view->setTitle("Authentication | {$name}");
         $this->userModel = new User();
-        $this->securityService = new SecurityService();
+        
+        // Check remember me token on every request
+        $this->checkRememberMeToken();
     }
 
-    public function login()
+    public function login(Request $request, Response $response)
     {
+        // Check if user is already logged in
+        if ($this->isLoggedIn()) {
+            return $response->redirect("/");
+        }
+
         $view = [];
         return $this->render('auth/login', $view);
     }
 
-    public function signup()
+    public function login_user(Request $request, Response $response) 
     {
+        if ("POST" !== $request->getMethod()) {
+            $response->redirect('/login');
+            return;
+        }
+
+        $rules = [
+            'email' => 'required|email',
+            'password' => 'required'
+        ];
+
+        if (!$request->validate($rules, false)) {
+            set_form_data($request->all());
+            set_form_error($request->getErrors());
+            $response->redirect('/login');
+            return;
+        }
+
+        try {
+            $email = strtolower(trim($request->input('email')));
+            $password = $request->input('password');
+            $remember = $request->input('remember', false) ? true : false;
+
+            // Find user by email
+            $user = $this->userModel->findByEmail($email);
+
+            if (!$user) {
+                FlashMessage::setMessage('Invalid email or password', 'danger');
+                set_form_data($request->except(['password']));
+                $response->redirect('/login');
+                return;
+            }
+
+            // Check if user is temporarily blocked due to failed attempts
+            if ($this->isTemporarilyBlocked($user)) {
+                $blockedUntil = new \DateTime($user->blocked_until);
+                $timeRemaining = $blockedUntil->diff(new \DateTime())->format('%i minutes');
+                FlashMessage::setMessage("Account temporarily blocked due to multiple failed login attempts. Try again in {$timeRemaining}.", 'danger');
+                $response->redirect('/login');
+                return;
+            }
+
+            // Check if user is permanently blocked
+            if ($user->isBlocked()) {
+                FlashMessage::setMessage('Your account has been blocked. Please contact support.', 'danger');
+                $response->redirect('/login');
+                return;
+            }
+
+            // Verify password
+            if (!$user->verifyPassword($password)) {
+                $this->handleFailedLogin($user);
+                FlashMessage::setMessage('Invalid email or password', 'danger');
+                set_form_data($request->except(['password']));
+                $response->redirect('/login');
+                return;
+            }
+
+            // Successful login - reset login attempts
+            $this->resetLoginAttempts($user);
+
+            // Login user
+            $this->loginUser($user, $remember);
+
+            FlashMessage::setMessage('Welcome back!', 'success');
+
+            return $response->redirect('/');
+        } catch (TreesException $e) {
+            FlashMessage::setMessage('Login failed. Please try again.', 'danger');
+            set_form_data($request->except(['password']));
+            $response->redirect('/login');
+        }
+    }
+
+    public function signup(Request $request, Response $response)
+    {
+        // Check if user is already logged in
+        if ($this->isLoggedIn()) {
+            return $response->redirect("/");
+        }
+
         $view = [];
         return $this->render('auth/signup', $view);
     }
@@ -42,342 +129,297 @@ class AuthController extends Controller
     public function create_user(Request $request, Response $response)
     {
         if ("POST" !== $request->getMethod()) {
+            $response->redirect('/sign-up');
             return;
         }
 
         $rules = [
-            'name' => 'required|min:3',
-            'other_name' => 'required|min:3',
+            'name' => 'required|min:2|max:50',
+            'other_name' => 'required|min:2|max:50',
             'email' => 'required|email|unique:users.email',
-            'password' => 'required|password_secure',
-            'password_confirmation' => 'required',
-            'terms' => 'required'
+            'password' => 'required|min:8|password_secure',
+            'password_confirmation' => 'required|same:password',
+            'terms' => 'required|accepted'
         ];
 
         if (!$request->validate($rules, false)) {
             set_form_data($request->all());
             set_form_error($request->getErrors());
-            $response->redirect("/sign-up");
-            return;
-        }
-
-        // Generate unique user ID
-        $userId = 'USR_' . uniqid() . '_' . str_slug($request->input('name') . ' ' . $request->input('other_name'));
-        
-        // Hash password
-        $hashedPassword = password_hash($request->input('password'), PASSWORD_DEFAULT);
-        
-        // Generate verification token
-        $verificationToken = bin2hex(random_bytes(32));
-        $tokenExpire = date('Y-m-d H:i:s', strtotime('+24 hours'));
-
-        // Prepare user data
-        $userData = [
-            'user_id' => $userId,
-            'name' => $request->input('name'),
-            'other_name' => $request->input('other_name'),
-            'email' => $request->input('email'),
-            'password' => $hashedPassword,
-            'role' => 'organiser',
-            'token' => $verificationToken,
-            'token_expire' => $tokenExpire,
-            'security_setup_completed' => 0, // Initialize security setup as incomplete
-        ];
-
-        try {
-            // Create user
-            $user = $this->userModel->create($userData);
-            
-            if ($user) {
-                // Start security setup process
-                $securitySetup = $this->startSecuritySetup($userId);
-                
-                if ($securitySetup['success']) {
-                    // Store security session token in session for later use
-                    $_SESSION['security_session_token'] = $securitySetup['session_token'];
-                    $_SESSION['recovery_phrase'] = $securitySetup['recovery_phrase'];
-                    $_SESSION['new_user_id'] = $userId;
-                    
-                    FlashMessage::setMessage('Registration successful! Please complete your security setup.', 'success');
-                    $response->redirect("/security-setup");
-                    return;
-                } else {
-                    FlashMessage::setMessage('Registration successful, but security setup failed. Please contact support.', 'warning');
-                    $response->redirect("/secure-verifcation/pin/{$verificationToken}");
-                    return;
-                }
-            }
-
-            throw new \Exception('Failed to create user account');
-           
-        } catch (TreesException $e) {
-            FlashMessage::setMessage('Registration failed. Please try again.', 'danger');
-            set_form_data($request->all());
-            $response->redirect("/sign-up");
-        }
-    }
-
-    /**
-     * Show security setup page
-     */
-    public function securitySetup(Request $request, Response $response)
-    {
-        // Check if we have the required session data
-        if (!isset($_SESSION['security_session_token']) || !isset($_SESSION['recovery_phrase'])) {
-            FlashMessage::setMessage('Invalid security setup session. Please register again.', 'danger');
-            return $response->redirect('/sign-up');
-        }
-
-        $view = [
-            'recovery_phrase' => $_SESSION['recovery_phrase'],
-            'session_token' => $_SESSION['security_session_token']
-        ];
-
-        return $this->render('auth/security-setup', $view);
-    }
-
-    /**
-     * Process security setup completion
-     */
-    public function completeSecuritySetup(Request $request, Response $response)
-    {
-        if ("POST" !== $request->getMethod()) {
-            return;
-        }
-
-        $rules = [
-            'pin' => 'required|min:4|max:8|numeric',
-            'pin_confirmation' => 'required|same:pin',
-            'recovery_phrase_confirmed' => 'required'
-        ];
-
-        if (!$request->validate($rules, false)) {
-            set_form_error($request->getErrors());
-            $response->redirect("/security-setup");
-            return;
-        }
-
-        $sessionToken = $_SESSION['security_session_token'] ?? '';
-        $userId = $_SESSION['new_user_id'] ?? '';
-        $recoveryPhrase = $_SESSION['recovery_phrase'] ?? '';
-        $pin = $request->input('pin');
-
-        if (empty($sessionToken) || empty($userId) || empty($recoveryPhrase)) {
-            FlashMessage::setMessage('Invalid security setup session. Please try again.', 'danger');
             $response->redirect('/sign-up');
             return;
         }
 
         try {
-            $completed = $this->securityService->completeSecuritySetup(
-                $sessionToken,
-                $userId,
-                $pin,
-                $recoveryPhrase
+            // Generate unique user ID
+            $userId = User::generateUserId(
+                $request->input('name'),
+                $request->input('other_name')
             );
 
-            if ($completed) {
-                // Clear security setup session data
-                unset($_SESSION['security_session_token']);
-                unset($_SESSION['recovery_phrase']);
-                unset($_SESSION['new_user_id']);
+            // Hash password
+            $hashedPassword = password_hash($request->input('password'), PASSWORD_DEFAULT);
 
-                FlashMessage::setMessage('Security setup completed successfully! You can now login.', 'success');
+            // Prepare user data
+            $userData = [
+                'user_id' => $userId,
+                'name' => trim($request->input('name')),
+                'other_name' => trim($request->input('other_name')),
+                'email' => strtolower(trim($request->input('email'))),
+                'password' => $hashedPassword,
+                'role' => 'organiser',
+                'is_blocked' => 0,
+                'login_attempts' => 0,
+                'blocked_until' => null,
+                'last_login_attempt' => null
+            ];
+
+            // Create user
+            $user = $this->userModel->create($userData);
+
+            if ($user) {
+                FlashMessage::setMessage('Registration successful! Please login to continue.', 'success');
                 $response->redirect('/login');
                 return;
             }
 
-            FlashMessage::setMessage('Failed to complete security setup. Please try again.', 'danger');
-            $response->redirect('/security-setup');
-
+            throw new \Exception('Failed to create user account');
+        } catch (TreesException $e) {
+            FlashMessage::setMessage('Registration failed. Please try again.', 'danger');
+            set_form_data($request->all());
+            $response->redirect('/sign-up');
         } catch (\Exception $e) {
-            FlashMessage::setMessage('Security setup failed: ' . $e->getMessage(), 'danger');
-            $response->redirect('/security-setup');
+            FlashMessage::setMessage('An unexpected error occurred. Please try again.', 'danger');
+            set_form_data($request->all());
+            $response->redirect('/sign-up');
         }
     }
 
-    /**
-     * Show PIN verification page (for login or sensitive operations)
-     */
-    public function verifyPin(Request $request, Response $response)
+    public function logout(Request $request, Response $response)
     {
-        // Check if user is logged in
-        if (!isset($_SESSION['user_id'])) {
-            FlashMessage::setMessage('Please login first.', 'warning');
-            return $response->redirect('/login');
-        }
-
-        $view = [];
-        return $this->render('auth/verify-pin', $view);
+        $this->logoutUser();
+        FlashMessage::setMessage('You have been logged out successfully.', 'success');
+        $response->redirect('/');
     }
 
     /**
-     * Process PIN verification
+     * Handle failed login attempts
      */
-    public function processPinVerification(Request $request, Response $response)
+    private function handleFailedLogin(User $user): void
     {
-        if ("POST" !== $request->getMethod()) {
-            return;
-        }
+        $attempts = ($user->login_attempts ?? 0) + 1;
+        $now = new \DateTime();
 
-        $rules = [
-            'pin' => 'required|numeric'
+        $updateData = [
+            'login_attempts' => $attempts,
+            'last_login_attempt' => $now->format('Y-m-d H:i:s')
         ];
 
-        if (!$request->validate($rules, false)) {
-            set_form_error($request->getErrors());
-            $response->redirect("/verify-pin");
+        // Block user temporarily if max attempts reached
+        if ($attempts >= self::MAX_LOGIN_ATTEMPTS) {
+            $blockedUntil = clone $now;
+            $blockedUntil->add(new \DateInterval('PT' . self::BLOCK_DURATION_MINUTES . 'M'));
+            
+            $updateData['blocked_until'] = $blockedUntil->format('Y-m-d H:i:s');
+        }
+
+        // Use the static updateWhere method to avoid return type issues
+        User::updateWhere(['email' => $user->email], $updateData);
+    }
+
+    /**
+     * Reset login attempts after successful login
+     */
+    private function resetLoginAttempts(User $user): void
+    {
+        // Use the static updateWhere method to avoid return type issues
+        User::updateWhere(['email' => $user->email], [
+            'login_attempts' => 0,
+            'blocked_until' => null,
+            'last_login_attempt' => null
+        ]);
+    }
+
+    /**
+     * Check if user is temporarily blocked
+     */
+    private function isTemporarilyBlocked(User $user): bool
+    {
+        if (!$user->blocked_until) {
+            return false;
+        }
+
+        $blockedUntil = new \DateTime($user->blocked_until);
+        $now = new \DateTime();
+
+        // If block period has expired, unblock the user
+        if ($now >= $blockedUntil) {
+            $user->update([
+                'login_attempts' => 0,
+                'blocked_until' => null,
+                'last_login_attempt' => null
+            ]);
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Check remember me token and auto-login if valid
+     */
+    private function checkRememberMeToken(): void
+    {
+        // Skip if already logged in
+        if ($this->isLoggedIn()) {
             return;
         }
 
-        $userId = $_SESSION['user_id'] ?? '';
-        $pin = $request->input('pin');
+        // Check if remember token exists in cookie
+        if (!isset($_COOKIE['remember_token']) || empty($_COOKIE['remember_token'])) {
+            return;
+        }
 
-        if (empty($userId)) {
-            FlashMessage::setMessage('Please login first.', 'warning');
+        $token = $_COOKIE['remember_token'];
+
+        // Find user by remember token
+        $user = $this->userModel->first(['remember_token' => $token]);
+
+        if (!$user) {
+            // Invalid token, clear cookie
+            $this->clearRememberCookie();
+            return;
+        }
+
+        // Check if user is blocked
+        if ($user->isBlocked() || $this->isTemporarilyBlocked($user)) {
+            $this->clearRememberCookie();
+            return;
+        }
+
+        // Auto-login the user
+        $this->loginUser($user, true);
+    }
+
+    /**
+     * Login user and set session
+     */
+    private function loginUser(User $user, bool $remember = false): void
+    {
+        // Set session data
+        session()->set('user_id', $user->user_id);
+        session()->set('user_email', $user->email);
+        session()->set('user_name', $user->name);
+        session()->set('user_role', $user->role);
+        session()->set('logged_in', true);
+
+        // Set remember me cookie if requested
+        if ($remember) {
+            $token = bin2hex(random_bytes(32));
+            $expiry = time() + (self::REMEMBER_TOKEN_DAYS * 24 * 60 * 60);
+
+            // Store remember token in database
+            $user->update(['remember_token' => $token]);
+
+            setcookie('remember_token', $token, $expiry, '/', '', true, true);
+        }
+    }
+
+    /**
+     * Logout user and clear session
+     */
+    private function logoutUser(): void
+    {
+        // Get current user to clear remember token from database
+        $userId = session()->get('user_id');
+        if ($userId) {
+            $user = $this->userModel->findByUserId($userId);
+            if ($user) {
+                $user->update(['remember_token' => null]);
+            }
+        }
+
+        // Clear session data
+        session()->remove('user_id');
+        session()->remove('user_email');
+        session()->remove('user_name');
+        session()->remove('user_role');
+        session()->remove('logged_in');
+
+        // Clear remember me cookie
+        $this->clearRememberCookie();
+
+        // Destroy session
+        session()->destroy();
+    }
+
+    /**
+     * Clear remember me cookie
+     */
+    private function clearRememberCookie(): void
+    {
+        if (isset($_COOKIE['remember_token'])) {
+            setcookie('remember_token', '', time() - 3600, '/', '', true, true);
+        }
+    }
+
+    /**
+     * Check if user is logged in
+     */
+    private function isLoggedIn(): bool
+    {
+        return session()->get('logged_in', false) === true;
+    }
+
+    /**
+     * Get current logged in user
+     */
+    public function getCurrentUser(): ?User
+    {
+        if (!$this->isLoggedIn()) {
+            return null;
+        }
+
+        $userId = session()->get('user_id');
+        return $userId ? $this->userModel->findByUserId($userId) : null;
+    }
+
+    /**
+     * Require authentication middleware
+     */
+    public function requireAuth(Request $request, Response $response): bool
+    {
+        if (!$this->isLoggedIn()) {
+            FlashMessage::setMessage('Please login to access this page.', 'warning');
             $response->redirect('/login');
-            return;
+            return false;
         }
-
-        try {
-            $isValid = $this->securityService->verifyUserPin($userId, $pin);
-
-            if ($isValid) {
-                $_SESSION['pin_verified'] = true;
-                $_SESSION['pin_verified_at'] = time();
-                
-                // Redirect to intended destination or dashboard
-                $redirectTo = $_SESSION['intended_url'] ?? '/dashboard';
-                unset($_SESSION['intended_url']);
-                
-                FlashMessage::setMessage('PIN verified successfully.', 'success');
-                $response->redirect($redirectTo);
-                return;
-            }
-
-            FlashMessage::setMessage('Invalid PIN. Please try again.', 'danger');
-            $response->redirect('/verify-pin');
-
-        } catch (\Exception $e) {
-            FlashMessage::setMessage('PIN verification failed. Please try again.', 'danger');
-            $response->redirect('/verify-pin');
-        }
+        return true;
     }
 
     /**
-     * Show PIN reset page
+     * Check if current user has specific role
      */
-    public function resetPin()
+    public function hasRole(string $role): bool
     {
-        $view = [];
-        return $this->render('auth/reset-pin', $view);
+        $userRole = session()->get('user_role');
+        return $userRole === $role;
     }
 
     /**
-     * Process PIN reset with recovery phrase
+     * Require specific role
      */
-    public function processResetPin(Request $request, Response $response)
+    public function requireRole(string $role, Request $request, Response $response): bool
     {
-        if ("POST" !== $request->getMethod()) {
-            return;
-        }
-
-        $rules = [
-            'email' => 'required|email',
-            'recovery_phrase' => 'required',
-            'new_pin' => 'required|min:4|max:8|numeric',
-            'new_pin_confirmation' => 'required|same:new_pin'
-        ];
-
-        if (!$request->validate($rules, false)) {
-            set_form_error($request->getErrors());
-            $response->redirect("/reset-pin");
-            return;
-        }
-
-        try {
-            // Find user by email
-            $user = User::findByEmail($request->input('email'));
-            if (!$user) {
-                FlashMessage::setMessage('User not found.', 'danger');
-                $response->redirect('/reset-pin');
-                return;
-            }
-
-            $reset = $this->securityService->resetPinWithRecoveryPhrase(
-                $user->user_id,
-                $request->input('recovery_phrase'),
-                $request->input('new_pin')
-            );
-
-            if ($reset) {
-                FlashMessage::setMessage('PIN reset successfully. You can now login with your new PIN.', 'success');
-                $response->redirect('/login');
-                return;
-            }
-
-            FlashMessage::setMessage('Invalid recovery phrase or reset failed.', 'danger');
-            $response->redirect('/reset-pin');
-
-        } catch (\Exception $e) {
-            FlashMessage::setMessage('PIN reset failed: ' . $e->getMessage(), 'danger');
-            $response->redirect('/reset-pin');
-        }
-    }
-
-    /**
-     * Helper method to start security setup
-     */
-    private function startSecuritySetup(string $userId): array
-    {
-        try {
-            $sessionToken = $this->securityService->createSecuritySession($userId);
-            $recoveryPhrase = $this->securityService->generateRecoveryPhrase();
-
-            return [
-                'success' => true,
-                'session_token' => $sessionToken,
-                'recovery_phrase' => $recoveryPhrase
-            ];
-
-        } catch (\Exception $e) {
-            return [
-                'success' => false,
-                'error' => $e->getMessage()
-            ];
-        }
-    }
-
-    /**
-     * Check if current user has completed security setup
-     */
-    public function requiresSecuritySetup(): bool
-    {
-        $userId = $_SESSION['user_id'] ?? '';
-        if (empty($userId)) {
+        if (!$this->requireAuth($request, $response)) {
             return false;
         }
 
-        return !$this->securityService->hasUserCompletedSetup($userId);
-    }
-
-    /**
-     * Check if PIN verification is required and valid
-     */
-    public function requiresPinVerification(): bool
-    {
-        // Check if PIN was verified recently (within 30 minutes)
-        $pinVerified = $_SESSION['pin_verified'] ?? false;
-        $verifiedAt = $_SESSION['pin_verified_at'] ?? 0;
-        
-        if ($pinVerified && (time() - $verifiedAt) < 1800) { // 30 minutes
+        if (!$this->hasRole($role)) {
+            FlashMessage::setMessage('Access denied. Insufficient permissions.', 'danger');
+            $response->redirect('/');
             return false;
         }
 
-        // Clear expired PIN verification
-        unset($_SESSION['pin_verified']);
-        unset($_SESSION['pin_verified_at']);
-        
         return true;
     }
 }

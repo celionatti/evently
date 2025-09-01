@@ -59,7 +59,7 @@
             </button>
         </div>
 
-        <form action="<?php echo url('/complete-security-setup'); ?>" method="post" id="securitySetupForm">
+        <form action="<?php echo $this->escape(url('/complete-security-setup')); ?>" method="post" id="securitySetupForm">
             <div class="checkbox-group">
                 <input type="checkbox" id="phraseConfirm" name="recovery_phrase_confirmed" value="1" required>
                 <label for="phraseConfirm">

@@ -12,10 +12,16 @@ namespace Trees\Database\Drivers;
  * =======================================
  */
 
+use PDOStatement;
 use Trees\Database\AbstractDatabase;
 
 class MySQLDatabase extends AbstractDatabase
 {
+    /**
+     * @var PDOStatement|null The last executed statement
+     */
+    protected ?PDOStatement $lastStatement = null;
+
     /**
      * @var array Default configuration values
      */
@@ -90,17 +96,39 @@ class MySQLDatabase extends AbstractDatabase
                 throw new \Exception("Failed to execute query: " . implode(' ', $stmt->errorInfo()));
             }
 
+            // Store the statement for rowCount() calls
+            $this->lastStatement = $stmt;
+
             // Determine if this is a SELECT query by checking if it starts with SELECT
-            // (This is a simple check, might not work for complex queries with comments)
             if (stripos(trim($query), 'SELECT') === 0) {
                 return $stmt->fetchAll();
             }
 
-            // For non-SELECT queries, return the number of affected rows
-            return $stmt->rowCount();
+            // For non-SELECT queries, return true to indicate success
+            return true;
         } catch (\Exception $e) {
             $this->setLastError($e->getMessage());
+            $this->lastStatement = null;
             return false;
+        }
+    }
+
+    /**
+     * Get the number of rows affected by the last DELETE, INSERT, or UPDATE statement
+     *
+     * @return int The number of affected rows
+     */
+    public function rowCount(): int
+    {
+        if ($this->lastStatement === null) {
+            return 0;
+        }
+
+        try {
+            return $this->lastStatement->rowCount();
+        } catch (\Exception $e) {
+            $this->setLastError($e->getMessage());
+            return 0;
         }
     }
 
@@ -181,6 +209,16 @@ class MySQLDatabase extends AbstractDatabase
     }
 
     /**
+     * Get the driver name
+     *
+     * @return string The driver name
+     */
+    protected function getDriverName(): string
+    {
+        return 'mysql';
+    }
+
+    /**
      * Close the database connection
      *
      * @return bool True on success, false on failure
@@ -188,6 +226,7 @@ class MySQLDatabase extends AbstractDatabase
     public function close(): bool
     {
         $this->connection = null;
+        $this->lastStatement = null;
         return true;
     }
 }

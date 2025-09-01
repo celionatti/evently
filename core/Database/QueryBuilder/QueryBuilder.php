@@ -185,17 +185,6 @@ class QueryBuilder
      * @param array $params The parameters for the condition
      * @return self
      */
-//    public function whereRaw(string $condition, array $params = []): self
-//    {
-//        $this->parts['where'][] = $condition;
-//
-//        foreach ($params as $key => $value) {
-//            $this->parts['params'][$key] = $value;
-//        }
-//
-//        return $this;
-//    }
-
     public function whereRaw(string $condition, array $params = []): self
     {
         $this->parts['where'][] = $condition;
@@ -419,9 +408,39 @@ class QueryBuilder
      * Update records in the table
      *
      * @param array $data The data to update
-     * @return mixed The query result
+     * @return int The number of affected rows
      * @throws Exception
      */
+
+    //     public function update(array $data): int
+    //     {
+    //         if (empty($this->table)) {
+    //             throw new TreesException("Table name is required");
+    //         }
+
+    //         if (empty($this->parts['where'])) {
+    //             throw new TreesException("WHERE clause is required for UPDATE");
+    //         }
+
+    //         $sets = [];
+    //         $params = $this->parts['params'];
+
+    //         foreach ($data as $column => $value) {
+    //             $paramName = $this->generateParamName($column);
+    //             $sets[] = "$column = :$paramName";
+    //             $params[$paramName] = $value;
+    //         }
+
+    //         $query = "UPDATE " . $this->table . " SET " . implode(', ', $sets);
+
+    //         if (!empty($this->parts['where'])) {
+    //             $query .= " WHERE " . implode(' AND ', $this->parts['where']);
+    //         }
+
+    //         return $this->db->query($query, $params);
+    // //        return $this->db->rowCount();
+    //     }
+
     public function update(array $data): int
     {
         if (empty($this->table)) {
@@ -447,16 +466,51 @@ class QueryBuilder
             $query .= " WHERE " . implode(' AND ', $this->parts['where']);
         }
 
-        return $this->db->query($query, $params);
-//        return $this->db->rowCount();
+        try {
+            // Execute the query - this will return true/false
+            $result = $this->db->query($query, $params);
+
+            // If query succeeded, return the number of affected rows
+            if ($result !== false) {
+                return $this->db->rowCount();
+            }
+
+            return 0;
+        } catch (Exception $e) {
+            // Log the error if logger is available
+            if (class_exists('\Trees\Logger\Logger')) {
+                \Trees\Logger\Logger::exception($e);
+            }
+            return 0;
+        }
     }
 
     /**
      * Delete records from the table
      *
-     * @return mixed The query result
+     * @return int The number of affected rows
      * @throws Exception
      */
+    //     public function delete(): int
+    //     {
+    //         if (empty($this->table)) {
+    //             throw new TreesException("Table name is required");
+    //         }
+
+    //         if (empty($this->parts['where'])) {
+    //             throw new TreesException("WHERE clause is required for DELETE");
+    //         }
+
+    //         $query = "DELETE FROM " . $this->table;
+
+    //         if (!empty($this->parts['where'])) {
+    //             $query .= " WHERE " . implode(' AND ', $this->parts['where']);
+    //         }
+
+    //         return $this->db->query($query, $this->parts['params']);
+    // //        return $this->db->rowCount();
+    //     }
+
     public function delete(): int
     {
         if (empty($this->table)) {
@@ -473,8 +527,23 @@ class QueryBuilder
             $query .= " WHERE " . implode(' AND ', $this->parts['where']);
         }
 
-        return $this->db->query($query, $this->parts['params']);
-//        return $this->db->rowCount();
+        try {
+            // Execute the query - this will return true/false
+            $result = $this->db->query($query, $this->parts['params']);
+            
+            // If query succeeded, return the number of affected rows
+            if ($result !== false) {
+                return $this->db->rowCount();
+            }
+            
+            return 0;
+        } catch (Exception $e) {
+            // Log the error if logger is available
+            if (class_exists('\Trees\Logger\Logger')) {
+                \Trees\Logger\Logger::exception($e);
+            }
+            return 0;
+        }
     }
 
     public function beginTransaction(): bool

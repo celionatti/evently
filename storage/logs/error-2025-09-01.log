@@ -18,3 +18,167 @@
 [01-Sep-2025 00:06:11 Africa/Lagos] SMTP Connection Test: FAILED
 [01-Sep-2025 00:06:11 Africa/Lagos] [2025-09-01 00:06:11] [INFO] MailService: Development email stored for: celionatti@gmail.com
 [01-Sep-2025 00:06:11 Africa/Lagos] [2025-09-01 00:06:11] [INFO] MailService: SMTP configuration successful
+[2025-09-01 22:33:38] Trees\Exception\TreesException: Route not found for path: /organiser/dashboard in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-01 22:52:56] Error: Call to undefined method App\controllers\AuthController::redirectBasedOnRole() in C:\xampp\htdocs\evently\app\controllers\AuthController.php on line 92
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AuthController->login_user(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#1 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'login_user', Array)
+#2 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#3 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#4 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#5 {main}
+
+[2025-09-01 23:06:01] Trees\Exception\TreesException: Route not found for path: /dist/css/bootstrap.min.css.map in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-01 23:06:16] Trees\Exception\TreesException: Route not found for path: /dist/css/bootstrap.min.css.map in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-01 23:06:28] Trees\Exception\TreesException: Route not found for path: /dist/css/bootstrap.min.css.map in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-01 23:07:22] Trees\Exception\TreesException: Route not found for path: /dist/css/bootstrap.min.css.map in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-01 23:07:33] Trees\Exception\TreesException: Route not found for path: /dist/css/bootstrap.min.css.map in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-01 23:07:51] Trees\Exception\TreesException: Route not found for path: /dist/css/bootstrap.min.css.map in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-01 23:09:31] Trees\Exception\TreesException: Route not found for path: /dist/css/bootstrap.min.css.map in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-01 23:09:34] Trees\Exception\TreesException: Route not found for path: /dist/css/bootstrap.min.css.map in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-01 23:09:45] TypeError: App\controllers\AuthController::loginUser(): Argument #2 ($remember) must be of type bool, string given, called in C:\xampp\htdocs\evently\app\controllers\AuthController.php on line 87 in C:\xampp\htdocs\evently\app\controllers\AuthController.php on line 176
+Stack trace:
+#0 C:\xampp\htdocs\evently\app\controllers\AuthController.php(87): App\controllers\AuthController->loginUser(Object(App\models\User), 'on')
+#1 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AuthController->login_user(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#2 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'login_user', Array)
+#3 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#4 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#5 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#6 {main}
+
+[2025-09-01 23:12:05] Trees\Exception\TreesException: Route not found for path: /dist/css/bootstrap.min.css.map in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-01 23:12:31] Trees\Exception\TreesException: Route not found for path: /dist/css/bootstrap.min.css.map in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-01 23:12:44] Trees\Exception\TreesException: Route not found for path: /dist/css/bootstrap.min.css.map in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-01 23:13:01] Trees\Exception\TreesException: Route not found for path: /dist/css/bootstrap.min.css.map in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-01 23:40:43] Trees\Exception\TreesException: Route not found for path: /dist/css/bootstrap.min.css.map in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-01 23:40:46] Trees\Exception\TreesException: Route not found for path: /dist/css/bootstrap.min.css.map in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-01 23:40:58] Trees\Exception\TreesException: Route not found for path: /dist/css/bootstrap.min.css.map in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-01 23:41:01] Trees\Exception\TreesException: Route not found for path: /dist/css/bootstrap.min.css.map in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-01 23:42:36] Trees\Exception\TreesException: Route not found for path: /dist/css/bootstrap.min.css.map in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-01 23:42:41] Trees\Exception\TreesException: Route not found for path: /dist/css/bootstrap.min.css.map in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-01 23:43:24] TypeError: Trees\Database\QueryBuilder\QueryBuilder::update(): Return value must be of type int, bool returned in C:\xampp\htdocs\evently\core\Database\QueryBuilder\QueryBuilder.php on line 450
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Database\Model\Model.php(386): Trees\Database\QueryBuilder\QueryBuilder->update(Array)
+#1 C:\xampp\htdocs\evently\app\controllers\AuthController.php(233): Trees\Database\Model\Model->update(Array)
+#2 C:\xampp\htdocs\evently\app\controllers\AuthController.php(103): App\controllers\AuthController->resetLoginAttempts(Object(App\models\User))
+#3 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AuthController->login_user(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#4 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'login_user', Array)
+#5 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#6 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#7 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#8 {main}
+

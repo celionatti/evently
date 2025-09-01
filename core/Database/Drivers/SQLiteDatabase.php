@@ -12,10 +12,16 @@ namespace Trees\Database\Drivers;
  * =======================================
  */
 
+use PDOStatement;
 use Trees\Database\AbstractDatabase;
 
 class SQLiteDatabase extends AbstractDatabase
 {
+    /**
+     * @var PDOStatement|null The last executed statement
+     */
+    protected ?PDOStatement $lastStatement = null;
+    
     /**
      * @var array Default configuration values
      */
@@ -101,6 +107,25 @@ class SQLiteDatabase extends AbstractDatabase
         } catch (\Exception $e) {
             $this->setLastError($e->getMessage());
             return false;
+        }
+    }
+
+    /**
+     * Get the number of rows affected by the last DELETE, INSERT, or UPDATE statement
+     *
+     * @return int The number of affected rows
+     */
+    public function rowCount(): int
+    {
+        if ($this->lastStatement === null) {
+            return 0;
+        }
+
+        try {
+            return $this->lastStatement->rowCount();
+        } catch (\Exception $e) {
+            $this->setLastError($e->getMessage());
+            return 0;
         }
     }
 

@@ -33,7 +33,7 @@
             <div class="mb-3">
                 <label for="loginPassword" class="form-label">Password</label>
                 <div class="input-group">
-                    <input type="password" class="form-control <?= has_error('password') ? 'is-invalid' : '' ?>" value="<?= old('password') ?>" id="loginPassword" placeholder="Enter your password">
+                    <input type="password" name="password" class="form-control <?= has_error('password') ? 'is-invalid' : '' ?>" value="<?= old('password') ?>" id="loginPassword" placeholder="Enter your password">
                     <span class="input-group-text password-toggle" id="loginPasswordToggle">
                         <i class="bi bi-eye"></i>
                     </span>
@@ -47,7 +47,7 @@
             </div>
 
             <div class="form-check mb-3">
-                <input class="form-check-input" type="checkbox" id="rememberMe">
+                <input class="form-check-input" name="remember" type="checkbox" id="rememberMe">
                 <label class="form-check-label" for="rememberMe">Remember me</label>
             </div>
 

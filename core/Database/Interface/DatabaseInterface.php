@@ -32,6 +32,13 @@ interface DatabaseInterface
     public function query(string $query, array $params = []): mixed;
 
     /**
+     * Get the number of rows affected by the last DELETE, INSERT, or UPDATE statement
+     *
+     * @return int The number of affected rows
+     */
+    public function rowCount(): int;
+
+    /**
      * Begin a transaction
      *
      * @return bool True on success, false on failure

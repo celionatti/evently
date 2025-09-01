@@ -39,13 +39,13 @@ class AdminUserController extends Controller
         return $this->render('admin/users/manage', $view);
     }
 
-    public function delete(Request $request, Response $response, $slug)
+    public function delete(Request $request, Response $response, $user_id)
     {
         if ("POST" !== $request->getMethod()) {
             return;
         }
 
-        $user = User::findBySlug($slug);
+        $user = User::findByUserId($user_id);
 
         if (!$user) {
             FlashMessage::setMessage("User Not Found!", 'danger');

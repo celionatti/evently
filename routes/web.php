@@ -26,6 +26,7 @@ $router->get('/events/{id}', [EventController::class, 'event']);
 
 // Auth: Login/SignUp
 $router->get('/login', [AuthController::class, 'login']);
+$router->post('/login', [AuthController::class, 'login_user']);
 $router->get('/sign-up', [AuthController::class, 'signup']);
 $router->post('/sign-up', [AuthController::class, 'create_user']);
 $router->get('/security-setup', [AuthController::class, 'securitySetup']);
@@ -59,7 +60,7 @@ $router->group(['prefix' => '/admin/events'], function ($router) {
 // Admin: Users Routes
 $router->group(['prefix' => '/admin/users'], function ($router) {
     $router->get('/manage', [AdminUserController::class, 'manage']);
-    $router->post('/delete/{slug}', [AdminUserController::class, 'delete']);
+    $router->post('/delete/{user_id}', [AdminUserController::class, 'delete']);
 });
 
 // Admin: Categories Routes
