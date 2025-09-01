@@ -10,12 +10,13 @@ use Trees\Http\Response;
 use Trees\Mailer\MailService;
 use Trees\Controller\Controller;
 use Trees\Exception\TreesException;
+use Trees\Security\SecurityService;
 use Trees\Helper\FlashMessages\FlashMessage;
 
 class AuthController extends Controller
 {
     private ?User $userModel;
-    private ?MailService $mailService;
+    private ?SecurityService $securityService;
 
     public function onConstruct()
     {
@@ -23,20 +24,18 @@ class AuthController extends Controller
         $name = "Eventlyy";
         $this->view->setTitle("Authentication | {$name}");
         $this->userModel = new User();
-        $this->mailService = new MailService();
+        $this->securityService = new SecurityService();
     }
 
     public function login()
     {
         $view = [];
-
         return $this->render('auth/login', $view);
     }
 
     public function signup()
     {
         $view = [];
-
         return $this->render('auth/signup', $view);
     }
 
@@ -64,10 +63,10 @@ class AuthController extends Controller
 
         // Generate unique user ID
         $userId = 'USR_' . uniqid() . '_' . str_slug($request->input('name') . ' ' . $request->input('other_name'));
-
+        
         // Hash password
         $hashedPassword = password_hash($request->input('password'), PASSWORD_DEFAULT);
-
+        
         // Generate verification token
         $verificationToken = bin2hex(random_bytes(32));
         $tokenExpire = date('Y-m-d H:i:s', strtotime('+24 hours'));
@@ -82,123 +81,303 @@ class AuthController extends Controller
             'role' => 'organiser',
             'token' => $verificationToken,
             'token_expire' => $tokenExpire,
-            'created_at' => date('Y-m-d H:i:s'),
-            'updated_at' => date('Y-m-d H:i:s')
+            'security_setup_completed' => 0, // Initialize security setup as incomplete
         ];
 
         try {
             // Create user
             $user = $this->userModel->create($userData);
-
+            
             if ($user) {
-                // Send verification email
-                $this->sendVerificationEmail($user->email, $user->name, $verificationToken);
-
-                // Set success message
-                FlashMessage::setMessage('Registration successful! Please check your email to verify your account.', 'success');
-
-                $response->redirect("/login");
-                return;
+                // Start security setup process
+                $securitySetup = $this->startSecuritySetup($userId);
+                
+                if ($securitySetup['success']) {
+                    // Store security session token in session for later use
+                    $_SESSION['security_session_token'] = $securitySetup['session_token'];
+                    $_SESSION['recovery_phrase'] = $securitySetup['recovery_phrase'];
+                    $_SESSION['new_user_id'] = $userId;
+                    
+                    FlashMessage::setMessage('Registration successful! Please complete your security setup.', 'success');
+                    $response->redirect("/security-setup");
+                    return;
+                } else {
+                    FlashMessage::setMessage('Registration successful, but security setup failed. Please contact support.', 'warning');
+                    $response->redirect("/secure-verifcation/pin/{$verificationToken}");
+                    return;
+                }
             }
 
             throw new \Exception('Failed to create user account');
+           
         } catch (TreesException $e) {
-            // Log error
-            error_log("Registration error: " . $e->getMessage());
-
             FlashMessage::setMessage('Registration failed. Please try again.', 'danger');
             set_form_data($request->all());
             $response->redirect("/sign-up");
         }
     }
 
-    public function verify_email(Request $request, Response $response)
+    /**
+     * Show security setup page
+     */
+    public function securitySetup(Request $request, Response $response)
     {
-        $token = $request->input('token');
-
-        if (empty($token)) {
-            FlashMessage::setMessage('Invalid verification link.', 'danger');
-            $response->redirect("/login");
-            return;
+        // Check if we have the required session data
+        if (!isset($_SESSION['security_session_token']) || !isset($_SESSION['recovery_phrase'])) {
+            FlashMessage::setMessage('Invalid security setup session. Please register again.', 'danger');
+            return $response->redirect('/sign-up');
         }
 
-        // Find user by token
-        $user = $this->userModel->where(['token' => $token])[0] ?? null;
-
-        if (!$user) {
-            FlashMessage::setMessage('Invalid verification token.', 'danger');
-            $response->redirect("/login");
-            return;
-        }
-
-        // Check if token is expired
-        if (strtotime($user->token_expire) < time()) {
-            FlashMessage::setMessage('Verification link has expired.', 'danger');
-            $response->redirect("/login");
-            return;
-        }
-
-        // Update user (clear token and mark as verified)
-        $updateData = [
-            'token' => null,
-            'token_expire' => null,
-            'updated_at' => date('Y-m-d H:i:s')
+        $view = [
+            'recovery_phrase' => $_SESSION['recovery_phrase'],
+            'session_token' => $_SESSION['security_session_token']
         ];
 
-        if ($this->userModel->updateWhere(['id' => $user->id], $updateData)) {
-            FlashMessage::setMessage('Email verified successfully! You can now login.', 'success');
-        } else {
-            FlashMessage::setMessage('Failed to verify email. Please try again.', 'danger');
-        }
-
-        $response->redirect("/login");
+        return $this->render('auth/security-setup', $view);
     }
 
-    private function sendVerificationEmail(string $email, string $name, string $token): bool
+    /**
+     * Process security setup completion
+     */
+    public function completeSecuritySetup(Request $request, Response $response)
     {
-        $verificationUrl = url("/verify-email?token={$token}");
+        if ("POST" !== $request->getMethod()) {
+            return;
+        }
 
-        $subject = "Verify Your Email - Eventlyy";
+        $rules = [
+            'pin' => 'required|min:4|max:8|numeric',
+            'pin_confirmation' => 'required|same:pin',
+            'recovery_phrase_confirmed' => 'required'
+        ];
 
-        $body = "
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <meta charset='UTF-8'>
-            <title>Email Verification</title>
-            <style>
-                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-                .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-                .header { background: #007bff; color: white; padding: 20px; text-align: center; }
-                .content { background: #f9f9f9; padding: 20px; }
-                .button { display: inline-block; padding: 12px 24px; background: #007bff; color: white; text-decoration: none; border-radius: 4px; }
-                .footer { margin-top: 20px; padding: 20px; background: #f0f0f0; text-align: center; font-size: 12px; }
-            </style>
-        </head>
-        <body>
-            <div class='container'>
-                <div class='header'>
-                    <h1>Welcome to Eventlyy!</h1>
-                </div>
-                <div class='content'>
-                    <h2>Hi {$name},</h2>
-                    <p>Thank you for registering with Eventlyy. Please verify your email address to complete your registration.</p>
-                    <p>
-                        <a href='{$verificationUrl}' class='button'>Verify Email Address</a>
-                    </p>
-                    <p>Or copy and paste this link in your browser:</p>
-                    <p>{$verificationUrl}</p>
-                    <p>This verification link will expire in 24 hours.</p>
-                </div>
-                <div class='footer'>
-                    <p>If you did not create an account with Eventlyy, please ignore this email.</p>
-                    <p>&copy; " . date('Y') . " Eventlyy. All rights reserved.</p>
-                </div>
-            </div>
-        </body>
-        </html>
-        ";
+        if (!$request->validate($rules, false)) {
+            set_form_error($request->getErrors());
+            $response->redirect("/security-setup");
+            return;
+        }
 
-        return $this->mailService->sendEmail($email, $subject, $body);
+        $sessionToken = $_SESSION['security_session_token'] ?? '';
+        $userId = $_SESSION['new_user_id'] ?? '';
+        $recoveryPhrase = $_SESSION['recovery_phrase'] ?? '';
+        $pin = $request->input('pin');
+
+        if (empty($sessionToken) || empty($userId) || empty($recoveryPhrase)) {
+            FlashMessage::setMessage('Invalid security setup session. Please try again.', 'danger');
+            $response->redirect('/sign-up');
+            return;
+        }
+
+        try {
+            $completed = $this->securityService->completeSecuritySetup(
+                $sessionToken,
+                $userId,
+                $pin,
+                $recoveryPhrase
+            );
+
+            if ($completed) {
+                // Clear security setup session data
+                unset($_SESSION['security_session_token']);
+                unset($_SESSION['recovery_phrase']);
+                unset($_SESSION['new_user_id']);
+
+                FlashMessage::setMessage('Security setup completed successfully! You can now login.', 'success');
+                $response->redirect('/login');
+                return;
+            }
+
+            FlashMessage::setMessage('Failed to complete security setup. Please try again.', 'danger');
+            $response->redirect('/security-setup');
+
+        } catch (\Exception $e) {
+            FlashMessage::setMessage('Security setup failed: ' . $e->getMessage(), 'danger');
+            $response->redirect('/security-setup');
+        }
+    }
+
+    /**
+     * Show PIN verification page (for login or sensitive operations)
+     */
+    public function verifyPin(Request $request, Response $response)
+    {
+        // Check if user is logged in
+        if (!isset($_SESSION['user_id'])) {
+            FlashMessage::setMessage('Please login first.', 'warning');
+            return $response->redirect('/login');
+        }
+
+        $view = [];
+        return $this->render('auth/verify-pin', $view);
+    }
+
+    /**
+     * Process PIN verification
+     */
+    public function processPinVerification(Request $request, Response $response)
+    {
+        if ("POST" !== $request->getMethod()) {
+            return;
+        }
+
+        $rules = [
+            'pin' => 'required|numeric'
+        ];
+
+        if (!$request->validate($rules, false)) {
+            set_form_error($request->getErrors());
+            $response->redirect("/verify-pin");
+            return;
+        }
+
+        $userId = $_SESSION['user_id'] ?? '';
+        $pin = $request->input('pin');
+
+        if (empty($userId)) {
+            FlashMessage::setMessage('Please login first.', 'warning');
+            $response->redirect('/login');
+            return;
+        }
+
+        try {
+            $isValid = $this->securityService->verifyUserPin($userId, $pin);
+
+            if ($isValid) {
+                $_SESSION['pin_verified'] = true;
+                $_SESSION['pin_verified_at'] = time();
+                
+                // Redirect to intended destination or dashboard
+                $redirectTo = $_SESSION['intended_url'] ?? '/dashboard';
+                unset($_SESSION['intended_url']);
+                
+                FlashMessage::setMessage('PIN verified successfully.', 'success');
+                $response->redirect($redirectTo);
+                return;
+            }
+
+            FlashMessage::setMessage('Invalid PIN. Please try again.', 'danger');
+            $response->redirect('/verify-pin');
+
+        } catch (\Exception $e) {
+            FlashMessage::setMessage('PIN verification failed. Please try again.', 'danger');
+            $response->redirect('/verify-pin');
+        }
+    }
+
+    /**
+     * Show PIN reset page
+     */
+    public function resetPin()
+    {
+        $view = [];
+        return $this->render('auth/reset-pin', $view);
+    }
+
+    /**
+     * Process PIN reset with recovery phrase
+     */
+    public function processResetPin(Request $request, Response $response)
+    {
+        if ("POST" !== $request->getMethod()) {
+            return;
+        }
+
+        $rules = [
+            'email' => 'required|email',
+            'recovery_phrase' => 'required',
+            'new_pin' => 'required|min:4|max:8|numeric',
+            'new_pin_confirmation' => 'required|same:new_pin'
+        ];
+
+        if (!$request->validate($rules, false)) {
+            set_form_error($request->getErrors());
+            $response->redirect("/reset-pin");
+            return;
+        }
+
+        try {
+            // Find user by email
+            $user = User::findByEmail($request->input('email'));
+            if (!$user) {
+                FlashMessage::setMessage('User not found.', 'danger');
+                $response->redirect('/reset-pin');
+                return;
+            }
+
+            $reset = $this->securityService->resetPinWithRecoveryPhrase(
+                $user->user_id,
+                $request->input('recovery_phrase'),
+                $request->input('new_pin')
+            );
+
+            if ($reset) {
+                FlashMessage::setMessage('PIN reset successfully. You can now login with your new PIN.', 'success');
+                $response->redirect('/login');
+                return;
+            }
+
+            FlashMessage::setMessage('Invalid recovery phrase or reset failed.', 'danger');
+            $response->redirect('/reset-pin');
+
+        } catch (\Exception $e) {
+            FlashMessage::setMessage('PIN reset failed: ' . $e->getMessage(), 'danger');
+            $response->redirect('/reset-pin');
+        }
+    }
+
+    /**
+     * Helper method to start security setup
+     */
+    private function startSecuritySetup(string $userId): array
+    {
+        try {
+            $sessionToken = $this->securityService->createSecuritySession($userId);
+            $recoveryPhrase = $this->securityService->generateRecoveryPhrase();
+
+            return [
+                'success' => true,
+                'session_token' => $sessionToken,
+                'recovery_phrase' => $recoveryPhrase
+            ];
+
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'error' => $e->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * Check if current user has completed security setup
+     */
+    public function requiresSecuritySetup(): bool
+    {
+        $userId = $_SESSION['user_id'] ?? '';
+        if (empty($userId)) {
+            return false;
+        }
+
+        return !$this->securityService->hasUserCompletedSetup($userId);
+    }
+
+    /**
+     * Check if PIN verification is required and valid
+     */
+    public function requiresPinVerification(): bool
+    {
+        // Check if PIN was verified recently (within 30 minutes)
+        $pinVerified = $_SESSION['pin_verified'] ?? false;
+        $verifiedAt = $_SESSION['pin_verified_at'] ?? 0;
+        
+        if ($pinVerified && (time() - $verifiedAt) < 1800) { // 30 minutes
+            return false;
+        }
+
+        // Clear expired PIN verification
+        unset($_SESSION['pin_verified']);
+        unset($_SESSION['pin_verified_at']);
+        
+        return true;
     }
 }

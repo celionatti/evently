@@ -28,6 +28,14 @@ $router->get('/events/{id}', [EventController::class, 'event']);
 $router->get('/login', [AuthController::class, 'login']);
 $router->get('/sign-up', [AuthController::class, 'signup']);
 $router->post('/sign-up', [AuthController::class, 'create_user']);
+$router->get('/security-setup', [AuthController::class, 'securitySetup']);
+$router->post('/complete-security-setup', [AuthController::class, 'completeSecuritySetup']);
+// PIN VERIFY:
+$router->get('/verify-pin', [AuthController::class, 'verifyPin']);
+$router->post('/verify-pin', [AuthController::class, 'processPinVerification']);
+// PIN RESET:
+$router->get('/reset-pin', [AuthController::class, 'resetPin']);
+$router->post('/reset-pin', [AuthController::class, 'processResetPin']);
 
 // Admin: Routes
 $router->get('/admin', [AdminController::class, 'dashboard']);

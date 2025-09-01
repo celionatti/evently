@@ -1,0 +1,20 @@
+[01-Sep-2025 00:05:02 Africa/Lagos] [2025-09-01 00:05:02] [INFO] MailService: SMTP configuration successful
+[01-Sep-2025 00:05:19 Africa/Lagos] [2025-09-01 00:05:19] [INFO] MailService: SMTP configuration successful
+[01-Sep-2025 00:05:49 Africa/Lagos] [2025-09-01 00:05:49] [INFO] MailService: SMTP configuration successful
+[01-Sep-2025 00:05:50 Africa/Lagos] User created successfully: celionatti@gmail.com
+[01-Sep-2025 00:05:50 Africa/Lagos] Mail Service Config Status: {
+    "configured": true,
+    "environment": "development",
+    "host": "smtp.gmail.com",
+    "port": 587,
+    "username": "amisuusman@gmail.com",
+    "from_address": "amisuusman@gmail.com",
+    "from_name": "Eventlyy",
+    "encryption": "tls",
+    "debug": "false"
+}
+[01-Sep-2025 00:06:11 Africa/Lagos] [2025-09-01 00:06:11] [INFO] MailService: PHPMailer Debug Level 1: SMTP ERROR: Failed to connect to server: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond (10060)
+[01-Sep-2025 00:06:11 Africa/Lagos] [2025-09-01 00:06:11] [ERROR] MailService: SMTP connection test failed: SMTP Error: Could not connect to SMTP host. Failed to connect to server
+[01-Sep-2025 00:06:11 Africa/Lagos] SMTP Connection Test: FAILED
+[01-Sep-2025 00:06:11 Africa/Lagos] [2025-09-01 00:06:11] [INFO] MailService: Development email stored for: celionatti@gmail.com
+[01-Sep-2025 00:06:11 Africa/Lagos] [2025-09-01 00:06:11] [INFO] MailService: SMTP configuration successful

@@ -32,9 +32,12 @@ class User extends Model implements ModelInterface
         'role',
         'business_name',
         'is_blocked',
-        'remember_token',
-        'token',
-        'token_expire',
+        // 'remember_token',
+        // 'token',
+        // 'token_expire',
+        'security_pin',
+        'recovery_phrase',
+        'security_setup_completed',
         'created_at',
         'updated_at'
     ];
@@ -52,7 +55,11 @@ class User extends Model implements ModelInterface
      * @var array Hidden attributes
      */
     protected array $hidden = [
-        // Add your hidden here
+        'password',
+        'security_pin',
+        'recovery_phrase',
+        'remember_token',
+        'token'
     ];
 
     /**
@@ -65,7 +72,6 @@ class User extends Model implements ModelInterface
         return [];
     }
 
-
     public function applySearch(QueryBuilder $query, string $searchTerm): void
     {
         $query->whereRaw(
@@ -76,13 +82,30 @@ class User extends Model implements ModelInterface
 
     public static function findByEmail(string $email): ?self
     {
-        $results = static::where(['email' => $email]);
-        return $results ? $results[0] : null;
+        return static::first(['email' => $email]);
     }
 
     public static function findByUserId(string $user_id): ?self
     {
-        $results = static::where(['user_id' => $user_id]);
-        return $results ? $results[0] : null;
+        return static::first(['user_id' => $user_id]);
+    }
+
+    public static function updateSecurityData(string $userId, array $data): bool
+    {
+        return static::updateWhere(['user_id' => $userId], $data);
+    }
+
+    public static function getSecurityData(string $userId): ?array
+    {
+        $user = static::first(['user_id' => $userId]);
+        if (!$user) {
+            return null;
+        }
+
+        return [
+            'security_pin' => $user->security_pin ?? null,
+            'recovery_phrase' => $user->recovery_phrase ?? null,
+            'security_setup_completed' => (bool)($user->security_setup_completed ?? 0)
+        ];
     }
 }

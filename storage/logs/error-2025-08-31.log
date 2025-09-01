@@ -127,3 +127,29 @@ Stack trace:
 #8 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
 #9 {main}
 
+[31-Aug-2025 23:15:03 Africa/Lagos] SMTP Configuration successful
+[31-Aug-2025 23:15:03 Africa/Lagos] Attempting to send email to: amisuusman@gmail.com
+[31-Aug-2025 23:15:03 Africa/Lagos] Subject: Test Email from Eventlyy
+[31-Aug-2025 23:15:25 Africa/Lagos] PHPMailer Debug Level 1: SMTP ERROR: Failed to connect to server: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond (10060)
+[31-Aug-2025 23:15:25 Africa/Lagos] PHPMailer Debug Level 2: SMTP Error: Could not connect to SMTP host. Failed to connect to server
+[31-Aug-2025 23:15:25 Africa/Lagos] Email to amisuusman@gmail.com failed: SMTP Error: Could not connect to SMTP host. Failed to connect to server
+[31-Aug-2025 23:15:25 Africa/Lagos] Error Info: SMTP Error: Could not connect to SMTP host. Failed to connect to server SMTP server error: Failed to connect to server SMTP code: 10060 Additional SMTP info: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond
+[31-Aug-2025 23:15:25 Africa/Lagos] SMTP Configuration successful
+[31-Aug-2025 23:15:42 Africa/Lagos] SMTP Configuration successful
+[31-Aug-2025 23:16:02 Africa/Lagos] SMTP Configuration successful
+[31-Aug-2025 23:16:02 Africa/Lagos] Attempting to send email to: celionatti@gmail.com
+[31-Aug-2025 23:16:02 Africa/Lagos] Subject: Test Email from Eventlyy
+[31-Aug-2025 23:16:24 Africa/Lagos] PHPMailer Debug Level 1: SMTP ERROR: Failed to connect to server: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond (10060)
+[31-Aug-2025 23:16:24 Africa/Lagos] PHPMailer Debug Level 2: SMTP Error: Could not connect to SMTP host. Failed to connect to server
+[31-Aug-2025 23:16:24 Africa/Lagos] Email to celionatti@gmail.com failed: SMTP Error: Could not connect to SMTP host. Failed to connect to server
+[31-Aug-2025 23:16:24 Africa/Lagos] Error Info: SMTP Error: Could not connect to SMTP host. Failed to connect to server SMTP server error: Failed to connect to server SMTP code: 10060 Additional SMTP info: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond
+[31-Aug-2025 23:16:24 Africa/Lagos] SMTP Configuration successful
+[31-Aug-2025 23:47:06 Africa/Lagos] SMTP Configuration successful
+[31-Aug-2025 23:47:10 Africa/Lagos] SMTP Configuration successful
+[31-Aug-2025 23:47:10 Africa/Lagos] Attempting to send email to: celionatti@gmail.com
+[31-Aug-2025 23:47:10 Africa/Lagos] Subject: Test Email from Eventlyy
+[31-Aug-2025 23:47:31 Africa/Lagos] PHPMailer Debug Level 1: SMTP ERROR: Failed to connect to server: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond (10060)
+[31-Aug-2025 23:47:31 Africa/Lagos] PHPMailer Debug Level 2: SMTP Error: Could not connect to SMTP host. Failed to connect to server
+[31-Aug-2025 23:47:31 Africa/Lagos] Email to celionatti@gmail.com failed: SMTP Error: Could not connect to SMTP host. Failed to connect to server
+[31-Aug-2025 23:47:31 Africa/Lagos] Error Info: SMTP Error: Could not connect to SMTP host. Failed to connect to server SMTP server error: Failed to connect to server SMTP code: 10060 Additional SMTP info: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond
+[31-Aug-2025 23:47:31 Africa/Lagos] SMTP Configuration successful
