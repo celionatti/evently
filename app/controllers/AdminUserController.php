@@ -15,6 +15,7 @@ class AdminUserController extends Controller
 {
     public function onConstruct()
     {
+        requireAuth();
         $this->view->setLayout('admin');
         $name = "Eventlyy";
         $this->view->setTitle("{$name} Admin User | Dashboard");

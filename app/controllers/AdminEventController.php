@@ -30,6 +30,7 @@ class AdminEventController extends Controller
     protected const IMAGE_DIR = ROOT_PATH . '/public' . DIRECTORY_SEPARATOR;
     public function onConstruct()
     {
+        requireAuth();
         $this->view->setLayout('admin');
         $imageProcessor = new Image();
         $this->eventModel = new Event();

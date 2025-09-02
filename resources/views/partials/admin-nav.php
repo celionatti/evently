@@ -10,7 +10,9 @@
                 <i class="bi bi-list fs-4"></i>
             </button>
             <a class="navbar-brand d-flex align-items-center gap-1" href="<?= url("/") ?>">
-                <span class="brand-mark">E</span>
+                <!-- <span class="brand-mark">E</span>
+                <span class="fw-bold text-white">ventlyy.</span> -->
+                <img src="<?= get_image("dist/img/logo.png") ?>" class="img-fluid" width="30px">
                 <span class="fw-bold text-white">ventlyy.</span>
             </a>
         </div>
@@ -19,7 +21,7 @@
             <div class="dropdown">
                 <button class="btn btn-ghost dropdown-toggle" type="button" data-bs-toggle="dropdown">
                     <i class="bi bi-person-circle me-1"></i>
-                    Amisu Usman
+                    <?= htmlspecialchars(auth()->name . ' ' . auth()->other_name) ?>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Profile</a></li>
