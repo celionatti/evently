@@ -283,11 +283,11 @@
 
                                 echo '<div class="ticket-tier mb-3 p-3 border rounded ' . $tierClass . '" data-ticket-id="' . ($ticket['id'] ?? '') . '">';
                                 echo '<div class="ticket-badge ' . $badgeClass . '">' . $badgeText . '</div>';
-                                
+
                                 if ($isExisting) {
                                     echo '<input type="hidden" name="tickets[' . $index . '][id]" value="' . $ticket['id'] . '">';
                                 }
-                                
+
                                 echo '<div class="row g-3">';
                                 echo '<div class="col-md-3">';
                                 echo '<label class="form-label">Ticket Name *</label>';
@@ -298,10 +298,14 @@
                                 echo '<input type="number" name="tickets[' . $index . '][price]" class="form-control" placeholder="0" min="0" step="0.01" value="' . htmlspecialchars($ticket['price']) . '">';
                                 echo '</div>';
                                 echo '<div class="col-md-2">';
+                                echo '<label class="form-label">Charges (₦)</label>';
+                                echo '<input type="number" name="tickets[' . $index . '][charges]" class="form-control" placeholder="0" min="0" step="0.01" value="' . htmlspecialchars($ticket['charges'] ?? '') . '">';
+                                echo '</div>';
+                                echo '<div class="col-md-2">';
                                 echo '<label class="form-label">Quantity *</label>';
                                 echo '<input type="number" name="tickets[' . $index . '][quantity]" class="form-control" placeholder="100" min="1" value="' . htmlspecialchars($ticket['quantity']) . '">';
                                 echo '</div>';
-                                echo '<div class="col-md-5">';
+                                echo '<div class="col-md-3">';
                                 echo '<label class="form-label">Actions</label>';
                                 echo '<div class="tier-controls d-flex gap-2">';
                                 if ($isExisting) {
@@ -330,7 +334,7 @@
                             echo '<div class="ticket-tier mb-3 p-3 border rounded existing-ticket" data-ticket-id="' . $ticket->id . '">';
                             echo '<div class="ticket-badge existing">Existing</div>';
                             echo '<input type="hidden" name="tickets[' . $index . '][id]" value="' . $ticket->id . '">';
-                            
+
                             echo '<div class="row g-3">';
                             echo '<div class="col-md-3">';
                             echo '<label class="form-label">Ticket Name *</label>';
@@ -341,10 +345,14 @@
                             echo '<input type="number" name="tickets[' . $index . '][price]" class="form-control" placeholder="0" min="0" step="0.01" value="' . htmlspecialchars($ticket->price) . '">';
                             echo '</div>';
                             echo '<div class="col-md-2">';
+                            echo '<label class="form-label">Charges (₦)</label>';
+                            echo '<input type="number" name="tickets[' . $index . '][charges]" class="form-control" placeholder="0" min="0" step="0.01" value="' . htmlspecialchars($ticket->charges ?? '') . '">';
+                            echo '</div>';
+                            echo '<div class="col-md-2">';
                             echo '<label class="form-label">Quantity *</label>';
                             echo '<input type="number" name="tickets[' . $index . '][quantity]" class="form-control" placeholder="100" min="1" value="' . htmlspecialchars($ticket->quantity) . '">';
                             echo '</div>';
-                            echo '<div class="col-md-5">';
+                            echo '<div class="col-md-3">';
                             echo '<label class="form-label">Actions</label>';
                             echo '<div class="tier-controls d-flex gap-2">';
                             echo '<button type="button" class="btn btn-outline-danger btn-sm delete-existing-ticket" data-ticket-id="' . $ticket->id . '">';
@@ -376,10 +384,14 @@
                         echo '<input type="number" name="tickets[0][price]" class="form-control" placeholder="0" min="0" step="0.01">';
                         echo '</div>';
                         echo '<div class="col-md-2">';
+                        echo '<label class="form-label">Charges (₦)</label>';
+                        echo '<input type="number" name="tickets[0][charges]" class="form-control" placeholder="0" min="0" step="0.01">';
+                        echo '</div>';
+                        echo '<div class="col-md-2">';
                         echo '<label class="form-label">Quantity *</label>';
                         echo '<input type="number" name="tickets[0][quantity]" class="form-control" placeholder="100" min="1">';
                         echo '</div>';
-                        echo '<div class="col-md-5">';
+                        echo '<div class="col-md-3">';
                         echo '<label class="form-label">Actions</label>';
                         echo '<div class="tier-controls">';
                         echo '<button type="button" class="btn btn-outline-danger btn-sm remove-tier" disabled>';
@@ -464,34 +476,38 @@
         const tier = document.createElement('div');
         tier.classList.add('ticket-tier', 'mb-3', 'p-3', 'border', 'rounded', 'new-ticket');
         tier.innerHTML = `
-            <div class="ticket-badge new">New</div>
-            <div class="row g-3">
-                <div class="col-md-3">
-                    <label class="form-label">Ticket Name *</label>
-                    <input type="text" name="tickets[${ticketIndex}][ticket_name]" class="form-control" placeholder="e.g., VIP">
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">Price (₦) *</label>
-                    <input type="number" name="tickets[${ticketIndex}][price]" class="form-control" placeholder="0" min="0" step="0.01">
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">Quantity *</label>
-                    <input type="number" name="tickets[${ticketIndex}][quantity]" class="form-control" placeholder="50" min="1">
-                </div>
-                <div class="col-md-5">
-                    <label class="form-label">Actions</label>
-                    <div class="tier-controls">
-                        <button type="button" class="btn btn-outline-danger btn-sm remove-tier">
-                            <i class="bi bi-trash"></i> Remove
-                        </button>
-                    </div>
-                </div>
-                <div class="col-12">
-                    <label class="form-label">Ticket Description</label>
-                    <textarea class="form-control" name="tickets[${ticketIndex}][description]" rows="2" placeholder="What's included in this ticket?"></textarea>
+        <div class="ticket-badge new">New</div>
+        <div class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label">Ticket Name *</label>
+                <input type="text" name="tickets[${ticketIndex}][ticket_name]" class="form-control" placeholder="e.g., VIP">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Price (₦) *</label>
+                <input type="number" name="tickets[${ticketIndex}][price]" class="form-control" placeholder="0" min="0" step="0.01">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Charges (₦)</label>
+                <input type="number" name="tickets[${ticketIndex}][charges]" class="form-control" placeholder="0" min="0" step="0.01">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Quantity *</label>
+                <input type="number" name="tickets[${ticketIndex}][quantity]" class="form-control" placeholder="50" min="1">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Actions</label>
+                <div class="tier-controls">
+                    <button type="button" class="btn btn-outline-danger btn-sm remove-tier">
+                        <i class="bi bi-trash"></i> Remove
+                    </button>
                 </div>
             </div>
-        `;
+            <div class="col-12">
+                <label class="form-label">Ticket Description</label>
+                <textarea class="form-control" name="tickets[${ticketIndex}][description]" rows="2" placeholder="What's included in this ticket?"></textarea>
+            </div>
+        </div>
+    `;
         ticketTiers.appendChild(tier);
         ticketIndex++;
 
@@ -507,7 +523,7 @@
 
     // Handle existing ticket deletion
     let ticketToDelete = null;
-    
+
     document.addEventListener('click', function(e) {
         if (e.target.classList.contains('delete-existing-ticket') || e.target.closest('.delete-existing-ticket')) {
             const button = e.target.classList.contains('delete-existing-ticket') ? e.target : e.target.closest('.delete-existing-ticket');
@@ -515,7 +531,7 @@
                 id: button.getAttribute('data-ticket-id'),
                 element: button.closest('.ticket-tier')
             };
-            
+
             // Show modal
             const modal = new bootstrap.Modal(document.getElementById('deleteTicketModal'));
             modal.show();
@@ -528,24 +544,24 @@
             // Add ticket ID to deletion list
             ticketsToDelete.push(ticketToDelete.id);
             ticketsToDeleteInput.value = ticketsToDelete.join(',');
-            
+
             // Mark ticket tier for deletion visually
             const ticketTier = ticketToDelete.element;
             ticketTier.classList.remove('existing-ticket');
             ticketTier.classList.add('marked-for-deletion');
-            
+
             // Update badge
             const badge = ticketTier.querySelector('.ticket-badge');
             badge.textContent = 'To Delete';
             badge.classList.remove('existing');
             badge.classList.add('delete');
-            
+
             // Disable all inputs in this tier
             const inputs = ticketTier.querySelectorAll('input, textarea');
             inputs.forEach(input => {
                 input.disabled = true;
             });
-            
+
             // Replace delete button with undo button
             const deleteButton = ticketTier.querySelector('.delete-existing-ticket');
             deleteButton.outerHTML = `
@@ -553,11 +569,11 @@
                     <i class="bi bi-arrow-counterclockwise"></i> Undo
                 </button>
             `;
-            
+
             // Hide modal
             const modal = bootstrap.Modal.getInstance(document.getElementById('deleteTicketModal'));
             modal.hide();
-            
+
             ticketToDelete = null;
         }
     });
@@ -568,27 +584,27 @@
             const button = e.target.classList.contains('undo-delete-ticket') ? e.target : e.target.closest('.undo-delete-ticket');
             const ticketId = button.getAttribute('data-ticket-id');
             const ticketTier = button.closest('.ticket-tier');
-            
+
             // Remove from deletion list
             ticketsToDelete = ticketsToDelete.filter(id => id !== ticketId);
             ticketsToDeleteInput.value = ticketsToDelete.join(',');
-            
+
             // Restore visual state
             ticketTier.classList.remove('marked-for-deletion');
             ticketTier.classList.add('existing-ticket');
-            
+
             // Update badge
             const badge = ticketTier.querySelector('.ticket-badge');
             badge.textContent = 'Existing';
             badge.classList.remove('delete');
             badge.classList.add('existing');
-            
+
             // Re-enable inputs
             const inputs = ticketTier.querySelectorAll('input, textarea');
             inputs.forEach(input => {
                 input.disabled = false;
             });
-            
+
             // Replace undo button with delete button
             button.outerHTML = `
                 <button type="button" class="btn btn-outline-danger btn-sm delete-existing-ticket" data-ticket-id="${ticketId}">
@@ -612,7 +628,7 @@
     function updateRemoveButtonStates() {
         const allTiers = document.querySelectorAll('.ticket-tier:not(.marked-for-deletion)');
         const removeTierButtons = document.querySelectorAll('.remove-tier');
-        
+
         // Disable remove buttons if only one active tier remains
         removeTierButtons.forEach(button => {
             button.disabled = allTiers.length <= 1;

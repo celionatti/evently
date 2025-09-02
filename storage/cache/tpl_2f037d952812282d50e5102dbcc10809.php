@@ -164,7 +164,7 @@ use Trees\Helper\Utils\TimeDateUtils;
             <div class="row g-4">
                 <div class="col-md-4">
                     <div class="event-image-container">
-                        <img src="<?= get_image($event->event_image, "dist/img/evently.png") ?>"
+                        <img src="<?= get_image($event->event_image, "dist/img/default.png") ?>"
                             class="event-detail-image rounded shadow-sm"
                             alt="<?= htmlspecialchars($event->event_title) ?>">
                     </div>

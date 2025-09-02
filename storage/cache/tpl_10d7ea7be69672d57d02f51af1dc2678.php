@@ -216,6 +216,7 @@
                                 $hasTicketNameError = has_error("tickets.{$index}.ticket_name");
                                 $hasPriceError = has_error("tickets.{$index}.price");
                                 $hasQuantityError = has_error("tickets.{$index}.quantity");
+                                $hasChargesError = has_error("tickets.{$index}.charges");
 
                                 echo '<div class="ticket-tier mb-3 p-3 border rounded">';
                                 echo '<div class="row g-3">';
@@ -226,14 +227,21 @@
                                     echo '<div class="invalid-feedback">' . get_error("tickets.{$index}.ticket_name") . '</div>';
                                 }
                                 echo '</div>';
-                                echo '<div class="col-md-3">';
+                                echo '<div class="col-md-2">';
                                 echo '<label class="form-label">Price (₦) *</label>';
                                 echo '<input type="number" name="tickets[' . $index . '][price]" class="form-control ' . ($hasPriceError ? 'is-invalid' : '') . '" placeholder="0" min="0" step="0.01" value="' . htmlspecialchars($ticket['price']) . '">';
                                 if ($hasPriceError) {
                                     echo '<div class="invalid-feedback">' . get_error("tickets.{$index}.price") . '</div>';
                                 }
                                 echo '</div>';
-                                echo '<div class="col-md-3">';
+                                echo '<div class="col-md-2">';
+                                echo '<label class="form-label">Charges (₦)</label>';
+                                echo '<input type="number" name="tickets[' . $index . '][charges]" class="form-control ' . ($hasChargesError ? 'is-invalid' : '') . '" placeholder="0" min="0" step="0.01" value="' . htmlspecialchars($ticket['charges'] ?? '') . '">';
+                                if ($hasChargesError) {
+                                    echo '<div class="invalid-feedback">' . get_error("tickets.{$index}.charges") . '</div>';
+                                }
+                                echo '</div>';
+                                echo '<div class="col-md-2">';
                                 echo '<label class="form-label">Quantity *</label>';
                                 echo '<input type="number" name="tickets[' . $index . '][quantity]" class="form-control ' . ($hasQuantityError ? 'is-invalid' : '') . '" placeholder="100" min="1" value="' . htmlspecialchars($ticket['quantity']) . '">';
                                 if ($hasQuantityError) {
@@ -266,11 +274,15 @@
                         echo '<label class="form-label">Ticket Name *</label>';
                         echo '<input type="text" name="tickets[0][ticket_name]" class="form-control" placeholder="e.g., General">';
                         echo '</div>';
-                        echo '<div class="col-md-3">';
+                        echo '<div class="col-md-2">';
                         echo '<label class="form-label">Price (₦) *</label>';
                         echo '<input type="number" name="tickets[0][price]" class="form-control" placeholder="0" min="0" step="0.01">';
                         echo '</div>';
-                        echo '<div class="col-md-3">';
+                        echo '<div class="col-md-2">';
+                        echo '<label class="form-label">Charges (₦)</label>';
+                        echo '<input type="number" name="tickets[0][charges]" class="form-control" placeholder="0" min="0" step="0.01">';
+                        echo '</div>';
+                        echo '<div class="col-md-2">';
                         echo '<label class="form-label">Quantity *</label>';
                         echo '<input type="number" name="tickets[0][quantity]" class="form-control" placeholder="100" min="1">';
                         echo '</div>';
@@ -337,33 +349,37 @@
         const tier = document.createElement('div');
         tier.classList.add('ticket-tier', 'mb-3', 'p-3', 'border', 'rounded');
         tier.innerHTML = `
-            <div class="row g-3">
-                <div class="col-md-3">
-                    <label class="form-label">Ticket Name *</label>
-                    <input type="text" name="tickets[${ticketIndex}][ticket_name]" class="form-control" placeholder="e.g., VIP" >
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Price (₦) *</label>
-                    <input type="number" name="tickets[${ticketIndex}][price]" class="form-control" placeholder="0" min="0" step="0.01" >
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Quantity *</label>
-                    <input type="number" name="tickets[${ticketIndex}][quantity]" class="form-control" placeholder="50" min="1" >
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Actions</label>
-                    <div class="tier-controls">
-                        <button type="button" class="btn btn-outline-danger btn-sm remove-tier">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="col-12">
-                    <label class="form-label">Ticket Description</label>
-                    <textarea class="form-control" name="tickets[${ticketIndex}][description]" rows="2" placeholder="What's included in this ticket?"></textarea>
+        <div class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label">Ticket Name *</label>
+                <input type="text" name="tickets[${ticketIndex}][ticket_name]" class="form-control" placeholder="e.g., VIP" >
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Price (₦) *</label>
+                <input type="number" name="tickets[${ticketIndex}][price]" class="form-control" placeholder="0" min="0" step="0.01" >
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Charges (₦)</label>
+                <input type="number" name="tickets[${ticketIndex}][charges]" class="form-control" placeholder="0" min="0" step="0.01" >
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Quantity *</label>
+                <input type="number" name="tickets[${ticketIndex}][quantity]" class="form-control" placeholder="50" min="1" >
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Actions</label>
+                <div class="tier-controls">
+                    <button type="button" class="btn btn-outline-danger btn-sm remove-tier">
+                        <i class="bi bi-trash"></i>
+                    </button>
                 </div>
             </div>
-        `;
+            <div class="col-12">
+                <label class="form-label">Ticket Description</label>
+                <textarea class="form-control" name="tickets[${ticketIndex}][description]" rows="2" placeholder="What's included in this ticket?"></textarea>
+            </div>
+        </div>
+    `;
         ticketTiers.appendChild(tier);
         ticketIndex++;
 
