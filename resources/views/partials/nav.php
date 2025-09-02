@@ -19,8 +19,10 @@
                 <li class="nav-item"><a class="nav-link" href="<?= url("/events") ?>">Discover Events</a></li>
                 <li class="nav-item"><a class="nav-link" href="<?= url("/about-us") ?>">About Us</a></li>
                 <li class="nav-item"><a class="nav-link" href="<?= url("/admin") ?>">Dashboard</a></li>
+                <?php if(isAuthenticated()): ?>
                 <li class="nav-item"><a class="btn btn-ghost ms-lg-2" href="<?= url("/login") ?>">Login</a></li>
                 <li class="nav-item"><a class="btn btn-pulse ms-lg-2" href="<?= url("/sign-up") ?>">Sign Up</a></li>
+                <?php endif; ?>
             </ul>
         </div>
     </div>

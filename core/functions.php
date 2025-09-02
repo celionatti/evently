@@ -286,13 +286,6 @@ if (!function_exists('uuid')) {
     }
 }
 
-if (!function_exists('auth')) {
-    function auth()
-    {
-        return;
-    }
-}
-
 if (!function_exists('set_form_error')) {
     function set_form_error($value): void
     {
