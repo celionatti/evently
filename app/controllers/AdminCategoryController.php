@@ -17,6 +17,10 @@ class AdminCategoryController extends Controller
     public function onConstruct()
     {
         requireAuth();
+        if (!isAdmin()) {
+            FlashMessage::setMessage("Access denied. Admin privileges required.", 'danger');
+            return redirect("/admin");
+        }
         $this->view->setLayout('admin');
         $name = "Eventlyy";
         $this->view->setTitle("{$name} Admin Category | Dashboard");

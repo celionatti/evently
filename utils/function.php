@@ -128,6 +128,15 @@ function hasRole(string $role): bool
 }
 
 /**
+ * Check if user has any of the specified roles
+ */
+function hasAnyRole(array $roles): bool
+{
+    $user = auth();
+    return $user && in_array($user->role, $roles, true);
+}
+
+/**
  * Get current user ID
  */
 function userId(): ?string
@@ -163,8 +172,69 @@ function requireRole(string $role): void
 }
 
 /**
- * Simple redirect helper (you might already have this)
+ * Require any of the specified roles
  */
+function requireAnyRole(array $roles): void
+{
+    requireAuth();
+    
+    if (!hasAnyRole($roles)) {
+        FlashMessage::setMessage('Access denied. Insufficient permissions.', 'danger');
+        redirect('/');
+        exit;
+    }
+}
+
+/**
+ * Check if the current user is an admin
+ */
+function isAdmin(): bool
+{
+    return hasRole('admin');
+}
+
+/**
+ * Check if the current user is an organiser
+ */
+function isOrganiser(): bool
+{
+    return hasRole('organiser');
+}
+
+/**
+ * Check if the current user is a guest
+ */
+function isGuest(): bool
+{
+    return hasRole('guest');
+}
+
+/**
+ * Check if the current user is admin or organiser
+ */
+function isAdminOrOrganiser(): bool
+{
+    return hasAnyRole(['admin', 'organiser']);
+}
+
+/**
+ * Require admin or organiser role
+ */
+function requireAdminOrOrganiser(): void
+{
+    requireAnyRole(['admin', 'organiser']);
+}
+
+/**
+ * Check if the given user is the currently authenticated user
+ */
+function isCurrentUser(User $user): bool
+{
+    $authUser = auth();
+    return $authUser && $authUser->id === $user->id;
+}
+
+// Simple redirect helper (you might already have this)
 // function redirect(string $url): void
 // {
 //     header("Location: $url");

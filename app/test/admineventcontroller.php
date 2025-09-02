@@ -19,7 +19,7 @@ use Trees\Helper\Support\FileUploader;
 use Trees\Helper\FlashMessages\FlashMessage;
 use Trees\Logger\Logger;
 
-class AdminEventController extends Controller
+class test extends Controller
 {
     protected $uploader;
     protected ?Event $eventModel;
@@ -27,12 +27,12 @@ class AdminEventController extends Controller
     protected ?Attendees $attendeesModel;
     protected const MAX_UPLOAD_FILES = 1;
     protected const UPLOAD_DIR = 'uploads/events/';
-    
+    protected const IMAGE_DIR = ROOT_PATH . '/public' . DIRECTORY_SEPARATOR;
     public function onConstruct()
     {
         requireAuth();
         if (!isAdminOrOrganiser()) {
-            FlashMessage::setMessage("Access denied. Admin or Organiser privileges required.", 'danger');
+            FlashMessage::setMessage("Access denied. Admin privileges required.", 'danger');
             return redirect("/");
         }
         $this->view->setLayout('admin');
@@ -63,20 +63,11 @@ class AdminEventController extends Controller
 
     public function manage(Request $request, Response $response)
     {
-        // For organiser, only show their own events
-        // For admin, show all events
-        $queryOptions = [
+        $events = $this->eventModel::paginate([
             'per_page' => $request->query('per_page', 10),
             'page' => $request->query('page', 1),
             'order_by' => ['created_at' => 'DESC']
-        ];
-        
-        if (isOrganiser()) {
-            // Organiser can only see their own events
-            $queryOptions['conditions'] = ['user_id' => auth()->id];
-        }
-        
-        $events = $this->eventModel::paginate($queryOptions);
+        ]);
 
         // Create pagination instance
         $pagination = new Paginator($events['meta']);
@@ -98,12 +89,6 @@ class AdminEventController extends Controller
 
         if (!$event) {
             FlashMessage::setMessage("Event Not Found!", 'danger');
-            return $response->redirect("/admin/events/manage");
-        }
-        
-        // Check if organiser is trying to view someone else's event
-        if (isOrganiser() && $event->user_id !== auth()->id) {
-            FlashMessage::setMessage("Access denied. You can only view your own events.", 'danger');
             return $response->redirect("/admin/events/manage");
         }
 
@@ -226,12 +211,6 @@ class AdminEventController extends Controller
             FlashMessage::setMessage("Event Not Found!", 'danger');
             return $response->redirect("/admin/events/manage");
         }
-        
-        // Check if organiser is trying to edit someone else's event
-        if (isOrganiser() && $event->user_id !== auth()->id) {
-            FlashMessage::setMessage("Access denied. You can only edit your own events.", 'danger');
-            return $response->redirect("/admin/events/manage");
-        }
 
         // Load tickets with the event
         $tickets = Ticket::where(['event_id' => $event->id]);
@@ -257,12 +236,6 @@ class AdminEventController extends Controller
         $event = Event::findBySlug($slug);
         if (!$event) {
             FlashMessage::setMessage("Event Not Found!", 'danger');
-            return $response->redirect("/admin/events/manage");
-        }
-        
-        // Check if organiser is trying to update someone else's event
-        if (isOrganiser() && $event->user_id !== auth()->id) {
-            FlashMessage::setMessage("Access denied. You can only update your own events.", 'danger');
             return $response->redirect("/admin/events/manage");
         }
 
@@ -292,6 +265,7 @@ class AdminEventController extends Controller
         try {
             $data = $request->all();
             $ticketsData = $data['tickets'] ?? [];
+            // $ticketsToDelete = $data['tickets_to_delete'] ?? [];
             $ticketsToDelete = $data['tickets_to_delete'] ?? [];
             if (is_string($ticketsToDelete) && !empty($ticketsToDelete)) {
                 $ticketsToDelete = explode(',', $ticketsToDelete);
@@ -392,15 +366,9 @@ class AdminEventController extends Controller
 
         try {
             $ticket = Ticket::find($ticketId);
-            $event = Event::find($eventId);
 
-            if (!$ticket || !$event || $ticket->event_id != $event->id) {
+            if (!$ticket || $ticket->event_id != $eventId) {
                 return $response->json(['success' => false, 'message' => 'Ticket not found'], 404);
-            }
-            
-            // Check if organiser is trying to delete a ticket from someone else's event
-            if (isOrganiser() && $event->user_id !== auth()->id) {
-                return $response->json(['success' => false, 'message' => 'Access denied. You can only delete tickets from your own events.'], 403);
             }
 
             // Check if this is the last ticket for the event
@@ -429,12 +397,6 @@ class AdminEventController extends Controller
 
         if (!$event) {
             FlashMessage::setMessage("Event Not Found!", 'danger');
-            return $response->redirect("/admin/events/manage");
-        }
-        
-        // Check if organiser is trying to delete someone else's event
-        if (isOrganiser() && $event->user_id !== auth()->id) {
-            FlashMessage::setMessage("Access denied. You can only delete your own events.", 'danger');
             return $response->redirect("/admin/events/manage");
         }
 

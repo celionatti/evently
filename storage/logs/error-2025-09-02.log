@@ -5,3 +5,10 @@ Stack trace:
 #2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
 #3 {main}
 
+[2025-09-02 10:13:58] Trees\Exception\TreesException: Route not found for path: /admin/users/delete in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+

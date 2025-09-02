@@ -13,12 +13,19 @@ use Trees\Helper\FlashMessages\FlashMessage;
 
 class AdminUserController extends Controller
 {
+    protected $user;
+
     public function onConstruct()
     {
         requireAuth();
+        if (!isAdmin()) {
+            FlashMessage::setMessage("Access denied. Admin privileges required.", 'danger');
+            return redirect("/admin");
+        }
         $this->view->setLayout('admin');
         $name = "Eventlyy";
         $this->view->setTitle("{$name} Admin User | Dashboard");
+        $this->user = auth();
     }
 
     public function manage(Request $request, Response $response)
@@ -46,10 +53,22 @@ class AdminUserController extends Controller
             return;
         }
 
+        // Check if user is admin
+        if (!isAdmin()) {
+            FlashMessage::setMessage("Access denied. Admin privileges required.", 'danger');
+            return $response->redirect("/admin/users/manage");
+        }
+
         $user = User::findByUserId($user_id);
 
         if (!$user) {
             FlashMessage::setMessage("User Not Found!", 'danger');
+            return $response->redirect("/admin/users/manage");
+        }
+
+        // Prevent user from deleting their own account
+        if (isCurrentUser($user)) {
+            FlashMessage::setMessage("You cannot delete your own account!", 'danger');
             return $response->redirect("/admin/users/manage");
         }
 
