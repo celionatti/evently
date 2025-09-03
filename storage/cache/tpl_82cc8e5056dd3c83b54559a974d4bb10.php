@@ -1,5 +1,8 @@
 <?php
 
+use App\models\Ticket;
+use App\models\Categories;
+
 ?>
 
 <?php $this->start('content'); ?>
@@ -29,7 +32,7 @@
 <!-- FILTERS SECTION -->
 <section class="container mb-5">
     <div class="filters-section reveal">
-        <form action="/events" method="get">
+        <form action="/events" method="get" id="filterForm">
             <!-- Keep search term -->
             <input type="hidden" name="search" value="<?= $currentSearch ?? '' ?>">
 
@@ -77,7 +80,7 @@
             <button type="submit" class="btn btn-pulse btn-sm w-100">Apply Filters</button>
 
             <?php if (!empty($currentSearch) || !empty($currentCategory) || !empty($currentCity) || !empty($currentFeatured)): ?>
-                <a href="/events" class="btn btn-outline-secondary btn-sm w-100 mt-2">Clear Filters</a>
+                <a href="/events" class="btn btn-ghost w-100 mt-2">Clear Filters</a>
             <?php endif; ?>
         </form>
 
@@ -97,164 +100,83 @@
 
 <!-- EVENTS GRID -->
 <section class="container">
-    <h2 class="mb-4 reveal">Featured Events</h2>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="reveal">
+                <?php if (!empty($currentSearch)): ?>
+                    Search Results for "<?= htmlspecialchars($currentSearch) ?>"
+                <?php elseif (!empty($currentCategory)): ?>
+                    <?= ucfirst($currentCategory) ?> Events
+                <?php else: ?>
+                    All Events
+                <?php endif; ?>
+            </h2>
+
+            <small class="text-white"><?= $totalEvents ?? 0 ?> events found</small>
+        </div>
+        <div class="d-flex align-items-center">
+            <label class="me-2">Per Page:</label>
+            <select name="per_page" class="form-select form-select-sm" style="width: auto;" onchange="changePerPage(this.value)">
+                <option value="12" <?= ($_GET['per_page'] ?? 12) == 12 ? 'selected' : '' ?>>12</option>
+                <option value="24" <?= ($_GET['per_page'] ?? 12) == 24 ? 'selected' : '' ?>>24</option>
+                <option value="48" <?= ($_GET['per_page'] ?? 12) == 48 ? 'selected' : '' ?>>48</option>
+            </select>
+        </div>
+    </div>
 
     <div class="events-grid">
-        <!-- Event 1 -->
-        <div class="event-card reveal">
-            <img src="https://images.unsplash.com/photo-1506157786151-b8491531f063?q=80&w=500&auto=format&fit=crop" alt="Afrobeats Concert" class="event-img">
-            <div class="event-content">
-                <span class="event-category"><i class="bi bi-music-note-beamed"></i> Music</span>
-                <h3 class="event-title">Afrobeats Live: Midnight Wave</h3>
-                <p class="event-description">Experience the biggest names in African music for a 5-hour extravaganza that will keep you dancing until the early hours.</p>
+        <?php if (!empty($events) && is_array($events)): ?>
+            <?php foreach ($events as $index => $event): ?>
+                <!-- Event -->
+                <div class="event-card reveal <?= $index % 3 === 1 ? 'delay-1' : ($index % 3 === 2 ? 'delay-2' : '') ?>">
+                    <img src="<?php echo $this->escape(get_image($event->event_image, "https://images.unsplash.com/photo-1506157786151-b8491531f063?q=80&w=500&auto=format&fit=crop")); ?>" alt="<?php echo $event->event_title; ?>" class="event-img">
+                    <div class="event-content">
+                        <span class="event-category">
+                            <?php
+                            $category = Categories::find($event->category);
+                            $icon = getCategoryIcon($category->name);
+                            ?>
+                            <i class="bi <?= $icon ?>"></i> <?= ucfirst($category->name) ?>
+                        </span>
+                        <h3 class="event-title"><?php echo $event->event_title; ?></h3>
+                        <p class="event-description"><?php echo getExcerpt($event->description, 150); ?></p>
 
-                <div class="event-details">
-                    <div class="event-detail">
-                        <i class="bi bi-calendar-event"></i>
-                        <span>Fri, Oct 10 • 8:00 PM</span>
-                    </div>
-                    <div class="event-detail">
-                        <i class="bi bi-geo-alt"></i>
-                        <span>Eko Convention Center, Lagos</span>
-                    </div>
-                </div>
+                        <div class="event-details">
+                            <div class="event-detail">
+                                <i class="bi bi-calendar-event"></i>
+                                <span><?php echo $this->escape(date('D, M j', strtotime($event->event_date))); ?> • <?php echo $this->escape(date('g:i A', strtotime($event->start_time ?? '00:00:00'))); ?></span>
+                            </div>
+                            <div class="event-detail">
+                                <i class="bi bi-geo-alt"></i>
+                                <span class="text-capitalize"><?php echo $event->venue; ?>, <?php echo $event->city; ?></span>
+                            </div>
+                        </div>
 
-                <div class="event-footer">
-                    <div class="event-price">From ₦15,000</div>
-                    <a href="#" class="btn btn-pulse btn-sm">View Event</a>
-                </div>
-            </div>
-        </div>
+                        <div class="event-footer">
+                            <?php
+                            // Get minimum price from tickets
+                            $minPrice = null;
+                            $tickets = Ticket::where(['event_id' => $event->id]) ?? [];
 
-        <!-- Event 2 -->
-        <div class="event-card reveal delay-1">
-            <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=500&auto=format&fit=crop" alt="Tech Conference" class="event-img">
-            <div class="event-content">
-                <span class="event-category"><i class="bi bi-laptop"></i> Technology</span>
-                <h3 class="event-title">Tech Summit Africa 2025</h3>
-                <p class="event-description">Join industry leaders for a 2-day conference on the future of technology, innovation, and digital transformation in Africa.</p>
-
-                <div class="event-details">
-                    <div class="event-detail">
-                        <i class="bi bi-calendar-event"></i>
-                        <span>Nov 15-16 • 9:00 AM</span>
-                    </div>
-                    <div class="event-detail">
-                        <i class="bi bi-geo-alt"></i>
-                        <span>Landmark Centre, Lagos</span>
-                    </div>
-                </div>
-
-                <div class="event-footer">
-                    <div class="event-price">From ₦25,000</div>
-                    <a href="#" class="btn btn-pulse btn-sm">View Event</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Event 3 -->
-        <div class="event-card reveal delay-2">
-            <img src="https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?q=80&w=500&auto=format&fit=crop" alt="Art Exhibition" class="event-img">
-            <div class="event-content">
-                <span class="event-category"><i class="bi bi-palette"></i> Art</span>
-                <h3 class="event-title">Contemporary Art Exhibition</h3>
-                <p class="event-description">Discover works from emerging African artists in this month-long exhibition showcasing contemporary art forms.</p>
-
-                <div class="event-details">
-                    <div class="event-detail">
-                        <i class="bi bi-calendar-event"></i>
-                        <span>Sep 1-30 • 10:00 AM</span>
-                    </div>
-                    <div class="event-detail">
-                        <i class="bi bi-geo-alt"></i>
-                        <span>National Gallery, Abuja</span>
+                            foreach ($tickets as $ticket) {
+                                if ($ticket->price > 0 && ($minPrice === null || $ticket->price < $minPrice)) {
+                                    $minPrice = $ticket->price;
+                                }
+                            }
+                            ?>
+                            <div class="event-price">
+                                <?php if ($minPrice): ?>
+                                    From ₦<?= number_format($minPrice) ?>
+                                <?php else: ?>
+                                    Free
+                                <?php endif; ?>
+                            </div>
+                            <a href='<?php echo $this->escape(url("/events/$event->slug")); ?>' class="btn btn-pulse btn-sm">View Event</a>
+                        </div>
                     </div>
                 </div>
-
-                <div class="event-footer">
-                    <div class="event-price">₦5,000</div>
-                    <a href="#" class="btn btn-pulse btn-sm">View Event</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Event 4 -->
-        <div class="event-card reveal">
-            <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=500&auto=format&fit=crop" alt="Food Festival" class="event-img">
-            <div class="event-content">
-                <span class="event-category"><i class="bi bi-egg-fried"></i> Food & Drink</span>
-                <h3 class="event-title">Lagos Food Festival</h3>
-                <p class="event-description">Taste your way through the best of Nigerian cuisine with over 50 food vendors, live cooking demos, and competitions.</p>
-
-                <div class="event-details">
-                    <div class="event-detail">
-                        <i class="bi bi-calendar-event"></i>
-                        <span>Sun, Dec 8 • 12:00 PM</span>
-                    </div>
-                    <div class="event-detail">
-                        <i class="bi bi-geo-alt"></i>
-                        <span>Muritala Park, Lagos</span>
-                    </div>
-                </div>
-
-                <div class="event-footer">
-                    <div class="event-price">₦3,500</div>
-                    <a href="#" class="btn btn-pulse btn-sm">View Event</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Event 5 -->
-        <div class="event-card reveal delay-1">
-            <img src="https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?q=80&w=500&auto=format&fit=crop" alt="Comedy Show" class="event-img">
-            <div class="event-content">
-                <span class="event-category"><i class="bi bi-mic"></i> Comedy</span>
-                <h3 class="event-title">Night of Laughter</h3>
-                <p class="event-description">An evening of non-stop laughter featuring Nigeria's top comedians. Prepare for sore cheeks from laughing too much!</p>
-
-                <div class="event-details">
-                    <div class="event-detail">
-                        <i class="bi bi-calendar-event"></i>
-                        <span>Sat, Nov 23 • 7:00 PM</span>
-                    </div>
-                    <div class="event-detail">
-                        <i class="bi bi-geo-alt"></i>
-                        <span>Muson Centre, Lagos</span>
-                    </div>
-                </div>
-
-                <div class="event-footer">
-                    <div class="event-price">From ₦7,000</div>
-                    <a href="#" class="btn btn-pulse btn-sm">View Event</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Event 6 -->
-        <div class="event-card reveal delay-2">
-            <img src="https://images.unsplash.com/photo-1461896836934-ffe607ba8211?q=80&w=500&auto=format&fit=crop" alt="Marathon" class="event-img">
-            <div class="event-content">
-                <span class="event-category"><i class="bi bi-person-running"></i> Sports</span>
-                <h3 class="event-title">Lagos City Marathon</h3>
-                <p class="event-description">Join thousands of runners in this annual marathon through the heart of Lagos. Choose from 5K, 10K, or full marathon.</p>
-
-                <div class="event-details">
-                    <div class="event-detail">
-                        <i class="bi bi-calendar-event"></i>
-                        <span>Sun, Feb 9 • 6:00 AM</span>
-                    </div>
-                    <div class="event-detail">
-                        <i class="bi bi-geo-alt"></i>
-                        <span>National Stadium, Lagos</span>
-                    </div>
-                </div>
-
-                <div class="event-footer">
-                    <div class="event-price">₦8,000</div>
-                    <a href="#" class="btn btn-pulse btn-sm">View Event</a>
-                </div>
-            </div>
-        </div>
+            <?php endforeach; ?>
+        <?php endif; ?>
     </div>
 
     <!-- Pagination -->

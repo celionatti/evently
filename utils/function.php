@@ -11,41 +11,40 @@ use Trees\Helper\FlashMessages\FlashMessage;
 function auth(): ?User
 {
     static $user = null;
-    
+
     // Return cached user if already fetched in this request
     if ($user !== null) {
         return $user;
     }
-    
+
     // Check if user is logged in via session
     if (!session()->has('user_id') || !session()->get('logged_in', false)) {
         return null;
     }
-    
+
     $userId = session()->get('user_id');
     if (!$userId) {
         return null;
     }
-    
+
     try {
         $userModel = new User();
         $user = $userModel->findByUserId($userId);
-        
+
         if (!$user) {
             // User doesn't exist in database but session exists - clear invalid session
             clearAuthSession();
             return null;
         }
-        
+
         // Check if user is blocked or temporarily blocked
         if (isUserBlocked($user)) {
             clearAuthSession();
             clearRememberCookie();
             return null;
         }
-        
+
         return $user;
-        
     } catch (\Exception $e) {
         error_log("Auth helper error: " . $e->getMessage());
         return null;
@@ -61,17 +60,17 @@ function isUserBlocked(User $user): bool
     if ($user->isBlocked()) {
         return true;
     }
-    
+
     // Check temporary block
     if ($user->blocked_until) {
         $blockedUntil = new DateTime($user->blocked_until);
         $now = new DateTime();
-        
+
         // If still blocked, return true
         if ($now < $blockedUntil) {
             return true;
         }
-        
+
         // Block has expired, reset attempts
         $userModel = new User();
         $userModel->updateWhere(
@@ -83,7 +82,7 @@ function isUserBlocked(User $user): bool
             ]
         );
     }
-    
+
     return false;
 }
 
@@ -163,7 +162,7 @@ function requireAuth(): void
 function requireRole(string $role): void
 {
     requireAuth();
-    
+
     if (!hasRole($role)) {
         FlashMessage::setMessage('Access denied. Insufficient permissions.', 'danger');
         redirect('/');
@@ -177,7 +176,7 @@ function requireRole(string $role): void
 function requireAnyRole(array $roles): void
 {
     requireAuth();
-    
+
     if (!hasAnyRole($roles)) {
         FlashMessage::setMessage('Access denied. Insufficient permissions.', 'danger');
         redirect('/');
@@ -240,3 +239,33 @@ function isCurrentUser(User $user): bool
 //     header("Location: $url");
 //     exit;
 // }
+function getCategoryIcon(string $categoryName): string
+{
+    $categoryName = strtolower($categoryName);
+
+    // Map icons to keywords
+    $categoryIcons = [
+        'bi-music-note-beamed' => ['music', 'concert', 'band', 'dj', 'audio', 'song'],
+        'bi-laptop'           => ['tech', 'computer', 'laptop', 'software', 'digital', 'coding'],
+        'bi-palette'          => ['art', 'painting', 'gallery', 'exhibition', 'creative', 'design'],
+        'bi-egg-fried'        => ['food', 'restaurant', 'cooking', 'culinary', 'dining', 'chef'],
+        'bi-mic'              => ['comedy', 'standup', 'humor', 'joke', 'funny', 'mic'],
+        'bi-person-running'   => ['sports', 'fitness', 'game', 'athletic', 'running', 'competition'],
+        'bi-briefcase'        => ['business', 'networking', 'entrepreneur', 'startup', 'commerce'],
+        'bi-book'             => ['education', 'learning', 'school', 'workshop', 'seminar', 'lecture']
+    ];
+
+    // Default fallback icon
+    $icon = 'bi-calendar-event';
+
+    foreach ($categoryIcons as $iconClass => $keywords) {
+        foreach ($keywords as $keyword) {
+            if (strpos($categoryName, $keyword) !== false) {
+                $icon = $iconClass;
+                break 2;
+            }
+        }
+    }
+
+    return $icon;
+}

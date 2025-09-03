@@ -5,8 +5,8 @@ use App\models\Categories;
 
 ?>
 
-@section('content')
-@include('nav')
+<?php $this->start('content'); ?>
+<?php $this->partial('nav'); ?>
 
 <!-- HERO SECTION -->
 <section class="page-hero">
@@ -129,26 +129,38 @@ use App\models\Categories;
             <?php foreach ($events as $index => $event): ?>
                 <!-- Event -->
                 <div class="event-card reveal <?= $index % 3 === 1 ? 'delay-1' : ($index % 3 === 2 ? 'delay-2' : '') ?>">
-                    <img src="{{ get_image($event->event_image, "https://images.unsplash.com/photo-1506157786151-b8491531f063?q=80&w=500&auto=format&fit=crop") }}" alt="{{{ $event->event_title }}}" class="event-img">
+                    <img src="<?php echo $this->escape(get_image($event->event_image, "https://images.unsplash.com/photo-1506157786151-b8491531f063?q=80&w=500&auto=format&fit=crop")); ?>" alt="<?php echo $event->event_title; ?>" class="event-img">
                     <div class="event-content">
                         <span class="event-category">
                             <?php
-                            $category = Categories::find($event->category);
-                            $icon = getCategoryIcon($category->name);
+                            $categories = Categories::find($event->id);
+                            dd($categories);
+                            // Map categories to icons
+                            $categoryIcons = [
+                                'music' => 'bi-music-note-beamed',
+                                'technology' => 'bi-laptop',
+                                'art' => 'bi-palette',
+                                'food' => 'bi-egg-fried',
+                                'comedy' => 'bi-mic',
+                                'sports' => 'bi-person-running',
+                                'business' => 'bi-briefcase',
+                                'education' => 'bi-book'
+                            ];
+                            $icon = $categoryIcons[strtolower($event->category)] ?? 'bi-calendar-event';
                             ?>
-                            <i class="bi <?= $icon ?>"></i> <?= ucfirst($category->name) ?>
+                            <i class="<?php echo $this->escape($icon); ?>"></i> <?php echo ucfirst($event->category); ?>
                         </span>
-                        <h3 class="event-title">{{{ $event->event_title }}}</h3>
-                        <p class="event-description">{{{ getExcerpt($event->description, 150) }}}</p>
+                        <h3 class="event-title"><?php echo $event->event_title; ?></h3>
+                        <p class="event-description"><?php echo getExcerpt($event->description, 150); ?></p>
 
                         <div class="event-details">
                             <div class="event-detail">
                                 <i class="bi bi-calendar-event"></i>
-                                <span>{{ date('D, M j', strtotime($event->event_date)) }} • {{ date('g:i A', strtotime($event->start_time ?? '00:00:00')) }}</span>
+                                <span><?php echo $this->escape(date('D, M j', strtotime($event->event_date))); ?> • <?php echo $this->escape(date('g:i A', strtotime($event->start_time ?? '00:00:00'))); ?></span>
                             </div>
                             <div class="event-detail">
                                 <i class="bi bi-geo-alt"></i>
-                                <span class="text-capitalize">{{{ $event->venue }}}, {{{ $event->city }}}</span>
+                                <span class="text-capitalize"><?php echo $event->venue; ?>, <?php echo $event->city; ?></span>
                             </div>
                         </div>
 
@@ -171,7 +183,7 @@ use App\models\Categories;
                                     Free
                                 <?php endif; ?>
                             </div>
-                            <a href='{{ url("/events/$event->slug") }}' class="btn btn-pulse btn-sm">View Event</a>
+                            <a href='<?php echo $this->escape(url("/events/$event->slug")); ?>' class="btn btn-pulse btn-sm">View Event</a>
                         </div>
                     </div>
                 </div>
@@ -208,9 +220,9 @@ use App\models\Categories;
     </div>
 </section>
 
-@include('footer')
-@endsection
+<?php $this->partial('footer'); ?>
+<?php $this->end(); ?>
 
-@section('scripts')
+<?php $this->start('scripts'); ?>
 <script src="/dist/js/script.js"></script>
-@endsection
+<?php $this->end(); ?>
