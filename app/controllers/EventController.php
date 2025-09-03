@@ -8,6 +8,9 @@ use App\models\Event;
 use App\models\Ticket;
 use Trees\Http\Request;
 use Trees\Http\Response;
+use App\models\Categories;
+use Trees\Helper\Cities\Cities;
+use Trees\Pagination\Paginator;
 use Trees\Controller\Controller;
 
 class EventController extends Controller
@@ -21,14 +24,6 @@ class EventController extends Controller
 
     public function events(Request $request, Response $response)
     {
-        // Get filter parameters
-        $searchTerm = $request->query('search', '');
-        $categoryFilter = $request->query('category', '');
-        $cityFilter = $request->query('city', '');
-        $dateFilter = $request->query('date', '');
-        $statusFilter = $request->query('status', '');
-        $tagFilter = $request->query('tag', '');
-
         // Build query options
         $queryOptions = [
             'per_page' => $request->query('per_page', 12),
@@ -39,68 +34,71 @@ class EventController extends Controller
         // Only show active events to the public
         $conditions = ['status' => 'active'];
 
-        // Apply filters
-        if (!empty($searchTerm)) {
-            $conditions['event_title LIKE'] = "%{$searchTerm}%";
+        // Add search functionality
+        $search = $request->query('search');
+        if (!empty($search)) {
+            // Use the applySearch method from the Event model
+            $queryOptions['search'] = $search;
         }
 
-        if (!empty($categoryFilter)) {
-            $conditions['category'] = $categoryFilter;
+        // Add category filter
+        $category = $request->query('category');
+        if (!empty($category)) {
+            $conditions['category'] = $category;
         }
-
-        if (!empty($cityFilter)) {
-            $conditions['city'] = $cityFilter;
+        
+        // Add city filter
+        $city = $request->query('city');
+        if (!empty($city)) {
+            $conditions['city'] = $city;
         }
-
-        if (!empty($tagFilter)) {
-            $conditions['tags LIKE'] = "%{$tagFilter}%";
-        }
-
-        // Date filtering
-        if (!empty($dateFilter)) {
-            $today = date('Y-m-d');
-
-            switch ($dateFilter) {
-                case 'today':
-                    $conditions['event_date'] = $today;
-                    break;
-                case 'tomorrow':
-                    $tomorrow = date('Y-m-d', strtotime('+1 day'));
-                    $conditions['event_date'] = $tomorrow;
-                    break;
-                case 'this_week':
-                    $startOfWeek = date('Y-m-d', strtotime('this week'));
-                    $endOfWeek = date('Y-m-d', strtotime('this week +6 days'));
-                    $conditions['event_date BETWEEN'] = [$startOfWeek, $endOfWeek];
-                    break;
-                case 'this_weekend':
-                    $saturday = date('Y-m-d', strtotime('this saturday'));
-                    $sunday = date('Y-m-d', strtotime('this sunday'));
-                    $conditions['event_date BETWEEN'] = [$saturday, $sunday];
-                    break;
-                case 'next_week':
-                    $startOfNextWeek = date('Y-m-d', strtotime('next week'));
-                    $endOfNextWeek = date('Y-m-d', strtotime('next week +6 days'));
-                    $conditions['event_date BETWEEN'] = [$startOfNextWeek, $endOfNextWeek];
-                    break;
-            }
-        }
-
-        // Status filtering (featured events)
-        if ($statusFilter === 'featured') {
+        
+        // Add featured filter
+        $featured = $request->query('featured');
+        if ($featured === 'true') {
             $conditions['featured'] = 1;
         }
+
+        // Add date filter - only show future events
+        $queryOptions['where_raw'] = ['event_date >= CURDATE()'];
         
         $queryOptions['conditions'] = $conditions;
 
         // Get events with pagination
         $eventsData = Event::paginate($queryOptions);
 
-        foreach($eventsData['data'] as &$event) {
-            $tickets = Ticket::where(['event_id' => $event->id]);
+        // Create pagination instance
+        $pagination = new Paginator($eventsData['meta']);
+        $paginationLinks = $pagination->render('bootstrap');
+
+        // Get categories and cities for filters
+        $categories = Categories::all();
+        $cities = Cities::getAll('NG');
+        
+        // Get featured events for sidebar or hero section
+        $featuredEvents = Event::where([
+            'status' => 'active', 
+            'featured' => 1
+        ]);
+
+        // Limit to 3 featured events
+        if (is_array($featuredEvents) && count($featuredEvents) > 3) {
+            $featuredEvents = array_slice($featuredEvents, 0, 3);
         }
 
-        $view = [];
+
+        $view = [
+            'events' => $eventsData['data'],
+            'pagination' => $paginationLinks,
+            'categories' => $categories,
+            'cities' => $cities,
+            'featuredEvents' => $featuredEvents ?? [],
+            'currentSearch' => $search,
+            'currentCategory' => $category,
+            'currentCity' => $city,
+            'currentFeatured' => $featured,
+            'totalEvents' => $eventsData['meta']['total'] ?? 0
+        ];
 
         return $this->render('events', $view);
     }

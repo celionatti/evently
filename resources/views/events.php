@@ -13,12 +13,14 @@
 
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <div class="input-group mb-4 reveal delay-2">
-                    <input type="text" class="form-control" placeholder="Search events, artists, or categories..." style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: var(--radius-md);">
-                    <button class="btn btn-pulse" type="button">
+                <form method="GET" action="/events" class="input-group mb-4 reveal delay-2">
+                    <input type="text" name="search" class="form-control" placeholder="Search events, artists, or categories..."
+                        value="<?= old('search', $currentSearch ?? '') ?>"
+                        style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: var(--radius-md);">
+                    <button class="btn btn-pulse" type="submit">
                         <i class="bi bi-search me-2"></i> Search
                     </button>
-                </div>
+                </form>
             </div>
         </div>
     </div>
@@ -27,63 +29,59 @@
 <!-- FILTERS SECTION -->
 <section class="container mb-5">
     <div class="filters-section reveal">
-        <div class="row">
-            <div class="col-md-3">
-                <div class="filter-group">
-                    <div class="filter-label">Date</div>
-                    <select class="form-select" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white;">
-                        <option>Any date</option>
-                        <option>Today</option>
-                        <option>Tomorrow</option>
-                        <option>This week</option>
-                        <option>This weekend</option>
-                        <option>Next week</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="filter-group">
-                    <div class="filter-label">Category</div>
-                    <select class="form-select" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white;">
-                        <option>All categories</option>
-                        <option>Music</option>
-                        <option>Conference</option>
-                        <option>Workshop</option>
-                        <option>Sports</option>
-                        <option>Comedy</option>
-                        <option>Art & Culture</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="filter-group">
-                    <div class="filter-label">Location</div>
-                    <select class="form-select" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white;">
-                        <option>Any location</option>
-                        <option>Lagos</option>
-                        <option>Abuja</option>
-                        <option>Port Harcourt</option>
-                        <option>Ibadan</option>
-                        <option>Online</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="filter-group">
-                    <div class="filter-label">Price</div>
-                    <select class="form-select" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white;">
-                        <option>Any price</option>
-                        <option>Free</option>
-                        <option>Under ₦5,000</option>
-                        <option>₦5,000 - ₦10,000</option>
-                        <option>₦10,000 - ₦20,000</option>
-                        <option>Over ₦20,000</option>
-                    </select>
-                </div>
-            </div>
-        </div>
+        <form action="/events" method="get" id="filterForm">
+            <!-- Keep search term -->
+            <input type="hidden" name="search" value="<?= $currentSearch ?? '' ?>">
 
-        <div class="filter-group mt-3">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="filter-group">
+                        <div class="filter-label">Category</div>
+                        <select name="category" class="form-select" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white;">
+                            <option value="">All Categories</option>
+                            <?php foreach ($categories as $category): ?>
+                                <option value="<?= $category->name ?>" <?= ($currentCategory ?? '') === $category->name ? 'selected' : '' ?>>
+                                    <?= ucfirst($category->name) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-5">
+                    <div class="filter-group">
+                        <div class="filter-label">City</div>
+                        <select name="city" class="form-select" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white;">
+                            <option value="">All Cities</option>
+                            <?php foreach ($cities ?? [] as $city): ?>
+                                <option value="<?= $city['name'] ?>" <?= ($currentCity ?? '') === $city['name'] ? 'selected' : '' ?>>
+                                    <?= $city['name'] ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="filter-group">
+                        <div class="filter-label">Featured</div>
+                        <input class="form-check-input" type="checkbox" name="featured" value="true"
+                            <?= ($currentFeatured ?? '') === 'true' ? 'checked' : '' ?> id="featuredFilter">
+                        <label class="form-check-label" for="featuredFilter">
+                            Featured Events Only
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-pulse btn-sm w-100">Apply Filters</button>
+
+            <?php if (!empty($currentSearch) || !empty($currentCategory) || !empty($currentCity) || !empty($currentFeatured)): ?>
+                <a href="/events" class="btn btn-outline-secondary btn-sm w-100 mt-2">Clear Filters</a>
+            <?php endif; ?>
+        </form>
+
+        <!-- <div class="filter-group mt-3">
             <div class="filter-label">Tags</div>
             <div class="filter-options">
                 <div class="filter-chip active">All events</div>
@@ -93,7 +91,7 @@
                 <div class="filter-chip">Sold out</div>
                 <div class="filter-chip">Discount</div>
             </div>
-        </div>
+        </div> -->
     </div>
 </section>
 
