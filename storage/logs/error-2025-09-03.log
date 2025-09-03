@@ -1,0 +1,107 @@
+[2025-09-03 08:37:27] Trees\Exception\TreesException: Route not found for path: /admin/events/tickets-sales in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-03 10:47:34] ErrorException: Undefined variable $categories in C:\xampp\htdocs\evently\storage\cache\temp_68b80eb66857e3.84231709.php on line 50
+Stack trace:
+#0 C:\xampp\htdocs\evently\storage\cache\temp_68b80eb66857e3.84231709.php(50): Trees\Exception\Handler\ExceptionHandler->handleError(2, 'Undefined varia...', 'C:\\xampp\\htdocs...', 50)
+#1 C:\xampp\htdocs\evently\core\View\View.php(559): include('C:\\xampp\\htdocs...')
+#2 C:\xampp\htdocs\evently\core\View\View.php(298): Trees\View\View->evaluateTemplate('<?php\r\n\r\n?>\r\n\r\n...', Array, 'C:\\xampp\\htdocs...')
+#3 C:\xampp\htdocs\evently\core\View\View.php(147): Trees\View\View->renderTemplate('events', Array)
+#4 C:\xampp\htdocs\evently\core\Controller\Controller.php(34): Trees\View\View->render('events', Array)
+#5 C:\xampp\htdocs\evently\app\controllers\EventController.php(26): Trees\Controller\Controller->render('events', Array)
+#6 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\EventController->events(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#7 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'events', Array)
+#8 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#9 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#10 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#11 {main}
+
+[2025-09-03 10:48:31] ValueError: min(): Argument #1 ($value) must contain at least one element in C:\xampp\htdocs\evently\app\controllers\EventController.php on line 108
+Stack trace:
+#0 C:\xampp\htdocs\evently\app\controllers\EventController.php(108): min(Array)
+#1 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\EventController->events(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#2 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'events', Array)
+#3 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#4 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#5 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#6 {main}
+
+[2025-09-03 11:06:39] ValueError: min(): Argument #1 ($value) must contain at least one element in C:\xampp\htdocs\evently\app\controllers\EventController.php on line 109
+Stack trace:
+#0 C:\xampp\htdocs\evently\app\controllers\EventController.php(109): min(Array)
+#1 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\EventController->events(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#2 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'events', Array)
+#3 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#4 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#5 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#6 {main}
+
+[2025-09-03 11:07:14] ValueError: min(): Argument #1 ($value) must contain at least one element in C:\xampp\htdocs\evently\app\controllers\EventController.php on line 109
+Stack trace:
+#0 C:\xampp\htdocs\evently\app\controllers\EventController.php(109): min(Array)
+#1 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\EventController->events(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#2 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'events', Array)
+#3 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#4 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#5 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#6 {main}
+
+[2025-09-03 11:11:11] ValueError: min(): Argument #1 ($value) must contain at least one element in C:\xampp\htdocs\evently\app\controllers\EventController.php on line 109
+Stack trace:
+#0 C:\xampp\htdocs\evently\app\controllers\EventController.php(109): min(Array)
+#1 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\EventController->events(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#2 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'events', Array)
+#3 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#4 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#5 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#6 {main}
+
+[2025-09-03 11:35:34] ErrorException: Array to string conversion in C:\xampp\htdocs\evently\storage\cache\temp_68b819f6982af9.24673719.php on line 62
+Stack trace:
+#0 C:\xampp\htdocs\evently\storage\cache\temp_68b819f6982af9.24673719.php(62): Trees\Exception\Handler\ExceptionHandler->handleError(2, 'Array to string...', 'C:\\xampp\\htdocs...', 62)
+#1 C:\xampp\htdocs\evently\core\View\View.php(559): include('C:\\xampp\\htdocs...')
+#2 C:\xampp\htdocs\evently\core\View\View.php(298): Trees\View\View->evaluateTemplate('<?php\r\n\r\n?>\r\n\r\n...', Array, 'C:\\xampp\\htdocs...')
+#3 C:\xampp\htdocs\evently\core\View\View.php(147): Trees\View\View->renderTemplate('events', Array)
+#4 C:\xampp\htdocs\evently\core\Controller\Controller.php(34): Trees\View\View->render('events', Array)
+#5 C:\xampp\htdocs\evently\app\controllers\EventController.php(189): Trees\Controller\Controller->render('events', Array)
+#6 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\EventController->events(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#7 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'events', Array)
+#8 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#9 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#10 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#11 {main}
+
+[2025-09-03 11:39:36] ErrorException: Array to string conversion in C:\xampp\htdocs\evently\storage\cache\temp_68b81ae80ed259.55823882.php on line 62
+Stack trace:
+#0 C:\xampp\htdocs\evently\storage\cache\temp_68b81ae80ed259.55823882.php(62): Trees\Exception\Handler\ExceptionHandler->handleError(2, 'Array to string...', 'C:\\xampp\\htdocs...', 62)
+#1 C:\xampp\htdocs\evently\core\View\View.php(559): include('C:\\xampp\\htdocs...')
+#2 C:\xampp\htdocs\evently\core\View\View.php(298): Trees\View\View->evaluateTemplate('<?php\r\n\r\n?>\r\n\r\n...', Array, 'C:\\xampp\\htdocs...')
+#3 C:\xampp\htdocs\evently\core\View\View.php(147): Trees\View\View->renderTemplate('events', Array)
+#4 C:\xampp\htdocs\evently\core\Controller\Controller.php(34): Trees\View\View->render('events', Array)
+#5 C:\xampp\htdocs\evently\app\controllers\EventController.php(189): Trees\Controller\Controller->render('events', Array)
+#6 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\EventController->events(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#7 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'events', Array)
+#8 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#9 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#10 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#11 {main}
+
+[2025-09-03 11:44:17] ErrorException: Array to string conversion in C:\xampp\htdocs\evently\storage\cache\temp_68b81c018f3201.91542534.php on line 62
+Stack trace:
+#0 C:\xampp\htdocs\evently\storage\cache\temp_68b81c018f3201.91542534.php(62): Trees\Exception\Handler\ExceptionHandler->handleError(2, 'Array to string...', 'C:\\xampp\\htdocs...', 62)
+#1 C:\xampp\htdocs\evently\core\View\View.php(559): include('C:\\xampp\\htdocs...')
+#2 C:\xampp\htdocs\evently\core\View\View.php(298): Trees\View\View->evaluateTemplate('<?php\r\n\r\n?>\r\n\r\n...', Array, 'C:\\xampp\\htdocs...')
+#3 C:\xampp\htdocs\evently\core\View\View.php(147): Trees\View\View->renderTemplate('events', Array)
+#4 C:\xampp\htdocs\evently\core\Controller\Controller.php(34): Trees\View\View->render('events', Array)
+#5 C:\xampp\htdocs\evently\app\controllers\EventController.php(189): Trees\Controller\Controller->render('events', Array)
+#6 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\EventController->events(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#7 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'events', Array)
+#8 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#9 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#10 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#11 {main}
+
