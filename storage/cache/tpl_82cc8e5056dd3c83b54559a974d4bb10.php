@@ -117,6 +117,8 @@ use App\models\Categories;
         <div class="d-flex align-items-center">
             <label class="me-2">Per Page:</label>
             <select name="per_page" class="form-select form-select-sm" style="width: auto;" onchange="changePerPage(this.value)">
+                <option value="1" <?= ($_GET['per_page'] ?? 1) == 1 ? 'selected' : '' ?>>1</option>
+                <option value="5" <?= ($_GET['per_page'] ?? 5) == 5 ? 'selected' : '' ?>>5</option>
                 <option value="12" <?= ($_GET['per_page'] ?? 12) == 12 ? 'selected' : '' ?>>12</option>
                 <option value="24" <?= ($_GET['per_page'] ?? 12) == 24 ? 'selected' : '' ?>>24</option>
                 <option value="48" <?= ($_GET['per_page'] ?? 12) == 48 ? 'selected' : '' ?>>48</option>
@@ -131,13 +133,20 @@ use App\models\Categories;
                 <div class="event-card reveal <?= $index % 3 === 1 ? 'delay-1' : ($index % 3 === 2 ? 'delay-2' : '') ?>">
                     <img src="<?php echo $this->escape(get_image($event->event_image, "https://images.unsplash.com/photo-1506157786151-b8491531f063?q=80&w=500&auto=format&fit=crop")); ?>" alt="<?php echo $event->event_title; ?>" class="event-img">
                     <div class="event-content">
-                        <span class="event-category">
-                            <?php
-                            $category = Categories::find($event->category);
-                            $icon = getCategoryIcon($category->name);
-                            ?>
-                            <i class="bi <?= $icon ?>"></i> <?= ucfirst($category->name) ?>
-                        </span>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="event-category">
+                                <?php
+                                $category = Categories::find($event->category);
+                                $icon = getCategoryIcon($category->name);
+                                ?>
+                                <i class="bi <?= $icon ?>"></i> <?= ucfirst($category->name) ?>
+                            </span>
+                            <?php if ($event->featured): ?>
+                                <div class="event-category">
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                </div>
+                            <?php endif; ?>
+                        </div>
                         <h3 class="event-title"><?php echo $event->event_title; ?></h3>
                         <p class="event-description"><?php echo getExcerpt($event->description, 150); ?></p>
 
@@ -176,23 +185,28 @@ use App\models\Categories;
                     </div>
                 </div>
             <?php endforeach; ?>
+        <?php else: ?>
+            <div class="col-12 text-center py-5">
+                <div class="no-events">
+                    <i class="bi bi-calendar-x" style="font-size: 3rem; color: #ccc;"></i>
+                    <h4 class="mt-3">No Events Found</h4>
+                    <p class="text-muted">
+                        <?php if (!empty($currentSearch)): ?>
+                            No events match your search criteria. Try adjusting your search terms or filters.
+                        <?php else: ?>
+                            There are currently no events available. Check back soon!
+                        <?php endif; ?>
+                    </p>
+                    <?php if (!empty($currentSearch) || !empty($currentCategory) || !empty($currentCity)): ?>
+                        <a href="/events" class="btn btn-pulse">View All Events</a>
+                    <?php endif; ?>
+                </div>
+            </div>
         <?php endif; ?>
     </div>
 
     <!-- Pagination -->
-    <nav aria-label="Event pagination">
-        <ul class="pagination">
-            <li class="page-item disabled">
-                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-            </li>
-            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item">
-                <a class="page-link" href="#">Next</a>
-            </li>
-        </ul>
-    </nav>
+    <?php echo $pagination; ?>
 </section>
 
 <!-- NEWSLETTER SECTION -->
@@ -201,8 +215,8 @@ use App\models\Categories;
         <h3 class="newsletter-title">Never Miss an Event</h3>
         <p class="newsletter-text">Subscribe to our newsletter and be the first to know about new events, exclusive deals, and special promotions.</p>
 
-        <form class="newsletter-form">
-            <input type="email" class="newsletter-input" placeholder="Your email address">
+        <form class="newsletter-form" action="<?php echo $this->escape(url('/newsletter/subscribe')); ?>" method="post">
+            <input type="email" name="email" class="newsletter-input" placeholder="Your email address">
             <button type="submit" class="btn btn-pulse">Subscribe</button>
         </form>
     </div>
@@ -213,4 +227,43 @@ use App\models\Categories;
 
 <?php $this->start('scripts'); ?>
 <script src="/dist/js/script.js"></script>
+<script>
+    // Change per page function
+    function changePerPage(value) {
+        const url = new URL(window.location);
+        url.searchParams.set('per_page', value);
+        url.searchParams.set('page', 1); // Reset to first page
+        window.location.href = url.toString();
+    }
+
+    // Auto-submit filters when changed
+    document.addEventListener('DOMContentLoaded', function() {
+        const filterSelects = document.querySelectorAll('#filterForm select');
+        const filterCheckbox = document.querySelector('#featuredFilter');
+
+        filterSelects.forEach(select => {
+            select.addEventListener('change', function() {
+                document.getElementById('filterForm').submit();
+            });
+        });
+
+        if (filterCheckbox) {
+            filterCheckbox.addEventListener('change', function() {
+                document.getElementById('filterForm').submit();
+            });
+        }
+
+        // Search form enhancement
+        const searchForm = document.querySelector('form[action="/events"]');
+        if (searchForm && !searchForm.id) { // Make sure it's not the filter form
+            searchForm.addEventListener('submit', function(e) {
+                const searchInput = this.querySelector('input[name="search"]');
+                if (searchInput && searchInput.value.trim().length === 0) {
+                    e.preventDefault();
+                    window.location.href = '/events';
+                }
+            });
+        }
+    });
+</script>
 <?php $this->end(); ?>
