@@ -189,7 +189,7 @@ use App\models\Categories;
                                     Free
                                 <?php endif; ?>
                             </div>
-                            <a href='<?php echo $this->escape(url("/events/$event->slug")); ?>' class="btn btn-pulse btn-sm">View Event</a>
+                            <a href='<?php echo $this->escape(url("/events/$event->id/{$event->slug}")); ?>' class="btn btn-pulse btn-sm">View Event</a>
                         </div>
                     </div>
                 </div>

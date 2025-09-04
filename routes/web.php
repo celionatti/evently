@@ -22,8 +22,7 @@ use App\controllers\AdminCategoryController;
 
 $router->get('/', [SiteController::class, 'index']);
 $router->get('/events', [EventController::class, 'events']);
-$router->get('/tests', [EventController::class, 'tests']);
-$router->get('/events/{id}', [EventController::class, 'event']);
+$router->get('/events/{id}/{slug}', [EventController::class, 'event']);
 
 // Auth: Login/SignUp
 $router->get('/login', [AuthController::class, 'login']);
