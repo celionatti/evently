@@ -1,5 +1,7 @@
 <?php
 
+use App\models\Categories;
+
 ?>
 
 <?php $this->start('content'); ?>
@@ -11,16 +13,22 @@
         <div class="row gy-4">
             <div class="col-12">
                 <div class="reveal">
-                    <span class="chip mb-3"><i class="bi bi-music-note-beamed"></i> Music Concert</span>
-                    <h1>Afrobeats Live: Midnight Wave</h1>
+                    <span class="chip mb-3">
+                        <?php
+                        $category = Categories::find($event->category);
+                        $icon = getCategoryIcon($category->name);
+                        ?>
+                        <i class="bi <?= $icon ?>"></i> <?= ucfirst($category->name) ?>
+                    </span>
+                    <h1><?php echo $event->event_title; ?></h1>
                     <div class="d-flex flex-wrap gap-3 align-items-center mt-3">
                         <div class="d-flex align-items-center gap-2">
                             <i class="bi bi-calendar-event text-info-emphasis"></i>
-                            <span>Friday, October 10, 2025 • 8:00 PM</span>
+                            <span><?php echo $this->escape(date('l, F j, Y', strtotime($event->event_date))); ?> • <?php echo $this->escape(date('g:i A', strtotime($event->start_time ?? '00:00:00'))); ?></span>
                         </div>
                         <div class="d-flex align-items-center gap-2">
                             <i class="bi bi-geo-alt text-info-emphasis"></i>
-                            <span>Eko Convention Center, Lagos</span>
+                            <span class="text-capitalize"><?php echo $event->venue; ?>, <?php echo $event->city; ?></span>
                         </div>
                     </div>
                 </div>
@@ -40,29 +48,23 @@
         <div class="two-column-layout">
             <!-- LEFT COLUMN - Event Image and Details -->
             <div class="left-column">
-                <img src="https://images.unsplash.com/photo-1506157786151-b8491531f063?q=80&w=1400&auto=format&fit=crop"
-                    alt="Afrobeats Live concert scene" class="event-hero-img reveal w-100 mb-4">
+                <img src="<?php echo $this->escape(get_image($event->event_image, "https://images.unsplash.com/photo-1506157786151-b8491531f063?q=80&w=500&auto=format&fit=crop")); ?>"
+                    alt="<?php echo $event->event_title; ?>" class="event-hero-img reveal w-100 mb-4">
 
                 <h2 class="section-title reveal">Event Details</h2>
 
                 <div class="reveal delay-1">
-                    <p>Get ready for an unforgettable night of pulsating Afrobeats rhythms and electrifying performances at the
-                        Eko Convention Center. Midnight Wave brings together the biggest names in African music for a 5-hour
-                        extravaganza that will keep you dancing until the early hours.</p>
-
-                    <p>This year's edition features special collaborative performances never seen before, with surprise guest
-                        appearances that will leave you in awe. Experience the fusion of traditional African sounds with
-                        contemporary production in a state-of-the-art audiovisual production.</p>
+                    <p><?php echo $event->description; ?></p>
                 </div>
 
-                <h3 class="mt-5 pt-3 reveal delay-2">What to Expect</h3>
+                <!-- <h3 class="mt-5 pt-3 reveal delay-2">What to Expect</h3>
                 <ul class="reveal delay-3">
                     <li>World-class sound system and lighting production</li>
                     <li>Multiple bars and food vendors featuring local cuisine</li>
                     <li>VIP lounge with premium amenities and private bar</li>
                     <li>Merchandise stands with exclusive event collectibles</li>
                     <li>Safe and secure environment with professional security staff</li>
-                </ul>
+                </ul> -->
             </div>
 
             <!-- RIGHT COLUMN - Ticket Selection -->
