@@ -51,7 +51,8 @@ use App\models\Categories;
                         <select name="category" class="form-select" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white;">
                             <option value="">All Categories</option>
                             <?php foreach ($categories as $category): ?>
-                                <option value="<?= $category->id ?>" <?= $currentCategory == $category->id ? 'selected' : '' ?>>
+                                <?= var_dump($category); die; ?>
+                                <option value="<?= $category->id ?>" <?= ($currentCategory ?? '') === $category->id ? 'selected' : '' ?>>
                                     <?= ucfirst($category->name) ?>
                                 </option>
                             <?php endforeach; ?>

@@ -5,6 +5,14 @@ use App\models\Categories;
 
 ?>
 
+@section('styles')
+<style>
+    .min-vh-50 {
+        min-height: 50vh;
+    }
+</style>
+@endsection
+
 @section('content')
 @include('nav')
 
@@ -43,7 +51,7 @@ use App\models\Categories;
                         <select name="category" class="form-select" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white;">
                             <option value="">All Categories</option>
                             <?php foreach ($categories as $category): ?>
-                                <option value="<?= $category->name ?>" <?= ($currentCategory ?? '') === $category->name ? 'selected' : '' ?>>
+                                <option value="<?= $category->id ?>" <?= $currentCategory == $category->id ? 'selected' : '' ?>>
                                     <?= ucfirst($category->name) ?>
                                 </option>
                             <?php endforeach; ?>
@@ -106,7 +114,8 @@ use App\models\Categories;
                 <?php if (!empty($currentSearch)): ?>
                     Search Results for "<?= htmlspecialchars($currentSearch) ?>"
                 <?php elseif (!empty($currentCategory)): ?>
-                    <?= ucfirst($currentCategory) ?> Events
+                    <?php $category = Categories::find($currentCategory); ?>
+                    <?= ucfirst($category->name) ?> Events
                 <?php else: ?>
                     All Events
                 <?php endif; ?>
@@ -126,8 +135,8 @@ use App\models\Categories;
         </div>
     </div>
 
-    <div class="events-grid">
-        <?php if (!empty($events) && is_array($events)): ?>
+    <?php if (!empty($events) && is_array($events)): ?>
+        <div class="events-grid">
             <?php foreach ($events as $index => $event): ?>
                 <!-- Event -->
                 <div class="event-card reveal <?= $index % 3 === 1 ? 'delay-1' : ($index % 3 === 2 ? 'delay-2' : '') ?>">
@@ -185,12 +194,16 @@ use App\models\Categories;
                     </div>
                 </div>
             <?php endforeach; ?>
-        <?php else: ?>
-            <div class="col-12 text-center py-5">
-                <div class="no-events">
+        </div>
+        <!-- Pagination -->
+        {{{ $pagination }}}
+    <?php else: ?>
+        <div class="col-12">
+            <div class="d-flex justify-content-center align-items-center min-vh-50">
+                <div class="text-center py-5">
                     <i class="bi bi-calendar-x" style="font-size: 3rem; color: #ccc;"></i>
                     <h4 class="mt-3">No Events Found</h4>
-                    <p class="text-muted">
+                    <p class="text-white">
                         <?php if (!empty($currentSearch)): ?>
                             No events match your search criteria. Try adjusting your search terms or filters.
                         <?php else: ?>
@@ -202,11 +215,8 @@ use App\models\Categories;
                     <?php endif; ?>
                 </div>
             </div>
-        <?php endif; ?>
-    </div>
-
-    <!-- Pagination -->
-    {{{ $pagination }}}
+        </div>
+    <?php endif; ?>
 </section>
 
 <!-- NEWSLETTER SECTION -->

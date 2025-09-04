@@ -140,3 +140,14 @@ Stack trace:
 #2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
 #3 {main}
 
+[2025-09-03 23:37:35] TypeError: Trees\Database\QueryBuilder\QueryBuilder::orderBy(): Argument #2 ($direction) must be of type string, int given, called in C:\xampp\htdocs\evently\core\Database\Trait\Pagination.php on line 80 in C:\xampp\htdocs\evently\core\Database\QueryBuilder\QueryBuilder.php on line 226
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Database\Trait\Pagination.php(80): Trees\Database\QueryBuilder\QueryBuilder->orderBy('featured', 1)
+#1 C:\xampp\htdocs\evently\app\controllers\EventController.php(68): Trees\Database\Model\Model::paginate(Array)
+#2 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\EventController->events(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#3 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'events', Array)
+#4 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#5 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#6 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#7 {main}
+

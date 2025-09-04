@@ -86,7 +86,6 @@ class EventController extends Controller
             $featuredEvents = array_slice($featuredEvents, 0, 3);
         }
 
-
         $view = [
             'events' => $eventsData['data'],
             'pagination' => $paginationLinks,
