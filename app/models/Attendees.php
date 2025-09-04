@@ -31,6 +31,7 @@ class Attendees extends Model implements ModelInterface
         'name',
         'email',
         'phone',
+        'ticket_code',
         'status',
         'created_at',
     ];

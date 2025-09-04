@@ -9,6 +9,7 @@ use App\controllers\EventController;
 use App\controllers\AdminUserController;
 use App\controllers\AdminEventController;
 use App\controllers\AdminCategoryController;
+use App\Controllers\CheckoutController;
 
 /** @var \Trees\Router\Router $router */
 
@@ -23,6 +24,9 @@ use App\controllers\AdminCategoryController;
 $router->get('/', [SiteController::class, 'index']);
 $router->get('/events', [EventController::class, 'events']);
 $router->get('/events/{id}/{slug}', [EventController::class, 'event']);
+
+// Checkout Ticket Transaction
+$router->post('/checkout/tickets', [CheckoutController::class, 'process_checkout']);
 
 // Auth: Login/SignUp
 $router->get('/login', [AuthController::class, 'login']);
