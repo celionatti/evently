@@ -73,35 +73,23 @@ use App\models\Categories;
                     <h4 class="mb-3">Get Tickets</h4>
 
                     <?php foreach ($tickets as $ticket): ?>
-                        <!-- Ticket -->
-                        <div class="ticket-tier <?= $ticket['sold_out'] ? 'sold-out' : '' ?>">
-                            <div class="tier-header">
-                                <div>
-                                    <h5 class="mb-1"><?= $ticket['name'] ?></h5>
-                                    <?php if (!empty($ticket['description'])): ?>
-                                        <p class="mb-0 text-info"><?= $ticket['description'] ?></p>
-                                    <?php endif; ?>
-                                </div>
-                                <div class="price">₦<?= number_format($ticket['price']) ?></div>
+                    <!-- Ticket -->
+                    <div class="ticket-tier <?= $ticket['sold_out'] ? 'sold-out' : '' ?>">
+                        <div class="tier-header">
+                            <div>
+                                <h5 class="mb-1"><?= $ticket['ticket_name'] ?></h5>
+                                <p class="mb-0 text-info">Front row seats + backstage access</p>
                             </div>
-                            <div class="quantity-selector">
-                                <button class="quantity-btn decrease" data-tier="<?= $ticket['slug'] ?>"
-                                    <?= $ticket['sold_out'] ? 'disabled' : '' ?>>-</button>
-                                <input type="number" class="quantity-input" id="<?= $ticket['slug'] ?>-qty" value="0"
-                                    min="0" max="<?= $ticket['available'] ?>" data-price="<?= $ticket['price'] ?>"
-                                    data-tier="<?= $ticket['slug'] ?>" data-charge="<?= $ticket['service_charge'] ?>"
-                                    <?= $ticket['sold_out'] ? 'disabled' : '' ?>>
-                                <button class="quantity-btn increase" data-tier="<?= $ticket['slug'] ?>"
-                                    <?= $ticket['sold_out'] ? 'disabled' : '' ?>>+</button>
-                                <?php if ($ticket['sold_out']): ?>
-                                    <span class="sold-out-badge ms-2">Sold Out</span>
-                                <?php else: ?>
-                                    <div class="text-info ms-2">
-                                        <?= $ticket['available'] <= 5 ? "Only {$ticket['available']} left" : "Plenty available" ?>
-                                    </div>
-                                <?php endif; ?>
-                            </div>
+                            <div class="price">₦45,000</div>
                         </div>
+                        <div class="quantity-selector">
+                            <button class="quantity-btn decrease" data-tier="vip">-</button>
+                            <input type="number" class="quantity-input" id="vip-qty" value="0" min="0" max="4" data-price="45000"
+                                data-tier="vip" data-charge="1000">
+                            <button class="quantity-btn increase" data-tier="vip">+</button>
+                            <div class="text-info ms-2">4 left</div>
+                        </div>
+                    </div>
                     <?php endforeach; ?>
 
                     <!-- <div class="ticket-tier sold-out">
@@ -216,21 +204,32 @@ use App\models\Categories;
 <?php $this->start('scripts'); ?>
 <script src="/dist/js/script.js"></script>
 <script>
-    // Convert PHP ticket data to JavaScript object
+    // Ticket selection functionality
     const ticketData = {
-        <?php foreach ($tickets as $ticket): ?> '<?= $ticket['slug'] ?>': {
-                price: <?= $ticket['price'] ?>,
-                charge: <?= $ticket['service_charge'] ?>,
-                available: <?= $ticket['available'] ?>,
-                name: "<?= addslashes($ticket['name']) ?>",
-                maxPerPerson: <?= $ticket['max_per_person'] ?? 10 ?>
-            },
-        <?php endforeach; ?>
+        vip: {
+            price: 45000,
+            charge: 1000,
+            available: 4,
+            name: "VIP Experience"
+        },
+        general: {
+            price: 15000,
+            charge: 500,
+            available: 999,
+            name: "General Admission"
+        },
+        group: {
+            price: 12750,
+            charge: 300,
+            available: 0,
+            name: "Group Package"
+        }
     };
 
     let selectedTickets = {
-        <?php foreach ($tickets as $ticket): ?> '<?= $ticket['slug'] ?>': 0,
-        <?php endforeach; ?>
+        vip: 0,
+        general: 0,
+        group: 0
     };
 
     // Set up quantity buttons
@@ -239,13 +238,10 @@ use App\models\Categories;
             const tier = btn.dataset.tier;
             const isIncrease = btn.classList.contains('increase');
             const input = document.getElementById(`${tier}-qty`);
-            const maxAvailable = ticketData[tier].available;
-            const maxPerPerson = ticketData[tier].maxPerPerson;
 
             if (isIncrease) {
-                const currentValue = parseInt(input.value);
-                if (currentValue < Math.min(maxAvailable, maxPerPerson)) {
-                    input.value = currentValue + 1;
+                if (parseInt(input.value) < ticketData[tier].available) {
+                    input.value = parseInt(input.value) + 1;
                 }
             } else {
                 if (parseInt(input.value) > 0) {
@@ -254,41 +250,9 @@ use App\models\Categories;
             }
 
             selectedTickets[tier] = parseInt(input.value);
-            updateTicketAvailability();
             updateOrderSummary();
         });
     });
-
-    // Update ticket availability display
-    function updateTicketAvailability() {
-        for (const tier in ticketData) {
-            const input = document.getElementById(`${tier}-qty`);
-            const available = ticketData[tier].available;
-            const selected = selectedTickets[tier] || 0;
-            const remaining = available - selected;
-
-            // Update the availability text
-            const availabilityEl = input.parentNode.querySelector('.text-info, .sold-out-badge');
-            if (availabilityEl) {
-                if (remaining <= 0) {
-                    availabilityEl.textContent = "Sold Out";
-                    availabilityEl.className = "sold-out-badge ms-2";
-                } else {
-                    availabilityEl.textContent = remaining <= 5 ? `Only ${remaining} left` : "Plenty available";
-                    availabilityEl.className = "text-info ms-2";
-                }
-            }
-
-            // Update input max value
-            input.setAttribute('max', remaining);
-
-            // Disable increase button if no more available
-            const increaseBtn = input.parentNode.querySelector('.increase');
-            if (increaseBtn) {
-                increaseBtn.disabled = (remaining <= 0 || selected >= ticketData[tier].maxPerPerson);
-            }
-        }
-    }
 
     // Update order summary
     function updateOrderSummary() {
@@ -364,20 +328,20 @@ use App\models\Categories;
                     const attendeeForm = document.createElement('div');
                     attendeeForm.className = 'attendee-form';
                     attendeeForm.innerHTML = `
-                        <div class="attendee-header">
-                            <h6 class="mb-0">Attendee ${i}</h6>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="attendee-${tier}-${i}-name" class="form-label">Full Name</label>
-                                <input type="text" class="form-control attendee-name" id="attendee-${tier}-${i}-name" data-tier="${tier}" data-index="${i}" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="attendee-${tier}-${i}-email" class="form-label">Email Address</label>
-                                <input type="email" class="form-control attendee-email" id="attendee-${tier}-${i}-email" data-tier="${tier}" data-index="${i}" required>
-                            </div>
-                        </div>
-                    `;
+              <div class="attendee-header">
+                <h6 class="mb-0">Attendee ${i}</h6>
+              </div>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="attendee-${tier}-${i}-name" class="form-label">Full Name</label>
+                  <input type="text" class="form-control attendee-name" id="attendee-${tier}-${i}-name" data-tier="${tier}" data-index="${i}" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="attendee-${tier}-${i}-email" class="form-label">Email Address</label>
+                  <input type="email" class="form-control attendee-email" id="attendee-${tier}-${i}-email" data-tier="${tier}" data-index="${i}" required>
+                </div>
+              </div>
+            `;
                     container.appendChild(attendeeForm);
                 }
             }
@@ -481,16 +445,11 @@ use App\models\Categories;
         });
     }
 
-    // Countdown timer using the actual event date
+    // Countdown timer
     function updateCountdown() {
-        const eventDate = new Date(<?= $eventDateTime * 1000 ?>); // Convert PHP timestamp to JS timestamp
+        const eventDate = new Date('October 10, 2025 20:00:00').getTime();
         const now = new Date().getTime();
         const distance = eventDate - now;
-
-        if (distance < 0) {
-            document.getElementById('countdown-timer').innerHTML = "Event has started";
-            return;
-        }
 
         const days = Math.floor(distance / (1000 * 60 * 60 * 24));
         const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -501,7 +460,6 @@ use App\models\Categories;
             `${days} days ${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     }
 
-    updateTicketAvailability();
     setInterval(updateCountdown, 1000);
     updateCountdown();
 </script>
