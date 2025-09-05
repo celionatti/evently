@@ -170,9 +170,6 @@ class SessionHandler implements SessionInterface
         $this->started = false;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function regenerate(bool $deleteOldSession = true): void
     {
         $this->ensureSessionStarted();
@@ -189,18 +186,12 @@ class SessionHandler implements SessionInterface
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setArray(array $data): void
     {
         $this->ensureSessionStarted();
         $_SESSION = array_merge($_SESSION, $data);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function unsetArray(array $keys): void
     {
         $this->ensureSessionStarted();

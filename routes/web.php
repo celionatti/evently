@@ -26,7 +26,8 @@ $router->get('/events', [EventController::class, 'events']);
 $router->get('/events/{id}/{slug}', [EventController::class, 'event']);
 
 // Checkout Ticket Transaction
-$router->post('/checkout/tickets', [CheckoutController::class, 'process_checkout']);
+$router->post('/checkout/tickets', [CheckoutController::class, 'processCheckout']);
+$router->get('/checkout/payment/{reference}', [CheckoutController::class, 'paymentPage']);
 
 // Auth: Login/SignUp
 $router->get('/login', [AuthController::class, 'login']);

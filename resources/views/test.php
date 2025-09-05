@@ -49,22 +49,13 @@ use App\models\Categories;
             <!-- LEFT COLUMN - Event Image and Details -->
             <div class="left-column">
                 <img src="{{ get_image($event->event_image, "https://images.unsplash.com/photo-1506157786151-b8491531f063?q=80&w=500&auto=format&fit=crop") }}"
-                    alt="{{{ $event->event_title }}}" class="event-hero-img reveal w-100 mb-4">
+                    alt="{{{ $event->event_title }}}" class="event-hero-img reveal w-100 mb-4" loading="lazy">
 
                 <h2 class="section-title reveal">Event Details</h2>
 
                 <div class="reveal delay-1">
                     <p>{{{ $event->description }}}</p>
                 </div>
-
-                <!-- <h3 class="mt-5 pt-3 reveal delay-2">What to Expect</h3>
-                <ul class="reveal delay-3">
-                    <li>World-class sound system and lighting production</li>
-                    <li>Multiple bars and food vendors featuring local cuisine</li>
-                    <li>VIP lounge with premium amenities and private bar</li>
-                    <li>Merchandise stands with exclusive event collectibles</li>
-                    <li>Safe and secure environment with professional security staff</li>
-                </ul> -->
             </div>
 
             <!-- RIGHT COLUMN - Ticket Selection -->
@@ -85,13 +76,13 @@ use App\models\Categories;
                                 <div class="price">₦<?= number_format($ticket['price']) ?></div>
                             </div>
                             <div class="quantity-selector">
-                                <button class="quantity-btn decrease" data-tier="<?= $ticket['slug'] ?>"
+                                <button class="quantity-btn decrease" data-tier="<?= $ticket['id'] ?>"
                                     <?= $ticket['sold_out'] ? 'disabled' : '' ?>>-</button>
-                                <input type="number" class="quantity-input" id="<?= $ticket['slug'] ?>-qty" value="0"
+                                <input type="number" class="quantity-input" id="<?= $ticket['id'] ?>-qty" value="0"
                                     min="0" max="<?= $ticket['available'] ?>" data-price="<?= $ticket['price'] ?>"
-                                    data-tier="<?= $ticket['slug'] ?>" data-charge="<?= $ticket['service_charge'] ?>"
+                                    data-tier="<?= $ticket['id'] ?>" data-charge="<?= $ticket['service_charge'] ?>"
                                     <?= $ticket['sold_out'] ? 'disabled' : '' ?>>
-                                <button class="quantity-btn increase" data-tier="<?= $ticket['slug'] ?>"
+                                <button class="quantity-btn increase" data-tier="<?= $ticket['id'] ?>"
                                     <?= $ticket['sold_out'] ? 'disabled' : '' ?>>+</button>
                                 <?php if ($ticket['sold_out']): ?>
                                     <span class="sold-out-badge ms-2">Sold Out</span>
@@ -103,22 +94,6 @@ use App\models\Categories;
                             </div>
                         </div>
                     <?php endforeach; ?>
-
-                    <!-- <div class="ticket-tier sold-out">
-                        <div class="tier-header">
-                            <div>
-                                <h5 class="mb-1">Group Package <span class="sold-out-badge">Sold Out</span></h5>
-                                <p class="mb-0 text-info">6+ tickets (15% discount)</p>
-                            </div>
-                            <div class="price">₦12,750</div>
-                        </div>
-                        <div class="quantity-selector">
-                            <button class="quantity-btn decrease" data-tier="group" disabled>-</button>
-                            <input type="number" class="quantity-input" id="group-qty" value="0" min="0" max="0" data-price="12750"
-                                data-tier="group" data-charge="300" disabled>
-                            <button class="quantity-btn increase" data-tier="group" disabled>+</button>
-                        </div>
-                    </div> -->
 
                     <!-- Ticket Summary -->
                     <div class="mt-4 pt-3 border-top border-secondary">
@@ -170,22 +145,31 @@ use App\models\Categories;
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="checkoutForm">
+                <!-- Changed to regular form with method and action -->
+                <form id="checkoutForm" method="POST" action="/checkout/tickets">
+                    
+                    <!-- Hidden inputs for ticket quantities - CHANGED TO USE ID INSTEAD OF SLUG -->
+                    <?php foreach ($tickets as $ticket): ?>
+                        <input type="hidden" name="tickets[<?= $ticket['id'] ?>]" id="hidden-<?= $ticket['id'] ?>" value="0">
+                    <?php endforeach; ?>
+                    
+                    <input type="hidden" name="event_id" value="<?= $event->id ?>">
+                    
                     <h6 class="mb-3">Contact Information</h6>
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="fullName" class="form-label">Full Name</label>
-                            <input type="text" class="form-control" id="fullName" required>
+                            <input type="text" class="form-control" id="fullName" name="contact[name]" required>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="email" class="form-label">Email address</label>
-                            <input type="email" class="form-control" id="email" required>
+                            <input type="email" class="form-control" id="email" name="contact[email]" required>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="phone" class="form-label">Phone number</label>
-                            <input type="tel" class="form-control" id="phone" required>
+                            <input type="tel" class="form-control" id="phone" name="contact[phone]" required>
                         </div>
                     </div>
 
@@ -216,31 +200,32 @@ use App\models\Categories;
 @section('scripts')
 <script src="/dist/js/script.js"></script>
 <script>
-    // Convert PHP ticket data to JavaScript object
+    // Convert PHP ticket data to JavaScript object - CHANGED TO USE ID INSTEAD OF SLUG
     const ticketData = {
-        <?php foreach ($tickets as $ticket): ?> '<?= $ticket['slug'] ?>': {
+        <?php foreach ($tickets as $ticket): ?> '<?= $ticket['id'] ?>': {
                 price: <?= $ticket['price'] ?>,
                 charge: <?= $ticket['service_charge'] ?>,
                 available: <?= $ticket['available'] ?>,
                 name: "<?= addslashes($ticket['name']) ?>",
-                maxPerPerson: <?= $ticket['max_per_person'] ?? 10 ?>
+                maxPerPerson: <?= $ticket['max_per_person'] ?? 10 ?>,
+                slug: "<?= $ticket['slug'] ?>" // Keep slug for display purposes if needed
             },
         <?php endforeach; ?>
     };
 
     let selectedTickets = {
-        <?php foreach ($tickets as $ticket): ?> '<?= $ticket['slug'] ?>': 0,
+        <?php foreach ($tickets as $ticket): ?> '<?= $ticket['id'] ?>': 0,
         <?php endforeach; ?>
     };
 
     // Set up quantity buttons
     document.querySelectorAll('.quantity-btn').forEach(btn => {
         btn.addEventListener('click', () => {
-            const tier = btn.dataset.tier;
+            const tierId = btn.dataset.tier; // Now contains ID, not slug
             const isIncrease = btn.classList.contains('increase');
-            const input = document.getElementById(`${tier}-qty`);
-            const maxAvailable = ticketData[tier].available;
-            const maxPerPerson = ticketData[tier].maxPerPerson;
+            const input = document.getElementById(`${tierId}-qty`);
+            const maxAvailable = ticketData[tierId].available;
+            const maxPerPerson = ticketData[tierId].maxPerPerson;
 
             if (isIncrease) {
                 const currentValue = parseInt(input.value);
@@ -253,7 +238,10 @@ use App\models\Categories;
                 }
             }
 
-            selectedTickets[tier] = parseInt(input.value);
+            selectedTickets[tierId] = parseInt(input.value);
+            // Update hidden input value
+            document.getElementById(`hidden-${tierId}`).value = selectedTickets[tierId];
+            
             updateTicketAvailability();
             updateOrderSummary();
         });
@@ -261,10 +249,10 @@ use App\models\Categories;
 
     // Update ticket availability display
     function updateTicketAvailability() {
-        for (const tier in ticketData) {
-            const input = document.getElementById(`${tier}-qty`);
-            const available = ticketData[tier].available;
-            const selected = selectedTickets[tier] || 0;
+        for (const tierId in ticketData) {
+            const input = document.getElementById(`${tierId}-qty`);
+            const available = ticketData[tierId].available;
+            const selected = selectedTickets[tierId] || 0;
             const remaining = available - selected;
 
             // Update the availability text
@@ -285,7 +273,7 @@ use App\models\Categories;
             // Disable increase button if no more available
             const increaseBtn = input.parentNode.querySelector('.increase');
             if (increaseBtn) {
-                increaseBtn.disabled = (remaining <= 0 || selected >= ticketData[tier].maxPerPerson);
+                increaseBtn.disabled = (remaining <= 0 || selected >= ticketData[tierId].maxPerPerson);
             }
         }
     }
@@ -301,21 +289,21 @@ use App\models\Categories;
 
         let summaryHTML = '';
 
-        for (const tier in selectedTickets) {
-            if (selectedTickets[tier] > 0) {
+        for (const tierId in selectedTickets) {
+            if (selectedTickets[tierId] > 0) {
                 hasTickets = true;
-                const tierPrice = selectedTickets[tier] * ticketData[tier].price;
-                const tierCharges = selectedTickets[tier] * ticketData[tier].charge;
+                const tierPrice = selectedTickets[tierId] * ticketData[tierId].price;
+                const tierCharges = selectedTickets[tierId] * ticketData[tierId].charge;
                 subtotal += tierPrice;
                 charges += tierCharges;
 
                 summaryHTML += `
             <div class="d-flex justify-content-between mb-2">
-              <div>${selectedTickets[tier]}x ${ticketData[tier].name}</div>
+              <div>${selectedTickets[tierId]}x ${ticketData[tierId].name}</div>
               <div>₦${tierPrice.toLocaleString()}</div>
             </div>
             <div class="d-flex justify-content-between mb-3 text-white small">
-              <div>Service charges (${selectedTickets[tier]}x)</div>
+              <div>Service charges (${selectedTickets[tierId]}x)</div>
               <div>₦${tierCharges.toLocaleString()}</div>
             </div>
           `;
@@ -348,12 +336,13 @@ use App\models\Categories;
         container.innerHTML = '';
 
         let hasAttendees = false;
+        let attendeeCount = 0;
 
-        for (const tier in selectedTickets) {
-            if (selectedTickets[tier] > 0) {
+        for (const tierId in selectedTickets) {
+            if (selectedTickets[tierId] > 0) {
                 hasAttendees = true;
-                const tierName = ticketData[tier].name;
-                const quantity = selectedTickets[tier];
+                const tierName = ticketData[tierId].name;
+                const quantity = selectedTickets[tierId];
 
                 const tierHeader = document.createElement('h6');
                 tierHeader.className = 'mt-4 mb-3';
@@ -361,6 +350,7 @@ use App\models\Categories;
                 container.appendChild(tierHeader);
 
                 for (let i = 1; i <= quantity; i++) {
+                    attendeeCount++;
                     const attendeeForm = document.createElement('div');
                     attendeeForm.className = 'attendee-form';
                     attendeeForm.innerHTML = `
@@ -369,12 +359,21 @@ use App\models\Categories;
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="attendee-${tier}-${i}-name" class="form-label">Full Name</label>
-                                <input type="text" class="form-control attendee-name" id="attendee-${tier}-${i}-name" data-tier="${tier}" data-index="${i}" required>
+                                <label for="attendee-${tierId}-${i}-name" class="form-label">Full Name</label>
+                                <input type="text" class="form-control attendee-name" 
+                                    id="attendee-${tierId}-${i}-name" 
+                                    name="attendees[${attendeeCount}][name]" 
+                                    data-tier="${tierId}" data-index="${i}" required>
+                                <input type="hidden" name="attendees[${attendeeCount}][tier]" value="${tierId}">
+                                <!-- ADDED: Hidden field for ticket_id -->
+                                <input type="hidden" name="attendees[${attendeeCount}][ticket_id]" value="${tierId}">
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="attendee-${tier}-${i}-email" class="form-label">Email Address</label>
-                                <input type="email" class="form-control attendee-email" id="attendee-${tier}-${i}-email" data-tier="${tier}" data-index="${i}" required>
+                                <label for="attendee-${tierId}-${i}-email" class="form-label">Email Address</label>
+                                <input type="email" class="form-control attendee-email" 
+                                    id="attendee-${tierId}-${i}-email" 
+                                    name="attendees[${attendeeCount}][email]" 
+                                    data-tier="${tierId}" data-index="${i}" required>
                             </div>
                         </div>
                     `;
@@ -421,69 +420,9 @@ use App\models\Categories;
         }
     });
 
-    // Form submission
-    document.getElementById('checkoutForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-
-        // Collect form data
-        const formData = {
-            contact: {
-                name: document.getElementById('fullName').value,
-                email: document.getElementById('email').value,
-                phone: document.getElementById('phone').value
-            },
-            tickets: selectedTickets,
-            attendees: [],
-            total: document.getElementById('modal-total').textContent
-        };
-
-        // Collect attendee data
-        document.querySelectorAll('.attendee-form').forEach(form => {
-            const nameInput = form.querySelector('.attendee-name');
-            const emailInput = form.querySelector('.attendee-email');
-
-            if (nameInput && emailInput) {
-                formData.attendees.push({
-                    tier: nameInput.dataset.tier,
-                    index: nameInput.dataset.index,
-                    name: nameInput.value,
-                    email: emailInput.value
-                });
-            }
-        });
-
-        // In a real application, you would send this data to your server via AJAX
-        console.log('Form data:', formData);
-
-        // Simulate AJAX call
-        // simulateAjaxCall(formData)
-        //     .then(response => {
-        //         // Redirect to Paystack
-        //         window.location.href = response.redirectUrl;
-        //     })
-        //     .catch(error => {
-        //         console.error('Error:', error);
-        //         alert('There was an error processing your request. Please try again.');
-        //     });
-    });
-
-    // Simulate AJAX call to server
-    function simulateAjaxCall(formData) {
-        return new Promise((resolve) => {
-            // Simulate server processing time
-            setTimeout(() => {
-                // In a real application, this would be the Paystack payment URL generated by your server
-                resolve({
-                    success: true,
-                    redirectUrl: 'https://paystack.com/pay/eventlyy-midnight-wave'
-                });
-            }, 1500);
-        });
-    }
-
     // Countdown timer using the actual event date
     function updateCountdown() {
-        const eventDate = new Date(<?= $eventDateTime * 1000 ?>); // Convert PHP timestamp to JS timestamp
+        const eventDate = new Date(<?= strtotime($event->event_date) * 1000 ?>); // Convert PHP timestamp to JS timestamp
         const now = new Date().getTime();
         const distance = eventDate - now;
 

@@ -1,0 +1,112 @@
+[2025-09-05 00:59:41] Trees\Exception\TreesException: Method process_checkout not found in App\Controllers\CheckoutController in C:\xampp\htdocs\evently\core\Trees.php on line 231
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\Controllers...', 'process_checkou...', Array)
+#1 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#2 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#3 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#4 {main}
+
+[2025-09-05 01:00:13] Trees\Exception\TreesException: Route not found for path: /checkout/payment/EVT_1757030413_68ba280d01407 in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[05-Sep-2025 14:46:36 Africa/Lagos] Checkout Error: Failed to create transaction ticket record
+[2025-09-05 14:46:36] Trees\Exception\TreesException: Route not found for path: /events/6 in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[05-Sep-2025 14:48:13 Africa/Lagos] Checkout Error: Failed to create transaction ticket record
+[2025-09-05 16:06:20] Exception: Failed to create transaction ticket record in C:\xampp\htdocs\evently\app\controllers\CheckoutController.php on line 146
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Database\Model\Model.php(249): App\Controllers\CheckoutController->App\Controllers\{closure}(Object(App\models\Transaction))
+#1 C:\xampp\htdocs\evently\app\controllers\CheckoutController.php(116): Trees\Database\Model\Model->transaction(Object(Closure))
+#2 C:\xampp\htdocs\evently\core\Trees.php(234): App\Controllers\CheckoutController->processCheckout(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#3 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\Controllers...', 'processCheckout', Array)
+#4 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#5 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#6 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#7 {main}
+
+[2025-09-05 16:07:32] Exception: Failed to create transaction ticket record in C:\xampp\htdocs\evently\app\controllers\CheckoutController.php on line 146
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Database\Model\Model.php(249): App\Controllers\CheckoutController->App\Controllers\{closure}(Object(App\models\Transaction))
+#1 C:\xampp\htdocs\evently\app\controllers\CheckoutController.php(116): Trees\Database\Model\Model->transaction(Object(Closure))
+#2 C:\xampp\htdocs\evently\core\Trees.php(234): App\Controllers\CheckoutController->processCheckout(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#3 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\Controllers...', 'processCheckout', Array)
+#4 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#5 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#6 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#7 {main}
+
+[2025-09-05 23:08:23] Exception: Failed to create transaction ticket record in C:\xampp\htdocs\evently\app\controllers\CheckoutController.php on line 146
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Database\Model\Model.php(249): App\Controllers\CheckoutController->App\Controllers\{closure}(Object(App\models\Transaction))
+#1 C:\xampp\htdocs\evently\app\controllers\CheckoutController.php(116): Trees\Database\Model\Model->transaction(Object(Closure))
+#2 C:\xampp\htdocs\evently\core\Trees.php(234): App\Controllers\CheckoutController->processCheckout(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#3 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\Controllers...', 'processCheckout', Array)
+#4 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#5 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#6 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#7 {main}
+
+[2025-09-05 23:22:42] Exception: Failed to create transaction ticket record in C:\xampp\htdocs\evently\app\controllers\CheckoutController.php on line 146
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Database\Model\Model.php(249): App\Controllers\CheckoutController->App\Controllers\{closure}(Object(App\models\Transaction))
+#1 C:\xampp\htdocs\evently\app\controllers\CheckoutController.php(116): Trees\Database\Model\Model->transaction(Object(Closure))
+#2 C:\xampp\htdocs\evently\core\Trees.php(234): App\Controllers\CheckoutController->processCheckout(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#3 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\Controllers...', 'processCheckout', Array)
+#4 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#5 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#6 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#7 {main}
+
+[2025-09-05 23:33:26] Exception: Failed to create transaction ticket record in C:\xampp\htdocs\evently\app\controllers\CheckoutController.php on line 146
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Database\Model\Model.php(249): App\Controllers\CheckoutController->App\Controllers\{closure}(Object(App\models\Transaction))
+#1 C:\xampp\htdocs\evently\app\controllers\CheckoutController.php(116): Trees\Database\Model\Model->transaction(Object(Closure))
+#2 C:\xampp\htdocs\evently\core\Trees.php(234): App\Controllers\CheckoutController->processCheckout(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#3 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\Controllers...', 'processCheckout', Array)
+#4 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#5 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#6 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#7 {main}
+
+[2025-09-05 23:39:58] Exception: Failed to create transaction ticket record in C:\xampp\htdocs\evently\app\controllers\CheckoutController.php on line 146
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Database\Model\Model.php(249): App\Controllers\CheckoutController->App\Controllers\{closure}(Object(App\models\Transaction))
+#1 C:\xampp\htdocs\evently\app\controllers\CheckoutController.php(116): Trees\Database\Model\Model->transaction(Object(Closure))
+#2 C:\xampp\htdocs\evently\core\Trees.php(234): App\Controllers\CheckoutController->processCheckout(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#3 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\Controllers...', 'processCheckout', Array)
+#4 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#5 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#6 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#7 {main}
+
+[2025-09-05 23:45:22] Exception: Failed to create transaction ticket record in C:\xampp\htdocs\evently\app\controllers\CheckoutController.php on line 146
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Database\Model\Model.php(249): App\Controllers\CheckoutController->App\Controllers\{closure}(Object(App\models\Transaction))
+#1 C:\xampp\htdocs\evently\app\controllers\CheckoutController.php(116): Trees\Database\Model\Model->transaction(Object(Closure))
+#2 C:\xampp\htdocs\evently\core\Trees.php(234): App\Controllers\CheckoutController->processCheckout(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#3 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\Controllers...', 'processCheckout', Array)
+#4 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#5 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#6 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#7 {main}
+
+[2025-09-05 23:51:53] Exception: Failed to create transaction ticket record in C:\xampp\htdocs\evently\app\controllers\CheckoutController.php on line 146
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Database\Model\Model.php(249): App\Controllers\CheckoutController->App\Controllers\{closure}(Object(App\models\Transaction))
+#1 C:\xampp\htdocs\evently\app\controllers\CheckoutController.php(116): Trees\Database\Model\Model->transaction(Object(Closure))
+#2 C:\xampp\htdocs\evently\core\Trees.php(234): App\Controllers\CheckoutController->processCheckout(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#3 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\Controllers...', 'processCheckout', Array)
+#4 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#5 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#6 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#7 {main}
+

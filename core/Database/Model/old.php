@@ -18,7 +18,7 @@ use Trees\Validation\Validator;
 use Trees\Database\Trait\Pagination;
 use Trees\Database\Relationships\Traits\HasRelationships;
 
-abstract class Model
+abstract class old
 {
     use Pagination, HasRelationships;
 
@@ -111,7 +111,7 @@ abstract class Model
      * @param bool $enforceFillable Whether to enforce fillable restriction
      * @return self
      */
-    public function fill(array $attributes, ?bool $enforceFillable = null): self
+    public function fill(array $attributes, bool $enforceFillable = null): self
     {
         $enforceFillable = $enforceFillable ?? $this->enforceFillable;
 
@@ -330,118 +330,41 @@ abstract class Model
     }
 
     /**
-     * FIXED: Static update method that matches controller usage
-     * Update records by ID
-     *
-     * @param mixed $id The primary key value
-     * @param array $attributes Attributes to update
-     * @return bool True if update was successful, false otherwise
-     */
-    public static function update(array $attributes): bool
-    {
-        $db = Database::getInstance();
-        if (!$db) {
-            return false;
-        }
-
-        $model = new static();
-        $builder = new QueryBuilder($db);
-
-        try {
-            $db->beginTransaction();
-
-            // Add updated_at timestamp if not provided
-            if (!isset($attributes['updated_at'])) {
-                $attributes['updated_at'] = date('Y-m-d H:i:s');
-            }
-
-            $result = $builder->table($model->table)
-                ->where($model->primaryKey, $model->getAttribute($model->primaryKey))
-                ->update($attributes);
-
-            $db->commit();
-
-            return $result !== false;
-        } catch (\Exception $e) {
-            $db->rollback();
-            
-            if (class_exists('\Trees\Logger\Logger')) {
-                \Trees\Logger\Logger::exception($e);
-            }
-            
-            return false;
-        }
-    }
-
-    /**
-     * Static update method with conditions
+     * Static update method
      */
     public static function updateWhere(array $conditions, array $attributes): bool
     {
         $db = Database::getInstance();
-        if (!$db) {
-            return false;
-        }
-
         $model = new static();
         $builder = new QueryBuilder($db);
 
-        try {
-            $db->beginTransaction();
-
-            $query = $builder->table($model->table);
-            foreach ($conditions as $column => $value) {
-                $query->where($column, $value);
-            }
-
-            // Add updated_at timestamp if not provided
-            if (!isset($attributes['updated_at'])) {
-                $attributes['updated_at'] = date('Y-m-d H:i:s');
-            }
-
-            $result = $query->update($attributes);
-
-            $db->commit();
-
-            return $result !== false;
-        } catch (\Exception $e) {
-            $db->rollback();
-            
-            if (class_exists('\Trees\Logger\Logger')) {
-                \Trees\Logger\Logger::exception($e);
-            }
-            
-            return false;
+        $query = $builder->table($model->table);
+        foreach ($conditions as $column => $value) {
+            $query->where($column, $value);
         }
+
+        return $query->update($attributes) !== false;
     }
 
     /**
-     * FIXED: Instance update method
-     * Update the model instance in the database
+     * Update the model in the database
      *
-     * @param array $attributes Attributes to update (optional)
+     * @param array $attributes Attributes to update
      * @return bool True if update was successful, false otherwise
      */
-    public function updateInstance(array $attributes = []): bool
+    public function update(array $attributes): bool
     {
         // Don't update if model doesn't exist
         if (!$this->exists) {
             return false;
         }
 
-        // Fill the model with new attributes if provided
-        if (!empty($attributes)) {
-            $this->fill($attributes);
-        }
+        // Fill the model with new attributes
+        $this->fill($attributes);
 
         // Validate the model
         if (!$this->validate()) {
             return false;
-        }
-
-        // Only proceed if there are changes
-        if (empty($this->changes)) {
-            return true; // Nothing to update
         }
 
         // Get database connection
@@ -456,9 +379,6 @@ abstract class Model
         try {
             // Begin transaction
             $db->beginTransaction();
-
-            // Add updated_at timestamp
-            $this->changes['updated_at'] = date('Y-m-d H:i:s');
 
             // Update only changed attributes
             $result = $builder->table($this->table)
@@ -490,69 +410,16 @@ abstract class Model
     }
 
     /**
-     * ADDED: Static create method that returns the ID
-     * This matches the controller's expectation
-     *
-     * @param array $attributes Attributes for the new model
-     * @return mixed The created model ID or false on failure
+     * Instance method for update
      */
-    public static function create(array $attributes): mixed
+    public function updateInstance(array $attributes): bool
     {
-        $db = Database::getInstance();
-        if (!$db) {
+        if (!$this->exists) {
             return false;
         }
 
-        $model = new static();
-        $builder = new QueryBuilder($db);
-
-        try {
-            $db->beginTransaction();
-
-            // Add timestamps if not provided
-            if (!isset($attributes['created_at'])) {
-                $attributes['created_at'] = date('Y-m-d H:i:s');
-            }
-            if (!isset($attributes['updated_at'])) {
-                $attributes['updated_at'] = date('Y-m-d H:i:s');
-            }
-
-            $result = $builder->table($model->table)->insert($attributes);
-
-            if ($result !== false) {
-                $id = $db->lastInsertId();
-                $db->commit();
-                return $id;
-            }
-
-            $db->rollback();
-            return false;
-        } catch (\Exception $e) {
-            $db->rollback();
-            
-            if (class_exists('\Trees\Logger\Logger')) {
-                \Trees\Logger\Logger::exception($e);
-            }
-            
-            return false;
-        }
-    }
-
-    /**
-     * ADDED: Alternative create method that returns model instance
-     *
-     * @param array $attributes Attributes for the new model
-     * @return static|null The created model or null on failure
-     */
-    public static function createInstance(array $attributes): ?self
-    {
-        $id = static::create($attributes);
-        
-        if ($id === false) {
-            return null;
-        }
-
-        return static::find($id);
+        $this->fill($attributes);
+        return $this->save();
     }
 
     /**
@@ -872,6 +739,24 @@ abstract class Model
             $instance->original = $result;
             return $instance;
         }, $results);
+    }
+
+    /**
+     * Create a new model instance and save it
+     *
+     * @param array $attributes Attributes for the new model
+     * @return static|null The created model or null on failure
+     */
+    public static function create(array $attributes): ?self
+    {
+        // Get the called class
+        $className = static::class;
+
+        // Create a new instance
+        $model = new $className($attributes);
+
+        // Save the model
+        return $model->save() ? $model : null;
     }
 
     /**

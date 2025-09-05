@@ -8,7 +8,7 @@ use Trees\Database\Model\Model;
 use Trees\Database\Interface\ModelInterface;
 use Trees\Database\QueryBuilder\QueryBuilder;
 
-class Attendees extends Model implements ModelInterface
+class Attendee extends Model implements ModelInterface
 {
     /**
      * The table associated with the model.
@@ -32,31 +32,13 @@ class Attendees extends Model implements ModelInterface
         'email',
         'phone',
         'ticket_code',
-        'status',
-        'created_at',
+        'status'
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
-    protected array $casts = [
-        // Add your casts here
-    ];
+    protected array $casts = [];
 
-    /**
-     * @var array Hidden attributes
-     */
-    protected array $hidden = [
-        // Add your hidden here
-    ];
+    protected array $hidden = [];
 
-    /**
-     * Get the validation rules for this model.
-     *
-     * @return array
-     */
     public function rules()
     {
         return [];

@@ -154,6 +154,7 @@ use App\models\Categories;
                     <?php endforeach; ?>
                     
                     <input type="hidden" name="event_id" value="<?= $event->id ?>">
+                    <input type="hidden" name="event_slug" value="<?= $event->slug ?>">
                     
                     <h6 class="mb-3">Contact Information</h6>
                     <div class="row">
