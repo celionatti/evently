@@ -21,8 +21,12 @@ class CheckoutController extends Controller
     private $paystackSecretKey;
     private $paystackPublicKey;
 
-    public function __construct()
+    public function onConstruct()
     {
+        $this->view->setLayout('default');
+        $name = "Eventlyy";
+        $this->view->setTitle("{$name} | Check Out");
+
         $this->paystackSecretKey = $_ENV['PAYSTACK_SECRET_KEY'] ?? 'sk_test_your_secret_key';
         $this->paystackPublicKey = $_ENV['PAYSTACK_PUBLIC_KEY'] ?? 'pk_test_your_public_key';
     }
@@ -196,10 +200,9 @@ class CheckoutController extends Controller
 
     public function paymentPage(Request $request, Response $response, $reference)
     {
-        dd($reference);
-        $reference = $reference['reference'] ?? null;
         if (!$reference) {
             FlashMessage::setMessage('Invalid payment reference.', 'danger');
+            session()->remove('checkout_data');
             return $response->redirect('/events');
         }
 
@@ -213,6 +216,7 @@ class CheckoutController extends Controller
         $transaction = Transaction::where(['id' => $checkoutData['transaction_id'], 'reference_id' => $reference]);
         if (empty($transaction)) {
             FlashMessage::setMessage('Transaction not found. Please start the checkout process again.', 'danger');
+            session()->remove('checkout_data');
             return $response->redirect('/events');
         }
         $transaction = array_shift($transaction);
@@ -225,17 +229,76 @@ class CheckoutController extends Controller
         }
 
         // Prepare data for the payment page
-        $data = [
+        $view = [
             'event' => $event,
             'transaction' => $transaction,
             'selected_tickets' => $checkoutData['selected_tickets'],
             'contact' => $checkoutData['contact'],
             'attendees' => $checkoutData['attendees'],
             'total_amount' => $checkoutData['total_amount'],
-            'paystack_public_key' => $this->paystackPublicKey,
+            'paystackPublicKey' => $this->paystackPublicKey,
             'reference' => $reference
         ];
 
-        return $this->render('checkout/payment', $data);
+        return $this->render('checkout/payment', $view);
+    }
+
+    public function verifyPayment(Request $request, Response $response)
+    {
+        if ("POST" !== $request->getMethod()) {
+            return;
+        }
+
+        $reference = $request->input('reference');
+        dd($reference);
+        if (!$reference) {
+            return $response->json(['success' => false, 'message' => 'Invalid payment reference.']);
+        }
+
+        $checkoutData = session()->get('checkout_data', []);
+        if (empty($checkoutData) || $checkoutData['reference'] !== $reference) {
+            return $response->json(['success' => false, 'message' => 'No checkout data found. Please start the checkout process again.']);
+        }
+
+        // Get transaction details
+        $transaction = Transaction::where(['id' => $checkoutData['transaction_id'], 'reference_id' => $reference]);
+        if (empty($transaction)) {
+            session()->remove('checkout_data');
+            return $response->json(['success' => false, 'message' => 'Transaction not found. Please start the checkout process again.']);
+        }
+        $transaction = array_shift($transaction);
+
+        // Verify payment with Paystack
+        $paystackSecretKey = $this->paystackSecretKey;
+        $curl = curl_init();
+
+        curl_setopt_array($curl, [
+            CURLOPT_URL => "https://api.paystack.co/transaction/verify/{$reference}",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPHEADER => [
+                "Authorization: Bearer {$paystackSecretKey}",
+                "Cache-Control: no-cache",
+            ],
+        ]);
+
+        $responseCurl = curl_exec($curl);
+        $err = curl_error($curl);
+        curl_close($curl);
+
+        if ($err) {
+            return $response->json(['success' => false, 'message' => 'cURL Error: ' . $err]);
+        }
+
+        $result = json_decode($responseCurl, true);
+        if (!$result['status']) {
+            return $response->json(['success' => false, 'message' => 'Payment verification failed. Please contact support.']);
+        }
+
+        $paymentData = $result['data'];
+        if ($paymentData['status'] !== 'success' || (int)$paymentData['amount'] !== (int)($checkoutData['total_amount'] * 100)) {
+            return $response->json(['success' => false, 'message' => 'Payment verification failed or amount mismatch. Please contact support.']);
+        }
+
+        // Update transaction and attendees status
     }
 }

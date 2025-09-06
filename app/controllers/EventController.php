@@ -149,7 +149,7 @@ class EventController extends Controller
                 'available' => max(0, $available),
                 'sold_out' => $available <= 0,
                 'early_bird' => $ticket->early_bird ?? false,
-                'service_charge' => $ticket->servive_charges ?? ($ticket->price * 0.05), // 5% default service charge
+                'service_charge' => $ticket->charges ?? ($ticket->price * 0.05), // 5% default service charge
                 'max_per_person' => $ticket->max_per_person ?? 10
             ];
         }

@@ -60,11 +60,39 @@ class TransactionTicket extends Model implements ModelInterface
         );
     }
 
-    /**
-     * Find user by transaction_id
-     */
-    public static function findByTransactionId(string $transaction_id): ?self
+    public static function getByTransactionId(int $transaction_id): array
     {
-        return static::first(['transaction_id' => $transaction_id]);
+        return static::where(['transaction_id' => $transaction_id]);
+    }
+
+    public static function getByTicketId(int $ticketId): array
+    {
+        return static::where(['ticket_id' => $ticketId]);
+    }
+
+    /**
+     * Get total amount for a transaction
+     *
+     * @param int $transactionId The transaction ID
+     * @return float The total amount
+     */
+    public static function getTotalAmount(int $transactionId): float
+    {
+        $query = static::query()
+            ->select(['SUM((price + service_charge) * quantity) as total'])
+            ->where('transaction_id', $transactionId);
+        
+        $result = $query->first();
+        return (float) ($result['total'] ?? 0.0);
+    }
+
+    public static function getTotalSoldByTicketId(int $ticketId): int
+    {
+        $query = static::query()
+            ->select(['SUM(quantity) as total_sold'])
+            ->where('ticket_id', $ticketId);
+        
+        $result = $query->first();
+        return (int) ($result['total_sold'] ?? 0);
     }
 }
