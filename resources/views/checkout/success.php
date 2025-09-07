@@ -29,8 +29,9 @@
                     <h6>Attendees:</h6>
                     <ul class="list-group mb-4">
                         <?php foreach ($attendees as $attendee): ?>
-                            <li class="list-group-item">
-                                {{{ $attendee->name }}} - {{{ $attendee->email }}}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span class="text-capitalize">{{{ $attendee->name }}}</span> <span>{{{ $attendee->email }}}</span>
+                                <span class="badge bg-primary rounded-pill p-2 font-monospace">{{{ $attendee->ticket_code }}}</span>
                             </li>
                         <?php endforeach; ?>
                     </ul>

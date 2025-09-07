@@ -29,8 +29,9 @@
                     <h6>Attendees:</h6>
                     <ul class="list-group mb-4">
                         <?php foreach ($attendees as $attendee): ?>
-                            <li class="list-group-item">
-                                <?php echo $attendee->name; ?> - <?php echo $attendee->email; ?>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span class="text-capitalize"><?php echo $attendee->name; ?></span> <span><?php echo $attendee->email; ?></span>
+                                <span class="badge bg-primary rounded-pill p-2 font-monospace"><?php echo $attendee->ticket_code; ?></span>
                             </li>
                         <?php endforeach; ?>
                     </ul>

@@ -14,12 +14,14 @@ use App\models\Transaction;
 use Trees\Controller\Controller;
 use App\models\TransactionTicket;
 use Trees\Exception\TreesException;
+use Trees\Helper\Utils\CodeGenerator;
 use Trees\Helper\FlashMessages\FlashMessage;
 
 class CheckoutController extends Controller
 {
     private $paystackSecretKey;
     private $paystackPublicKey;
+    private $codeGenerator;
 
     public function onConstruct()
     {
@@ -29,6 +31,16 @@ class CheckoutController extends Controller
 
         $this->paystackSecretKey = $_ENV['PAYSTACK_SECRET_KEY'] ?? 'sk_test_your_secret_key';
         $this->paystackPublicKey = $_ENV['PAYSTACK_PUBLIC_KEY'] ?? 'pk_test_your_public_key';
+
+        // Initialize CodeGenerator with uniqueness checker
+        $this->codeGenerator = new CodeGenerator(
+            function ($code) {
+                // Check if ticket code already exists in database
+                return !empty(Attendee::where(['ticket_code' => $code]));
+            },
+            'EVT', // Prefix
+            '-'    // Separator
+        );
     }
 
     public function processCheckout(Request $request, Response $response)
@@ -243,90 +255,6 @@ class CheckoutController extends Controller
         return $this->render('checkout/payment', $view);
     }
 
-    // public function processPayment(Request $request, Response $response)
-    // {
-    //     if ("POST" !== $request->getMethod()) {
-    //         return;
-    //     }
-
-    //     $reference = $request->input('reference');
-    //     $email = $request->input('email');
-    //     $amount = $request->input('amount');
-    //     $eventId = $request->input('event_id');
-    //     $transactionId = $request->input('transaction_id');
-
-    //     if (!$reference || !$email || !$amount) {
-    //         FlashMessage::setMessage('Invalid payment parameters.', 'danger');
-    //         return $response->redirect('/events');
-    //     }
-
-    //     // Get checkout data from session
-    //     $checkoutData = session()->get('checkout_data', []);
-    //     if (empty($checkoutData) || $checkoutData['reference'] !== $reference) {
-    //         FlashMessage::setMessage('No checkout data found. Please start the checkout process again.', 'danger');
-    //         return $response->redirect('/events');
-    //     }
-
-    //     // Get event details for metadata
-    //     $event = Event::find($eventId);
-    //     if (!$event) {
-    //         FlashMessage::setMessage('Event not found.', 'danger');
-    //         return $response->redirect('/events');
-    //     }
-
-    //     // Build Paystack payment URL
-    //     $paystackUrl = "https://api.paystack.co/transaction/initialize";
-
-    //     $fields = [
-    //         'email' => $email,
-    //         'amount' => $amount,
-    //         'reference' => $reference,
-    //         'currency' => 'NGN',
-    //         'callback_url' => url('/checkout/verify-payment'),
-    //         'metadata' => json_encode([
-    //             'event_id' => $eventId,
-    //             'transaction_id' => $transactionId,
-    //             'custom_fields' => [
-    //                 [
-    //                     'display_name' => "Event",
-    //                     'variable_name' => "event",
-    //                     'value' => $event->event_title
-    //                 ]
-    //             ]
-    //         ])
-    //     ];
-
-    //     // Initialize cURL session
-    //     $ch = curl_init();
-    //     curl_setopt($ch, CURLOPT_URL, $paystackUrl);
-    //     curl_setopt($ch, CURLOPT_POST, true);
-    //     curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($fields));
-    //     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    //     curl_setopt($ch, CURLOPT_HTTPHEADER, [
-    //         "Authorization: Bearer " . $this->paystackSecretKey,
-    //         "Cache-Control: no-cache",
-    //     ]);
-
-    //     $result = curl_exec($ch);
-    //     $err = curl_error($ch);
-    //     curl_close($ch);
-
-    //     if ($err) {
-    //         FlashMessage::setMessage('Payment initialization failed. Please try again.', 'danger');
-    //         return $response->redirect("/checkout/payment/{$reference}");
-    //     }
-
-    //     $responseData = json_decode($result, true);
-
-    //     if (!$responseData['status']) {
-    //         FlashMessage::setMessage('Payment initialization failed: ' . $responseData['message'], 'danger');
-    //         return $response->redirect("/checkout/payment/{$reference}");
-    //     }
-
-    //     // Redirect to Paystack payment page
-    //     return $response->redirect($responseData['data']['authorization_url']);
-    // }
-
     public function processPayment(Request $request, Response $response)
     {
         if ("POST" !== $request->getMethod()) {
@@ -521,19 +449,49 @@ class CheckoutController extends Controller
 
                 // Update ticket quantities
                 foreach ($transactionTickets as $transactionTicket) {
-                    // Get current ticket
-                    $ticket = Ticket::find($transactionTicket->ticket_id);
+                    $ticketId = $transactionTicket->ticket_id;
+                    // Get current ticket - USE FIND INSTEAD
+                    $ticket = Ticket::find($ticketId);
                     if ($ticket) {
-                        $newSold = ($ticket->sold ?? 0) + $transactionTicket->quantity;
-                        Ticket::updateWhere(['id' => $ticket->id], ['sold' => $newSold]);
+                        $newSold = $ticket->sold + $transactionTicket->quantity;
+
+                        Ticket::updateWhere(
+                            ['id' => $ticketId],
+                            ['sold' => $newSold, 'updated_at' => date('Y-m-d H:i:s')]
+                        );
                     }
                 }
 
-                // Update attendees status
-                Attendee::updateWhere(
-                    ['transaction_id' => $transaction->id],
-                    ['status' => 'confirmed', 'updated_at' => date('Y-m-d H:i:s')]
-                );
+                // Update attendees status and generate ticket codes
+                $attendees = Attendee::where(['transaction_id' => $transaction->id]);
+
+                // Clear the code generator cache to ensure fresh codes for this transaction
+                $this->codeGenerator->clearCache();
+
+                foreach ($attendees as $attendee) {
+                    // Generate unique ticket code using the CodeGenerator
+                    $ticketCode = $this->codeGenerator->generate(
+                        $transaction->event_id,
+                        $attendee->id,
+                        CodeGenerator::FORMAT_STANDARD,
+                        [
+                            'id1_length' => 4,    // Event ID length
+                            'id2_length' => 6,    // Attendee ID length
+                            'random_length' => 4, // Random part length
+                            'prefix' => 'TKT',    // Custom prefix for tickets
+                        ]
+                    );
+
+                    // Update each attendee individually with their unique ticket code
+                    Attendee::updateWhere(
+                        ['id' => $attendee->id],
+                        [
+                            'status' => 'confirmed',
+                            'ticket_code' => $ticketCode,
+                            'updated_at' => date('Y-m-d H:i:s')
+                        ]
+                    );
+                }
             });
 
             // Clear checkout session data if it exists
