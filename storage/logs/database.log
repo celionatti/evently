@@ -110,3 +110,94 @@
 [2025-09-07 13:18:24] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
 [2025-09-07 13:18:24] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
 [2025-09-07 13:18:25] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 15:26:27] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 15:26:27] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 15:26:46] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 15:26:47] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-07 15:26:47] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 15:47:11] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 15:47:11] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 15:47:37] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 15:52:24] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 15:52:25] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 15:53:06] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 15:55:41] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 15:55:42] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 15:55:56] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 15:57:56] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 15:57:56] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 15:58:11] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 15:58:11] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-07 15:58:11] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 16:09:18] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 16:09:19] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 16:09:30] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 16:15:18] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 16:15:18] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 16:15:29] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 16:15:29] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-07 16:15:29] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 16:16:31] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 16:16:32] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 16:16:47] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 16:16:47] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-07 16:16:47] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 16:24:18] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 16:24:19] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 16:24:40] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 16:24:40] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-07 16:24:40] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 16:32:44] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 16:32:44] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 16:32:56] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 16:32:56] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-07 16:32:56] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 16:32:56] [ERROR] Failed to update ticket sold counts {"file":"C:\\xampp\\htdocs\\evently\\app\\controllers\\CheckoutController.php","line":462,"trace":"#0 C:\\xampp\\htdocs\\evently\\core\\Database\\Model\\Model.php(249): App\\Controllers\\CheckoutController->App\\Controllers\\{closure}(Object(App\\models\\Transaction))\n#1 C:\\xampp\\htdocs\\evently\\app\\controllers\\CheckoutController.php(439): Trees\\Database\\Model\\Model->transaction(Object(Closure))\n#2 C:\\xampp\\htdocs\\evently\\core\\Trees.php(234): App\\Controllers\\CheckoutController->verifyPayment(Object(Trees\\Http\\Request), Object(Trees\\Http\\Response))\n#3 C:\\xampp\\htdocs\\evently\\core\\Trees.php(212): Trees\\Trees->invokeController('App\\\\Controllers...', 'verifyPayment', Array)\n#4 C:\\xampp\\htdocs\\evently\\core\\Trees.php(171): Trees\\Trees->executeHandler(Object(Trees\\Router\\Route))\n#5 C:\\xampp\\htdocs\\evently\\core\\Trees.php(139): Trees\\Trees->dispatch()\n#6 C:\\xampp\\htdocs\\evently\\public\\index.php(8): Trees\\Trees->run()\n#7 {main}"}
+[2025-09-07 16:35:16] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 16:35:16] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 16:35:30] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 16:35:30] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-07 16:35:30] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 16:35:30] [ERROR] Failed to update ticket sold count for ticket ID: 11 {"file":"C:\\xampp\\htdocs\\evently\\app\\controllers\\CheckoutController.php","line":463,"trace":"#0 C:\\xampp\\htdocs\\evently\\core\\Database\\Model\\Model.php(249): App\\Controllers\\CheckoutController->App\\Controllers\\{closure}(Object(App\\models\\Transaction))\n#1 C:\\xampp\\htdocs\\evently\\app\\controllers\\CheckoutController.php(440): Trees\\Database\\Model\\Model->transaction(Object(Closure))\n#2 C:\\xampp\\htdocs\\evently\\core\\Trees.php(234): App\\Controllers\\CheckoutController->verifyPayment(Object(Trees\\Http\\Request), Object(Trees\\Http\\Response))\n#3 C:\\xampp\\htdocs\\evently\\core\\Trees.php(212): Trees\\Trees->invokeController('App\\\\Controllers...', 'verifyPayment', Array)\n#4 C:\\xampp\\htdocs\\evently\\core\\Trees.php(171): Trees\\Trees->executeHandler(Object(Trees\\Router\\Route))\n#5 C:\\xampp\\htdocs\\evently\\core\\Trees.php(139): Trees\\Trees->dispatch()\n#6 C:\\xampp\\htdocs\\evently\\public\\index.php(8): Trees\\Trees->run()\n#7 {main}"}
+[2025-09-07 16:36:27] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 16:36:27] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 16:36:39] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 16:36:40] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-07 16:36:40] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 22:02:05] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 22:02:06] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 22:02:32] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 22:02:32] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 22:02:32] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-07 22:56:05] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"file":"C:\\xampp\\htdocs\\evently\\core\\Database\\QueryBuilder\\QueryBuilder.php","line":820,"trace":"#0 C:\\xampp\\htdocs\\evently\\core\\Database\\QueryBuilder\\QueryBuilder.php(820): PDOStatement->execute(Array)\n#1 C:\\xampp\\htdocs\\evently\\core\\Database\\Model\\Model.php(338): Trees\\Database\\QueryBuilder\\QueryBuilder->update(Array)\n#2 C:\\xampp\\htdocs\\evently\\core\\Database\\Model\\Model.php(492): Trees\\Database\\Model\\Model->save()\n#3 C:\\xampp\\htdocs\\evently\\app\\controllers\\AdminCategoryController.php(134): Trees\\Database\\Model\\Model->update(Array)\n#4 C:\\xampp\\htdocs\\evently\\core\\Trees.php(234): App\\controllers\\AdminCategoryController->update(Object(Trees\\Http\\Request), Object(Trees\\Http\\Response), 'outdoor_party')\n#5 C:\\xampp\\htdocs\\evently\\core\\Trees.php(212): Trees\\Trees->invokeController('App\\\\controllers...', 'update', Array)\n#6 C:\\xampp\\htdocs\\evently\\core\\Trees.php(171): Trees\\Trees->executeHandler(Object(Trees\\Router\\Route))\n#7 C:\\xampp\\htdocs\\evently\\core\\Trees.php(139): Trees\\Trees->dispatch()\n#8 C:\\xampp\\htdocs\\evently\\public\\index.php(8): Trees\\Trees->run()\n#9 {main}"}
+[2025-09-07 23:04:55] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"file":"C:\\xampp\\htdocs\\evently\\core\\Database\\QueryBuilder\\QueryBuilder.php","line":832,"trace":"#0 C:\\xampp\\htdocs\\evently\\core\\Database\\QueryBuilder\\QueryBuilder.php(832): PDOStatement->execute(Array)\n#1 C:\\xampp\\htdocs\\evently\\core\\Database\\Model\\Model.php(338): Trees\\Database\\QueryBuilder\\QueryBuilder->update(Array)\n#2 C:\\xampp\\htdocs\\evently\\core\\Database\\Model\\Model.php(492): Trees\\Database\\Model\\Model->save()\n#3 C:\\xampp\\htdocs\\evently\\app\\controllers\\AdminCategoryController.php(134): Trees\\Database\\Model\\Model->update(Array)\n#4 C:\\xampp\\htdocs\\evently\\core\\Trees.php(234): App\\controllers\\AdminCategoryController->update(Object(Trees\\Http\\Request), Object(Trees\\Http\\Response), 'outdoor_party')\n#5 C:\\xampp\\htdocs\\evently\\core\\Trees.php(212): Trees\\Trees->invokeController('App\\\\controllers...', 'update', Array)\n#6 C:\\xampp\\htdocs\\evently\\core\\Trees.php(171): Trees\\Trees->executeHandler(Object(Trees\\Router\\Route))\n#7 C:\\xampp\\htdocs\\evently\\core\\Trees.php(139): Trees\\Trees->dispatch()\n#8 C:\\xampp\\htdocs\\evently\\public\\index.php(8): Trees\\Trees->run()\n#9 {main}"}
+[2025-09-07 23:38:38] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-08 00:12:53] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-08 00:12:53] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-08 00:13:23] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-08 00:13:23] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-08 00:13:23] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-08 00:20:27] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-08 00:20:28] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-08 00:20:40] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-08 00:20:40] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-08 00:20:40] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-08 00:26:45] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-08 00:26:46] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-08 00:27:02] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-08 00:31:55] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-08 00:31:59] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-08 00:34:54] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-08 00:34:54] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-08 00:35:09] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-08 00:36:42] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-08 00:36:43] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-08 00:42:04] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-08 00:42:04] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-08 00:42:15] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-08 00:42:15] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-08 00:44:29] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-08 00:44:29] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-08 00:44:40] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-08 00:44:41] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-08 00:44:41] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}

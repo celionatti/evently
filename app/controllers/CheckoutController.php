@@ -448,17 +448,18 @@ class CheckoutController extends Controller
                 $transactionTickets = TransactionTicket::where(['transaction_id' => $transaction->id]);
 
                 // Update ticket quantities
+
                 foreach ($transactionTickets as $transactionTicket) {
                     $ticketId = $transactionTicket->ticket_id;
-                    // Get current ticket - USE FIND INSTEAD
+
+                    // Get ticket instance and update
                     $ticket = Ticket::find($ticketId);
                     if ($ticket) {
                         $newSold = $ticket->sold + $transactionTicket->quantity;
 
-                        Ticket::updateWhere(
-                            ['id' => $ticketId],
-                            ['sold' => $newSold, 'updated_at' => date('Y-m-d H:i:s')]
-                        );
+                        // Use instance update method
+                        $ticket->sold = $newSold;
+                        $ticket->save();
                     }
                 }
 
@@ -510,6 +511,169 @@ class CheckoutController extends Controller
             return $response->redirect("/checkout/payment/{$reference}");
         }
     }
+
+    // public function verifyPayment(Request $request, Response $response)
+    // {
+    //     // Get reference from query parameters (Paystack callback) or input
+    //     $reference = $request->input('reference') ?? $request->query('reference');
+
+    //     if (!$reference) {
+    //         FlashMessage::setMessage('Invalid payment reference.', 'danger');
+    //         return $response->redirect('/events');
+    //     }
+
+    //     $transactions = Transaction::where(['reference_id' => $reference]);
+    //     if (empty($transactions)) {
+    //         FlashMessage::setMessage('Transaction not found. Please start the checkout process again.', 'danger');
+    //         return $response->redirect('/events');
+    //     }
+    //     $transaction = array_shift($transactions);
+
+    //     // Check if transaction is already processed
+    //     if ($transaction->status === 'confirmed' || $transaction->status === 'success') {
+    //         // Already processed, redirect to success page
+    //         session()->remove('checkout_data');
+    //         FlashMessage::setMessage('Payment already confirmed!', 'success');
+    //         return $response->redirect("/checkout/success/{$reference}");
+    //     }
+
+    //     // Get checkout data from session (if available) or reconstruct from database
+    //     $checkoutData = session()->get('checkout_data', []);
+
+    //     // If session data is missing, reconstruct from database
+    //     if (empty($checkoutData)) {
+    //         // Get transaction tickets to calculate total
+    //         $transactionTickets = TransactionTicket::where(['transaction_id' => $transaction->id]);
+
+    //         if (empty($transactionTickets)) {
+    //             FlashMessage::setMessage('Transaction details not found.', 'danger');
+    //             return $response->redirect('/events');
+    //         }
+
+    //         // Calculate total amount from transaction tickets
+    //         $totalAmount = 0;
+    //         foreach ($transactionTickets as $transactionTicket) {
+    //             $totalAmount += ($transactionTicket->price + $transactionTicket->service_charge) * $transactionTicket->quantity;
+    //         }
+
+    //         // Reconstruct minimal checkout data
+    //         $checkoutData = [
+    //             'transaction_id' => $transaction->id,
+    //             'reference' => $reference,
+    //             'total_amount' => $totalAmount,
+    //             'event_id' => $transaction->event_id
+    //         ];
+    //     }
+
+    //     // Verify payment with Paystack
+    //     $paystackSecretKey = $this->paystackSecretKey;
+    //     $curl = curl_init();
+
+    //     curl_setopt_array($curl, [
+    //         CURLOPT_URL => "https://api.paystack.co/transaction/verify/{$reference}",
+    //         CURLOPT_RETURNTRANSFER => true,
+    //         CURLOPT_HTTPHEADER => [
+    //             "Authorization: Bearer {$paystackSecretKey}",
+    //             "Cache-Control: no-cache",
+    //         ],
+    //     ]);
+
+    //     $responseCurl = curl_exec($curl);
+    //     $err = curl_error($curl);
+    //     curl_close($curl);
+
+    //     if ($err) {
+    //         FlashMessage::setMessage('Payment verification failed. Please contact support.', 'danger');
+    //         return $response->redirect("/checkout/payment/{$reference}");
+    //     }
+
+    //     $result = json_decode($responseCurl, true);
+    //     if (!$result['status']) {
+    //         FlashMessage::setMessage('Payment verification failed. Please contact support.', 'danger');
+    //         return $response->redirect("/checkout/payment/{$reference}");
+    //     }
+
+    //     $paymentData = $result['data'];
+
+    //     if ($paymentData['status'] !== 'success' || (int)$paymentData['amount'] !== (int)($checkoutData['total_amount'] * 100)) {
+    //         FlashMessage::setMessage('Payment verification failed or amount mismatch. Please contact support.', 'danger');
+    //         return $response->redirect("/checkout/payment/{$reference}");
+    //     }
+
+    //     try {
+    //         // Update transaction status
+    //         $updateData = [
+    //             'status' => 'confirmed',
+    //             'updated_at' => date('Y-m-d H:i:s')
+    //         ];
+
+    //         Transaction::updateWhere(['id' => $transaction->id], $updateData);
+
+    //         // Get transaction tickets to update sold quantities
+    //         $transactionTickets = TransactionTicket::where(['transaction_id' => $transaction->id]);
+
+    //         // Update ticket quantities
+    //         foreach ($transactionTickets as $transactionTicket) {
+    //             $ticketId = $transactionTicket->ticket_id;
+
+    //             // Get ticket instance and update
+    //             $ticket = Ticket::find($ticketId);
+    //             if ($ticket) {
+    //                 $newSold = $ticket->sold + $transactionTicket->quantity;
+
+    //                 // Use instance update method
+    //                 $ticket->sold = $newSold;
+    //                 $ticket->save();
+    //             }
+    //         }
+
+    //         // Update attendees status and generate ticket codes
+    //         $attendees = Attendee::where(['transaction_id' => $transaction->id]);
+
+    //         // Clear the code generator cache to ensure fresh codes for this transaction
+    //         $this->codeGenerator->clearCache();
+
+    //         foreach ($attendees as $attendee) {
+    //             // Generate unique ticket code using the CodeGenerator
+    //             $ticketCode = $this->codeGenerator->generate(
+    //                 $transaction->event_id,
+    //                 $attendee->id,
+    //                 CodeGenerator::FORMAT_STANDARD,
+    //                 [
+    //                     'id1_length' => 4,    // Event ID length
+    //                     'id2_length' => 6,    // Attendee ID length
+    //                     'random_length' => 4, // Random part length
+    //                     'prefix' => 'TKT',    // Custom prefix for tickets
+    //                 ]
+    //             );
+
+    //             // Update each attendee individually with their unique ticket code
+    //             Attendee::updateWhere(
+    //                 ['id' => $attendee->id],
+    //                 [
+    //                     'status' => 'confirmed',
+    //                     'ticket_code' => $ticketCode,
+    //                     'updated_at' => date('Y-m-d H:i:s')
+    //                 ]
+    //             );
+    //         }
+
+    //         // Clear checkout session data if it exists
+    //         session()->remove('checkout_data');
+
+    //         // Redirect to success page
+    //         FlashMessage::setMessage('Payment successful! Your tickets have been confirmed.', 'success');
+    //         return $response->redirect("/checkout/success/{$reference}");
+    //     } catch (Exception $e) {
+    //         // Log the error
+    //         if (class_exists('\Trees\Logger\Logger')) {
+    //             \Trees\Logger\Logger::exception($e);
+    //         }
+
+    //         FlashMessage::setMessage('An error occurred while processing your payment. Please contact support.', 'danger');
+    //         return $response->redirect("/checkout/payment/{$reference}");
+    //     }
+    // }
 
     public function successPage(Request $request, Response $response, $reference)
     {

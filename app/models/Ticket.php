@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\models;
 
+use Trees\Database\Database;
 use Trees\Database\Model\Model;
 use Trees\Database\Relationships\BelongsTo;
 use Trees\Database\Interface\ModelInterface;
