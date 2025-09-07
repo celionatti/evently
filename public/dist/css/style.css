@@ -117,6 +117,7 @@ body {
 .btn-pulse:hover {
   transform: translateY(-2px);
   filter: brightness(1.05);
+  color: white;
 }
 .btn-pulse:focus {
   box-shadow: var(--shadow-focus);
@@ -127,7 +128,10 @@ body {
   border: 1px solid rgba(100, 181, 246, 0.35);
   background: rgba(255, 255, 255, 0.03);
   border-radius: 14px;
+  /* transition: 0.25s ease; */
+  padding: 0.75rem 1.5rem;
   transition: 0.25s ease;
+  font-weight: 600;
 }
 .btn-ghost:hover {
   background: rgba(100, 181, 246, 0.1);
@@ -217,6 +221,58 @@ body {
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   gap: 2rem;
   margin-bottom: 4rem;
+}
+
+/* Alert styles */
+.alert-info {
+  background: rgba(30, 136, 229, 0.15);
+  border: 1px solid rgba(100, 181, 246, 0.3);
+  border-radius: var(--radius-md);
+  color: var(--text-1);
+  padding: 1.25rem;
+}
+
+/* List group styles */
+.list-group-item {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-1);
+  padding: 0.75rem 1.25rem;
+}
+
+.list-group-item:not(:last-child) {
+  margin-bottom: 0.5rem;
+  border-bottom: none;
+}
+
+/* Success icon animation */
+.success-icon {
+  animation: scaleIn 0.5s ease-out, pulse 2s infinite 0.5s;
+}
+
+/* Card styles */
+.card {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.05),
+    rgba(255, 255, 255, 0.02)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease,
+    border-color 0.25s ease;
+  box-shadow: var(--shadow-1);
+}
+
+.card-header {
+  background: linear-gradient(135deg, var(--blue-2), var(--blue-3)) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1.5rem;
+}
+
+.card-body {
+  padding: 2rem;
 }
 
 /* Card styles */
@@ -950,6 +1006,39 @@ footer {
   }
 }
 
+@keyframes scaleIn {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Confetti effect */
+.confetti {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: var(--blue-1);
+  opacity: 0.7;
+  border-radius: 2px;
+}
+
 /* Modal styles */
 .modal-content {
   background: rgba(20, 15, 35, 0.95);
@@ -1206,6 +1295,41 @@ footer {
   text-decoration: line-through;
 }
 
+/* Text styles */
+.text-center {
+  text-align: center !important;
+}
+
+.mb-0 {
+  margin-bottom: 0 !important;
+}
+
+.mb-4 {
+  margin-bottom: 1.5rem !important;
+}
+
+.py-5 {
+  padding-top: 3rem !important;
+  padding-bottom: 3rem !important;
+}
+
+/* Row and column adjustments */
+.row {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  margin-right: -15px !important;
+  margin-left: -15px !important;
+}
+
+.justify-content-center {
+  justify-content: center !important;
+}
+
+.col-md-8 {
+  flex: 0 0 66.666667% !important;
+  max-width: 66.666667% !important;
+}
+
 /* Responsive adjustments */
 @media (max-width: 576px) {
   .auth-card {
@@ -1234,6 +1358,26 @@ footer {
 }
 
 @media (max-width: 768px) {
+  .col-md-8 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  .card-body {
+    padding: 1.5rem;
+  }
+
+  .btn-pulse,
+  .btn-ghost {
+    display: block;
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+
+  .btn-ghost {
+    margin-left: 0 !important;
+  }
+
   .events-grid {
     grid-template-columns: 1fr;
   }
