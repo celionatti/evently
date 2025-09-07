@@ -243,30 +243,232 @@ class CheckoutController extends Controller
         return $this->render('checkout/payment', $view);
     }
 
-    public function verifyPayment(Request $request, Response $response)
+    // public function processPayment(Request $request, Response $response)
+    // {
+    //     if ("POST" !== $request->getMethod()) {
+    //         return;
+    //     }
+
+    //     $reference = $request->input('reference');
+    //     $email = $request->input('email');
+    //     $amount = $request->input('amount');
+    //     $eventId = $request->input('event_id');
+    //     $transactionId = $request->input('transaction_id');
+
+    //     if (!$reference || !$email || !$amount) {
+    //         FlashMessage::setMessage('Invalid payment parameters.', 'danger');
+    //         return $response->redirect('/events');
+    //     }
+
+    //     // Get checkout data from session
+    //     $checkoutData = session()->get('checkout_data', []);
+    //     if (empty($checkoutData) || $checkoutData['reference'] !== $reference) {
+    //         FlashMessage::setMessage('No checkout data found. Please start the checkout process again.', 'danger');
+    //         return $response->redirect('/events');
+    //     }
+
+    //     // Get event details for metadata
+    //     $event = Event::find($eventId);
+    //     if (!$event) {
+    //         FlashMessage::setMessage('Event not found.', 'danger');
+    //         return $response->redirect('/events');
+    //     }
+
+    //     // Build Paystack payment URL
+    //     $paystackUrl = "https://api.paystack.co/transaction/initialize";
+
+    //     $fields = [
+    //         'email' => $email,
+    //         'amount' => $amount,
+    //         'reference' => $reference,
+    //         'currency' => 'NGN',
+    //         'callback_url' => url('/checkout/verify-payment'),
+    //         'metadata' => json_encode([
+    //             'event_id' => $eventId,
+    //             'transaction_id' => $transactionId,
+    //             'custom_fields' => [
+    //                 [
+    //                     'display_name' => "Event",
+    //                     'variable_name' => "event",
+    //                     'value' => $event->event_title
+    //                 ]
+    //             ]
+    //         ])
+    //     ];
+
+    //     // Initialize cURL session
+    //     $ch = curl_init();
+    //     curl_setopt($ch, CURLOPT_URL, $paystackUrl);
+    //     curl_setopt($ch, CURLOPT_POST, true);
+    //     curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($fields));
+    //     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    //     curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    //         "Authorization: Bearer " . $this->paystackSecretKey,
+    //         "Cache-Control: no-cache",
+    //     ]);
+
+    //     $result = curl_exec($ch);
+    //     $err = curl_error($ch);
+    //     curl_close($ch);
+
+    //     if ($err) {
+    //         FlashMessage::setMessage('Payment initialization failed. Please try again.', 'danger');
+    //         return $response->redirect("/checkout/payment/{$reference}");
+    //     }
+
+    //     $responseData = json_decode($result, true);
+
+    //     if (!$responseData['status']) {
+    //         FlashMessage::setMessage('Payment initialization failed: ' . $responseData['message'], 'danger');
+    //         return $response->redirect("/checkout/payment/{$reference}");
+    //     }
+
+    //     // Redirect to Paystack payment page
+    //     return $response->redirect($responseData['data']['authorization_url']);
+    // }
+
+    public function processPayment(Request $request, Response $response)
     {
         if ("POST" !== $request->getMethod()) {
             return;
         }
 
         $reference = $request->input('reference');
-        dd($reference);
-        if (!$reference) {
-            return $response->json(['success' => false, 'message' => 'Invalid payment reference.']);
+        $email = $request->input('email');
+        $amount = $request->input('amount');
+        $eventId = $request->input('event_id');
+        $transactionId = $request->input('transaction_id');
+
+        if (!$reference || !$email || !$amount) {
+            FlashMessage::setMessage('Invalid payment parameters.', 'danger');
+            return $response->redirect('/events');
         }
 
+        // Get checkout data from session
         $checkoutData = session()->get('checkout_data', []);
         if (empty($checkoutData) || $checkoutData['reference'] !== $reference) {
-            return $response->json(['success' => false, 'message' => 'No checkout data found. Please start the checkout process again.']);
+            FlashMessage::setMessage('No checkout data found. Please start the checkout process again.', 'danger');
+            return $response->redirect('/events');
         }
 
-        // Get transaction details
-        $transaction = Transaction::where(['id' => $checkoutData['transaction_id'], 'reference_id' => $reference]);
-        if (empty($transaction)) {
-            session()->remove('checkout_data');
-            return $response->json(['success' => false, 'message' => 'Transaction not found. Please start the checkout process again.']);
+        // Get event details for metadata
+        $event = Event::find($eventId);
+        if (!$event) {
+            FlashMessage::setMessage('Event not found.', 'danger');
+            return $response->redirect('/events');
         }
-        $transaction = array_shift($transaction);
+
+        // Build Paystack payment URL
+        $paystackUrl = "https://api.paystack.co/transaction/initialize";
+
+        // Get the base URL properly
+        $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+        $host = $_SERVER['HTTP_HOST'];
+        $baseUrl = $protocol . '://' . $host;
+
+        $fields = [
+            'email' => $email,
+            'amount' => $amount,
+            'reference' => $reference,
+            'currency' => 'NGN',
+            // Fix: Ensure proper callback URL
+            'callback_url' => $baseUrl . '/checkout/verify-payment?reference=' . $reference,
+            'metadata' => json_encode([
+                'event_id' => $eventId,
+                'transaction_id' => $transactionId,
+                'custom_fields' => [
+                    [
+                        'display_name' => "Event",
+                        'variable_name' => "event",
+                        'value' => $event->event_title
+                    ]
+                ]
+            ])
+        ];
+
+        // Initialize cURL session
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $paystackUrl);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($fields));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            "Authorization: Bearer " . $this->paystackSecretKey,
+            "Cache-Control: no-cache",
+        ]);
+
+        $result = curl_exec($ch);
+        $err = curl_error($ch);
+        curl_close($ch);
+
+        if ($err) {
+            FlashMessage::setMessage('Payment initialization failed. Please try again.', 'danger');
+            return $response->redirect("/checkout/payment/{$reference}");
+        }
+
+        $responseData = json_decode($result, true);
+
+        if (!$responseData['status']) {
+            FlashMessage::setMessage('Payment initialization failed: ' . $responseData['message'], 'danger');
+            return $response->redirect("/checkout/payment/{$reference}");
+        }
+
+        // Redirect to Paystack payment page
+        return $response->redirect($responseData['data']['authorization_url']);
+    }
+
+    public function verifyPayment(Request $request, Response $response)
+    {
+        // Get reference from query parameters (Paystack callback) or input
+        $reference = $request->input('reference') ?? $request->query('reference');
+
+        if (!$reference) {
+            FlashMessage::setMessage('Invalid payment reference.', 'danger');
+            return $response->redirect('/events');
+        }
+
+        $transactions = Transaction::where(['reference_id' => $reference]);
+        if (empty($transactions)) {
+            FlashMessage::setMessage('Transaction not found. Please start the checkout process again.', 'danger');
+            return $response->redirect('/events');
+        }
+        $transaction = array_shift($transactions);
+
+        // Check if transaction is already processed
+        if ($transaction->status === 'confirmed' || $transaction->status === 'success') {
+            // Already processed, redirect to success page
+            session()->remove('checkout_data');
+            FlashMessage::setMessage('Payment already confirmed!', 'success');
+            return $response->redirect("/checkout/success/{$reference}");
+        }
+
+        // Get checkout data from session (if available) or reconstruct from database
+        $checkoutData = session()->get('checkout_data', []);
+
+        // If session data is missing, reconstruct from database
+        if (empty($checkoutData)) {
+            // Get transaction tickets to calculate total
+            $transactionTickets = TransactionTicket::where(['transaction_id' => $transaction->id]);
+
+            if (empty($transactionTickets)) {
+                FlashMessage::setMessage('Transaction details not found.', 'danger');
+                return $response->redirect('/events');
+            }
+
+            // Calculate total amount from transaction tickets
+            $totalAmount = 0;
+            foreach ($transactionTickets as $transactionTicket) {
+                $totalAmount += ($transactionTicket->price + $transactionTicket->service_charge) * $transactionTicket->quantity;
+            }
+
+            // Reconstruct minimal checkout data
+            $checkoutData = [
+                'transaction_id' => $transaction->id,
+                'reference' => $reference,
+                'total_amount' => $totalAmount,
+                'event_id' => $transaction->event_id
+            ];
+        }
 
         // Verify payment with Paystack
         $paystackSecretKey = $this->paystackSecretKey;
@@ -286,19 +488,97 @@ class CheckoutController extends Controller
         curl_close($curl);
 
         if ($err) {
-            return $response->json(['success' => false, 'message' => 'cURL Error: ' . $err]);
+            FlashMessage::setMessage('Payment verification failed. Please contact support.', 'danger');
+            return $response->redirect("/checkout/payment/{$reference}");
         }
 
         $result = json_decode($responseCurl, true);
         if (!$result['status']) {
-            return $response->json(['success' => false, 'message' => 'Payment verification failed. Please contact support.']);
+            FlashMessage::setMessage('Payment verification failed. Please contact support.', 'danger');
+            return $response->redirect("/checkout/payment/{$reference}");
         }
 
         $paymentData = $result['data'];
+
         if ($paymentData['status'] !== 'success' || (int)$paymentData['amount'] !== (int)($checkoutData['total_amount'] * 100)) {
-            return $response->json(['success' => false, 'message' => 'Payment verification failed or amount mismatch. Please contact support.']);
+            FlashMessage::setMessage('Payment verification failed or amount mismatch. Please contact support.', 'danger');
+            return $response->redirect("/checkout/payment/{$reference}");
         }
 
-        // Update transaction and attendees status
+        try {
+            // Use database transaction for atomicity
+            $transactionModel = new Transaction();
+            $transactionModel->transaction(function () use ($transaction) {
+                $updateData = [
+                    'status' => 'confirmed',
+                    'updated_at' => date('Y-m-d H:i:s')
+                ];
+
+                Transaction::updateWhere(['id' => $transaction->id], $updateData);
+
+                // Get transaction tickets to update sold quantities
+                $transactionTickets = TransactionTicket::where(['transaction_id' => $transaction->id]);
+
+                // Update ticket quantities
+                foreach ($transactionTickets as $transactionTicket) {
+                    // Get current ticket
+                    $ticket = Ticket::find($transactionTicket->ticket_id);
+                    if ($ticket) {
+                        $newSold = ($ticket->sold ?? 0) + $transactionTicket->quantity;
+                        Ticket::updateWhere(['id' => $ticket->id], ['sold' => $newSold]);
+                    }
+                }
+
+                // Update attendees status
+                Attendee::updateWhere(
+                    ['transaction_id' => $transaction->id],
+                    ['status' => 'confirmed', 'updated_at' => date('Y-m-d H:i:s')]
+                );
+            });
+
+            // Clear checkout session data if it exists
+            session()->remove('checkout_data');
+
+            // Redirect to success page
+            FlashMessage::setMessage('Payment successful! Your tickets have been confirmed.', 'success');
+            return $response->redirect("/checkout/success/{$reference}");
+        } catch (Exception $e) {
+            // Log the error
+            if (class_exists('\Trees\Logger\Logger')) {
+                \Trees\Logger\Logger::exception($e);
+            }
+
+            FlashMessage::setMessage('An error occurred while processing your payment. Please contact support.', 'danger');
+            return $response->redirect("/checkout/payment/{$reference}");
+        }
+    }
+
+    public function successPage(Request $request, Response $response, $reference)
+    {
+        // Get transaction details
+        $transaction = Transaction::where(['reference_id' => $reference]);
+        if (empty($transaction)) {
+            FlashMessage::setMessage('Transaction not found.', 'danger');
+            return $response->redirect('/events');
+        }
+        $transaction = array_shift($transaction);
+
+        // Get event details
+        $event = Event::find($transaction->event_id);
+        if (!$event) {
+            FlashMessage::setMessage('Event not found.', 'danger');
+            return $response->redirect('/events');
+        }
+
+        // Get attendees
+        $attendees = Attendee::where(['transaction_id' => $transaction->id]);
+
+        $view = [
+            'event' => $event,
+            'transaction' => $transaction,
+            'attendees' => $attendees
+        ];
+
+        return $this->render('checkout/success', $view);
     }
 }

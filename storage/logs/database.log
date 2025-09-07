@@ -97,3 +97,16 @@
 [2025-09-05 23:59:04] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
 [2025-09-06 12:02:06] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
 [2025-09-06 12:02:07] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-06 15:55:59] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-06 15:55:59] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 12:24:30] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 12:24:31] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 12:36:39] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 12:36:39] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 12:47:54] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 12:47:55] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 12:51:23] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 12:51:23] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 13:18:24] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-07 13:18:24] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-07 13:18:25] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}

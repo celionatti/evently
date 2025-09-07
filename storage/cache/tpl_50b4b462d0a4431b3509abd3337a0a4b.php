@@ -4,6 +4,7 @@
 
 <?php $this->start('styles'); ?>
 <style>
+    /* Payment container */
     .payment-container {
         min-height: 100vh;
         display: flex;
@@ -13,10 +14,13 @@
     }
 
     .payment-card {
-        background: var(--bg-2);
-        border-radius: 20px;
+        background: linear-gradient(180deg,
+                rgba(255, 255, 255, 0.05),
+                rgba(255, 255, 255, 0.02));
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: var(--radius-lg);
         padding: 2.5rem;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        box-shadow: var(--shadow-1);
         max-width: 700px;
         width: 100%;
         position: relative;
@@ -31,19 +35,20 @@
         right: 0;
         height: 6px;
         background: linear-gradient(90deg, var(--blue-2), var(--blue-3));
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
     }
 
     .event-info {
         text-align: center;
         margin-bottom: 2rem;
         padding-bottom: 2rem;
-        border-bottom: 2px solid #f8f9fa;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .event-title {
         color: var(--text-1);
         font-weight: 700;
-        font-size: 1.5rem;
+        font-size: 1.8rem;
         margin-bottom: 0.5rem;
     }
 
@@ -59,9 +64,10 @@
         background: linear-gradient(135deg, var(--blue-2), var(--blue-3));
         color: white;
         padding: 1.5rem;
-        border-radius: 15px;
+        border-radius: var(--radius-lg);
         text-align: center;
         margin-bottom: 2rem;
+        box-shadow: var(--shadow-2);
     }
 
     .amount-label {
@@ -87,11 +93,12 @@
         transition: transform 0.3s ease, box-shadow 0.3s ease;
         position: relative;
         overflow: hidden;
+        box-shadow: 0 8px 22px rgba(30, 136, 229, 0.35);
     }
 
     .pay-button:hover {
         transform: translateY(-2px);
-        box-shadow: 0 15px 35px var(--shadow-focus);
+        box-shadow: 0 15px 35px rgba(30, 136, 229, 0.4);
     }
 
     .pay-button:disabled {
@@ -115,11 +122,12 @@
     }
 
     .secure-badge {
-        background: var(--bg-1);
+        background: rgba(255, 255, 255, 0.05);
         padding: 0.5rem 1rem;
-        border-radius: 8px;
+        border-radius: var(--radius-md);
         font-size: 0.8rem;
         color: var(--text-1);
+        border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .loading-overlay {
@@ -136,10 +144,12 @@
     }
 
     .loading-content {
-        background: white;
+        background: var(--bg-1);
         padding: 2rem;
-        border-radius: 15px;
+        border-radius: var(--radius-lg);
         text-align: center;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: var(--shadow-1);
     }
 
     .spinner {
@@ -163,23 +173,45 @@
     }
 
     .order-summary {
-        background: var(--bg-0);
-        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: var(--radius-md);
         padding: 1.5rem;
         margin-bottom: 2rem;
+        border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .order-item {
         display: flex;
-        justify-content: between;
-        margin-bottom: 0.5rem;
+        justify-content: space-between;
+        margin-bottom: 0.75rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .order-item:last-child {
         margin-bottom: 0;
-        font-weight: 600;
-        padding-top: 0.5rem;
-        border-top: 1px solid #dee2e6;
+        padding-bottom: 0;
+        border-bottom: none;
+        font-weight: 700;
+        font-size: 1.1rem;
+        padding-top: 0.75rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .payment-card {
+            padding: 1.5rem;
+        }
+
+        .amount-value {
+            font-size: 2rem;
+        }
+
+        .secure-badges {
+            flex-direction: column;
+            align-items: center;
+        }
     }
 </style>
 <?php $this->end(); ?>
@@ -216,10 +248,18 @@
             <div class="amount-value">₦<?= number_format($total_amount) ?></div>
         </div>
 
-        <button type="button" class="pay-button" id="payButton">
-            <i class="bi bi-credit-card me-2"></i>
-            Pay with Paystack
-        </button>
+        <form method="POST" action="/checkout/process-payment" id="paymentForm">
+            <input type="hidden" name="reference" value="<?= $reference ?>">
+            <input type="hidden" name="email" value="<?= htmlspecialchars($contact['email']) ?>">
+            <input type="hidden" name="amount" value="<?= $total_amount * 100 ?>">
+            <input type="hidden" name="event_id" value="<?= $event->id ?>">
+            <input type="hidden" name="transaction_id" value="<?= $transaction->id ?>">
+
+            <button type="submit" class="pay-button" id="payButton">
+                <i class="bi bi-credit-card me-2"></i>
+                Pay with Paystack
+            </button>
+        </form>
 
         <div class="secure-info">
             <i class="bi bi-shield-check"></i>
@@ -252,91 +292,18 @@
 <?php $this->end(); ?>
 
 <?php $this->start('scripts'); ?>
-<script src="https://js.paystack.co/v1/inline.js"></script>
 <script>
+    const paymentForm = document.getElementById('paymentForm');
     const payButton = document.getElementById('payButton');
     const loadingOverlay = document.getElementById('loadingOverlay');
 
-    payButton.addEventListener('click', function() {
+    paymentForm.addEventListener('submit', function(e) {
+        // Show loading overlay
+        loadingOverlay.style.display = 'flex';
+
         // Disable button to prevent multiple clicks
         payButton.disabled = true;
-        payButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Loading...';
-
-        // Initialize Paystack payment
-        const handler = PaystackPop.setup({
-            key: '<?= $paystackPublicKey ?>',
-            email: '<?= htmlspecialchars($contact['email']) ?>',
-            amount: <?= $total_amount ?> * 100, // Amount in kobo
-            ref: '<?= $reference ?>',
-            currency: 'NGN',
-            metadata: {
-                event_id: <?= $transaction->event_id ?>,
-                transaction_id: <?= $transaction->id ?>,
-                custom_fields: [{
-                    display_name: "Event",
-                    variable_name: "event",
-                    value: "<?= htmlspecialchars($event->event_title) ?>"
-                }]
-            },
-            callback: function(response) {
-                // Payment successful
-                showLoading();
-                verifyPayment(response.reference);
-            },
-            onClose: function() {
-                // Payment cancelled
-                payButton.disabled = false;
-                payButton.innerHTML = '<i class="bi bi-credit-card me-2"></i>Pay with Paystack';
-
-                // Show cancelled message
-                showToast('Payment cancelled. You can try again.', 'warning');
-            }
-        });
-
-        handler.openIframe();
+        payButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
     });
-
-    function showLoading() {
-        loadingOverlay.style.display = 'flex';
-    }
-
-    function hideLoading() {
-        loadingOverlay.style.display = 'none';
-    }
-
-    function verifyPayment(reference) {
-        fetch('/checkout/verify', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: 'reference=' + encodeURIComponent(reference)
-            })
-            .then(response => response.json())
-            .then(data => {
-                hideLoading();
-
-                if (data.success) {
-                    // Redirect to success page
-                    window.location.href = data.redirect_url;
-                } else {
-                    // Show error message
-                    showToast('Payment verification failed. Please contact support.', 'danger');
-
-                    // Re-enable button
-                    payButton.disabled = false;
-                    payButton.innerHTML = '<i class="bi bi-credit-card me-2"></i>Pay with Paystack';
-                }
-            })
-            .catch(error => {
-                hideLoading();
-                console.error('Error:', error);
-                showToast('An error occurred. Please try again.', 'danger');
-
-                // Re-enable button
-                payButton.disabled = false;
-                payButton.innerHTML = '<i class="bi bi-credit-card me-2"></i>Pay with Paystack';
-            });
-    }
 </script>
 <?php $this->end(); ?>
