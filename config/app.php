@@ -28,7 +28,7 @@ return [
 
     // Session configuration
     'session' => [
-        'name' => 'mvc_session',
+        'name' => 'eventlyy_session',
         'lifetime' => 120, // minutes
         'secure' => false, // Set to true for HTTPS
         'httponly' => true,

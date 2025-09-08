@@ -35,7 +35,7 @@ class SessionHandler implements SessionInterface
             'use_cookies' => 1,
             'use_only_cookies' => 1,
             'cookie_httponly' => 1,
-            'cookie_samesite' => 'Strict',
+            'cookie_samesite' => 'Lax', // Changed from 'Strict' to 'Lax' for better compatibility
             'use_strict_mode' => 1,
             'cookie_secure' => $this->isHttps(),
             'gc_maxlifetime' => 1440,
@@ -47,9 +47,6 @@ class SessionHandler implements SessionInterface
         $this->defaultOptions = array_merge($baseDefaults, $defaultOptions);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function start(array $options = []): void
     {
         if ($this->isStarted()) {
@@ -92,63 +89,44 @@ class SessionHandler implements SessionInterface
         $this->manageFlashData();
         $this->checkExpiration();
 
-        // Ensure we have a CSRF token if none exists
-
-        // if (!$this->has($this->csrfTokenKey)) {
-        //     $this->generateCsrfToken();
-        // }
+        // Generate CSRF token only if it doesn't exist (removed auto-generation)
+        // This prevents creating new tokens on every request
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isStarted(): bool
     {
-        return $this->started;
+        return $this->started && session_status() === PHP_SESSION_ACTIVE;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function set(string $key, $value): void
     {
         $this->ensureSessionStarted();
         $_SESSION[$key] = $value;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function get(string $key, $default = null)
     {
         $this->ensureSessionStarted();
         return $_SESSION[$key] ?? $default;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function has(string $key): bool
     {
         $this->ensureSessionStarted();
         return isset($_SESSION[$key]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function remove(string $key): void
     {
         $this->ensureSessionStarted();
         unset($_SESSION[$key]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function destroy(): void
     {
-        $this->ensureSessionStarted();
+        if (!$this->isStarted()) {
+            return; // Don't attempt to destroy if not started
+        }
 
         $_SESSION = [];
 
@@ -181,6 +159,7 @@ class SessionHandler implements SessionInterface
 
         session_regenerate_id($deleteOldSession);
 
+        // Only regenerate CSRF token if one exists (don't force creation)
         if ($this->has($this->csrfTokenKey)) {
             $this->generateCsrfToken();
         }
@@ -200,36 +179,24 @@ class SessionHandler implements SessionInterface
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function flash(string $key, $value): void
     {
         $this->ensureSessionStarted();
         $_SESSION[$this->flashKey][$key] = $value;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getFlash(string $key, $default = null)
     {
         $this->ensureSessionStarted();
         return $_SESSION[$this->flashKey][$key] ?? $default;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function hasFlash(string $key): bool
     {
         $this->ensureSessionStarted();
         return isset($_SESSION[$this->flashKey][$key]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function keepFlash(string $key): void
     {
         $this->ensureSessionStarted();
@@ -262,17 +229,11 @@ class SessionHandler implements SessionInterface
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setFormMessage($value): void
     {
         $this->set($this->formMessageKey, $value);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getFormMessage(): array
     {
         $value = $this->get($this->formMessageKey, []);
@@ -280,44 +241,41 @@ class SessionHandler implements SessionInterface
         return is_array($value) ? $value : [];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setExpiration(int $minutes): void
     {
         $this->set($this->expirationKey, time() + ($minutes * 60));
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function checkExpiration(): void
     {
         $expirationTime = $this->get($this->expirationKey);
         if ($expirationTime !== null && time() > $expirationTime) {
+            // Don't automatically restart session after expiration
+            // Let the application handle this decision
             $this->destroy();
-            $this->start(); // Start fresh session after expiration
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function generateCsrfToken(): string
     {
+        $this->ensureSessionStarted();
         $token = bin2hex(random_bytes(32));
         $this->set($this->csrfTokenKey, $token);
         return $token;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    public function getCsrfToken(): ?string
+    {
+        return $this->get($this->csrfTokenKey);
+    }
+
     public function validateCsrfToken(string $token): bool
     {
         $storedToken = $this->get($this->csrfTokenKey);
-        $this->remove($this->csrfTokenKey);
-
+        
+        // Don't remove the token immediately - let the application decide
+        // This prevents issues with redirects and form resubmissions
+        
         if (!$storedToken || !is_string($storedToken)) {
             return false;
         }
@@ -325,9 +283,20 @@ class SessionHandler implements SessionInterface
         return hash_equals($storedToken, $token);
     }
 
+    public function consumeCsrfToken(string $token): bool
+    {
+        $isValid = $this->validateCsrfToken($token);
+        if ($isValid) {
+            $this->remove($this->csrfTokenKey); // Only remove if validation succeeds
+        }
+        return $isValid;
+    }
+
     protected function isHttps(): bool
     {
-        return !empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off';
+        return !empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off'
+            || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
+            || (!empty($_SERVER['HTTP_X_FORWARDED_SSL']) && $_SERVER['HTTP_X_FORWARDED_SSL'] === 'on');
     }
 
     protected function ensureSessionStarted(): void
@@ -343,5 +312,33 @@ class SessionHandler implements SessionInterface
     public function setSaveHandler(SessionHandlerInterface $handler): bool
     {
         return session_set_save_handler($handler, true);
+    }
+
+    /**
+     * Check if session is expired without destroying it
+     */
+    public function isExpired(): bool
+    {
+        $expirationTime = $this->get($this->expirationKey);
+        return $expirationTime !== null && time() > $expirationTime;
+    }
+
+    /**
+     * Extend session expiration
+     */
+    public function extendExpiration(int $minutes): void
+    {
+        if ($this->has($this->expirationKey)) {
+            $this->setExpiration($minutes);
+        }
+    }
+
+    /**
+     * Get all session data (for debugging)
+     */
+    public function getAllData(): array
+    {
+        $this->ensureSessionStarted();
+        return $_SESSION;
     }
 }

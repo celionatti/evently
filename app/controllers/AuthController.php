@@ -24,7 +24,7 @@ class AuthController extends Controller
         $name = "Eventlyy";
         $this->view->setTitle("Authentication | {$name}");
         $this->userModel = new User();
-        
+
         // Check remember me token on every request
         $this->checkRememberMeToken();
     }
@@ -40,7 +40,7 @@ class AuthController extends Controller
         return $this->render('auth/login', $view);
     }
 
-    public function login_user(Request $request, Response $response) 
+    public function login_user(Request $request, Response $response)
     {
         if ("POST" !== $request->getMethod()) {
             $response->redirect('/login');
@@ -218,7 +218,7 @@ class AuthController extends Controller
         if ($attempts >= self::MAX_LOGIN_ATTEMPTS) {
             $blockedUntil = clone $now;
             $blockedUntil->add(new \DateInterval('PT' . self::BLOCK_DURATION_MINUTES . 'M'));
-            
+
             $updateData['blocked_until'] = $blockedUntil->format('Y-m-d H:i:s');
         }
 
@@ -296,6 +296,9 @@ class AuthController extends Controller
             return;
         }
 
+        // Regenerate session ID for auto-login as well
+    session()->regenerate(true);
+
         // Auto-login the user
         $this->loginUser($user, true);
     }
@@ -305,6 +308,9 @@ class AuthController extends Controller
      */
     private function loginUser(User $user, bool $remember = false): void
     {
+        // Regenerate session ID to prevent session fixation attacks
+        session()->regenerate(true);
+
         // Set session data
         session()->set('user_id', $user->user_id);
         session()->set('user_email', $user->email);
