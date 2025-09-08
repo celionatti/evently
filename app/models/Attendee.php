@@ -32,7 +32,9 @@ class Attendee extends Model implements ModelInterface
         'email',
         'phone',
         'ticket_code',
-        'status'
+        'status',
+        'created_at',
+        'updated_at'
     ];
 
     protected array $casts = [];

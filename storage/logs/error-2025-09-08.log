@@ -237,3 +237,18 @@ Stack trace:
 #2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
 #3 {main}
 
+[2025-09-08 11:32:12] ErrorException: Undefined variable $ticketStats in C:\xampp\htdocs\evently\storage\cache\temp_68beb0abdf8ab7.12128324.php on line 629
+Stack trace:
+#0 C:\xampp\htdocs\evently\storage\cache\temp_68beb0abdf8ab7.12128324.php(629): Trees\Exception\Handler\ExceptionHandler->handleError(2, 'Undefined varia...', 'C:\\xampp\\htdocs...', 629)
+#1 C:\xampp\htdocs\evently\core\View\View.php(559): include('C:\\xampp\\htdocs...')
+#2 C:\xampp\htdocs\evently\core\View\View.php(298): Trees\View\View->evaluateTemplate('<?php\r\n\r\nuse Tr...', Array, 'C:\\xampp\\htdocs...')
+#3 C:\xampp\htdocs\evently\core\View\View.php(147): Trees\View\View->renderTemplate('admin/events/vi...', Array)
+#4 C:\xampp\htdocs\evently\core\Controller\Controller.php(34): Trees\View\View->render('admin/events/vi...', Array)
+#5 C:\xampp\htdocs\evently\app\controllers\AdminEventController.php(142): Trees\Controller\Controller->render('admin/events/vi...', Array)
+#6 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminEventController->view(Object(Trees\Http\Request), Object(Trees\Http\Response), 'natti_beach_par...')
+#7 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'view', Array)
+#8 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#9 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#10 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#11 {main}
+

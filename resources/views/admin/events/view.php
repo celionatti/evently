@@ -173,12 +173,12 @@ use Trees\Helper\Utils\TimeDateUtils;
                     <div class="event-header mb-3">
                         <div class="d-flex justify-content-between align-items-start mb-2">
                             <h3 class="text-white mb-0">{{{ $event->event_title }}}</h3>
-                            <span class="badge {{ $event->status == 'active' ? 'bg-success' : ($event->status == 'pending' ? 'bg-warning' : 'bg-danger') }} text-capitalize">
-                                <i class="bi bi-{{ $event->status == 'active' ? 'check-circle' : ($event->status == 'pending' ? 'clock' : 'x-circle') }} me-1"></i>
-                                {{{ $event->status }}}
+                            <span class="badge {{ $event->status == 'active' ? 'bg-success' : 'bg-secondary' }} text-capitalize">
+                                <i class="bi bi-{{ $event->status == 'active' ? 'check-circle' : 'x-circle' }} me-1"></i>
+                                {{{ $event->status == 'active' ? 'Active' : 'Disabled' }}}
                             </span>
                         </div>
-                        <?php if ($event->tags): ?>
+                        <?php if (!empty($event->tags)): ?>
                             <div class="event-tags mb-3">
                                 <?php foreach (explode(',', $event->tags) as $tag): ?>
                                     <span class="tag-badge">{{{ trim($tag) }}}</span>
@@ -239,7 +239,7 @@ use Trees\Helper\Utils\TimeDateUtils;
     <!-- Quick Stats -->
     <div class="dashboard-grid">
         <div class="stat-card">
-            <div class="stat-number">450</div>
+            <div class="stat-number"><?= $ticketStats['sold_tickets'] ?? 0 ?></div>
             <div class="stat-label">
                 <i class="bi bi-ticket-perforated me-1"></i>
                 Tickets Sold
@@ -247,7 +247,7 @@ use Trees\Helper\Utils\TimeDateUtils;
         </div>
 
         <div class="stat-card">
-            <div class="stat-number">500</div>
+            <div class="stat-number"><?= $ticketStats['total_tickets'] ?? 0 ?></div>
             <div class="stat-label">
                 <i class="bi bi-stack me-1"></i>
                 Total Tickets
@@ -255,7 +255,7 @@ use Trees\Helper\Utils\TimeDateUtils;
         </div>
 
         <div class="stat-card">
-            <div class="stat-number">₦675,000</div>
+            <div class="stat-number">₦<?= number_format($ticketStats['total_revenue'] ?? 0) ?></div>
             <div class="stat-label">
                 <i class="bi bi-currency-exchange me-1"></i>
                 Revenue
@@ -263,7 +263,7 @@ use Trees\Helper\Utils\TimeDateUtils;
         </div>
 
         <div class="stat-card">
-            <div class="stat-number">90%</div>
+            <div class="stat-number"><?= $ticketStats['sales_rate'] ?? 0 ?>%</div>
             <div class="stat-label">
                 <i class="bi bi-graph-up me-1"></i>
                 Sold Rate
@@ -374,7 +374,7 @@ use Trees\Helper\Utils\TimeDateUtils;
                         <i class="bi bi-ticket-perforated me-2"></i>
                         Ticket Tiers
                     </h5>
-                    <span class="badge bg-info">
+                    <span class="badge <?= $event->ticket_sales === 'open' ? 'bg-success' : 'bg-danger' ?>">
                         Sales <?= $event->ticket_sales === 'open' ? 'Open' : 'Closed' ?>
                     </span>
                 </div>
@@ -395,6 +395,12 @@ use Trees\Helper\Utils\TimeDateUtils;
                         <tbody>
                             <?php if ($event->tickets): ?>
                                 <?php foreach ($event->tickets as $k => $ticket): ?>
+                                    <?php
+                                    $soldCount = $ticket->sold ?? 0;
+                                    $available = $ticket->quantity - $soldCount;
+                                    $soldPercentage = $ticket->quantity > 0 ? round(($soldCount / $ticket->quantity) * 100) : 0;
+                                    $revenue = $soldCount * $ticket->price;
+                                    ?>
                                     <tr class="fade-in" style="animation-delay: <?= $k * 0.1 ?>s;">
                                         <td data-label="Ticket Type">
                                             <div class="fw-semibold text-white">{{{ $ticket->ticket_name }}}</div>
@@ -404,21 +410,21 @@ use Trees\Helper\Utils\TimeDateUtils;
                                         </td>
                                         <td data-label="Available">
                                             <div class="text-center">
-                                                <span class="fw-semibold text-white">{{{ $ticket->quantity - ($ticket->sold ?? 0) }}}</span>
-                                                <small class="text-secondary d-block">of {{{ $ticket->quantity }}}</small>
+                                                <span class="fw-semibold text-white"><?= $available ?></span>
+                                                <small class="text-secondary d-block">of <?= $ticket->quantity ?></small>
                                             </div>
                                         </td>
                                         <td data-label="Sold">
                                             <div class="text-center">
-                                                <span class="fw-semibold text-success">{{{ $ticket->sold ?? 0 }}}</span>
+                                                <span class="fw-semibold text-success"><?= $soldCount ?></span>
                                                 <small class="text-secondary d-block">
-                                                    <?= round((($ticket->sold ?? 0) / $ticket->quantity) * 100) ?>% sold
+                                                    <?= $soldPercentage ?>% sold
                                                 </small>
                                             </div>
                                         </td>
                                         <td data-label="Revenue">
                                             <div class="text-center">
-                                                <div class="fw-semibold text-white">₦{{{ number_format(($ticket->sold ?? 0) * $ticket->price) }}}</div>
+                                                <div class="fw-semibold text-white">₦<?= number_format($revenue) ?></div>
                                             </div>
                                         </td>
                                         <td data-label="Description">
@@ -470,13 +476,13 @@ use Trees\Helper\Utils\TimeDateUtils;
                                 <th>Attendee</th>
                                 <th>Ticket Type</th>
                                 <th>Purchase Date</th>
-                                <th>Payment Status</th>
+                                <th>Status</th>
                                 <th>Amount</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php if (isset($recentAttendees) && $recentAttendees): ?>
+                            <?php if (isset($recentAttendees) && !empty($recentAttendees)): ?>
                                 <?php foreach ($recentAttendees as $k => $attendee): ?>
                                     <tr class="fade-in" style="animation-delay: <?= $k * 0.1 ?>s;">
                                         <td data-label="Attendee">
@@ -490,30 +496,47 @@ use Trees\Helper\Utils\TimeDateUtils;
                                                 </div>
                                             </div>
                                         </td>
-                                        <td data-label="Ticket Code">
-                                            <span class="ticket-type-badge">{{{ $attendee->ticket_code }}}</span>
+                                        <td data-label="Ticket Type">
+                                            <span class="ticket-type-badge">{{{ $attendee->ticket_name ?? 'Unknown' }}}</span>
                                         </td>
                                         <td data-label="Purchase Date">
                                             <div class="text-center">
                                                 <div class="fw-semibold text-white">
-                                                    <?= $attendee->created_at ?>
+                                                    <?= TimeDateUtils::create($attendee->created_at)->toCustomFormat('j M, Y') ?>
                                                 </div>
                                                 <small class="text-secondary">
-                                                    <?= $attendee->created_at ?>
+                                                    <?= TimeDateUtils::create($attendee->created_at)->toCustomFormat('G:i A') ?>
                                                 </small>
                                             </div>
                                         </td>
-                                        <td data-label="Payment Status">
+                                        <td data-label="Status">
                                             <div class="text-center">
-                                                <span class="badge {{ $attendee->status == 'checked' ? 'bg-success' : ($attendee->status == 'pending' ? 'bg-warning' : 'bg-info') }}">
-                                                    <i class="bi bi-{{ $attendee->status == 'checked' ? 'check-circle' : ($attendee->status == 'pending' ? 'clock' : 'x-circle') }} me-1"></i>
-                                                    {{{ ucfirst($attendee->status ?? '') }}}
+                                                <?php
+                                                $statusClass = match ($attendee->status) {
+                                                    'confirmed' => 'bg-success',
+                                                    'pending' => 'bg-warning',
+                                                    'cancelled' => 'bg-danger',
+                                                    'checked' => 'bg-info',
+                                                    default => 'bg-secondary'
+                                                };
+
+                                                $statusIcon = match ($attendee->status) {
+                                                    'confirmed' => 'check-circle',
+                                                    'pending' => 'clock',
+                                                    'cancelled' => 'x-circle',
+                                                    'checked' => 'check2-circle',
+                                                    default => 'question-circle'
+                                                };
+                                                ?>
+                                                <span class="badge <?= $statusClass ?>">
+                                                    <i class="bi bi-<?= $statusIcon ?> me-1"></i>
+                                                    {{{ ucfirst($attendee->status ?? 'Unknown') }}}
                                                 </span>
                                             </div>
                                         </td>
                                         <td data-label="Amount">
                                             <div class="text-center">
-                                                <div class="fw-semibold text-white">₦{{{ number_format($attendee->amount ?? 0.00) }}}</div>
+                                                <div class="fw-semibold text-white">₦{{{ number_format($attendee->amount ?? 0) }}}</div>
                                             </div>
                                         </td>
                                         <td data-label="Actions">
@@ -534,13 +557,13 @@ use Trees\Helper\Utils\TimeDateUtils;
                                                             <i class="bi bi-envelope me-2"></i>Send Ticket
                                                         </a>
                                                     </li>
-                                                    <?php if ($attendee->payment_status !== 'paid'): ?>
+                                                    <?php if ($attendee->status !== 'checked'): ?>
                                                         <li>
                                                             <hr class="dropdown-divider">
                                                         </li>
                                                         <li>
-                                                            <a class="dropdown-item text-warning" href="#" onclick="markAsPaid(<?= $attendee->id ?>)">
-                                                                <i class="bi bi-check-circle me-2"></i>Mark as Paid
+                                                            <a class="dropdown-item text-info" href="#" onclick="markAsCheckedIn(<?= $attendee->id ?>)">
+                                                                <i class="bi bi-check2-circle me-2"></i>Mark as Checked In
                                                             </a>
                                                         </li>
                                                     <?php endif; ?>
@@ -549,11 +572,6 @@ use Trees\Helper\Utils\TimeDateUtils;
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
-                                <?php if (isset($pagination) && $pagination): ?>
-                                    <div class="card-footer">
-                                        <?= $pagination ?>
-                                    </div>
-                                <?php endif; ?>
                             <?php else: ?>
                                 <tr>
                                     <td colspan="6" class="text-center text-secondary py-4">
@@ -564,6 +582,11 @@ use Trees\Helper\Utils\TimeDateUtils;
                             <?php endif; ?>
                         </tbody>
                     </table>
+                    <?php if (isset($pagination) && $pagination): ?>
+                        <div class="card-footer">
+                            <?= $pagination ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
             <?php if (isset($recentAttendees) && count($recentAttendees) >= 5): ?>
@@ -589,20 +612,24 @@ use Trees\Helper\Utils\TimeDateUtils;
                 <div class="analytics-item mb-3">
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <span class="text-secondary">Ticket Sales Progress</span>
-                        <span class="fw-semibold text-white">90%</span>
+                        <span class="fw-semibold text-white"><?= $ticketStats['sales_rate'] ?? 0 ?>%</span>
                     </div>
                     <div class="progress" style="height: 8px;">
-                        <div class="progress-bar bg-success" style="width: 90%"></div>
+                        <div class="progress-bar bg-success" style="width: <?= $ticketStats['sales_rate'] ?? 0 ?>%"></div>
                     </div>
                 </div>
 
                 <div class="analytics-item mb-3">
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="text-secondary">Revenue Target</span>
-                        <span class="fw-semibold text-white">₦675k / ₦750k</span>
+                        <span class="text-secondary">Revenue Progress</span>
+                        <span class="fw-semibold text-white">₦<?= number_format($ticketStats['total_revenue'] ?? 0) ?></span>
                     </div>
                     <div class="progress" style="height: 8px;">
-                        <div class="progress-bar" style="width: 90%; background: var(--blue-2);"></div>
+                        <?php
+                        $revenueProgress = ($ticketStats['total_revenue'] > 0 && $ticketStats['total_tickets'] > 0) ?
+                            min(100, ($ticketStats['sales_rate'] ?? 0)) : 0;
+                        ?>
+                        <div class="progress-bar" style="width: <?= $revenueProgress ?>%; background: var(--blue-2);"></div>
                     </div>
                 </div>
 
@@ -610,7 +637,17 @@ use Trees\Helper\Utils\TimeDateUtils;
                     <div class="d-flex justify-content-between align-items-center">
                         <span class="text-secondary">Days Until Event</span>
                         <span class="fw-semibold text-primary">
-                            <?= TimeDateUtils::create($event->event_date)->diffFromNow(); ?>
+                            <?php
+                            $eventDate = new DateTime($event->event_date);
+                            $now = new DateTime();
+                            $interval = $now->diff($eventDate);
+
+                            if ($eventDate < $now) {
+                                echo "Event passed";
+                            } else {
+                                echo $interval->days . " days";
+                            }
+                            ?>
                         </span>
                     </div>
                 </div>
@@ -637,8 +674,17 @@ use Trees\Helper\Utils\TimeDateUtils;
                 <div class="setting-item mb-3">
                     <div class="d-flex justify-content-between align-items-center">
                         <span class="text-secondary">Event Status</span>
-                        <span class="badge {{ $event->status == 'active' ? 'bg-success' : ($event->status == 'pending' ? 'bg-warning' : 'bg-danger') }}">
+                        <span class="badge {{ $event->status == 'active' ? 'bg-success' : 'bg-secondary' }}">
                             {{{ ucfirst($event->status) }}}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="setting-item mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="text-secondary">Total Attendees</span>
+                        <span class="text-white fw-semibold">
+                            <?= $ticketStats['total_attendees'] ?? 0 ?>
                         </span>
                     </div>
                 </div>
@@ -671,6 +717,17 @@ use Trees\Helper\Utils\TimeDateUtils;
                         <i class="bi bi-lock me-2"></i>Close Ticket Sales
                     </button>
                 <?php endif; ?>
+
+                <?php if ($event->status === 'disable'): ?>
+                    <button class="btn btn-ghost" onclick="toggleEventStatus('<?= $event->slug ?>', 'active')">
+                        <i class="bi bi-check-circle me-2"></i>Activate Event
+                    </button>
+                <?php else: ?>
+                    <button class="btn btn-ghost" onclick="toggleEventStatus('<?= $event->slug ?>', 'disable')">
+                        <i class="bi bi-pause-circle me-2"></i>Disable Event
+                    </button>
+                <?php endif; ?>
+
                 <button type="button" class="btn btn-outline-danger"
                     data-bs-toggle="modal" data-bs-target="#deleteEventModal"
                     data-event-slug="<?= $event->slug ?>">
@@ -694,7 +751,7 @@ use Trees\Helper\Utils\TimeDateUtils;
                     <ul class="text-danger">
                         <li>The event details</li>
                         <li>All associated tickets (<?= $event->tickets ? count($event->tickets) : 0 ?> ticket types)</li>
-                        <li>All attendee records (<?= isset($recentAttendees) ? count($recentAttendees) : 0 ?> attendees)</li>
+                        <li>All attendee records (<?= $ticketStats['total_attendees'] ?? 0 ?> attendees)</li>
                         <li>The event image</li>
                         <li>All sales data and revenue records</li>
                     </ul>
@@ -779,10 +836,10 @@ use Trees\Helper\Utils\TimeDateUtils;
         }
     }
 
-    // Mark attendee as paid
-    function markAsPaid(attendeeId) {
-        if (confirm('Mark this attendee as paid?')) {
-            fetch(`<?= url('/admin/attendees/mark-paid/') ?>${attendeeId}`, {
+    // Mark attendee as checked in
+    function markAsCheckedIn(attendeeId) {
+        if (confirm('Mark this attendee as checked in?')) {
+            fetch(`<?= url('/admin/attendees/check-in/') ?>${attendeeId}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -792,12 +849,12 @@ use Trees\Helper\Utils\TimeDateUtils;
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        showToast('Payment status updated!', 'success');
+                        showToast('Attendee checked in successfully!', 'success');
                         setTimeout(() => {
                             location.reload();
                         }, 1500);
                     } else {
-                        showToast('Failed to update payment status', 'error');
+                        showToast('Failed to check in attendee', 'error');
                     }
                 })
                 .catch(error => {
@@ -839,25 +896,29 @@ use Trees\Helper\Utils\TimeDateUtils;
         }
     }
 
-    // Duplicate event
-    function duplicateEvent(eventSlug) {
-        if (confirm('Create a duplicate of this event? You can modify the details after creation.')) {
-            fetch(`<?= url('/admin/events/duplicate/') ?>${eventSlug}`, {
+    // Toggle event status
+    function toggleEventStatus(eventSlug, status) {
+        const statusText = status === 'active' ? 'activate' : 'disable';
+        if (confirm(`Are you sure you want to ${statusText} this event?`)) {
+            fetch(`<?= url('/admin/events/toggle-status/') ?>${eventSlug}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-Requested-With': 'XMLHttpRequest'
-                    }
+                    },
+                    body: JSON.stringify({
+                        status: status
+                    })
                 })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        showToast('Event duplicated successfully!', 'success');
+                        showToast(`Event ${statusText}d successfully!`, 'success');
                         setTimeout(() => {
-                            window.location.href = `<?= url('/admin/events/edit/') ?>${data.newEventSlug}`;
+                            location.reload();
                         }, 1500);
                     } else {
-                        showToast('Failed to duplicate event', 'error');
+                        showToast('Failed to update event status', 'error');
                     }
                 })
                 .catch(error => {
@@ -867,35 +928,28 @@ use Trees\Helper\Utils\TimeDateUtils;
         }
     }
 
-    // Print event details
-    function printEventDetails() {
-        window.print();
+    // Toast notification function
+    function showToast(message, type = 'info') {
+        // Create a simple toast notification
+        const toast = document.createElement('div');
+        toast.className = `alert alert-${type === 'success' ? 'success' : type === 'error' ? 'danger' : 'info'} position-fixed`;
+        toast.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+        toast.innerHTML = `
+            <div class="d-flex align-items-center">
+                <i class="bi bi-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-triangle' : 'info-circle'} me-2"></i>
+                ${message}
+                <button type="button" class="btn-close ms-auto" onclick="this.parentElement.parentElement.remove()"></button>
+            </div>
+        `;
+
+        document.body.appendChild(toast);
+
+        // Auto remove after 5 seconds
+        setTimeout(() => {
+            if (toast.parentNode) {
+                toast.remove();
+            }
+        }, 5000);
     }
-
-    // Share event link
-    function shareEvent() {
-        const eventUrl = '<?= url("/events/{$event->slug}") ?>';
-
-        if (navigator.share) {
-            navigator.share({
-                title: '<?= addslashes($event->event_title) ?>',
-                text: 'Check out this event!',
-                url: eventUrl
-            }).then(() => {
-                showToast('Event shared successfully!', 'success');
-            }).catch((error) => {
-                console.log('Error sharing:', error);
-                copyToClipboard(eventUrl);
-            });
-        } else {
-            copyToClipboard(eventUrl);
-        }
-    }
-
-    // Auto-refresh data every 30 seconds
-    setInterval(function() {
-        // You can implement auto-refresh for ticket sales data here
-        // updateTicketStats();
-    }, 30000);
 </script>
 @endsection

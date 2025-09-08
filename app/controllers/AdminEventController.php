@@ -27,7 +27,7 @@ class AdminEventController extends Controller
     protected ?Attendee $attendeesModel;
     protected const MAX_UPLOAD_FILES = 1;
     protected const UPLOAD_DIR = 'uploads/events/';
-    
+
     public function onConstruct()
     {
         requireAuth();
@@ -70,12 +70,12 @@ class AdminEventController extends Controller
             'page' => $request->query('page', 1),
             'order_by' => ['created_at' => 'DESC']
         ];
-        
+
         if (isOrganiser()) {
             // Organiser can only see their own events
             $queryOptions['conditions'] = ['user_id' => auth()->id];
         }
-        
+
         $events = $this->eventModel::paginate($queryOptions);
 
         // Create pagination instance
@@ -92,6 +92,56 @@ class AdminEventController extends Controller
         return $this->render('admin/events/manage', $view);
     }
 
+    // public function view(Request $request, Response $response, $slug)
+    // {
+    //     $event = Event::findBySlug($slug);
+
+    //     if (!$event) {
+    //         FlashMessage::setMessage("Event Not Found!", 'danger');
+    //         return $response->redirect("/admin/events/manage");
+    //     }
+
+    //     // Check if organiser is trying to view someone else's event
+    //     if (isOrganiser() && $event->user_id !== auth()->id) {
+    //         FlashMessage::setMessage("Access denied. You can only view your own events.", 'danger');
+    //         return $response->redirect("/admin/events/manage");
+    //     }
+
+    //     // Load tickets with the event
+    //     $tickets = Ticket::where(['event_id' => $event->id]);
+
+    //     // Ensure tickets is always an array
+    //     $event->tickets = is_array($tickets) ? $tickets : [];
+
+    //     // Build query options
+    //     $queryOptions = [
+    //         'per_page' => $request->query('per_page', 5),
+    //         'page' => $request->query('page', 1),
+    //         'order_by' => ['created_at' => 'DESC']
+    //     ];
+
+    //     // Only show attendees status not pending
+    //     $conditions = ['status' => 'confirmed', 'event_id' => $event->id];
+
+    //     $queryOptions['conditions'] = $conditions;
+
+    //     $attendees = $this->attendeesModel::paginate($queryOptions);
+
+    //     // Create pagination instance
+    //     $pagination = new Paginator($attendees['meta']);
+
+    //     // Render the pagination links
+    //     $paginationLinks = $pagination->render('bootstrap');
+
+    //     $view = [
+    //         'event' => $event,
+    //         'recentAttendees' => $attendees['data'],
+    //         'pagination' => $paginationLinks
+    //     ];
+
+    //     return $this->render('admin/events/view', $view);
+    // }
+
     public function view(Request $request, Response $response, $slug)
     {
         $event = Event::findBySlug($slug);
@@ -100,7 +150,7 @@ class AdminEventController extends Controller
             FlashMessage::setMessage("Event Not Found!", 'danger');
             return $response->redirect("/admin/events/manage");
         }
-        
+
         // Check if organiser is trying to view someone else's event
         if (isOrganiser() && $event->user_id !== auth()->id) {
             FlashMessage::setMessage("Access denied. You can only view your own events.", 'danger');
@@ -109,26 +159,69 @@ class AdminEventController extends Controller
 
         // Load tickets with the event
         $tickets = Ticket::where(['event_id' => $event->id]);
-
-        // Ensure tickets is always an array
         $event->tickets = is_array($tickets) ? $tickets : [];
 
-        $attendees = $this->attendeesModel::paginate([
+        // Calculate ticket statistics
+        $totalTickets = 0;
+        $soldTickets = 0;
+        $totalRevenue = 0;
+
+        foreach ($event->tickets as $ticket) {
+            $totalTickets += $ticket->quantity;
+
+            // Get sold count for this ticket
+            $soldCount = Attendee::count(['ticket_id' => $ticket->id, 'status' => 'confirmed']);
+            $ticket->sold = $soldCount; // Add sold count to ticket object
+
+            $soldTickets += $soldCount;
+            $totalRevenue += ($soldCount * $ticket->price);
+        }
+
+        // Calculate sales rate
+        $salesRate = $totalTickets > 0 ? round(($soldTickets / $totalTickets) * 100) : 0;
+
+        // Get total attendees count for this event
+        $totalAttendees = Attendee::count(['event_id' => $event->id, 'status' => 'confirmed']);
+
+        // Build query options for recent attendees
+        $queryOptions = [
             'per_page' => $request->query('per_page', 5),
             'page' => $request->query('page', 1),
             'order_by' => ['created_at' => 'DESC']
-        ]);
+        ];
+
+        // Get confirmed attendees for this event
+        $conditions = ['status' => 'confirmed', 'event_id' => $event->id];
+        $queryOptions['conditions'] = $conditions;
+
+        $attendees = $this->attendeesModel::paginate($queryOptions);
 
         // Create pagination instance
         $pagination = new Paginator($attendees['meta']);
-
-        // Render the pagination links
         $paginationLinks = $pagination->render('bootstrap');
+
+        // Get attendee details with ticket information
+        $attendeesWithTickets = [];
+        foreach ($attendees['data'] as $attendee) {
+            // Get ticket details for this attendee
+            $ticket = Ticket::find($attendee->ticket_id);
+            $attendee->ticket_name = $ticket ? $ticket->ticket_name : 'Unknown';
+            $attendee->ticket_price = $ticket ? $ticket->price : 0;
+            $attendee->amount = $attendee->ticket_price; // Set amount based on ticket price
+            $attendeesWithTickets[] = $attendee;
+        }
 
         $view = [
             'event' => $event,
-            'recentAttendees' => $attendees['data'],
-            'pagination' => $paginationLinks
+            'recentAttendees' => $attendeesWithTickets,
+            'pagination' => $paginationLinks,
+            'ticketStats' => [
+                'total_tickets' => $totalTickets,
+                'sold_tickets' => $soldTickets,
+                'total_revenue' => $totalRevenue,
+                'sales_rate' => $salesRate,
+                'total_attendees' => $totalAttendees
+            ]
         ];
 
         return $this->render('admin/events/view', $view);
@@ -226,7 +319,7 @@ class AdminEventController extends Controller
             FlashMessage::setMessage("Event Not Found!", 'danger');
             return $response->redirect("/admin/events/manage");
         }
-        
+
         // Check if organiser is trying to edit someone else's event
         if (isOrganiser() && $event->user_id !== auth()->id) {
             FlashMessage::setMessage("Access denied. You can only edit your own events.", 'danger');
@@ -259,7 +352,7 @@ class AdminEventController extends Controller
             FlashMessage::setMessage("Event Not Found!", 'danger');
             return $response->redirect("/admin/events/manage");
         }
-        
+
         // Check if organiser is trying to update someone else's event
         if (isOrganiser() && $event->user_id !== auth()->id) {
             FlashMessage::setMessage("Access denied. You can only update your own events.", 'danger');
@@ -397,7 +490,7 @@ class AdminEventController extends Controller
             if (!$ticket || !$event || $ticket->event_id != $event->id) {
                 return $response->json(['success' => false, 'message' => 'Ticket not found'], 404);
             }
-            
+
             // Check if organiser is trying to delete a ticket from someone else's event
             if (isOrganiser() && $event->user_id !== auth()->id) {
                 return $response->json(['success' => false, 'message' => 'Access denied. You can only delete tickets from your own events.'], 403);
@@ -431,7 +524,7 @@ class AdminEventController extends Controller
             FlashMessage::setMessage("Event Not Found!", 'danger');
             return $response->redirect("/admin/events/manage");
         }
-        
+
         // Check if organiser is trying to delete someone else's event
         if (isOrganiser() && $event->user_id !== auth()->id) {
             FlashMessage::setMessage("Access denied. You can only delete your own events.", 'danger');

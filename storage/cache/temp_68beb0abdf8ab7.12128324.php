@@ -393,9 +393,9 @@ use Trees\Helper\Utils\TimeDateUtils;
                             </tr>
                         </thead>
                         <tbody>
-                            <?php if ($event->tickets): ?>
+                            <?php if ($event->tickets && !empty($event->tickets)): ?>
                                 <?php foreach ($event->tickets as $k => $ticket): ?>
-                                    <?php
+                                    <?php 
                                     $soldCount = $ticket->sold ?? 0;
                                     $available = $ticket->quantity - $soldCount;
                                     $soldPercentage = $ticket->quantity > 0 ? round(($soldCount / $ticket->quantity) * 100) : 0;
@@ -502,25 +502,25 @@ use Trees\Helper\Utils\TimeDateUtils;
                                         <td data-label="Purchase Date">
                                             <div class="text-center">
                                                 <div class="fw-semibold text-white">
-                                                    <?= TimeDateUtils::create($attendee->created_at)->toCustomFormat('j M, Y') ?>
+                                                    <?= $attendee->created_at ?>
                                                 </div>
                                                 <small class="text-secondary">
-                                                    <?= TimeDateUtils::create($attendee->created_at)->toCustomFormat('G:i A') ?>
+                                                    <?= $attendee->created_at ?>
                                                 </small>
                                             </div>
                                         </td>
                                         <td data-label="Status">
                                             <div class="text-center">
-                                                <?php
-                                                $statusClass = match ($attendee->status) {
+                                                <?php 
+                                                $statusClass = match($attendee->status) {
                                                     'confirmed' => 'bg-success',
                                                     'pending' => 'bg-warning',
                                                     'cancelled' => 'bg-danger',
                                                     'checked' => 'bg-info',
                                                     default => 'bg-secondary'
                                                 };
-
-                                                $statusIcon = match ($attendee->status) {
+                                                
+                                                $statusIcon = match($attendee->status) {
                                                     'confirmed' => 'check-circle',
                                                     'pending' => 'clock',
                                                     'cancelled' => 'x-circle',
@@ -625,8 +625,8 @@ use Trees\Helper\Utils\TimeDateUtils;
                         <span class="fw-semibold text-white">₦<?= number_format($ticketStats['total_revenue'] ?? 0) ?></span>
                     </div>
                     <div class="progress" style="height: 8px;">
-                        <?php
-                        $revenueProgress = ($ticketStats['total_revenue'] > 0 && $ticketStats['total_tickets'] > 0) ?
+                        <?php 
+                        $revenueProgress = ($ticketStats['total_revenue'] > 0 && $ticketStats['total_tickets'] > 0) ? 
                             min(100, ($ticketStats['sales_rate'] ?? 0)) : 0;
                         ?>
                         <div class="progress-bar" style="width: <?= $revenueProgress ?>%; background: var(--blue-2);"></div>
@@ -641,7 +641,7 @@ use Trees\Helper\Utils\TimeDateUtils;
                             $eventDate = new DateTime($event->event_date);
                             $now = new DateTime();
                             $interval = $now->diff($eventDate);
-
+                            
                             if ($eventDate < $now) {
                                 echo "Event passed";
                             } else {
@@ -717,7 +717,7 @@ use Trees\Helper\Utils\TimeDateUtils;
                         <i class="bi bi-lock me-2"></i>Close Ticket Sales
                     </button>
                 <?php endif; ?>
-
+                
                 <?php if ($event->status === 'disable'): ?>
                     <button class="btn btn-ghost" onclick="toggleEventStatus('<?= $event->slug ?>', 'active')">
                         <i class="bi bi-check-circle me-2"></i>Activate Event
@@ -727,7 +727,7 @@ use Trees\Helper\Utils\TimeDateUtils;
                         <i class="bi bi-pause-circle me-2"></i>Disable Event
                     </button>
                 <?php endif; ?>
-
+                
                 <button type="button" class="btn btn-outline-danger"
                     data-bs-toggle="modal" data-bs-target="#deleteEventModal"
                     data-event-slug="<?= $event->slug ?>">
@@ -941,9 +941,9 @@ use Trees\Helper\Utils\TimeDateUtils;
                 <button type="button" class="btn-close ms-auto" onclick="this.parentElement.parentElement.remove()"></button>
             </div>
         `;
-
+        
         document.body.appendChild(toast);
-
+        
         // Auto remove after 5 seconds
         setTimeout(() => {
             if (toast.parentNode) {
