@@ -178,3 +178,55 @@ Stack trace:
 #2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
 #3 {main}
 
+[2025-09-08 01:28:05] Error: Class "App\models\Attendees" not found in C:\xampp\htdocs\evently\app\controllers\AdminEventController.php on line 42
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Controller\Controller.php(26): App\controllers\AdminEventController->onConstruct()
+#1 C:\xampp\htdocs\evently\core\Trees.php(228): Trees\Controller\Controller->__construct()
+#2 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'manage', Array)
+#3 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#4 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#5 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#6 {main}
+
+[2025-09-08 01:28:17] Error: Class "App\models\Attendees" not found in C:\xampp\htdocs\evently\app\controllers\AdminEventController.php on line 42
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Controller\Controller.php(26): App\controllers\AdminEventController->onConstruct()
+#1 C:\xampp\htdocs\evently\core\Trees.php(228): Trees\Controller\Controller->__construct()
+#2 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'manage', Array)
+#3 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#4 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#5 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#6 {main}
+
+[2025-09-08 01:29:20] ErrorException: ucfirst(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\htdocs\evently\storage\cache\temp_68be23602a7b16.69384638.php on line 510
+Stack trace:
+#0 [internal function]: Trees\Exception\Handler\ExceptionHandler->handleError(8192, 'ucfirst(): Pass...', 'C:\\xampp\\htdocs...', 510)
+#1 C:\xampp\htdocs\evently\storage\cache\temp_68be23602a7b16.69384638.php(510): ucfirst(NULL)
+#2 C:\xampp\htdocs\evently\core\View\View.php(559): include('C:\\xampp\\htdocs...')
+#3 C:\xampp\htdocs\evently\core\View\View.php(298): Trees\View\View->evaluateTemplate('<?php\r\n\r\nuse Tr...', Array, 'C:\\xampp\\htdocs...')
+#4 C:\xampp\htdocs\evently\core\View\View.php(147): Trees\View\View->renderTemplate('admin/events/vi...', Array)
+#5 C:\xampp\htdocs\evently\core\Controller\Controller.php(34): Trees\View\View->render('admin/events/vi...', Array)
+#6 C:\xampp\htdocs\evently\app\controllers\AdminEventController.php(134): Trees\Controller\Controller->render('admin/events/vi...', Array)
+#7 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminEventController->view(Object(Trees\Http\Request), Object(Trees\Http\Response), 'natti_beach_par...')
+#8 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'view', Array)
+#9 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#10 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#11 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#12 {main}
+
+[2025-09-08 01:31:37] ErrorException: number_format(): Passing null to parameter #1 ($num) of type float is deprecated in C:\xampp\htdocs\evently\storage\cache\temp_68be23e8e3e3e8.22325259.php on line 516
+Stack trace:
+#0 [internal function]: Trees\Exception\Handler\ExceptionHandler->handleError(8192, 'number_format()...', 'C:\\xampp\\htdocs...', 516)
+#1 C:\xampp\htdocs\evently\storage\cache\temp_68be23e8e3e3e8.22325259.php(516): number_format(NULL)
+#2 C:\xampp\htdocs\evently\core\View\View.php(559): include('C:\\xampp\\htdocs...')
+#3 C:\xampp\htdocs\evently\core\View\View.php(298): Trees\View\View->evaluateTemplate('<?php\r\n\r\nuse Tr...', Array, 'C:\\xampp\\htdocs...')
+#4 C:\xampp\htdocs\evently\core\View\View.php(147): Trees\View\View->renderTemplate('admin/events/vi...', Array)
+#5 C:\xampp\htdocs\evently\core\Controller\Controller.php(34): Trees\View\View->render('admin/events/vi...', Array)
+#6 C:\xampp\htdocs\evently\app\controllers\AdminEventController.php(134): Trees\Controller\Controller->render('admin/events/vi...', Array)
+#7 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminEventController->view(Object(Trees\Http\Request), Object(Trees\Http\Response), 'natti_beach_par...')
+#8 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'view', Array)
+#9 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#10 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#11 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#12 {main}
+

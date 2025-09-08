@@ -490,30 +490,30 @@ use Trees\Helper\Utils\TimeDateUtils;
                                                 </div>
                                             </div>
                                         </td>
-                                        <td data-label="Ticket Code">
-                                            <span class="ticket-type-badge"><?php echo $attendee->ticket_code; ?></span>
+                                        <td data-label="Ticket Type">
+                                            <span class="ticket-type-badge"><?php echo $attendee->ticket_type; ?></span>
                                         </td>
                                         <td data-label="Purchase Date">
                                             <div class="text-center">
                                                 <div class="fw-semibold text-white">
-                                                    <?= $attendee->created_at ?>
+                                                    <?= $attendee->purchase_date ?>
                                                 </div>
                                                 <small class="text-secondary">
-                                                    <?= $attendee->created_at ?>
+                                                    <?= $attendee->purchase_date ?>
                                                 </small>
                                             </div>
                                         </td>
                                         <td data-label="Payment Status">
                                             <div class="text-center">
-                                                <span class="badge <?php echo $this->escape($attendee->status == 'checked' ? 'bg-success' : ($attendee->status == 'pending' ? 'bg-warning' : 'bg-info')); ?>">
-                                                    <i class="bi bi-<?php echo $this->escape($attendee->status == 'checked' ? 'check-circle' : ($attendee->status == 'pending' ? 'clock' : 'x-circle')); ?> me-1"></i>
-                                                    <?php echo ucfirst($attendee->status ?? ''); ?>
+                                                <span class="badge <?php echo $this->escape($attendee->payment_status == 'paid' ? 'bg-success' : ($attendee->payment_status == 'pending' ? 'bg-warning' : 'bg-danger')); ?>">
+                                                    <i class="bi bi-<?php echo $this->escape($attendee->payment_status == 'paid' ? 'check-circle' : ($attendee->payment_status == 'pending' ? 'clock' : 'x-circle')); ?> me-1"></i>
+                                                    <?php echo ucfirst($attendee->payment_status ?? ''); ?>
                                                 </span>
                                             </div>
                                         </td>
                                         <td data-label="Amount">
                                             <div class="text-center">
-                                                <div class="fw-semibold text-white">₦<?php echo number_format($attendee->amount ?? 0.00); ?></div>
+                                                <div class="fw-semibold text-white">₦<?php echo number_format($attendee->amount); ?></div>
                                             </div>
                                         </td>
                                         <td data-label="Actions">

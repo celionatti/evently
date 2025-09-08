@@ -490,30 +490,30 @@ use Trees\Helper\Utils\TimeDateUtils;
                                                 </div>
                                             </div>
                                         </td>
-                                        <td data-label="Ticket Type">
-                                            <span class="ticket-type-badge">{{{ $attendee->ticket_type }}}</span>
+                                        <td data-label="Ticket Code">
+                                            <span class="ticket-type-badge">{{{ $attendee->ticket_code }}}</span>
                                         </td>
                                         <td data-label="Purchase Date">
                                             <div class="text-center">
                                                 <div class="fw-semibold text-white">
-                                                    <?= $attendee->purchase_date ?>
+                                                    <?= $attendee->created_at ?>
                                                 </div>
                                                 <small class="text-secondary">
-                                                    <?= $attendee->purchase_date ?>
+                                                    <?= $attendee->created_at ?>
                                                 </small>
                                             </div>
                                         </td>
                                         <td data-label="Payment Status">
                                             <div class="text-center">
-                                                <span class="badge {{ $attendee->payment_status == 'paid' ? 'bg-success' : ($attendee->payment_status == 'pending' ? 'bg-warning' : 'bg-danger') }}">
-                                                    <i class="bi bi-{{ $attendee->payment_status == 'paid' ? 'check-circle' : ($attendee->payment_status == 'pending' ? 'clock' : 'x-circle') }} me-1"></i>
-                                                    {{{ ucfirst($attendee->payment_status) }}}
+                                                <span class="badge {{ $attendee->status == 'checked' ? 'bg-success' : ($attendee->status == 'pending' ? 'bg-warning' : 'bg-info') }}">
+                                                    <i class="bi bi-{{ $attendee->status == 'checked' ? 'check-circle' : ($attendee->status == 'pending' ? 'clock' : 'x-circle') }} me-1"></i>
+                                                    {{{ ucfirst($attendee->status ?? '') }}}
                                                 </span>
                                             </div>
                                         </td>
                                         <td data-label="Amount">
                                             <div class="text-center">
-                                                <div class="fw-semibold text-white">₦{{{ number_format($attendee->amount) }}}</div>
+                                                <div class="fw-semibold text-white">₦{{{ number_format($attendee->amount ?? 0.00) }}}</div>
                                             </div>
                                         </td>
                                         <td data-label="Actions">

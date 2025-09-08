@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\controllers;
 
-use App\models\Attendees;
+use App\models\Attendee;
 use App\models\Event;
 use App\models\Ticket;
 use Trees\Http\Request;
@@ -24,7 +24,7 @@ class AdminEventController extends Controller
     protected $uploader;
     protected ?Event $eventModel;
     protected ?Ticket $ticketModel;
-    protected ?Attendees $attendeesModel;
+    protected ?Attendee $attendeesModel;
     protected const MAX_UPLOAD_FILES = 1;
     protected const UPLOAD_DIR = 'uploads/events/';
     
@@ -39,7 +39,7 @@ class AdminEventController extends Controller
         $imageProcessor = new Image();
         $this->eventModel = new Event();
         $this->ticketModel = new Ticket();
-        $this->attendeesModel = new Attendees();
+        $this->attendeesModel = new Attendee();
         $name = "Eventlyy";
         $this->view->setTitle("{$name} Admin | Dashboard");
         $this->uploader = new FileUploader(
