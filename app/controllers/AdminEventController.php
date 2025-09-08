@@ -92,56 +92,6 @@ class AdminEventController extends Controller
         return $this->render('admin/events/manage', $view);
     }
 
-    // public function view(Request $request, Response $response, $slug)
-    // {
-    //     $event = Event::findBySlug($slug);
-
-    //     if (!$event) {
-    //         FlashMessage::setMessage("Event Not Found!", 'danger');
-    //         return $response->redirect("/admin/events/manage");
-    //     }
-
-    //     // Check if organiser is trying to view someone else's event
-    //     if (isOrganiser() && $event->user_id !== auth()->id) {
-    //         FlashMessage::setMessage("Access denied. You can only view your own events.", 'danger');
-    //         return $response->redirect("/admin/events/manage");
-    //     }
-
-    //     // Load tickets with the event
-    //     $tickets = Ticket::where(['event_id' => $event->id]);
-
-    //     // Ensure tickets is always an array
-    //     $event->tickets = is_array($tickets) ? $tickets : [];
-
-    //     // Build query options
-    //     $queryOptions = [
-    //         'per_page' => $request->query('per_page', 5),
-    //         'page' => $request->query('page', 1),
-    //         'order_by' => ['created_at' => 'DESC']
-    //     ];
-
-    //     // Only show attendees status not pending
-    //     $conditions = ['status' => 'confirmed', 'event_id' => $event->id];
-
-    //     $queryOptions['conditions'] = $conditions;
-
-    //     $attendees = $this->attendeesModel::paginate($queryOptions);
-
-    //     // Create pagination instance
-    //     $pagination = new Paginator($attendees['meta']);
-
-    //     // Render the pagination links
-    //     $paginationLinks = $pagination->render('bootstrap');
-
-    //     $view = [
-    //         'event' => $event,
-    //         'recentAttendees' => $attendees['data'],
-    //         'pagination' => $paginationLinks
-    //     ];
-
-    //     return $this->render('admin/events/view', $view);
-    // }
-
     public function view(Request $request, Response $response, $slug)
     {
         $event = Event::findBySlug($slug);
@@ -187,11 +137,12 @@ class AdminEventController extends Controller
         $queryOptions = [
             'per_page' => $request->query('per_page', 5),
             'page' => $request->query('page', 1),
-            'order_by' => ['created_at' => 'DESC']
+            'order_by' => ['created_at' => 'DESC', 'status' => 'ASC'] // Show recent first, pending last
         ];
 
         // Get confirmed attendees for this event
-        $conditions = ['status' => 'confirmed', 'event_id' => $event->id];
+        // $conditions = ['status' => 'confirmed', 'event_id' => $event->id];
+        $conditions = ['event_id' => $event->id];
         $queryOptions['conditions'] = $conditions;
 
         $attendees = $this->attendeesModel::paginate($queryOptions);

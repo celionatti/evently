@@ -252,3 +252,25 @@ Stack trace:
 #10 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
 #11 {main}
 
+[2025-09-08 13:15:12] Trees\Exception\TreesException: Route not found for path: /admin/attendees/check-in/26 in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-08 14:36:41] ErrorException: Array to string conversion in C:\xampp\htdocs\evently\core\Database\Drivers\MySQLDatabase.php on line 95
+Stack trace:
+#0 [internal function]: Trees\Exception\Handler\ExceptionHandler->handleError(2, 'Array to string...', 'C:\\xampp\\htdocs...', 95)
+#1 C:\xampp\htdocs\evently\core\Database\Drivers\MySQLDatabase.php(95): PDOStatement->execute(Array)
+#2 C:\xampp\htdocs\evently\core\Database\QueryBuilder\QueryBuilder.php(369): Trees\Database\Drivers\MySQLDatabase->query('SELECT COUNT(*)...', Array)
+#3 C:\xampp\htdocs\evently\core\Database\QueryBuilder\QueryBuilder.php(381): Trees\Database\QueryBuilder\QueryBuilder->get()
+#4 C:\xampp\htdocs\evently\core\Database\Trait\Pagination.php(92): Trees\Database\QueryBuilder\QueryBuilder->first()
+#5 C:\xampp\htdocs\evently\app\controllers\AdminEventController.php(147): Trees\Database\Model\Model::paginate(Array)
+#6 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminEventController->view(Object(Trees\Http\Request), Object(Trees\Http\Response), 'black_out_party')
+#7 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'view', Array)
+#8 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#9 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#10 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#11 {main}
+

@@ -462,9 +462,6 @@ use Trees\Helper\Utils\TimeDateUtils;
                         <button class="btn btn-ghost btn-sm" onclick="exportAttendees()">
                             <i class="bi bi-download me-1"></i>Export
                         </button>
-                        <a href="<?= url("/admin/events/{$event->slug}/attendees") ?>" class="btn btn-ghost btn-sm">
-                            <i class="bi bi-eye me-1"></i>View All
-                        </a>
                     </div>
                 </div>
             </div>
@@ -548,12 +545,7 @@ use Trees\Helper\Utils\TimeDateUtils;
                                                 </button>
                                                 <ul class="dropdown-menu dropdown-menu-end">
                                                     <li>
-                                                        <a class="dropdown-item" href="#" onclick="viewAttendee(<?= $attendee->id ?>)">
-                                                            <i class="bi bi-eye me-2"></i>View Details
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a class="dropdown-item" href="#" onclick="sendTicket(<?= $attendee->id ?>)">
+                                                        <a class="dropdown-item disabled" href="#" onclick="sendTicket(<?= $attendee->id ?>)">
                                                             <i class="bi bi-envelope me-2"></i>Send Ticket
                                                         </a>
                                                     </li>
@@ -562,9 +554,11 @@ use Trees\Helper\Utils\TimeDateUtils;
                                                             <hr class="dropdown-divider">
                                                         </li>
                                                         <li>
-                                                            <a class="dropdown-item text-info" href="#" onclick="markAsCheckedIn(<?= $attendee->id ?>)">
-                                                                <i class="bi bi-check2-circle me-2"></i>Mark as Checked In
-                                                            </a>
+                                                            <form action="<?php echo $this->escape(url("/admin/attendees/check-in/$attendee->id/$event->slug")); ?>" method="post" onsubmit="return confirm('Are you sure you want to check in ticket?');">
+                                                                <button type="submit" class="dropdown-item text-dark">
+                                                                    <i class="bi bi-check2-circle me-2"></i>Mark as Checked In
+                                                                </button>
+                                                            </form>
                                                         </li>
                                                     <?php endif; ?>
                                                 </ul>

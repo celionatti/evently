@@ -6,10 +6,11 @@ use App\controllers\AuthController;
 use App\controllers\SiteController;
 use App\controllers\AdminController;
 use App\controllers\EventController;
+use App\Controllers\CheckoutController;
 use App\controllers\AdminUserController;
 use App\controllers\AdminEventController;
+use App\controllers\AdminAttendeeController;
 use App\controllers\AdminCategoryController;
-use App\Controllers\CheckoutController;
 
 /** @var \Trees\Router\Router $router */
 
@@ -55,6 +56,11 @@ $router->group(['prefix' => '/admin/events'], function ($router) {
     $router->post('/delete/{slug}', [AdminEventController::class, 'delete']);
 
     $router->post('/delete-ticket', [AdminEventController::class, 'deleteTicket']);
+});
+
+// Admin: Events Attendees Routes
+$router->group(['prefix' => '/admin/attendees'], function ($router) {
+    $router->post('/check-in/{id}/{event_slug}', [AdminAttendeeController::class, 'checkInAttendee']);
 });
 
 // Admin: Users Routes
