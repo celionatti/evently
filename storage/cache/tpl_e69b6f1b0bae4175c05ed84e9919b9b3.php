@@ -144,7 +144,7 @@ use Trees\Helper\Utils\TimeDateUtils;
         <?php else: ?>
             <div class="empty-state">
                 <div class="empty-state-icon">
-                    <i class="fas fa-tags"></i>
+                    <i class="bi bi-bell"></i>
                 </div>
                 <h4 class="h5 mb-2">No Users Found</h4>
                 <p class="text-muted">Create your first category to get started.</p>

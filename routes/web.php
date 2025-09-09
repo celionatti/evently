@@ -11,6 +11,7 @@ use App\controllers\AdminUserController;
 use App\controllers\AdminEventController;
 use App\controllers\AdminAttendeeController;
 use App\controllers\AdminCategoryController;
+use App\controllers\AdminProfileController;
 
 /** @var \Trees\Router\Router $router */
 
@@ -44,6 +45,7 @@ $router->get('/logout', [AuthController::class, 'logout']);
 $router->get('/admin', [AdminController::class, 'dashboard']);
 $router->group(['prefix' => '/admin'], function ($router) {
     $router->get('/dashboard', [AdminController::class, 'dashboard']);
+    $router->get('/profile', [AdminProfileController::class, 'profile']);
 });
 
 // Admin: Events Routes
