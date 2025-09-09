@@ -110,6 +110,36 @@ class PostgreSQLDatabase extends AbstractDatabase
         }
     }
 
+    public function prepare(string $query): mixed
+    {
+        try {
+            if (!$this->connection) {
+                throw new \Exception("Database connection not established");
+            }
+
+            $stmt = $this->connection->prepare($query);
+
+            if (!$stmt) {
+                throw new \Exception("Failed to prepare statement: " . implode(' ', $this->connection->errorInfo()));
+            }
+
+            // Store the statement for rowCount() calls
+            $this->lastStatement = $stmt;
+
+            // Determine if this is a SELECT query
+            if (stripos(trim($query), 'SELECT') === 0) {
+                return $stmt->fetchAll();
+            }
+
+            // For non-SELECT queries, return true to indicate success
+            return $stmt;
+        } catch (\Exception $e) {
+            $this->setLastError($e->getMessage());
+            $this->lastStatement = null;
+            return false;
+        }
+    }
+
     /**
      * Get the number of rows affected by the last DELETE, INSERT, or UPDATE statement
      *
