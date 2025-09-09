@@ -69,6 +69,7 @@ $router->group(['prefix' => '/admin/attendees'], function ($router) {
 // Admin: Users Routes
 $router->group(['prefix' => '/admin/users'], function ($router) {
     $router->get('/manage', [AdminUserController::class, 'manage']);
+    $router->get('/create', [AdminUserController::class, 'create']);
     $router->post('/delete/{user_id}', [AdminUserController::class, 'delete']);
     $router->post('/role/{user_id}', [AdminUserController::class, 'role']);
 });

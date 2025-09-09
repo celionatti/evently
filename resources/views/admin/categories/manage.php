@@ -29,17 +29,17 @@
                         </small>
                     </div>
                 </div>
-                
+
                 <div class="card-body p-0">
                     <div class="table-wrapper">
                         <table class="table table-dark mb-0">
                             <thead>
                                 <tr>
-                                    <th style="width: 60px;">#</th>
-                                    <th>Category Name</th>
-                                    <th>Description</th>
-                                    <th style="width: 120px;">Status</th>
-                                    <th style="width: 120px;">Actions</th>
+                                    <th scope="" style="width: 60px;">#</th>
+                                    <th scope="col">Category Name</th>
+                                    <th scope="col">Description</th>
+                                    <th scope="col" style="width: 120px;">Status</th>
+                                    <th scope="col" style="width: 120px;" class="text-end">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -52,8 +52,8 @@
                                         </td>
                                         <td data-label="Category Name">
                                             <div class="d-flex align-items-center gap-2">
-                                                <div class="category-icon bg-gradient d-flex align-items-center justify-content-center" 
-                                                     style="width: 36px; height: 36px; background: linear-gradient(135deg, var(--blue-2), var(--blue-3)); border-radius: 8px; font-size: 0.8rem;">
+                                                <div class="category-icon bg-gradient d-flex align-items-center justify-content-center"
+                                                    style="width: 36px; height: 36px; background: linear-gradient(135deg, var(--blue-2), var(--blue-3)); border-radius: 8px; font-size: 0.8rem;">
                                                     <i class="bi bi-tag text-white"></i>
                                                 </div>
                                                 <div>
@@ -67,7 +67,7 @@
                                         </td>
                                         <td data-label="Category Description">
                                             <div class="description-cell">
-                                                <?php if($category->description): ?>
+                                                <?php if ($category->description): ?>
                                                     <span class="text-white" title="{{{ $category->description }}}">
                                                         {{{ getExcerpt($category->description, 50) }}}
                                                     </span>
@@ -86,33 +86,17 @@
                                                 </span>
                                             </div>
                                         </td>
-                                        <td data-label="Actions">
-                                            <div class="dropdown">
-                                                <button class="btn btn-ghost btn-sm dropdown-toggle" 
-                                                    data-bs-toggle="dropdown" 
-                                                    aria-expanded="false">
-                                                    <i class="bi bi-three-dots-vertical me-1"></i>
-                                                    Actions
-                                                </button>
-                                                <ul class="dropdown-menu dropdown-menu-end">
-                                                    <li>
-                                                        <a class="dropdown-item" href="<?= url("/admin/categories/edit/{$category->slug}") ?>">
-                                                            <i class="bi bi-pencil me-2"></i>Edit Category
-                                                        </a>
-                                                    </li>
-                                                    <li><hr class="dropdown-divider"></li>
-                                                    <li>
-                                                        <form action="{{ url("/admin/categories/delete/{$category->slug}") }}" 
-                                                              method="post" 
-                                                              onsubmit="return confirm('Are you sure you want to delete \'{{{ $category->name }}}\'? This action cannot be undone.');"
-                                                              class="m-0">
-                                                            <button type="submit" class="dropdown-item text-danger w-100 text-start border-0 bg-transparent">
-                                                                <i class="bi bi-trash me-2"></i>
-                                                                Delete
-                                                            </button>
-                                                        </form>
-                                                    </li>
-                                                </ul>
+                                        <td data-label="Actions" class="text-end">
+                                            <div class="d-flex gap-2 justify-content-end">
+                                                <a href="<?= url("/admin/categories/edit/{$category->slug}") ?>" class="btn btn-ghost action-btn" data-bs-toggle="tooltip" title="Edit">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+
+                                                <form action="{{ url("/admin/categories/delete/{$category->slug}") }}" method="post" onsubmit="return confirm('Are you sure you want to delete \'{{{ $category->name }}}\'? This action cannot be undone.');">
+                                                    <button type="submit" class="btn btn-ghost action-btn text-danger" data-bs-toggle="tooltip" title="Delete">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </form>
                                             </div>
                                         </td>
                                     </tr>
@@ -121,16 +105,16 @@
                         </table>
                     </div>
                 </div>
-                
+
                 <!-- Pagination -->
-                <?php if(isset($pagination) && $pagination): ?>
+                <?php if (isset($pagination) && $pagination): ?>
                     <div class="card-footer">
                         <nav aria-label="Categories pagination">
                             {{{ $pagination }}}
                         </nav>
                     </div>
                 <?php endif; ?>
-                
+
             <?php else: ?>
                 <div class="empty-state">
                     <div class="empty-state-icon">
@@ -150,13 +134,13 @@
 
 @section('scripts')
 <script>
-// Add staggered animation on page load
-document.addEventListener('DOMContentLoaded', function() {
-    const rows = document.querySelectorAll('tbody tr');
-    rows.forEach((row, index) => {
-        row.style.animationDelay = `${index * 0.1}s`;
-        row.classList.add('fade-in');
+    // Add staggered animation on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        const rows = document.querySelectorAll('tbody tr');
+        rows.forEach((row, index) => {
+            row.style.animationDelay = `${index * 0.1}s`;
+            row.classList.add('fade-in');
+        });
     });
-});
 </script>
 @endsection

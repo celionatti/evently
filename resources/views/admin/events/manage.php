@@ -37,13 +37,12 @@ use Trees\Helper\Utils\TimeDateUtils;
                         <table class="table table-dark mb-0">
                             <thead>
                                 <tr>
-                                    <th>Event</th>
-                                    <th>Event Link</th>
-                                    <th>Date</th>
-                                    <th>Tickets</th>
-                                    <th>Revenue</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
+                                    <th scope="col">Event</th>
+                                    <th scope="col">Event Link</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Tickets</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col" class="text-end">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -71,7 +70,7 @@ use Trees\Helper\Utils\TimeDateUtils;
                                                     {{{ getExcerpt($event->event_link, 22) }}}
                                                 </span>
                                                 <?php if ($event->event_link): ?>
-                                                    <button class="btn btn-ghost btn-sm" onclick="copyToClipboard('{{{ $event->event_link }}}')" title="Copy link">
+                                                    <button class="btn btn-ghost action-btn" onclick="copyToClipboard('{{{ $event->event_link }}}')" title="Copy link">
                                                         <i class="bi bi-clipboard"></i>
                                                     </button>
                                                 <?php endif; ?>
@@ -79,7 +78,7 @@ use Trees\Helper\Utils\TimeDateUtils;
                                         </td>
                                         <td data-label="Event Date & Time">
                                             <div class="text-center">
-                                                <div class="fw-semibold text-white">
+                                                <div class="fw-medium text-white">
                                                     <?= TimeDateUtils::create($event->event_date)->toCustomFormat('j M, Y') ?>
                                                 </div>
                                                 <small class="text-secondary">
@@ -88,67 +87,35 @@ use Trees\Helper\Utils\TimeDateUtils;
                                                 </small>
                                             </div>
                                         </td>
-                                        <td data-label="Tickets">
-                                            <?php if ($event->ticket_sales == "open"): ?>
-                                                <div class="text-center">
-                                                    <div class="fw-semibold text-white">450/500</div>
-                                                    <small class="text-success">
-                                                        <i class="bi bi-graph-up me-1"></i>90% sold
-                                                    </small>
-                                                </div>
-                                            <?php else: ?>
-                                                <div class="text-center">
-                                                    <small class="text-danger">
-                                                        <i class="bi bi-x-circle me-1"></i>
-                                                        Sales Closed
-                                                    </small>
-                                                </div>
-                                            <?php endif; ?>
-                                        </td>
-                                        <td data-label="Revenue">
+                                        <td data-label="Ticket Sales">
                                             <div class="text-center">
-                                                <div class="fw-semibold text-white">₦675,000</div>
-                                                <small class="text-secondary">Total earnings</small>
+                                                <span class="badge bg-{{{ $event->ticket_sales == "open" ? 'success' : 'secondary' }}} text-capitalize">
+                                                    <i class="bi bi-{{{ $event->ticket_sales == "open" ? 'graph-up' : 'x-circle' }}} me-1"></i>
+                                                    {{{ $event->ticket_sales == "open" ? 'Sales Open' : 'Sales Closed' }}}
+                                                </span>
                                             </div>
                                         </td>
                                         <td data-label="Status">
                                             <div class="text-center">
-                                                <span class="badge {{ $event->status == 'active' ? 'bg-success' : ($event->status == 'pending' ? 'bg-warning' : 'bg-danger') }} text-capitalize">
+                                                <span class="badge {{ $event->status == 'active' ? 'bg-success' : 'bg-warning' }} text-capitalize">
                                                     <i class="bi bi-{{ $event->status == 'active' ? 'check-circle' : ($event->status == 'pending' ? 'clock' : 'x-circle') }} me-1"></i>
                                                     {{{ $event->status }}}
                                                 </span>
                                             </div>
                                         </td>
-                                        <td data-label="Actions">
-                                            <div class="dropdown">
-                                                <button class="btn btn-ghost btn-sm dropdown-toggle"
-                                                    data-bs-toggle="dropdown"
-                                                    aria-expanded="false">
-                                                    <i class="bi bi-three-dots-vertical me-1"></i>
-                                                    Actions
+                                        <td data-label="Actions" class="text-end">
+                                            <div class="d-flex gap-2 justify-content-end">
+                                                <a href="{{{ url("/admin/events/view/{$event->slug}") }}}" class="btn btn-ghost action-btn" data-bs-toggle="tooltip" title="View Event Details">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                                <a href="{{{ url("/admin/events/edit/{$event->slug}") }}}" class="btn btn-outline-warning action-btn" data-bs-toggle="tooltip" title="Edit Event">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                <button type="button" class="btn btn-outline-danger action-btn"
+                                                    data-bs-toggle="modal" data-bs-target="#deleteEventModal"
+                                                    data-event-slug="{{ $event->slug }}">
+                                                    <i class="bi bi-trash"></i>
                                                 </button>
-                                                <ul class="dropdown-menu dropdown-menu-end">
-                                                    <li>
-                                                        <a class="dropdown-item" href="{{{ url("/admin/events/view/{$event->slug}") }}}">
-                                                            <i class="bi bi-eye me-2"></i>View Details
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a class="dropdown-item" href="<?= url("/admin/events/edit/{$event->slug}") ?>">
-                                                            <i class="bi bi-pencil me-2"></i>Edit Event
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <hr class="dropdown-divider">
-                                                    </li>
-                                                    <li>
-                                                        <button type="button" class="btn btn-sm btn-outline-danger w-100"
-                                                            data-bs-toggle="modal" data-bs-target="#deleteEventModal"
-                                                            data-event-slug="{{ $event->slug }}">
-                                                            <i class="bi bi-trash"></i> Delete
-                                                        </button>
-                                                    </li>
-                                                </ul>
                                             </div>
                                         </td>
                                     </tr>
@@ -268,17 +235,6 @@ use Trees\Helper\Utils\TimeDateUtils;
             deleteEventForm.action = `/admin/events/delete/${eventSlug}`;
         });
     });
-
-    // Copy to clipboard functionality
-    function copyToClipboard(text) {
-        navigator.clipboard.writeText(text).then(function() {
-            // Show toast notification
-            showToast('Link copied to clipboard!', 'success');
-        }, function(err) {
-            console.error('Could not copy text: ', err);
-            showToast('Failed to copy link', 'error');
-        });
-    }
 
     // Delete event
     function deleteEvent(eventId, eventTitle) {
