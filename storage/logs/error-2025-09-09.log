@@ -1,0 +1,37 @@
+[2025-09-09 00:25:12] ErrorException: Attempt to read property "id" on string in C:\xampp\htdocs\evently\app\controllers\AdminEventController.php on line 324
+Stack trace:
+#0 C:\xampp\htdocs\evently\app\controllers\AdminEventController.php(324): Trees\Exception\Handler\ExceptionHandler->handleError(2, 'Attempt to read...', 'C:\\xampp\\htdocs...', 324)
+#1 C:\xampp\htdocs\evently\core\Database\Model\Model.php(249): App\controllers\AdminEventController->App\controllers\{closure}(Object(App\models\Event))
+#2 C:\xampp\htdocs\evently\app\controllers\AdminEventController.php(314): Trees\Database\Model\Model->transaction(Object(Closure))
+#3 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminEventController->insert(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#4 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'insert', Array)
+#5 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#6 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#7 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#8 {main}
+
+[2025-09-09 00:28:44] Trees\Exception\TreesException: Route not found for path: /img/default.png in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-09 00:30:24] RuntimeException: Ticket creation failed: General in C:\xampp\htdocs\evently\app\controllers\AdminEventController.php on line 329
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Database\Model\Model.php(249): App\controllers\AdminEventController->App\controllers\{closure}(Object(App\models\Event))
+#1 C:\xampp\htdocs\evently\app\controllers\AdminEventController.php(314): Trees\Database\Model\Model->transaction(Object(Closure))
+#2 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminEventController->insert(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#3 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'insert', Array)
+#4 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#5 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#6 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#7 {main}
+
+[2025-09-09 11:22:40] Trees\Exception\TreesException: Route not found for path: /admin/events/test in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+

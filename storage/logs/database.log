@@ -4,3 +4,40 @@
 [2025-09-08 01:26:16] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
 [2025-09-08 14:33:27] [ERROR] SQLSTATE[HY093]: Invalid parameter number: parameter was not defined {"query":"","params":[],"error_code":""}
 [2025-09-08 14:33:27] [ERROR] SQLSTATE[HY093]: Invalid parameter number: parameter was not defined {"query":"","params":[],"error_code":""}
+[2025-09-08 22:42:33] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-08 22:42:33] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-08 22:47:34] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-08 22:47:35] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-08 23:22:15] [ERROR] Image processing failed: Unsupported image format: C:\xampp\tmp\phpF7F9.tmp_processed
+[2025-09-08 23:22:15] [INFO] File uploaded successfully: uploads/events/68bf5716e2c9d_8939c2f6.jpeg
+[2025-09-08 23:22:15] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 00:25:12] [ERROR] Image processing failed: Unsupported image format: C:\xampp\tmp\php9B0E.tmp_processed
+[2025-09-09 00:25:12] [INFO] File uploaded successfully: uploads/events/68bf65d826580_0911a399.jpeg
+[2025-09-09 00:25:12] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 00:28:50] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 00:28:50] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 00:30:24] [ERROR] Image processing failed: Unsupported image format: C:\xampp\tmp\php5D05.tmp_processed
+[2025-09-09 00:30:24] [INFO] File uploaded successfully: uploads/events/68bf670fe84e9_a0d1560a.jpeg
+[2025-09-09 00:30:24] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 00:30:24] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-09 00:30:24] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 11:02:48] [ERROR] Image processing failed: Unsupported image format: C:\xampp\tmp\php595D.tmp_processed
+[2025-09-09 11:02:48] [INFO] File uploaded successfully: uploads/events/68bffb486e58b_fb4995ea.jpeg
+[2025-09-09 11:02:48] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 11:02:48] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-09 11:02:48] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 11:06:21] [ERROR] Image processing failed: Unsupported image format: C:\xampp\tmp\php9A7F.tmp_processed
+[2025-09-09 11:06:21] [INFO] File uploaded successfully: uploads/events/68bffc1d9cd08_ebf3a02d.jpeg
+[2025-09-09 11:06:21] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 11:11:44] [ERROR] Image processing failed: Unsupported image format: C:\xampp\tmp\php84EE.tmp_processed
+[2025-09-09 11:11:44] [INFO] File uploaded successfully: uploads/events/68bffd5fc14ef_67278882.jpg
+[2025-09-09 11:11:44] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 11:11:44] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-09 11:18:14] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-09 11:18:38] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-09 11:18:41] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-09 11:18:43] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-09 11:24:21] [ERROR] Image processing failed: Unsupported image format: C:\xampp\tmp\php1469.tmp_processed
+[2025-09-09 11:24:21] [INFO] File uploaded successfully: uploads/events/68c0005568c3a_53b56cb2.jpeg
+[2025-09-09 11:24:21] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 11:24:21] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}

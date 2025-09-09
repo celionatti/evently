@@ -241,16 +241,31 @@ abstract class Model
         return Database::getInstance()->rollBack();
     }
 
+    // public function transaction(callable $callback): mixed
+    // {
+    //     $this->beginTransaction();
+
+    //     try {
+    //         $result = $callback($this);
+    //         $this->commit();
+    //         return $result;
+    //     } catch (\Exception $e) {
+    //         $this->rollBack();
+    //         throw $e;
+    //     }
+    // }
+
     public function transaction(callable $callback): mixed
     {
-        $this->beginTransaction();
+        $db = Database::getInstance();
+        $db->beginTransaction();
 
         try {
             $result = $callback($this);
-            $this->commit();
+            $db->commit();
             return $result;
         } catch (\Exception $e) {
-            $this->rollBack();
+            $db->rollBack();
             throw $e;
         }
     }
@@ -364,11 +379,11 @@ abstract class Model
             return $result !== false;
         } catch (\Exception $e) {
             $db->rollback();
-            
+
             if (class_exists('\Trees\Logger\Logger')) {
                 \Trees\Logger\Logger::exception($e);
             }
-            
+
             return false;
         }
     }
@@ -406,11 +421,11 @@ abstract class Model
             return $result !== false;
         } catch (\Exception $e) {
             $db->rollback();
-            
+
             if (class_exists('\Trees\Logger\Logger')) {
                 \Trees\Logger\Logger::exception($e);
             }
-            
+
             return false;
         }
     }
@@ -510,12 +525,12 @@ abstract class Model
             $db->beginTransaction();
 
             // Add timestamps if not provided
-            if (!isset($attributes['created_at'])) {
-                $attributes['created_at'] = date('Y-m-d H:i:s');
-            }
-            if (!isset($attributes['updated_at'])) {
-                $attributes['updated_at'] = date('Y-m-d H:i:s');
-            }
+            // if (!isset($attributes['created_at'])) {
+            //     $attributes['created_at'] = date('Y-m-d H:i:s');
+            // }
+            // if (!isset($attributes['updated_at'])) {
+            //     $attributes['updated_at'] = date('Y-m-d H:i:s');
+            // }
 
             $result = $builder->table($model->table)->insert($attributes);
 
@@ -529,11 +544,11 @@ abstract class Model
             return false;
         } catch (\Exception $e) {
             $db->rollback();
-            
+
             if (class_exists('\Trees\Logger\Logger')) {
                 \Trees\Logger\Logger::exception($e);
             }
-            
+
             return false;
         }
     }
@@ -547,7 +562,7 @@ abstract class Model
     public static function createInstance(array $attributes): ?self
     {
         $id = static::create($attributes);
-        
+
         if ($id === false) {
             return null;
         }

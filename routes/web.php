@@ -55,6 +55,8 @@ $router->group(['prefix' => '/admin/events'], function ($router) {
     $router->post('/edit/{slug}', [AdminEventController::class, 'update']);
     $router->post('/delete/{slug}', [AdminEventController::class, 'delete']);
 
+    $router->post('/status', [AdminEventController::class, 'eventStatus']);
+    $router->post('/ticket-status', [AdminEventController::class, 'ticketStatus']);
     $router->post('/delete-ticket', [AdminEventController::class, 'deleteTicket']);
 });
 

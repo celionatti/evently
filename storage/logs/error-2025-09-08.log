@@ -274,3 +274,15 @@ Stack trace:
 #10 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
 #11 {main}
 
+[2025-09-08 23:22:15] ErrorException: Attempt to read property "slug" on string in C:\xampp\htdocs\evently\app\controllers\AdminEventController.php on line 248
+Stack trace:
+#0 C:\xampp\htdocs\evently\app\controllers\AdminEventController.php(248): Trees\Exception\Handler\ExceptionHandler->handleError(2, 'Attempt to read...', 'C:\\xampp\\htdocs...', 248)
+#1 C:\xampp\htdocs\evently\core\Database\Model\Model.php(249): App\controllers\AdminEventController->App\controllers\{closure}(Object(App\models\Event))
+#2 C:\xampp\htdocs\evently\app\controllers\AdminEventController.php(239): Trees\Database\Model\Model->transaction(Object(Closure))
+#3 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminEventController->insert(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#4 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'insert', Array)
+#5 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#6 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#7 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#8 {main}
+

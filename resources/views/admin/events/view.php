@@ -703,23 +703,39 @@ use Trees\Helper\Utils\TimeDateUtils;
                     <i class="bi bi-pencil me-2"></i>Edit Event
                 </a>
                 <?php if ($event->ticket_sales === 'close'): ?>
-                    <button class="btn btn-ghost" onclick="toggleTicketSales('<?= $event->slug ?>', 'open')">
-                        <i class="bi bi-unlock me-2"></i>Open Ticket Sales
-                    </button>
+                    <form action="{{ url("/admin/events/ticket-status") }}" method="post" onsubmit="return confirm('Are you sure you want to update ticket sales?');">
+                        <input type="hidden" name="event_slug" value="<?= $event->slug ?>">
+                        <input type="hidden" name="ticket_sales" value="open">
+                        <button type="submit" class="btn btn-ghost">
+                            <i class="bi bi-unlock me-2"></i>Open Ticket Sales
+                        </button>
+                    </form>
                 <?php else: ?>
-                    <button class="btn btn-ghost" onclick="toggleTicketSales('<?= $event->slug ?>', 'close')">
-                        <i class="bi bi-lock me-2"></i>Close Ticket Sales
-                    </button>
+                    <form action="{{ url("/admin/events/ticket-status") }}" method="post" onsubmit="return confirm('Are you sure you want to update ticket sales?');">
+                        <input type="hidden" name="event_slug" value="<?= $event->slug ?>">
+                        <input type="hidden" name="ticket_sales" value="close">
+                        <button type="submit" class="btn btn-ghost">
+                            <i class="bi bi-lock me-2"></i>Close Ticket Sales
+                        </button>
+                    </form>
                 <?php endif; ?>
 
                 <?php if ($event->status === 'disable'): ?>
-                    <button class="btn btn-ghost" onclick="toggleEventStatus('<?= $event->slug ?>', 'active')">
-                        <i class="bi bi-check-circle me-2"></i>Activate Event
-                    </button>
+                    <form action="{{ url("/admin/events/status") }}" method="post" onsubmit="return confirm('Are you sure you want to update event status?');">
+                        <input type="hidden" name="event_slug" value="<?= $event->slug ?>">
+                        <input type="hidden" name="status" value="active">
+                        <button type="submit" class="btn btn-ghost">
+                            <i class="bi bi-check-circle me-2"></i>Activate Event
+                        </button>
+                    </form>
                 <?php else: ?>
-                    <button class="btn btn-ghost" onclick="toggleEventStatus('<?= $event->slug ?>', 'disable')">
-                        <i class="bi bi-pause-circle me-2"></i>Disable Event
-                    </button>
+                    <form action="{{ url("/admin/events/status") }}" method="post" onsubmit="return confirm('Are you sure you want to update event status?');">
+                        <input type="hidden" name="event_slug" value="<?= $event->slug ?>">
+                        <input type="hidden" name="status" value="disable">
+                        <button type="submit" class="btn btn-ghost">
+                            <i class="bi bi-pause-circle me-2"></i>Disable Event
+                        </button>
+                    </form>
                 <?php endif; ?>
 
                 <button type="button" class="btn btn-outline-danger"
@@ -783,26 +799,11 @@ use Trees\Helper\Utils\TimeDateUtils;
         });
     });
 
-    // Copy to clipboard functionality
-    function copyToClipboard(text) {
-        navigator.clipboard.writeText(text).then(function() {
-            showToast('Link copied to clipboard!', 'success');
-        }, function(err) {
-            console.error('Could not copy text: ', err);
-            showToast('Failed to copy link', 'error');
-        });
-    }
-
     // Export attendees functionality
     function exportAttendees() {
         const eventSlug = '<?= $event->slug ?>';
         window.open(`<?= url('/admin/events/') ?>${eventSlug}/export-attendees`, '_blank');
         showToast('Exporting attendee data...', 'info');
-    }
-
-    // View attendee details
-    function viewAttendee(attendeeId) {
-        window.open(`<?= url('/admin/attendees/view/') ?>${attendeeId}`, '_blank');
     }
 
     // Send ticket to attendee
@@ -828,122 +829,6 @@ use Trees\Helper\Utils\TimeDateUtils;
                     showToast('An error occurred', 'error');
                 });
         }
-    }
-
-    // Mark attendee as checked in
-    function markAsCheckedIn(attendeeId) {
-        if (confirm('Mark this attendee as checked in?')) {
-            fetch(`<?= url('/admin/attendees/check-in/') ?>${attendeeId}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        showToast('Attendee checked in successfully!', 'success');
-                        setTimeout(() => {
-                            location.reload();
-                        }, 1500);
-                    } else {
-                        showToast('Failed to check in attendee', 'error');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showToast('An error occurred', 'error');
-                });
-        }
-    }
-
-    // Toggle ticket sales
-    function toggleTicketSales(eventSlug, action) {
-        const actionText = action === 'open' ? 'open' : 'close';
-        if (confirm(`Are you sure you want to ${actionText} ticket sales for this event?`)) {
-            fetch(`<?= url('/admin/events/toggle-sales/') ?>${eventSlug}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    body: JSON.stringify({
-                        action: action
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        showToast(`Ticket sales ${actionText}ed successfully!`, 'success');
-                        setTimeout(() => {
-                            location.reload();
-                        }, 1500);
-                    } else {
-                        showToast('Failed to update ticket sales', 'error');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showToast('An error occurred', 'error');
-                });
-        }
-    }
-
-    // Toggle event status
-    function toggleEventStatus(eventSlug, status) {
-        const statusText = status === 'active' ? 'activate' : 'disable';
-        if (confirm(`Are you sure you want to ${statusText} this event?`)) {
-            fetch(`<?= url('/admin/events/toggle-status/') ?>${eventSlug}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    body: JSON.stringify({
-                        status: status
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        showToast(`Event ${statusText}d successfully!`, 'success');
-                        setTimeout(() => {
-                            location.reload();
-                        }, 1500);
-                    } else {
-                        showToast('Failed to update event status', 'error');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showToast('An error occurred', 'error');
-                });
-        }
-    }
-
-    // Toast notification function
-    function showToast(message, type = 'info') {
-        // Create a simple toast notification
-        const toast = document.createElement('div');
-        toast.className = `alert alert-${type === 'success' ? 'success' : type === 'error' ? 'danger' : 'info'} position-fixed`;
-        toast.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
-        toast.innerHTML = `
-            <div class="d-flex align-items-center">
-                <i class="bi bi-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-triangle' : 'info-circle'} me-2"></i>
-                ${message}
-                <button type="button" class="btn-close ms-auto" onclick="this.parentElement.parentElement.remove()"></button>
-            </div>
-        `;
-
-        document.body.appendChild(toast);
-
-        // Auto remove after 5 seconds
-        setTimeout(() => {
-            if (toast.parentNode) {
-                toast.remove();
-            }
-        }, 5000);
     }
 </script>
 @endsection
