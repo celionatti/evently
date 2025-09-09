@@ -601,7 +601,7 @@ class AdminEventController extends Controller
             // Use transaction to update event and tickets
             $this->eventModel->transaction(function () use ($event, $data, $ticketsData, $ticketsToDelete, $eventSlug) {
                 // Update event
-                $updated = $event->update($data);
+                $updated = $event->updateInstance($data);
                 if (!$updated) {
                     throw new \RuntimeException('Event update failed');
                 }
@@ -629,7 +629,7 @@ class AdminEventController extends Controller
                                 unset($ticketData['id']); // Remove ID from update data
                                 $ticketData['slug'] = str_slug($ticketData['ticket_name'] . '-' . $eventSlug, "_");
 
-                                if (!$ticket->update($ticketData)) {
+                                if (!$ticket->updateInstance($ticketData)) {
                                     throw new \RuntimeException('Ticket update failed: ' . $ticketData['ticket_name']);
                                 }
                             }
@@ -639,8 +639,8 @@ class AdminEventController extends Controller
                             $ticketData['event_id'] = $event->id;
                             unset($ticketData['id']); // Make sure no ID is passed
 
-                            $ticket = Ticket::create($ticketData);
-                            if (!$ticket) {
+                            $ticketId = Ticket::create($ticketData);
+                            if ($ticketId === false) { // Check explicitly for false
                                 throw new \RuntimeException('New ticket creation failed: ' . $ticketData['ticket_name']);
                             }
                         }

@@ -31,6 +31,8 @@ interface DatabaseInterface
      */
     public function query(string $query, array $params = []): mixed;
 
+    public function prepare(string $sql): mixed;
+
     /**
      * Get the number of rows affected by the last DELETE, INSERT, or UPDATE statement
      *

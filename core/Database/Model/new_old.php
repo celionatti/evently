@@ -18,7 +18,7 @@ use Trees\Validation\Validator;
 use Trees\Database\Trait\Pagination;
 use Trees\Database\Relationships\Traits\HasRelationships;
 
-abstract class Model
+abstract class new_old
 {
     use Pagination, HasRelationships;
 
@@ -73,11 +73,6 @@ abstract class Model
     protected bool $enforceFillable = true;
 
     /**
-     * @var array|null Cached table columns
-     */
-    protected ?array $tableColumns = null;
-
-    /**
      * Constructor
      *
      * @param array $attributes Initial model attributes
@@ -108,47 +103,6 @@ abstract class Model
     {
         return $this->table;
     }
-
-    /**
-     * Check if a column exists in the table
-     *
-     * @param string $column Column name to check
-     * @return bool True if column exists
-     */
-    protected function hasColumn(string $column): bool
-    {
-        $columns = $this->getTableColumns();
-        return in_array($column, $columns);
-    }
-
-    /**
- * Get all columns for the table
- *
- * @return array Array of column names
- */
-protected function getTableColumns(): array
-{
-    if ($this->tableColumns === null) {
-        $this->tableColumns = [];
-        
-        try {
-            $db = Database::getInstance();
-            
-            // Use prepared statement to avoid SQL injection
-            $stmt = $db->prepare("DESCRIBE " . $this->table);
-            
-            if ($stmt && $stmt->execute()) {
-                $columns = $stmt->fetchAll(\PDO::FETCH_COLUMN);
-                $this->tableColumns = $columns;
-            }
-        } catch (\Exception $e) {
-            // If we can't get columns, return empty array
-            $this->tableColumns = [];
-        }
-    }
-
-    return $this->tableColumns;
-}
 
     /**
      * Fill the model with an array of attributes
@@ -287,6 +241,20 @@ protected function getTableColumns(): array
         return Database::getInstance()->rollBack();
     }
 
+    // public function transaction(callable $callback): mixed
+    // {
+    //     $this->beginTransaction();
+
+    //     try {
+    //         $result = $callback($this);
+    //         $this->commit();
+    //         return $result;
+    //     } catch (\Exception $e) {
+    //         $this->rollBack();
+    //         throw $e;
+    //     }
+    // }
+
     public function transaction(callable $callback): mixed
     {
         $db = Database::getInstance();
@@ -328,24 +296,11 @@ protected function getTableColumns(): array
             $db->beginTransaction();
 
             if ($this->exists) {
-                // Add updated_at timestamp if column exists
-                if ($this->hasColumn('updated_at') && !isset($this->changes['updated_at'])) {
-                    $this->changes['updated_at'] = date('Y-m-d H:i:s');
-                }
-
                 // Update existing record
                 $result = $builder->table($this->table)
                     ->where($this->primaryKey, $this->getAttribute($this->primaryKey))
                     ->update($this->changes);
             } else {
-                // Add timestamps if columns exist
-                if ($this->hasColumn('created_at') && !isset($this->attributes['created_at'])) {
-                    $this->attributes['created_at'] = date('Y-m-d H:i:s');
-                }
-                if ($this->hasColumn('updated_at') && !isset($this->attributes['updated_at'])) {
-                    $this->attributes['updated_at'] = date('Y-m-d H:i:s');
-                }
-
                 // Insert new record
                 $result = $builder->table($this->table)
                     ->insert($this->attributes);
@@ -410,8 +365,8 @@ protected function getTableColumns(): array
         try {
             $db->beginTransaction();
 
-            // Add updated_at timestamp if column exists and not provided
-            if ($model->hasColumn('updated_at') && !isset($attributes['updated_at'])) {
+            // Add updated_at timestamp if not provided
+            if (!isset($attributes['updated_at'])) {
                 $attributes['updated_at'] = date('Y-m-d H:i:s');
             }
 
@@ -454,8 +409,8 @@ protected function getTableColumns(): array
                 $query->where($column, $value);
             }
 
-            // Add updated_at timestamp if column exists and not provided
-            if ($model->hasColumn('updated_at') && !isset($attributes['updated_at'])) {
+            // Add updated_at timestamp if not provided
+            if (!isset($attributes['updated_at'])) {
                 $attributes['updated_at'] = date('Y-m-d H:i:s');
             }
 
@@ -517,10 +472,8 @@ protected function getTableColumns(): array
             // Begin transaction
             $db->beginTransaction();
 
-            // Add updated_at timestamp if column exists
-            if ($this->hasColumn('updated_at') && !isset($this->changes['updated_at'])) {
-                $this->changes['updated_at'] = date('Y-m-d H:i:s');
-            }
+            // Add updated_at timestamp
+            // $this->changes['updated_at'] = date('Y-m-d H:i:s');
 
             // Update only changed attributes
             $result = $builder->table($this->table)
@@ -571,13 +524,13 @@ protected function getTableColumns(): array
         try {
             $db->beginTransaction();
 
-            // Add timestamps if columns exist and not provided
-            if ($model->hasColumn('created_at') && !isset($attributes['created_at'])) {
-                $attributes['created_at'] = date('Y-m-d H:i:s');
-            }
-            if ($model->hasColumn('updated_at') && !isset($attributes['updated_at'])) {
-                $attributes['updated_at'] = date('Y-m-d H:i:s');
-            }
+            // Add timestamps if not provided
+            // if (!isset($attributes['created_at'])) {
+            //     $attributes['created_at'] = date('Y-m-d H:i:s');
+            // }
+            // if (!isset($attributes['updated_at'])) {
+            //     $attributes['updated_at'] = date('Y-m-d H:i:s');
+            // }
 
             $result = $builder->table($model->table)->insert($attributes);
 

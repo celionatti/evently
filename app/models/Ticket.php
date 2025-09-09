@@ -25,6 +25,7 @@ class Ticket extends Model implements ModelInterface
      * @var array
      */
     protected array $fillable = [
+        'id',
         'slug',
         'event_id',
         'ticket_name',

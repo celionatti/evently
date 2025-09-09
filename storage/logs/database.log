@@ -41,3 +41,104 @@
 [2025-09-09 11:24:21] [INFO] File uploaded successfully: uploads/events/68c0005568c3a_53b56cb2.jpeg
 [2025-09-09 11:24:21] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
 [2025-09-09 11:24:21] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 11:39:18] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 11:39:18] [ERROR] SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'generalblackoutparty' for key 'slug' {"query":"","params":[],"error_code":""}
+[2025-09-09 11:39:18] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 11:46:28] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 11:46:28] [ERROR] SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'generalblackoutparty' for key 'slug' {"query":"","params":[],"error_code":""}
+[2025-09-09 11:46:28] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 11:46:42] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 11:46:42] [ERROR] SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'generalblackoutparty' for key 'slug' {"query":"","params":[],"error_code":""}
+[2025-09-09 11:47:03] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 11:51:48] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 11:51:49] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-09 11:52:49] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 11:52:49] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-09 11:53:13] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 11:53:13] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-09 11:53:24] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 11:53:24] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-09 11:53:24] [ERROR] SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'vipblackoutparty' for key 'slug' {"query":"","params":[],"error_code":""}
+[2025-09-09 11:53:24] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 11:54:07] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 11:54:07] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-09 11:54:07] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 11:54:45] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 11:54:45] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-09 11:54:45] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 11:55:49] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 11:55:49] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-09 11:55:49] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-09 11:55:49] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 12:00:50] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 12:00:50] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-09 12:00:50] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-09 12:00:50] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 12:01:12] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 12:01:12] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-09 12:01:12] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-09 12:01:12] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 12:01:33] [ERROR] Image processing failed: Unsupported image format: C:\xampp\tmp\php2136.tmp_processed
+[2025-09-09 12:01:33] [INFO] File uploaded successfully: uploads/events/68c0090cde42d_5b9f9afb.jpg
+[2025-09-09 12:01:33] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 12:01:33] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-09 12:01:33] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-09 12:01:33] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 12:44:21] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 12:46:07] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 12:47:09] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 12:47:31] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 12:51:20] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 12:51:20] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-09 12:51:20] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-09 12:51:20] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-09 12:51:20] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 12:51:58] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 12:51:58] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-09 12:51:58] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-09 12:51:58] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-09 12:51:58] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 12:52:23] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 12:53:03] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 12:53:36] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 12:54:09] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 12:54:09] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-09 12:54:09] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-09 12:54:09] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 12:54:56] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 12:54:56] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-09 12:54:56] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-09 12:54:56] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 12:55:13] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 12:55:13] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-09 12:55:13] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-09 12:55:13] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 12:55:47] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 12:55:48] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-09 12:55:48] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 12:56:20] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 12:56:20] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-09 12:56:20] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-09 12:56:20] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 12:57:01] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 12:57:02] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-09 12:57:02] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'created_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-09 12:57:33] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 12:57:34] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-09 13:02:09] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 13:02:09] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-09 13:02:27] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 13:02:28] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-09 13:02:59] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 13:02:59] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-09 13:03:39] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 13:03:39] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-09 13:04:14] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 13:04:15] [ERROR] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'updated_at' in 'field list' {"query":"","params":[],"error_code":""}
+[2025-09-09 13:11:21] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 13:11:50] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 13:12:02] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 13:12:02] [ERROR] SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'vipblackoutparty' for key 'slug' {"query":"","params":[],"error_code":""}
+[2025-09-09 13:12:02] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 13:12:54] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 13:12:55] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
