@@ -100,12 +100,6 @@
                                                             <i class="bi bi-pencil me-2"></i>Edit Category
                                                         </a>
                                                     </li>
-                                                    <li>
-                                                        <a class="dropdown-item" href="#" onclick="toggleCategoryStatus('{{{ $category->slug }}}', '{{{ $category->status }}}')">
-                                                            <i class="bi bi-{{ $category->status === 'active' ? 'pause-circle' : 'play-circle' }} me-2"></i>
-                                                            {{ $category->status === 'active' ? 'Deactivate' : 'Activate' }}
-                                                        </a>
-                                                    </li>
                                                     <li><hr class="dropdown-divider"></li>
                                                     <li>
                                                         <form action="{{ url("/admin/categories/delete/{$category->slug}") }}" 

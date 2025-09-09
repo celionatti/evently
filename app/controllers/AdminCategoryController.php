@@ -131,7 +131,7 @@ class AdminCategoryController extends Controller
 
         try {
             $data = $request->all();
-            if ($category->update($data)) {
+            if ($category->updateInstance($data)) {
                 FlashMessage::setMessage("Category Updated!");
                 return $response->redirect("/admin/categories/manage");
             }

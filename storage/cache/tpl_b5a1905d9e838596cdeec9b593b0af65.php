@@ -100,12 +100,6 @@
                                                             <i class="bi bi-pencil me-2"></i>Edit Category
                                                         </a>
                                                     </li>
-                                                    <li>
-                                                        <a class="dropdown-item" href="#" onclick="toggleCategoryStatus('<?php echo $category->slug; ?>', '<?php echo $category->status; ?>')">
-                                                            <i class="bi bi-<?php echo $this->escape($category->status === 'active' ? 'pause-circle' : 'play-circle'); ?> me-2"></i>
-                                                            <?php echo $this->escape($category->status === 'active' ? 'Deactivate' : 'Activate'); ?>
-                                                        </a>
-                                                    </li>
                                                     <li><hr class="dropdown-divider"></li>
                                                     <li>
                                                         <form action="<?php echo $this->escape(url("/admin/categories/delete/{$category->slug}")); ?>" 

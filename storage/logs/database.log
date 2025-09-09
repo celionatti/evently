@@ -142,3 +142,7 @@
 [2025-09-09 13:12:02] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
 [2025-09-09 13:12:54] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
 [2025-09-09 13:12:55] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 13:17:38] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 13:17:38] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 13:22:12] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-09 13:22:12] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
