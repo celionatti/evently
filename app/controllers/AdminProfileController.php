@@ -27,10 +27,17 @@ class AdminProfileController extends Controller
         $this->view->setTitle("{$name} Admin | Profile");
     }
 
-    public function profile(Request $request, Response $response): void
+    public function profile(Request $request, Response $response)
     {
+        $user = auth();
+
+        if (!$user) {
+            FlashMessage::setMessage("User not found.", 'danger');
+            return $response->redirect("/admin/dashboard");
+        }
+
         $view = [
-            
+            'user' => $user,
         ];
 
         $this->render('admin/profile/profile', $view);

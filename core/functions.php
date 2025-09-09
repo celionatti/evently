@@ -697,8 +697,13 @@ if (!function_exists('get_image')) {
             return env("APP_URL") . '/' . ltrim($path, '/');
         }
 
-        // If path is not found or empty, return default path
+        // If path is null/empty, return default if provided
         if (!empty($default)) {
+            // Check if default is already a full URL (starts with http:// or https://)
+            if (filter_var($default, FILTER_VALIDATE_URL)) {
+                return $default;
+            }
+            // If it's a relative path, prepend APP_URL
             return env("APP_URL") . '/' . ltrim($default, '/');
         }
 

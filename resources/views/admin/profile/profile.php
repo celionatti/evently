@@ -16,7 +16,7 @@ declare(strict_types=1);
         <div class="col-lg-4">
             <div class="dashboard-card">
                 <div class="text-center">
-                    <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
+                    <img src="{{{ get_image("", "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80") }}}"
                         class="profile-avatar mb-3" alt="Profile Avatar">
                     <h3>John Organizer</h3>
                     <p class="text-secondary">Event Manager</p>
@@ -65,12 +65,6 @@ declare(strict_types=1);
                         <button class="nav-link" id="security-tab" data-bs-toggle="pill"
                             data-bs-target="#security" type="button" role="tab">
                             Security
-                        </button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="notifications-tab" data-bs-toggle="pill"
-                            data-bs-target="#notifications" type="button" role="tab">
-                            Notifications
                         </button>
                     </li>
                 </ul>
@@ -177,95 +171,17 @@ declare(strict_types=1);
                                 <h5 class="mb-3">Two-Factor Authentication</h5>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
-                                        <h6 class="mb-1">Status: <span class="text-success">Active</span></h6>
+                                        <h6 class="mb-1">Status: <span class="text-secondary">Pending</span></h6>
                                         <p class="text-secondary mb-0">Add an extra layer of security to your account</p>
                                     </div>
-                                    <button type="button" class="btn btn-ghost">
+                                    <button type="button" class="btn btn-ghost disabled">
                                         <i class="bi bi-gear me-1"></i>Manage
                                     </button>
                                 </div>
                             </div>
-
-                            <hr class="my-4">
-
-                            <div>
-                                <h5 class="mb-3">Active Sessions</h5>
-                                <div class="d-flex justify-content-between align-items-center p-3 bg-dark rounded mb-2">
-                                    <div>
-                                        <h6 class="mb-1">Chrome on Windows</h6>
-                                        <p class="text-secondary mb-0">Lagos, Nigeria • Active now</p>
-                                    </div>
-                                    <button type="button" class="btn btn-outline-danger btn-sm">
-                                        <i class="bi bi-box-arrow-right"></i> Logout
-                                    </button>
-                                </div>
-                                <div class="d-flex justify-content-between align-items-center p-3 bg-dark rounded">
-                                    <div>
-                                        <h6 class="mb-1">Safari on iPhone</h6>
-                                        <p class="text-secondary mb-0">Abuja, Nigeria • 2 hours ago</p>
-                                    </div>
-                                    <button type="button" class="btn btn-outline-danger btn-sm">
-                                        <i class="bi bi-box-arrow-right"></i> Logout
-                                    </button>
-                                </div>
-                            </div>
                         </form>
                     </div>
 
-                    <!-- Notifications Tab -->
-                    <div class="tab-pane fade" id="notifications" role="tabpanel">
-                        <form>
-                            <h5 class="mb-3">Notification Preferences</h5>
-
-                            <div class="mb-4">
-                                <div class="form-check form-switch mb-3">
-                                    <input class="form-check-input" type="checkbox" id="emailNotifications" checked>
-                                    <label class="form-check-label" for="emailNotifications">Email Notifications</label>
-                                </div>
-                                <div class="form-check form-switch mb-3">
-                                    <input class="form-check-input" type="checkbox" id="pushNotifications" checked>
-                                    <label class="form-check-label" for="pushNotifications">Push Notifications</label>
-                                </div>
-                                <div class="form-check form-switch mb-3">
-                                    <input class="form-check-input" type="checkbox" id="smsNotifications">
-                                    <label class="form-check-label" for="smsNotifications">SMS Notifications</label>
-                                </div>
-                            </div>
-
-                            <hr class="my-4">
-
-                            <h5 class="mb-3">Notification Types</h5>
-
-                            <div class="mb-4">
-                                <div class="form-check mb-3">
-                                    <input class="form-check-input" type="checkbox" id="newTickets" checked>
-                                    <label class="form-check-label" for="newTickets">New ticket purchases</label>
-                                </div>
-                                <div class="form-check mb-3">
-                                    <input class="form-check-input" type="checkbox" id="eventReminders" checked>
-                                    <label class="form-check-label" for="eventReminders">Upcoming event reminders</label>
-                                </div>
-                                <div class="form-check mb-3">
-                                    <input class="form-check-input" type="checkbox" id="attendeeMessages">
-                                    <label class="form-check-label" for="attendeeMessages">Attendee messages</label>
-                                </div>
-                                <div class="form-check mb-3">
-                                    <input class="form-check-input" type="checkbox" id="promotional" checked>
-                                    <label class="form-check-label" for="promotional">Promotional offers</label>
-                                </div>
-                                <div class="form-check mb-3">
-                                    <input class="form-check-input" type="checkbox" id="systemUpdates">
-                                    <label class="form-check-label" for="systemUpdates">System updates</label>
-                                </div>
-                            </div>
-
-                            <div class="mt-4">
-                                <button type="submit" class="btn btn-pulse">
-                                    <i class="bi bi-check-circle me-2"></i>Save Preferences
-                                </button>
-                            </div>
-                        </form>
-                    </div>
                 </div>
             </div>
         </div>
