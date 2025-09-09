@@ -253,7 +253,7 @@ class AuthController extends Controller
 
         // If block period has expired, unblock the user
         if ($now >= $blockedUntil) {
-            $user->update([
+            $user->updateInstance([
                 'login_attempts' => 0,
                 'blocked_until' => null,
                 'last_login_attempt' => null
@@ -297,7 +297,7 @@ class AuthController extends Controller
         }
 
         // Regenerate session ID for auto-login as well
-    session()->regenerate(true);
+        session()->regenerate(true);
 
         // Auto-login the user
         $this->loginUser($user, true);
@@ -324,7 +324,7 @@ class AuthController extends Controller
             $expiry = time() + (self::REMEMBER_TOKEN_DAYS * 24 * 60 * 60);
 
             // Store remember token in database
-            $user->update(['remember_token' => $token]);
+            $user->updateInstance(['remember_token' => $token]);
 
             setcookie('remember_token', $token, $expiry, '/', '', true, true);
         }
@@ -340,7 +340,7 @@ class AuthController extends Controller
         if ($userId) {
             $user = $this->userModel->findByUserId($userId);
             if ($user) {
-                $user->update(['remember_token' => null]);
+                $user->updateInstance(['remember_token' => null]);
             }
         }
 

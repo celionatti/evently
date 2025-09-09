@@ -117,6 +117,11 @@ class EventController extends Controller
             $event = !empty($events) ? $events[0] : null;
         }
 
+        if (!$event) {
+            FlashMessage::setMessage("Event not found!", 'danger');
+            return $response->redirect("/events");
+        }
+
         // Only show active events to the public (unless user is admin/organizer)
         if ($event->status !== 'active') {
             // Check if user has permission to view inactive events

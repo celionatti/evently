@@ -36,16 +36,16 @@
                     <span>Ticket Sales</span>
                 </a>
             </li>
-            <li class="sidebar-item">
-                <a href="#" class="sidebar-link" data-section="analytics">
-                    <i class="bi bi-graph-up"></i>
-                    <span>Analytics</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
+            <!-- <li class="sidebar-item">
                 <a href="#" class="sidebar-link" data-section="payments">
                     <i class="bi bi-credit-card"></i>
                     <span>Payment Setup</span>
+                </a>
+            </li> -->
+            <li class="sidebar-item">
+                <a href="<?= url("/admin/profile") ?>" class="sidebar-link <?= active_nav([1, 2], ['admin', 'profile']) ? 'active' : '' ?>" data-section="profile">
+                    <i class="bi bi-person"></i>
+                    <span>Profile</span>
                 </a>
             </li>
         </ul>

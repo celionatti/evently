@@ -38,6 +38,7 @@ $router->get('/login', [AuthController::class, 'login']);
 $router->post('/login', [AuthController::class, 'login_user']);
 $router->get('/sign-up', [AuthController::class, 'signup']);
 $router->post('/sign-up', [AuthController::class, 'create_user']);
+$router->get('/logout', [AuthController::class, 'logout']);
 
 // Admin: Routes
 $router->get('/admin', [AdminController::class, 'dashboard']);
@@ -69,6 +70,7 @@ $router->group(['prefix' => '/admin/attendees'], function ($router) {
 $router->group(['prefix' => '/admin/users'], function ($router) {
     $router->get('/manage', [AdminUserController::class, 'manage']);
     $router->post('/delete/{user_id}', [AdminUserController::class, 'delete']);
+    $router->post('/role/{user_id}', [AdminUserController::class, 'role']);
 });
 
 // Admin: Categories Routes

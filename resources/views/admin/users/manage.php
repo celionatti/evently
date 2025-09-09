@@ -1,18 +1,48 @@
 <?php
 
+use Trees\Helper\Utils\TimeDateUtils;
+
 ?>
 
 @section('content')
 <!-- Events Section -->
-<div id="events-section" class="content-section">
+<div id="users-section" class="content-section">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h1 class="h2 mb-1">Manage Users</h1>
-            <p class="text-secondary">Manage all users.</p>
+            <h1 class="h2 mb-1">User Management</h1>
+            <p class="text-secondary">Manage all users and their permissions</p>
         </div>
         <a href="<?= url("/admin/users/create") ?>" class="btn btn-pulse flex-end" data-section="create-event">
             <i class="bi bi-plus-circle me-2"></i>Create User
         </a>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-number">1,248</div>
+                <div class="text-secondary">Total Users</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-number">842</div>
+                <div class="text-secondary">Active Users</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-number">64</div>
+                <div class="text-secondary">Organizers</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-number">342</div>
+                <div class="text-secondary">New This Month</div>
+            </div>
+        </div>
     </div>
 
     <div class="dashboard-card">
@@ -21,42 +51,88 @@
                 <table class="table table-dark">
                     <thead>
                         <tr>
-                            <th>#</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Role</th>
-                            <th>Business Name</th>
-                            <th>Actions</th>
+                            <th scope="col">User</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Role</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Joined</th>
+                            <th scope="col">Events</th>
+                            <th scope="col" class="text-end">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($users as $k => $user): ?>
                             <tr>
-                                <td data-label="#">{{{ $k + 1 }}}</td>
-                                <td data-label="First Name" class="text-capitalize">{{{ $user->name }}}</td>
-                                <td data-label="Last Name" class="text-capitalize">{{{ $user->other_name }}}</td>
+                                <td data-label="User" class="text-capitalize">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
+                                            class="user-avatar" alt="User Avatar">
+                                        <div>{{{ $user->name . ' ' . $user->other_name }}}</div>
+                                    </div>
+                                </td>
                                 <td data-label="Email">{{{ $user->email }}}</td>
-                                <td data-label="Phone">{{{ $user->phone ?? "+234X-XXX" }}}</td>
-                                <td data-label="Role" class="text-capitalize"><span class="badge {{ $user->role === 'admin' ? 'bg-success' : 'bg-info' }}">{{{ $user->role }}}</span></td>
-                                <td data-label="Business Name">{{{ $user->business_name ?? "None" }}}</td>
-                                <td data-label="Actions">
-                                    <div class="dropdown">
-                                        <button class="btn btn-ghost btn-sm dropdown-toggle"
-                                            data-bs-toggle="dropdown">
-                                            Actions
+                                <td data-label="Role" class="text-capitalize"><span class="badge {{ $user->role === 'admin' ? 'bg-success' : ($user->role === 'organiser' ? 'bg-info' : 'bg-secondary') }}">{{{ $user->role }}}</span></td>
+                                <td data-label="Status">
+                                    <span class="badge {{ $user->is_blocked == '0' ? 'bg-success' : 'bg-danger' }}">
+                                        {{ $user->is_blocked == '0' ? 'Active' : 'Suspended' }}
+                                    </span>
+                                </td>
+                                <td data-label="Joined">{{{ TimeDateUtils::create($user->created_at)->toCustomFormat('M j, Y') }}}</td>
+                                <td data-label="Events">{{{ $user->events ?? 0 }}}</td>
+                                <td data-label="Actions" class="text-end">
+                                    <div class="d-flex gap-2 justify-content-end">
+                                        <button class="btn btn-ghost action-btn" data-bs-toggle="tooltip" title="View">
+                                            <i class="bi bi-eye"></i>
                                         </button>
-                                        <ul class="dropdown-menu">
-                                            <hr class="dropdown-divider">
-                                            </li>
-                                            <form action="{{ url("/admin/users/delete/{$user->user_id}") }}" method="post" onsubmit="return confirm('Are you sure you want to delete this user?');">
-                                                <button type="submit" class="dropdown-item text-danger">
-                                                    <i class="bi bi-trash me-2"></i>
-                                                    Delete
+                                        <?php if ($user->role === 'admin'): ?>
+                                            <form action="{{ url("/admin/users/role/{$user->user_id}") }}" method="post" onsubmit="return confirm('Are you sure you want to change User Role to Guest?');">
+                                                <input type="hidden" name="role" value="guest">
+                                                <button type="submit" class="btn btn-ghost action-btn" data-bs-toggle="tooltip" title="Guest Role">
+                                                    <i class="bi bi-people"></i>
                                                 </button>
                                             </form>
-                                        </ul>
+
+                                            <form action="{{ url("/admin/users/role/{$user->user_id}") }}" method="post" onsubmit="return confirm('Are you sure you want to change User Role to Organizer?');">
+                                                <input type="hidden" name="role" value="organiser">
+                                                <button type="submit" class="btn btn-ghost action-btn" data-bs-toggle="tooltip" title="Organizer Role">
+                                                    <i class="bi bi-person-vcard"></i>
+                                                </button>
+                                            </form>
+                                        <?php elseif ($user->role === 'organiser'): ?>
+                                            <form action="{{ url("/admin/users/role/{$user->user_id}") }}" method="post" onsubmit="return confirm('Are you sure you want to change User Role to Guest?');">
+                                                <input type="hidden" name="role" value="guest">
+                                                <button type="submit" class="btn btn-ghost action-btn" data-bs-toggle="tooltip" title="Guest Role">
+                                                    <i class="bi bi-people"></i>
+                                                </button>
+                                            </form>
+
+                                            <form action="{{ url("/admin/users/role/{$user->user_id}") }}" method="post" onsubmit="return confirm('Are you sure you want to change User Role to Admin?');">
+                                                <input type="hidden" name="role" value="admin">
+                                                <button type="submit" class="btn btn-ghost action-btn" data-bs-toggle="tooltip" title="Admin Role">
+                                                    <i class="bi bi-person-workspace"></i>
+                                                </button>
+                                            </form>
+                                        <?php else: ?>
+                                            <form action="{{ url("/admin/users/role/{$user->user_id}") }}" method="post" onsubmit="return confirm('Are you sure you want to change User Role to Organizer?');">
+                                                <input type="hidden" name="role" value="organiser">
+                                                <button type="submit" class="btn btn-ghost action-btn" data-bs-toggle="tooltip" title="Organizer Role">
+                                                    <i class="bi bi-person-vcard"></i>
+                                                </button>
+                                            </form>
+
+                                            <form action="{{ url("/admin/users/role/{$user->user_id}") }}" method="post" onsubmit="return confirm('Are you sure you want to change User Role to Admin?');">
+                                                <input type="hidden" name="role" value="admin">
+                                                <button type="submit" class="btn btn-ghost action-btn" data-bs-toggle="tooltip" title="Admin Role">
+                                                    <i class="bi bi-person-workspace"></i>
+                                                </button>
+                                            </form>
+                                        <?php endif; ?>
+
+                                        <form action="{{ url("/admin/users/delete/{$user->user_id}") }}" method="post" onsubmit="return confirm('Are you sure you want to delete this user?');">
+                                            <button type="submit" class="btn btn-ghost action-btn text-danger" data-bs-toggle="tooltip" title="Delete">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>

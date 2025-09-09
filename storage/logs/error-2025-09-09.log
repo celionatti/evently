@@ -154,3 +154,78 @@ Stack trace:
 #6 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
 #7 {main}
 
+[2025-09-09 13:32:58] Trees\Exception\TreesException: Route not found for path: /admin/events/tickets-sales in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-09 14:04:09] Trees\Exception\TreesException: Route not found for path: /admin/users/{{ url( in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-09 14:13:10] Trees\Exception\TreesException: Route not found for path: /profile in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-09 14:55:31] Trees\Exception\TreesException: Route not found for path: /dist/css/bootstrap.min.css.map in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-09 15:07:50] ErrorException: Attempt to read property "status" on null in C:\xampp\htdocs\evently\app\controllers\EventController.php on line 121
+Stack trace:
+#0 C:\xampp\htdocs\evently\app\controllers\EventController.php(121): Trees\Exception\Handler\ExceptionHandler->handleError(2, 'Attempt to read...', 'C:\\xampp\\htdocs...', 121)
+#1 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\EventController->event(Object(Trees\Http\Request), Object(Trees\Http\Response), '6', 'black_out_party')
+#2 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'event', Array)
+#3 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#4 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#5 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#6 {main}
+
+[2025-09-09 15:07:58] ErrorException: Attempt to read property "status" on null in C:\xampp\htdocs\evently\app\controllers\EventController.php on line 121
+Stack trace:
+#0 C:\xampp\htdocs\evently\app\controllers\EventController.php(121): Trees\Exception\Handler\ExceptionHandler->handleError(2, 'Attempt to read...', 'C:\\xampp\\htdocs...', 121)
+#1 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\EventController->event(Object(Trees\Http\Request), Object(Trees\Http\Response), '6', 'black_out_party')
+#2 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'event', Array)
+#3 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#4 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#5 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#6 {main}
+
+[2025-09-09 15:08:27] ErrorException: Attempt to read property "status" on null in C:\xampp\htdocs\evently\app\controllers\EventController.php on line 121
+Stack trace:
+#0 C:\xampp\htdocs\evently\app\controllers\EventController.php(121): Trees\Exception\Handler\ExceptionHandler->handleError(2, 'Attempt to read...', 'C:\\xampp\\htdocs...', 121)
+#1 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\EventController->event(Object(Trees\Http\Request), Object(Trees\Http\Response), '6', 'black_out_party')
+#2 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'event', Array)
+#3 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#4 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#5 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#6 {main}
+
+[2025-09-09 15:10:01] ErrorException: Attempt to read property "event_date" on null in C:\xampp\htdocs\evently\app\controllers\EventController.php on line 130
+Stack trace:
+#0 C:\xampp\htdocs\evently\app\controllers\EventController.php(130): Trees\Exception\Handler\ExceptionHandler->handleError(2, 'Attempt to read...', 'C:\\xampp\\htdocs...', 130)
+#1 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\EventController->event(Object(Trees\Http\Request), Object(Trees\Http\Response), '6', 'black_out_party')
+#2 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'event', Array)
+#3 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#4 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#5 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#6 {main}
+
+[2025-09-09 15:11:55] Trees\Exception\TreesException: Route not found for path: /events/6 in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
