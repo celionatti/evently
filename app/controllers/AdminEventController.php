@@ -947,4 +947,217 @@ class AdminEventController extends Controller
             return $response->redirect("/admin/events/view/{$slug}");
         }
     }
+
+    public function exportAttendees(Request $request, Response $response, $slug)
+    {
+        $event = Event::findBySlug($slug);
+
+        if (!$event) {
+            FlashMessage::setMessage("Event Not Found!", 'danger');
+            return $response->redirect("/admin/events/manage");
+        }
+
+        // Check if organiser is trying to export someone else's event attendees
+        if (isOrganiser() && $event->user_id !== auth()->id) {
+            FlashMessage::setMessage("Access denied. You can only export attendees from your own events.", 'danger');
+            return $response->redirect("/admin/events/manage");
+        }
+
+        try {
+            // Get all attendees for this event
+            $attendees = Attendee::where(['event_id' => $event->id]);
+
+            // Get attendee details with ticket information
+            $attendeesWithTickets = [];
+            $totalRevenue = 0;
+
+            foreach ($attendees as $attendee) {
+                // Get ticket details for this attendee
+                $ticket = Ticket::find($attendee->ticket_id);
+                $attendee->ticket_name = $ticket ? $ticket->ticket_name : 'Unknown';
+                $attendee->ticket_price = $ticket ? $ticket->price : 0;
+                $attendee->amount = $attendee->ticket_price;
+                $totalRevenue += $attendee->amount;
+                $attendeesWithTickets[] = $attendee;
+            }
+
+            // Generate PDF
+            $this->generateAttendeesPDF($event, $attendeesWithTickets, $totalRevenue);
+        } catch (\Exception $e) {
+            FlashMessage::setMessage("Error exporting attendees: " . $e->getMessage(), 'danger');
+            return $response->redirect("/admin/events/view/{$slug}");
+        }
+    }
+
+    private function generateAttendeesPDF($event, $attendees, $totalRevenue)
+    {
+        // Include TCPDF library
+        require_once(ROOT_PATH . '/vendor/tecnickcom/tcpdf/tcpdf.php');
+
+        // Create new PDF document
+        $pdf = new \TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+        // Set document information
+        $pdf->SetCreator('Eventlyy Admin');
+        $pdf->SetAuthor('Eventlyy');
+        $pdf->SetTitle('Event Attendees - ' . $event->event_title);
+        $pdf->SetSubject('Attendee Export');
+
+        // Set default header data
+        $pdf->SetHeaderData('', 0, 'EVENTLYY', 'Event Management System');
+
+        // Set header and footer fonts
+        $pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+        $pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+
+        // Set default monospaced font
+        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+        // Set margins
+        $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+        $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+        $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+        // Set auto page breaks
+        $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+
+        // Set image scale factor
+        $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+        // Add a page
+        $pdf->AddPage();
+
+        // Set font
+        $pdf->SetFont('helvetica', 'B', 16);
+
+        // Title
+        $pdf->Cell(0, 10, 'Event Attendees Report', 0, 1, 'C');
+        $pdf->Ln(5);
+
+        // Event Details Section
+        $pdf->SetFont('helvetica', 'B', 14);
+        $pdf->Cell(0, 8, 'Event Information', 0, 1, 'L');
+        $pdf->Ln(2);
+
+        $pdf->SetFont('helvetica', '', 10);
+
+        // Event details table
+        $eventDetails = [
+            ['Event Title:', htmlspecialchars($event->event_title)],
+            ['Date:', date('j M, Y', strtotime($event->event_date))],
+            ['Time:', date('g:i A', strtotime($event->start_time))],
+            ['Venue:', htmlspecialchars($event->venue)],
+            ['City:', htmlspecialchars($event->city)],
+            ['Status:', ucfirst($event->status)],
+            ['Ticket Sales:', ucfirst($event->ticket_sales)],
+        ];
+
+        foreach ($eventDetails as $detail) {
+            $pdf->Cell(40, 6, $detail[0], 0, 0, 'L');
+            $pdf->Cell(0, 6, $detail[1], 0, 1, 'L');
+        }
+
+        $pdf->Ln(10);
+
+        // Summary Statistics
+        $pdf->SetFont('helvetica', 'B', 14);
+        $pdf->Cell(0, 8, 'Summary Statistics', 0, 1, 'L');
+        $pdf->Ln(2);
+
+        $pdf->SetFont('helvetica', '', 10);
+
+        $confirmedCount = count(array_filter($attendees, fn($a) => $a->status === 'confirmed'));
+        $pendingCount = count(array_filter($attendees, fn($a) => $a->status === 'pending'));
+        $checkedInCount = count(array_filter($attendees, fn($a) => $a->status === 'checked'));
+
+        $summaryStats = [
+            ['Total Registrations:', count($attendees)],
+            ['Confirmed Attendees:', $confirmedCount],
+            ['Pending Confirmations:', $pendingCount],
+            ['Checked In:', $checkedInCount],
+            ['Total Revenue:', '₦' . number_format($totalRevenue)],
+            ['Export Date:', date('j M, Y g:i A')],
+        ];
+
+        foreach ($summaryStats as $stat) {
+            $pdf->Cell(40, 6, $stat[0], 0, 0, 'L');
+            $pdf->Cell(0, 6, $stat[1], 0, 1, 'L');
+        }
+
+        $pdf->Ln(10);
+
+        // Attendees Table
+        $pdf->SetFont('helvetica', 'B', 14);
+        $pdf->Cell(0, 8, 'Attendee Details', 0, 1, 'L');
+        $pdf->Ln(5);
+
+        if (!empty($attendees)) {
+            // Table header
+            $pdf->SetFont('helvetica', 'B', 9);
+            $pdf->SetFillColor(230, 230, 230);
+
+            $pdf->Cell(8, 8, '#', 1, 0, 'C', true);
+            $pdf->Cell(35, 8, 'Name', 1, 0, 'C', true);
+            $pdf->Cell(40, 8, 'Email', 1, 0, 'C', true);
+            $pdf->Cell(25, 8, 'Ticket Type', 1, 0, 'C', true);
+            $pdf->Cell(20, 8, 'Amount', 1, 0, 'C', true);
+            $pdf->Cell(20, 8, 'Status', 1, 0, 'C', true);
+            $pdf->Cell(25, 8, 'Purchase Date', 1, 1, 'C', true);
+
+            // Table content
+            $pdf->SetFont('helvetica', '', 8);
+            $pdf->SetFillColor(245, 245, 245);
+
+            foreach ($attendees as $index => $attendee) {
+                $fill = ($index % 2 == 0) ? true : false;
+
+                // Handle long text by truncating
+                $name = strlen($attendee->name) > 20 ? substr($attendee->name, 0, 17) . '...' : $attendee->name;
+                $email = strlen($attendee->email) > 25 ? substr($attendee->email, 0, 22) . '...' : $attendee->email;
+                $ticketName = strlen($attendee->ticket_name) > 15 ? substr($attendee->ticket_name, 0, 12) . '...' : $attendee->ticket_name;
+
+                $pdf->Cell(8, 7, htmlspecialchars((string)$index . '1'), 1, 0, 'C', $fill);
+                $pdf->Cell(35, 7, htmlspecialchars($name), 1, 0, 'L', $fill);
+                $pdf->Cell(40, 7, htmlspecialchars($email), 1, 0, 'L', $fill);
+                $pdf->Cell(25, 7, htmlspecialchars($ticketName), 1, 0, 'L', $fill);
+                $pdf->Cell(20, 7, '₦' . number_format($attendee->amount), 1, 0, 'R', $fill);
+                $pdf->Cell(20, 7, ucfirst($attendee->status), 1, 0, 'C', $fill);
+                $pdf->Cell(25, 7, date('j M, Y', strtotime($attendee->created_at)), 1, 1, 'C', $fill);
+
+                // Check if we need a new page
+                if ($pdf->GetY() > 250) {
+                    $pdf->AddPage();
+                    // Repeat header on new page
+                    $pdf->SetFont('helvetica', 'B', 9);
+                    $pdf->SetFillColor(230, 230, 230);
+
+                    $pdf->Cell(8, 8, '#', 1, 0, 'C', true);
+                    $pdf->Cell(35, 8, 'Name', 1, 0, 'C', true);
+                    $pdf->Cell(40, 8, 'Email', 1, 0, 'C', true);
+                    $pdf->Cell(25, 8, 'Ticket Type', 1, 0, 'C', true);
+                    $pdf->Cell(20, 8, 'Amount', 1, 0, 'C', true);
+                    $pdf->Cell(20, 8, 'Status', 1, 0, 'C', true);
+                    $pdf->Cell(25, 8, 'Purchase Date', 1, 1, 'C', true);
+
+                    $pdf->SetFont('helvetica', '', 8);
+                }
+            }
+        } else {
+            $pdf->SetFont('helvetica', 'I', 10);
+            $pdf->Cell(0, 10, 'No attendees found for this event.', 0, 1, 'C');
+        }
+
+        // Footer note
+        $pdf->Ln(10);
+        $pdf->SetFont('helvetica', 'I', 8);
+        $pdf->Cell(0, 5, 'Generated by Eventlyy Admin System on ' . date('j M, Y \a\t g:i A'), 0, 1, 'C');
+
+        // Clean any output buffer
+        if (ob_get_contents()) ob_end_clean();
+
+        // Output PDF
+        $filename = 'attendees_' . str_slug($event->event_title) . '_' . date('Y-m-d') . '.pdf';
+        $pdf->Output($filename, 'D'); // 'D' for download
+        exit;
+    }
 }

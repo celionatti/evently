@@ -61,6 +61,7 @@ $router->group(['prefix' => '/admin/events'], function ($router) {
     $router->post('/status', [AdminEventController::class, 'eventStatus']);
     $router->post('/ticket-status', [AdminEventController::class, 'ticketStatus']);
     $router->post('/delete-ticket', [AdminEventController::class, 'deleteTicket']);
+    $router->get('/{slug}/export-attendees', [AdminEventController::class, 'exportAttendees']);
 });
 
 // Admin: Events Attendees Routes
