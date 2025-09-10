@@ -1,0 +1,132 @@
+[2025-09-10 02:05:31] TypeError: Trees\Database\QueryBuilder\QueryBuilder::where(): Argument #1 ($column) must be of type string, int given, called in C:\xampp\htdocs\evently\core\Database\Model\Model.php on line 744 in C:\xampp\htdocs\evently\core\Database\QueryBuilder\QueryBuilder.php on line 96
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Database\Model\Model.php(744): Trees\Database\QueryBuilder\QueryBuilder->where(0, Array)
+#1 C:\xampp\htdocs\evently\app\controllers\AdminEventController.php(1062): Trees\Database\Model\Model::where(Array)
+#2 C:\xampp\htdocs\evently\app\controllers\AdminEventController.php(1124): App\controllers\AdminEventController->getOldEventsStats(3)
+#3 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminEventController->cleanupPage(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#4 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'cleanupPage', Array)
+#5 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#6 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#7 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#8 {main}
+
+[2025-09-10 02:07:28] TypeError: Trees\Database\QueryBuilder\QueryBuilder::where(): Argument #1 ($column) must be of type string, int given, called in C:\xampp\htdocs\evently\core\Database\Model\Model.php on line 744 in C:\xampp\htdocs\evently\core\Database\QueryBuilder\QueryBuilder.php on line 96
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Database\Model\Model.php(744): Trees\Database\QueryBuilder\QueryBuilder->where(0, Array)
+#1 C:\xampp\htdocs\evently\app\controllers\AdminEventController.php(1063): Trees\Database\Model\Model::where(Array)
+#2 C:\xampp\htdocs\evently\app\controllers\AdminEventController.php(1125): App\controllers\AdminEventController->getOldEventsStats(3)
+#3 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminEventController->cleanupPage(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#4 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'cleanupPage', Array)
+#5 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#6 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#7 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#8 {main}
+
+[2025-09-10 02:09:24] TypeError: Trees\Database\QueryBuilder\QueryBuilder::where(): Argument #1 ($column) must be of type string, int given, called in C:\xampp\htdocs\evently\core\Database\Model\Model.php on line 744 in C:\xampp\htdocs\evently\core\Database\QueryBuilder\QueryBuilder.php on line 96
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Database\Model\Model.php(744): Trees\Database\QueryBuilder\QueryBuilder->where(0, Array)
+#1 C:\xampp\htdocs\evently\app\controllers\AdminEventController.php(1062): Trees\Database\Model\Model::where(Array)
+#2 C:\xampp\htdocs\evently\app\controllers\AdminEventController.php(1125): App\controllers\AdminEventController->getOldEventsStats(3)
+#3 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminEventController->cleanupPage(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#4 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'cleanupPage', Array)
+#5 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#6 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#7 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#8 {main}
+
+[2025-09-10 02:14:08] TypeError: Trees\Database\QueryBuilder\QueryBuilder::where(): Argument #1 ($column) must be of type string, int given, called in C:\xampp\htdocs\evently\core\Database\Model\Model.php on line 744 in C:\xampp\htdocs\evently\core\Database\QueryBuilder\QueryBuilder.php on line 96
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Database\Model\Model.php(744): Trees\Database\QueryBuilder\QueryBuilder->where(0, Array)
+#1 C:\xampp\htdocs\evently\app\controllers\AdminEventController.php(1062): Trees\Database\Model\Model::where(Array)
+#2 C:\xampp\htdocs\evently\app\controllers\AdminEventController.php(1125): App\controllers\AdminEventController->getOldEventsStats(3)
+#3 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminEventController->cleanupPage(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#4 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'cleanupPage', Array)
+#5 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#6 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#7 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#8 {main}
+
+[2025-09-10 02:14:32] TypeError: Trees\Database\QueryBuilder\QueryBuilder::where(): Argument #1 ($column) must be of type string, int given, called in C:\xampp\htdocs\evently\core\Database\Model\Model.php on line 744 in C:\xampp\htdocs\evently\core\Database\QueryBuilder\QueryBuilder.php on line 96
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Database\Model\Model.php(744): Trees\Database\QueryBuilder\QueryBuilder->where(0, Array)
+#1 C:\xampp\htdocs\evently\app\controllers\AdminEventController.php(1062): Trees\Database\Model\Model::where(Array)
+#2 C:\xampp\htdocs\evently\app\controllers\AdminEventController.php(1125): App\controllers\AdminEventController->getOldEventsStats(3)
+#3 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminEventController->cleanupPage(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#4 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'cleanupPage', Array)
+#5 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#6 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#7 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#8 {main}
+
+[2025-09-10 02:27:38] Trees\Exception\TreesException: Method cleanupPage not found in App\controllers\AdminEventController in C:\xampp\htdocs\evently\core\Trees.php on line 231
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'cleanupPage', Array)
+#1 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#2 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#3 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#4 {main}
+
+[2025-09-10 02:31:02] TypeError: Trees\Database\QueryBuilder\QueryBuilder::where(): Argument #1 ($column) must be of type string, int given, called in C:\xampp\htdocs\evently\core\Database\Model\Model.php on line 744 in C:\xampp\htdocs\evently\core\Database\QueryBuilder\QueryBuilder.php on line 96
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Database\Model\Model.php(744): Trees\Database\QueryBuilder\QueryBuilder->where(0, Array)
+#1 C:\xampp\htdocs\evently\app\controllers\AdminEventController.php(1082): Trees\Database\Model\Model::where(Array)
+#2 C:\xampp\htdocs\evently\app\controllers\AdminEventController.php(894): App\controllers\AdminEventController->getOldEventsStats(3)
+#3 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminEventController->cleanupPage(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#4 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'cleanupPage', Array)
+#5 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#6 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#7 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#8 {main}
+
+[2025-09-10 02:35:20] TypeError: Trees\Database\QueryBuilder\QueryBuilder::where(): Argument #1 ($column) must be of type string, int given, called in C:\xampp\htdocs\evently\core\Database\Model\Model.php on line 744 in C:\xampp\htdocs\evently\core\Database\QueryBuilder\QueryBuilder.php on line 96
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Database\Model\Model.php(744): Trees\Database\QueryBuilder\QueryBuilder->where(0, 'event_date')
+#1 C:\xampp\htdocs\evently\app\controllers\AdminEventController.php(1082): Trees\Database\Model\Model::where(Array)
+#2 C:\xampp\htdocs\evently\app\controllers\AdminEventController.php(894): App\controllers\AdminEventController->getOldEventsStats(3)
+#3 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminEventController->cleanupPage(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#4 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'cleanupPage', Array)
+#5 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#6 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#7 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#8 {main}
+
+[2025-09-10 02:40:01] Error: Call to a member function execute() on array in C:\xampp\htdocs\evently\app\controllers\AdminEventController.php on line 1080
+Stack trace:
+#0 C:\xampp\htdocs\evently\app\controllers\AdminEventController.php(895): App\controllers\AdminEventController->getOldEventsStats(3)
+#1 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminEventController->cleanupPage(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#2 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'cleanupPage', Array)
+#3 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#4 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#5 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#6 {main}
+
+[2025-09-10 10:28:21] ErrorException: Undefined array key "count" in C:\xampp\htdocs\evently\storage\cache\temp_68c144b4860c24.31766616.php on line 78
+Stack trace:
+#0 C:\xampp\htdocs\evently\storage\cache\temp_68c144b4860c24.31766616.php(78): Trees\Exception\Handler\ExceptionHandler->handleError(2, 'Undefined array...', 'C:\\xampp\\htdocs...', 78)
+#1 C:\xampp\htdocs\evently\core\View\View.php(559): include('C:\\xampp\\htdocs...')
+#2 C:\xampp\htdocs\evently\core\View\View.php(298): Trees\View\View->evaluateTemplate('<?php $this->st...', Array, 'C:\\xampp\\htdocs...')
+#3 C:\xampp\htdocs\evently\core\View\View.php(147): Trees\View\View->renderTemplate('admin/events/cl...', Array)
+#4 C:\xampp\htdocs\evently\core\Controller\Controller.php(34): Trees\View\View->render('admin/events/cl...', Array)
+#5 C:\xampp\htdocs\evently\app\controllers\AdminEventController.php(902): Trees\Controller\Controller->render('admin/events/cl...', Array)
+#6 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminEventController->cleanupPage(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#7 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'cleanupPage', Array)
+#8 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#9 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#10 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#11 {main}
+
+[2025-09-10 10:32:00] ErrorException: Undefined array key "total_tickets" in C:\xampp\htdocs\evently\storage\cache\temp_68c1459007ef09.37487577.php on line 97
+Stack trace:
+#0 C:\xampp\htdocs\evently\storage\cache\temp_68c1459007ef09.37487577.php(97): Trees\Exception\Handler\ExceptionHandler->handleError(2, 'Undefined array...', 'C:\\xampp\\htdocs...', 97)
+#1 C:\xampp\htdocs\evently\core\View\View.php(559): include('C:\\xampp\\htdocs...')
+#2 C:\xampp\htdocs\evently\core\View\View.php(298): Trees\View\View->evaluateTemplate('<?php $this->st...', Array, 'C:\\xampp\\htdocs...')
+#3 C:\xampp\htdocs\evently\core\View\View.php(147): Trees\View\View->renderTemplate('admin/events/cl...', Array)
+#4 C:\xampp\htdocs\evently\core\Controller\Controller.php(34): Trees\View\View->render('admin/events/cl...', Array)
+#5 C:\xampp\htdocs\evently\app\controllers\AdminEventController.php(902): Trees\Controller\Controller->render('admin/events/cl...', Array)
+#6 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminEventController->cleanupPage(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#7 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'cleanupPage', Array)
+#8 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#9 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#10 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#11 {main}
+

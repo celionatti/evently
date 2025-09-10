@@ -122,33 +122,33 @@ abstract class Model
     }
 
     /**
- * Get all columns for the table
- *
- * @return array Array of column names
- */
-protected function getTableColumns(): array
-{
-    if ($this->tableColumns === null) {
-        $this->tableColumns = [];
-        
-        try {
-            $db = Database::getInstance();
-            
-            // Use prepared statement to avoid SQL injection
-            $stmt = $db->prepare("DESCRIBE " . $this->table);
-            
-            if ($stmt && $stmt->execute()) {
-                $columns = $stmt->fetchAll(\PDO::FETCH_COLUMN);
-                $this->tableColumns = $columns;
-            }
-        } catch (\Exception $e) {
-            // If we can't get columns, return empty array
+     * Get all columns for the table
+     *
+     * @return array Array of column names
+     */
+    protected function getTableColumns(): array
+    {
+        if ($this->tableColumns === null) {
             $this->tableColumns = [];
-        }
-    }
 
-    return $this->tableColumns;
-}
+            try {
+                $db = Database::getInstance();
+
+                // Use prepared statement to avoid SQL injection
+                $stmt = $db->prepare("DESCRIBE " . $this->table);
+
+                if ($stmt && $stmt->execute()) {
+                    $columns = $stmt->fetchAll(\PDO::FETCH_COLUMN);
+                    $this->tableColumns = $columns;
+                }
+            } catch (\Exception $e) {
+                // If we can't get columns, return empty array
+                $this->tableColumns = [];
+            }
+        }
+
+        return $this->tableColumns;
+    }
 
     /**
      * Fill the model with an array of attributes
@@ -886,6 +886,61 @@ protected function getTableColumns(): array
             ->get();
 
         // Convert results to model instances
+        if (!$results) {
+            return [];
+        }
+
+        return array_map(function ($result) use ($className) {
+            $instance = new $className($result);
+            $instance->exists = true;
+            $instance->original = $result;
+            return $instance;
+        }, $results);
+    }
+
+    public static function whereComparison(string $column, mixed $value, string $operator = '='): array
+    {
+        $db = Database::getInstance();
+        if (!$db) {
+            return [];
+        }
+
+        $builder = new QueryBuilder($db);
+        $className = static::class;
+        $model = new $className();
+
+        $results = $builder->table($model->table)
+            ->where($column, $value, $operator)
+            ->get();
+
+        if (!$results) {
+            return [];
+        }
+
+        return array_map(function ($result) use ($className) {
+            $instance = new $className($result);
+            $instance->exists = true;
+            $instance->original = $result;
+            return $instance;
+        }, $results);
+    }
+
+    // Also add this method for raw where conditions
+    public static function whereRaw(string $condition, array $params = []): array
+    {
+        $db = Database::getInstance();
+        if (!$db) {
+            return [];
+        }
+
+        $builder = new QueryBuilder($db);
+        $className = static::class;
+        $model = new $className();
+
+        $results = $builder->table($model->table)
+            ->whereRaw($condition, $params)
+            ->get();
+
         if (!$results) {
             return [];
         }

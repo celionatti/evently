@@ -150,3 +150,9 @@
 [2025-09-09 22:38:16] [INFO] File uploaded successfully: uploads/events/68c09e476e5d7_f1fb5c2d.png
 [2025-09-09 22:38:16] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
 [2025-09-09 22:38:16] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-10 02:15:48] [ERROR] SQLSTATE[HY093]: Invalid parameter number: parameter was not defined {"query":"","params":[],"error_code":""}
+[2025-09-10 02:16:04] [ERROR] SQLSTATE[HY093]: Invalid parameter number: parameter was not defined {"query":"","params":[],"error_code":""}
+[2025-09-10 02:43:43] [ERROR] SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ':event_date' at line 1 {"query":"","params":[],"error_code":""}
+[2025-09-10 10:28:20] [ERROR] SQLSTATE[HY093]: Invalid parameter number: parameter was not defined {"query":"","params":[],"error_code":""}
+[2025-09-10 10:32:00] [ERROR] SQLSTATE[HY093]: Invalid parameter number: parameter was not defined {"query":"","params":[],"error_code":""}
+[2025-09-10 10:44:33] [ERROR] SQLSTATE[HY093]: Invalid parameter number: parameter was not defined {"query":"","params":[],"error_code":""}
