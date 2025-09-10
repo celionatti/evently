@@ -60,75 +60,203 @@ use App\models\Categories;
 
             <!-- RIGHT COLUMN - Ticket Selection -->
             <div class="right-column">
-                <div class="ticket-card sticky-top" style="top: 100px;">
-                    <h4 class="mb-3">Get Tickets</h4>
+                <?php if ($event->ticket_sales === 'open' && $tickets): ?>
+                    <div class="ticket-card sticky-top" style="top: 100px;">
+                        <h4 class="mb-3">Get Tickets</h4>
 
-                    <?php foreach ($tickets as $ticket): ?>
-                        <!-- Ticket -->
-                        <div class="ticket-tier <?= $ticket['sold_out'] ? 'sold-out' : '' ?>">
-                            <div class="tier-header">
-                                <div>
-                                    <h5 class="mb-1"><?= $ticket['name'] ?></h5>
-                                    <?php if (!empty($ticket['description'])): ?>
-                                        <p class="mb-0 text-info"><?= $ticket['description'] ?></p>
+                        <?php foreach ($tickets as $ticket): ?>
+                            <!-- Ticket -->
+                            <div class="ticket-tier <?= $ticket['sold_out'] ? 'sold-out' : '' ?>">
+                                <div class="tier-header">
+                                    <div>
+                                        <h5 class="mb-1"><?= $ticket['name'] ?></h5>
+                                        <?php if (!empty($ticket['description'])): ?>
+                                            <p class="mb-0 text-info"><?= $ticket['description'] ?></p>
+                                        <?php endif; ?>
+                                    </div>
+                                    <div class="price">₦<?= number_format($ticket['price']) ?></div>
+                                </div>
+                                <div class="quantity-selector">
+                                    <button class="quantity-btn decrease" data-tier="<?= $ticket['id'] ?>"
+                                        <?= $ticket['sold_out'] ? 'disabled' : '' ?>>-</button>
+                                    <input type="number" class="quantity-input" id="<?= $ticket['id'] ?>-qty" value="0"
+                                        min="0" max="<?= $ticket['available'] ?>" data-price="<?= $ticket['price'] ?>"
+                                        data-tier="<?= $ticket['id'] ?>" data-charge="<?= $ticket['service_charge'] ?>"
+                                        <?= $ticket['sold_out'] ? 'disabled' : '' ?>>
+                                    <button class="quantity-btn increase" data-tier="<?= $ticket['id'] ?>"
+                                        <?= $ticket['sold_out'] ? 'disabled' : '' ?>>+</button>
+                                    <?php if ($ticket['sold_out']): ?>
+                                        <span class="sold-out-badge ms-2">Sold Out</span>
+                                    <?php else: ?>
+                                        <div class="text-info ms-2">
+                                            <?= $ticket['available'] <= 5 ? "Only {$ticket['available']} left" : "Plenty available" ?>
+                                        </div>
                                     <?php endif; ?>
                                 </div>
-                                <div class="price">₦<?= number_format($ticket['price']) ?></div>
                             </div>
-                            <div class="quantity-selector">
-                                <button class="quantity-btn decrease" data-tier="<?= $ticket['id'] ?>"
-                                    <?= $ticket['sold_out'] ? 'disabled' : '' ?>>-</button>
-                                <input type="number" class="quantity-input" id="<?= $ticket['id'] ?>-qty" value="0"
-                                    min="0" max="<?= $ticket['available'] ?>" data-price="<?= $ticket['price'] ?>"
-                                    data-tier="<?= $ticket['id'] ?>" data-charge="<?= $ticket['service_charge'] ?>"
-                                    <?= $ticket['sold_out'] ? 'disabled' : '' ?>>
-                                <button class="quantity-btn increase" data-tier="<?= $ticket['id'] ?>"
-                                    <?= $ticket['sold_out'] ? 'disabled' : '' ?>>+</button>
-                                <?php if ($ticket['sold_out']): ?>
-                                    <span class="sold-out-badge ms-2">Sold Out</span>
-                                <?php else: ?>
-                                    <div class="text-info ms-2">
-                                        <?= $ticket['available'] <= 5 ? "Only {$ticket['available']} left" : "Plenty available" ?>
+                        <?php endforeach; ?>
+
+                        <!-- Ticket Summary -->
+                        <div class="mt-4 pt-3 border-top border-secondary">
+                            <h5 class="mb-3">Your Order</h5>
+
+                            <div id="order-summary">
+                                <div class="text-center text-white py-3">
+                                    No tickets selected yet
+                                </div>
+                            </div>
+
+                            <div class="d-none" id="order-total">
+                                <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top border-secondary">
+                                    <div>
+                                        <div class="text-white">Subtotal</div>
+                                        <div class="h5 mb-0" id="subtotal-price">₦0</div>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="text-white">Charges</div>
+                                        <div class="h5 mb-0" id="charges-total">₦0</div>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between mt-3 pt-3 border-top border-secondary">
+                                    <div>
+                                        <div class="text-white">Total</div>
+                                        <div class="h4 mb-0" id="total-price">₦0</div>
+                                    </div>
+                                    <button class="btn btn-pulse align-self-center" id="checkout-btn" data-bs-toggle="modal"
+                                        data-bs-target="#checkoutModal" disabled>
+                                        <i class="bi bi-ticket-perforated me-2"></i>Get Tickets
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php else: ?>
+                    <div class="ticket-card sticky-top" style="top: 100px;">
+                        <!-- Header Section -->
+                        <div class="text-center mb-4">
+                            <div class="mb-3">
+                                <i class="bi bi-lock-fill text-warning" style="font-size: 3rem;"></i>
+                            </div>
+                            <h4 class="text-warning mb-2">Ticket Sales Closed</h4>
+                            <p class="text-white mb-0">Online ticket sales for this event have ended.</p>
+                        </div>
+
+                        <!-- Event Status Info -->
+                        <div class="alert alert-info border-0 mb-4" style="background: rgba(13, 202, 240, 0.1);">
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="bi bi-info-circle-fill text-info me-2"></i>
+                                <strong class="text-info">What's Next?</strong>
+                            </div>
+                            <p class="mb-0 small">Don't worry! You may still be able to get tickets at the door or through other channels.</p>
+                        </div>
+
+                        <!-- Alternative Options -->
+                        <div class="mb-4">
+                            <h6 class="mb-3">
+                                <i class="bi bi-lightbulb text-warning me-2"></i>
+                                Still Want to Attend?
+                            </h6>
+
+                            <div class="list-group list-group-flush">
+                                <div class="list-group-item bg-transparent border-secondary px-0">
+                                    <div class="d-flex align-items-start">
+                                        <i class="bi bi-door-open text-success me-3 mt-1"></i>
+                                        <div>
+                                            <h6 class="mb-1 text-success">Door Sales</h6>
+                                            <p class="mb-0 small text-white">Tickets may be available at the venue entrance on the day of the event.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="list-group-item bg-transparent border-secondary px-0">
+                                    <div class="d-flex align-items-start">
+                                        <i class="bi bi-telephone text-primary me-3 mt-1"></i>
+                                        <div>
+                                            <h6 class="mb-1 text-primary">Contact Organizer</h6>
+                                            <p class="mb-1 small text-white">Reach out directly for last-minute availability:</p>
+                                            <div class="small">
+                                                <div class="mb-1">
+                                                    <i class="bi bi-envelope me-1"></i>
+                                                    <a href="mailto:<?php echo $event->mail; ?>" class="text-decoration-none"><?php echo $event->mail; ?></a>
+                                                </div>
+                                                <div class="mb-1">
+                                                    <i class="bi bi-phone me-1"></i>
+                                                    <a href="tel:<?php echo $event->phone; ?>" class="text-decoration-none"><?php echo $event->phone; ?></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <?php if (!empty($event->social)): ?>
+                                    <div class="list-group-item bg-transparent border-secondary px-0">
+                                        <div class="d-flex align-items-start">
+                                            <i class="bi bi-share text-info me-3 mt-1"></i>
+                                            <div>
+                                                <h6 class="mb-1 text-info">Follow Updates</h6>
+                                                <p class="mb-1 small text-white">Stay updated on social media for any announcements:</p>
+                                                <a href="<?php echo $event->social; ?>" target="_blank" class="btn btn-outline-info btn-sm">
+                                                    <i class="bi bi-arrow-up-right-square me-1"></i>
+                                                    Follow Event Page
+                                                </a>
+                                            </div>
+                                        </div>
                                     </div>
                                 <?php endif; ?>
                             </div>
                         </div>
-                    <?php endforeach; ?>
 
-                    <!-- Ticket Summary -->
-                    <div class="mt-4 pt-3 border-top border-secondary">
-                        <h5 class="mb-3">Your Order</h5>
+                        <!-- Event Details Summary -->
+                        <div class="border-top border-secondary pt-4">
+                            <h6 class="mb-3">
+                                <i class="bi bi-calendar-check text-primary me-2"></i>
+                                Event Reminder
+                            </h6>
 
-                        <div id="order-summary">
-                            <div class="text-center text-white py-3">
-                                No tickets selected yet
+                            <div class="small text-white">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="bi bi-calendar3 me-2"></i>
+                                    <span><?php echo $this->escape(date('l, F j, Y', strtotime($event->event_date))); ?></span>
+                                </div>
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="bi bi-clock me-2"></i>
+                                    <span><?php echo $this->escape(date('g:i A', strtotime($event->start_time ?? '00:00:00'))); ?></span>
+                                </div>
+                                <div class="d-flex align-items-start mb-3">
+                                    <i class="bi bi-geo-alt me-2 mt-1"></i>
+                                    <span class="text-capitalize"><?php echo $event->venue; ?>, <?php echo $event->city; ?></span>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="d-none" id="order-total">
-                            <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top border-secondary">
-                                <div>
-                                    <div class="text-white">Subtotal</div>
-                                    <div class="h5 mb-0" id="subtotal-price">₦0</div>
-                                </div>
-                                <div class="text-end">
-                                    <div class="text-white">Charges</div>
-                                    <div class="h5 mb-0" id="charges-total">₦0</div>
-                                </div>
-                            </div>
-                            <div class="d-flex justify-content-between mt-3 pt-3 border-top border-secondary">
-                                <div>
-                                    <div class="text-white">Total</div>
-                                    <div class="h4 mb-0" id="total-price">₦0</div>
-                                </div>
-                                <button class="btn btn-pulse align-self-center" id="checkout-btn" data-bs-toggle="modal"
-                                    data-bs-target="#checkoutModal" disabled>
-                                    <i class="bi bi-ticket-perforated me-2"></i>Get Tickets
+                        <!-- Action Buttons -->
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-warning" onclick="addToCalendar()">
+                                <i class="bi bi-calendar-plus me-2"></i>
+                                Add to Calendar
+                            </button>
+
+                            <div class="btn-group" role="group">
+                                <button class="btn btn-outline-secondary" onclick="shareEvent()">
+                                    <i class="bi bi-share me-2"></i>
+                                    Share Event
+                                </button>
+                                <button class="btn btn-outline-secondary" onclick="getDirections()">
+                                    <i class="bi bi-map me-2"></i>
+                                    Directions
                                 </button>
                             </div>
                         </div>
+
+                        <!-- Footer Note -->
+                        <div class="text-center mt-4 pt-3 border-top border-secondary">
+                            <small class="text-danger">
+                                <i class="bi bi-exclamation-triangle me-1"></i>
+                                Ticket availability and pricing may vary at the door
+                            </small>
+                        </div>
                     </div>
-                </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>
@@ -147,15 +275,15 @@ use App\models\Categories;
             <div class="modal-body">
                 <!-- Changed to regular form with method and action -->
                 <form id="checkoutForm" method="POST" action="/checkout/tickets">
-                    
+
                     <!-- Hidden inputs for ticket quantities - CHANGED TO USE ID INSTEAD OF SLUG -->
                     <?php foreach ($tickets as $ticket): ?>
                         <input type="hidden" name="tickets[<?= $ticket['id'] ?>]" id="hidden-<?= $ticket['id'] ?>" value="0">
                     <?php endforeach; ?>
-                    
+
                     <input type="hidden" name="event_id" value="<?= $event->id ?>">
                     <input type="hidden" name="event_slug" value="<?= $event->slug ?>">
-                    
+
                     <h6 class="mb-3">Contact Information</h6>
                     <div class="row">
                         <div class="col-md-6 mb-3">
@@ -242,7 +370,7 @@ use App\models\Categories;
             selectedTickets[tierId] = parseInt(input.value);
             // Update hidden input value
             document.getElementById(`hidden-${tierId}`).value = selectedTickets[tierId];
-            
+
             updateTicketAvailability();
             updateOrderSummary();
         });
@@ -439,6 +567,27 @@ use App\models\Categories;
 
         document.getElementById('countdown-timer').innerHTML =
             `${days} days ${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    function addToCalendar() {
+        const eventTitle = encodeURIComponent("<?php echo $event->event_title; ?>");
+        const eventDate = "<?php echo $this->escape(date('Ymd\\THis', strtotime($event->event_date . ' ' . ($event->start_time ?? '00:00:00')))); ?>";
+        const eventLocation = encodeURIComponent("<?php echo $event->venue; ?>, <?php echo $event->city; ?>");
+        const eventDescription = encodeURIComponent("<?php echo substr($event->description, 0, 200); ?>...");
+
+        const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${eventTitle}&dates=${eventDate}/${eventDate}&location=${eventLocation}&details=${eventDescription}`;
+
+        window.open(googleCalendarUrl, '_blank');
+    }
+
+    function shareEvent() {
+        copyToClipboard(window.location.href);
+    }
+
+    function getDirections() {
+        const address = encodeURIComponent("<?php echo $event->venue; ?>, <?php echo $event->city; ?>");
+        const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${address}`;
+        window.open(mapsUrl, '_blank');
     }
 
     updateTicketAvailability();
