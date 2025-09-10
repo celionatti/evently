@@ -63,7 +63,7 @@
                             </select>
                         </div>
                         <div class="col-md-8 mb-3">
-                            <div class="text-muted small">
+                            <div class="text-white small">
                                 <i class="bi bi-info-circle me-1"></i>
                                 Events with dates before <strong><?= date('F j, Y', strtotime($stats['cutoff_date'])) ?></strong> will be affected.
                             </div>
@@ -165,7 +165,7 @@
                                         <div class="d-flex justify-content-between align-items-start">
                                             <div>
                                                 <h6 class="mb-1 text-truncate"><?= htmlspecialchars($event['title']) ?></h6>
-                                                <small class="text-muted">
+                                                <small class="text-white">
                                                     <i class="bi bi-calendar me-1"></i>
                                                     <?= date('M j, Y', strtotime($event['date'])) ?>
                                                 </small>
@@ -179,7 +179,7 @@
 
                         <?php if (count($stats['events']) > 6): ?>
                             <div class="col-12 text-center">
-                                <div class="text-muted">
+                                <div class="text-white">
                                     <i class="bi bi-three-dots me-1"></i>
                                     And <?= count($stats['events']) - 6 ?> more events...
                                 </div>
@@ -204,7 +204,7 @@
                         <div class="row align-items-center">
                             <div class="col-md-8">
                                 <h6 class="text-danger mb-2">Delete Old Events</h6>
-                                <p class="text-muted mb-0">
+                                <p class="text-white mb-0">
                                     This action will permanently delete all events older than <?= $months_old ?> months 
                                     along with their attendees, tickets, transactions, and associated files. 
                                     <strong>This action cannot be undone.</strong>
@@ -242,10 +242,10 @@
                         <i class="bi bi-check-circle text-success" style="font-size: 4rem;"></i>
                     </div>
                     <h4 class="text-success mb-3">All Clean!</h4>
-                    <p class="text-muted mb-4">
+                    <p class="text-white mb-4">
                         No events older than <?= $months_old ?> months found. Your database is clean and optimized.
                     </p>
-                    <div class="text-muted small">
+                    <div class="text-white small">
                         Events with dates before <strong><?= date('F j, Y', strtotime($stats['cutoff_date'])) ?></strong> would be considered for cleanup.
                     </div>
                 </div>
@@ -353,7 +353,7 @@
                     <span class="visually-hidden">Loading...</span>
                 </div>
                 <div>Processing cleanup operation...</div>
-                <div class="small text-muted mt-2">This may take a few moments</div>
+                <div class="small text-white mt-2">This may take a few moments</div>
             </div>
         `;
         document.body.appendChild(overlay);

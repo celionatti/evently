@@ -130,3 +130,14 @@ Stack trace:
 #10 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
 #11 {main}
 
+[2025-09-10 18:39:41] TypeError: number_format(): Argument #1 ($num) must be of type float, string given in C:\xampp\htdocs\evently\app\controllers\AdminEventController.php on line 849
+Stack trace:
+#0 C:\xampp\htdocs\evently\app\controllers\AdminEventController.php(849): number_format('50000')
+#1 C:\xampp\htdocs\evently\app\controllers\AdminEventController.php(711): App\controllers\AdminEventController->generateAttendeesPDF(Object(App\models\Event), Array, 150000)
+#2 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminEventController->exportAttendees(Object(Trees\Http\Request), Object(Trees\Http\Response), 'natti_beach_par...')
+#3 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'exportAttendees', Array)
+#4 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#5 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#6 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#7 {main}
+

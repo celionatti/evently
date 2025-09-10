@@ -156,3 +156,31 @@
 [2025-09-10 10:28:20] [ERROR] SQLSTATE[HY093]: Invalid parameter number: parameter was not defined {"query":"","params":[],"error_code":""}
 [2025-09-10 10:32:00] [ERROR] SQLSTATE[HY093]: Invalid parameter number: parameter was not defined {"query":"","params":[],"error_code":""}
 [2025-09-10 10:44:33] [ERROR] SQLSTATE[HY093]: Invalid parameter number: parameter was not defined {"query":"","params":[],"error_code":""}
+[2025-09-10 11:08:42] [ERROR] SQLSTATE[HY093]: Invalid parameter number: parameter was not defined {"query":"","params":[],"error_code":""}
+[2025-09-10 11:12:40] [ERROR] SQLSTATE[HY093]: Invalid parameter number: parameter was not defined {"query":"","params":[],"error_code":""}
+[2025-09-10 11:13:02] [ERROR] SQLSTATE[HY093]: Invalid parameter number: parameter was not defined {"query":"","params":[],"error_code":""}
+[2025-09-10 11:13:42] [ERROR] SQLSTATE[HY093]: Invalid parameter number: parameter was not defined {"query":"","params":[],"error_code":""}
+[2025-09-10 11:14:36] [ERROR] SQLSTATE[HY093]: Invalid parameter number: parameter was not defined {"query":"","params":[],"error_code":""}
+[2025-09-10 11:14:42] [ERROR] SQLSTATE[HY093]: Invalid parameter number: parameter was not defined {"query":"","params":[],"error_code":""}
+[2025-09-10 11:14:47] [ERROR] SQLSTATE[HY093]: Invalid parameter number: parameter was not defined {"query":"","params":[],"error_code":""}
+[2025-09-10 11:14:50] [ERROR] SQLSTATE[HY093]: Invalid parameter number: parameter was not defined {"query":"","params":[],"error_code":""}
+[2025-09-10 11:15:35] [ERROR] SQLSTATE[HY093]: Invalid parameter number: parameter was not defined {"query":"","params":[],"error_code":""}
+[2025-09-10 11:15:37] [ERROR] SQLSTATE[HY093]: Invalid parameter number: parameter was not defined {"query":"","params":[],"error_code":""}
+[2025-09-10 11:15:42] [ERROR] SQLSTATE[HY093]: Invalid parameter number: parameter was not defined {"query":"","params":[],"error_code":""}
+[2025-09-10 11:15:45] [ERROR] SQLSTATE[HY093]: Invalid parameter number: parameter was not defined {"query":"","params":[],"error_code":""}
+[2025-09-10 11:15:49] [ERROR] SQLSTATE[HY093]: Invalid parameter number: parameter was not defined {"query":"","params":[],"error_code":""}
+[2025-09-10 11:15:53] [ERROR] SQLSTATE[HY093]: Invalid parameter number: parameter was not defined {"query":"","params":[],"error_code":""}
+[2025-09-10 11:17:04] [ERROR] SQLSTATE[HY093]: Invalid parameter number: parameter was not defined {"query":"","params":[],"error_code":""}
+[2025-09-10 11:17:08] [ERROR] SQLSTATE[HY093]: Invalid parameter number: parameter was not defined {"query":"","params":[],"error_code":""}
+[2025-09-10 11:17:18] [ERROR] SQLSTATE[HY093]: Invalid parameter number: parameter was not defined {"query":"","params":[],"error_code":""}
+[2025-09-10 11:17:49] [ERROR] SQLSTATE[HY093]: Invalid parameter number: parameter was not defined {"query":"","params":[],"error_code":""}
+[2025-09-10 11:17:52] [ERROR] SQLSTATE[HY093]: Invalid parameter number: parameter was not defined {"query":"","params":[],"error_code":""}
+[2025-09-10 11:18:27] [ERROR] SQLSTATE[HY093]: Invalid parameter number: parameter was not defined {"query":"","params":[],"error_code":""}
+[2025-09-10 11:18:53] [ERROR] SQLSTATE[HY093]: Invalid parameter number: parameter was not defined {"query":"","params":[],"error_code":""}
+[2025-09-10 11:19:29] [ERROR] SQLSTATE[HY093]: Invalid parameter number: parameter was not defined {"query":"","params":[],"error_code":""}
+[2025-09-10 18:27:35] [ERROR] SQLSTATE[HY093]: Invalid parameter number: parameter was not defined {"query":"","params":[],"error_code":""}
+[2025-09-10 18:31:22] [ERROR] SQLSTATE[HY093]: Invalid parameter number: parameter was not defined {"query":"","params":[],"error_code":""}
+[2025-09-10 18:36:34] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-10 18:36:36] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-10 18:37:31] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-10 18:37:32] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
