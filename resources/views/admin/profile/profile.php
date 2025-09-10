@@ -16,10 +16,10 @@ declare(strict_types=1);
         <div class="col-lg-4">
             <div class="dashboard-card">
                 <div class="text-center">
-                    <img src="{{{ get_image("", "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80") }}}"
+                    <img src="{{{ get_image("", "/dist/img/no_image.png") }}}"
                         class="profile-avatar mb-3" alt="Profile Avatar">
-                    <h3>John Organizer</h3>
-                    <p class="text-secondary">Event Manager</p>
+                    <h3 class="text-capitalize">{{{ $user->name . ' ' . $user->other_name }}}</h3>
+                    <p class="text-secondary">{{{ $user->role === 'admin' ? 'Administrator' : 'Event Manager' }}}</p>
 
                     <div class="security-badge mb-3 mx-auto">
                         <i class="bi bi-shield-check"></i>
@@ -41,11 +41,8 @@ declare(strict_types=1);
                         </div>
                     </div>
 
-                    <button class="btn btn-ghost w-100 mb-2">
+                    <button class="btn btn-ghost w-100 mb-2 disabled">
                         <i class="bi bi-camera me-2"></i>Change Photo
-                    </button>
-                    <button class="btn btn-outline-secondary w-100">
-                        <i class="bi bi-download me-2"></i>Export Data
                     </button>
                 </div>
             </div>
@@ -72,63 +69,47 @@ declare(strict_types=1);
                 <div class="tab-content" id="profileTabsContent">
                     <!-- Personal Info Tab -->
                     <div class="tab-pane fade show active" id="personal" role="tabpanel">
-                        <form>
+                        <form action="" method="POST">
                             <div class="row g-3">
                                 <div class="col-md-6">
-                                    <label class="form-label">First Name</label>
-                                    <input type="text" class="form-control" value="John">
+                                    <label class="form-label">Name</label>
+                                    <input type="text" name="name" class="form-control" value="{{{ old('name', $user->name) }}}" placeholder="First Name">
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label">Last Name</label>
-                                    <input type="text" class="form-control" value="Organizer">
+                                    <label class="form-label">Other Name</label>
+                                    <input type="text" name="other_name" class="form-control" value="{{{ old('other_name', $user->other_name) }}}" placeholder="Other Name">
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Email Address</label>
-                                    <input type="email" class="form-control" value="john@organizer.com">
+                                    <input type="email" name="email" class="form-control" value="{{{ old('email', $user->email) }}}" placeholder="example@mail.com" disabled>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Phone Number</label>
-                                    <input type="tel" class="form-control" value="+234 812 345 6789">
+                                    <input type="tel" name="phone" class="form-control" value="{{{ old('phone', $user->phone) }}}" placeholder="e.g., +234 812 345 6789">
                                 </div>
                                 <div class="col-12">
                                     <label class="form-label">Bio</label>
-                                    <textarea class="form-control" rows="3">Professional event organizer with 5+ years of experience creating memorable experiences.</textarea>
+                                    <textarea class="form-control" name="bio" rows="3" placeholder="Professional event organizer with 5+ years of experience creating memorable experiences.">{{{ old('bio', $user->bio) }}}</textarea>
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label">Organization</label>
-                                    <input type="text" class="form-control" value="Event Masters NG">
+                                    <label class="form-label">Business Name(Organization)</label>
+                                    <input type="text" name="business_name" class="form-control" value="{{{ old('business_name', $user->business_name) }}}" placeholder="Your Business or Organization Name">
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Website</label>
-                                    <input type="url" class="form-control" value="https://eventmasters.ng">
+                                    <input type="url" name="website" class="form-control" value="{{{ old('website', $user->website) }}}" placeholder="https://yourwebsite.com">
                                 </div>
                                 <div class="col-12">
                                     <label class="form-label">Address</label>
-                                    <input type="text" class="form-control" value="123 Event Street, Victoria Island">
+                                    <input type="text" name="address" class="form-control" value="{{{ old('address', $user->address) }}}" placeholder="123 Event Street, Victoria Island">
                                 </div>
-                                <div class="col-md-4">
-                                    <label class="form-label">City</label>
-                                    <select class="form-select">
-                                        <option selected>Lagos</option>
-                                        <option>Abuja</option>
-                                        <option>Port Harcourt</option>
-                                        <option>Ibadan</option>
-                                        <option>Kano</option>
+                                <div class="col-md-12">
+                                    <label class="form-label">Country</label>
+                                    <select name="country" class="form-select" aria-placeholder="Select Country">
+                                        <option selected>Nigeria</option>
+                                        <option>UK</option>
+                                        <option>Kenya</option>
                                     </select>
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label">State</label>
-                                    <select class="form-select">
-                                        <option selected>Lagos</option>
-                                        <option>Abuja</option>
-                                        <option>Rivers</option>
-                                        <option>Oyo</option>
-                                        <option>Kano</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label">Postal Code</label>
-                                    <input type="text" class="form-control" value="101241">
                                 </div>
                                 <div class="col-12 mt-4">
                                     <button type="submit" class="btn btn-pulse">
