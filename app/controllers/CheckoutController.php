@@ -760,7 +760,7 @@ class CheckoutController extends Controller
             ];
 
             // Generate PDF using enhanced PdfGenerator service
-            $pdf = $this->pdfGenerator->generateTicketPdf($ticketData);
+            $pdf = $this->pdfGenerator->generateSimpleTicketPdf($ticketData);
 
             $filename = 'ticket_' . $attendee->ticket_code . '.pdf';
             $this->pdfGenerator->outputPdfForDownload($pdf, $filename);
@@ -820,7 +820,7 @@ class CheckoutController extends Controller
                     'ticket' => $ticket
                 ];
 
-                $pdf = $this->pdfGenerator->generateTicketPdf($ticketData);
+                $pdf = $this->pdfGenerator->generateSimpleTicketPdf($ticketData);
                 $pdfContent = $pdf->Output('', 'S');
 
                 $filename = 'ticket-' . $attendee->ticket_code . '.pdf';
