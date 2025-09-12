@@ -774,77 +774,85 @@ class CheckoutController extends Controller
      * Bulk download all tickets for a transaction as ZIP
      */
     public function downloadAllTickets(Request $request, Response $response, $reference)
-{
-    try {
-        // Get transaction
-        $transaction = Transaction::where(['reference_id' => $reference]);
-        if (empty($transaction)) {
-            FlashMessage::setMessage('Transaction not found.', 'danger');
-            return $response->redirect('/events');
-        }
-        $transaction = array_shift($transaction);
+    {
+        try {
+            // Get transaction
+            $transaction = Transaction::where(['reference_id' => $reference]);
+            if (empty($transaction)) {
+                FlashMessage::setMessage('Transaction not found.', 'danger');
+                return $response->redirect('/events');
+            }
+            $transaction = array_shift($transaction);
 
-        // Get all attendees for this transaction
-        $attendees = Attendee::where(['transaction_id' => $transaction->id]);
-        if (empty($attendees)) {
-            FlashMessage::setMessage('No tickets found.', 'danger');
-            return $response->redirect('/events');
-        }
-
-        // Get event details
-        $event = Event::find($transaction->event_id);
-        if (!$event) {
-            FlashMessage::setMessage('Event not found.', 'danger');
-            return $response->redirect('/events');
-        }
-
-        // Create ZIP archive
-        $zip = new \ZipArchive();
-        $zipFilename = tempnam(sys_get_temp_dir(), 'tickets_') . '.zip';
-
-        if ($zip->open($zipFilename, \ZipArchive::CREATE) !== TRUE) {
-            throw new Exception('Could not create ZIP file');
-        }
-
-        // Generate PDF for each attendee and add to ZIP
-        foreach ($attendees as $attendee) {
-            $ticket = null;
-            if ($attendee->ticket_id) {
-                $ticket = Ticket::find($attendee->ticket_id);
+            // Get all attendees for this transaction
+            $attendees = Attendee::where(['transaction_id' => $transaction->id]);
+            if (empty($attendees)) {
+                FlashMessage::setMessage('No tickets found.', 'danger');
+                return $response->redirect('/events');
             }
 
-            $ticketData = [
-                'event' => $event,
-                'attendee' => $attendee,
-                'transaction' => $transaction,
-                'ticket' => $ticket
-            ];
-            
-            $pdf = $this->pdfGenerator->generateTicketPdf($ticketData);
-            $pdfContent = $pdf->Output('', 'S');
-            
-            $filename = 'ticket-' . $attendee->ticket_code . '.pdf';
-            $zip->addFromString($filename, $pdfContent);
+            // Get event details
+            $event = Event::find($transaction->event_id);
+            if (!$event) {
+                FlashMessage::setMessage('Event not found.', 'danger');
+                return $response->redirect('/events');
+            }
+
+            // Create ZIP archive
+            $zip = new \ZipArchive();
+            $zipFilename = tempnam(sys_get_temp_dir(), 'tickets_') . '.zip';
+
+            if ($zip->open($zipFilename, \ZipArchive::CREATE) !== TRUE) {
+                throw new Exception('Could not create ZIP file');
+            }
+
+            // Generate PDF for each attendee and add to ZIP
+            foreach ($attendees as $attendee) {
+                $ticket = null;
+                if ($attendee->ticket_id) {
+                    $ticket = Ticket::find($attendee->ticket_id);
+                }
+
+                $ticketData = [
+                    'event' => $event,
+                    'attendee' => $attendee,
+                    'transaction' => $transaction,
+                    'ticket' => $ticket
+                ];
+
+                $pdf = $this->pdfGenerator->generateTicketPdf($ticketData);
+                $pdfContent = $pdf->Output('', 'S');
+
+                $filename = 'ticket-' . $attendee->ticket_code . '.pdf';
+                $zip->addFromString($filename, $pdfContent);
+            }
+
+            $zip->close();
+
+            // Set headers for ZIP download
+            $downloadFilename = 'tickets-' . $reference . '.zip';
+
+            // $response->setHeader('Content-Type', 'application/zip');
+            // $response->setHeader('Content-Disposition', 'attachment; filename="' . $downloadFilename . '"');
+            // $response->setHeader('Content-Length', (string)filesize($zipFilename));
+            header('Content-Type: application/zip');
+            header('Content-Disposition: attachment; filename="' . $downloadFilename . '"');
+            header('Content-Length: ' . filesize($zipFilename));
+
+            // Clear any existing buffer to avoid corruption
+            if (ob_get_length()) {
+                ob_end_clean();
+            }
+
+            // Output ZIP content
+            readfile($zipFilename);
+
+            // Clean up temporary file
+            unlink($zipFilename);
+            exit;
+        } catch (Exception $e) {
+            FlashMessage::setMessage('Error generating tickets. Please try again.', 'danger');
+            return $response->redirect("/checkout/success/{$reference}");
         }
-
-        $zip->close();
-
-        // Set headers for ZIP download
-        $downloadFilename = 'tickets-' . $reference . '.zip';
-
-        $response->setHeader('Content-Type', 'application/zip');
-        $response->setHeader('Content-Disposition', 'attachment; filename="' . $downloadFilename . '"');
-        $response->setHeader('Content-Length', (string)filesize($zipFilename));
-
-        // Output ZIP content
-        readfile($zipFilename);
-
-        // Clean up temporary file
-        unlink($zipFilename);
-        exit;
-    } catch (Exception $e) {
-        FlashMessage::setMessage('Error generating tickets. Please try again.', 'danger');
-        return $response->redirect("/checkout/success/{$reference}");
     }
-}
 }
