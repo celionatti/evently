@@ -14,44 +14,47 @@ use Endroid\QrCode\ErrorCorrectionLevel;
 
 class PDFGenerator
 {
+    // Brand colors from your CSS
+    private array $brandColors = [
+        'primary' => [30, 136, 229],     // --blue-2: #1e88e5
+        'secondary' => [100, 181, 246],  // --blue-1: #64b5f6
+        'dark' => [13, 71, 161],         // --blue-3: #0d47a1
+        'bg_dark' => [11, 18, 32],       // --bg-0: #0b1220
+        'bg_medium' => [14, 21, 38],     // --bg-1: #0e1526
+        'bg_light' => [16, 26, 48],      // --bg-2: #101a30
+        'text_light' => [226, 232, 240], // --text-1: #e2e8f0
+        'text_medium' => [159, 179, 200], // --text-2: #9fb3c8
+        'white' => [255, 255, 255],
+        'light_gray' => [248, 250, 252],
+        'border' => [226, 232, 240],
+        'success' => [34, 197, 94],
+        'warning' => [245, 158, 11],
+        'danger' => [239, 68, 68]
+    ];
+
     /**
      * Generate a professional ticket PDF using the event ticket data structure
-     *
-     * @param array $ticketData
-     * @return TCPDF
      */
     public function generateTicketPdf(array $ticketData): TCPDF
     {
-        // Extract data from the ticket data array
         $event = $ticketData['event'];
         $attendee = $ticketData['attendee'];
         $transaction = $ticketData['transaction'];
         $ticket = $ticketData['ticket'] ?? null;
 
-        // Create PDF instance
         $pdf = $this->createProfessionalPdfInstance('Event Ticket - ' . $event->event_title);
-
-        // Generate the enhanced ticket design
         $this->generateEnhancedTicketDesign($pdf, $event, $attendee, $transaction, $ticket);
 
         return $pdf;
     }
 
     /**
-     * Generate an attendees report PDF for an event.
-     *
-     * @param object $event
-     * @param array $attendees
-     * @param float $totalRevenue
-     * @return TCPDF
+     * Generate an attendees report PDF for an event
      */
     public function generateAttendeesPdf(object $event, array $attendees, float $totalRevenue): TCPDF
     {
         $pdf = $this->createProfessionalPdfInstance('Event Attendees Report - ' . $event->event_title);
-        
-        // Enhanced attendees report design
         $this->generateAttendeesReportContent($pdf, $event, $attendees, $totalRevenue);
-
         return $pdf;
     }
 
@@ -84,359 +87,518 @@ class PDFGenerator
     }
 
     /**
-     * Generate enhanced ticket design
+     * Generate enhanced ticket design with brand colors
      */
     private function generateEnhancedTicketDesign(TCPDF $pdf, $event, $attendee, $transaction, $ticket = null): void
     {
-        // Define clean color scheme with black text and white background
-        $colors = [
-            'black' => [0, 0, 0],
-            'white' => [255, 255, 255],
-            'light_gray' => [240, 240, 240],
-            'border' => [200, 200, 200]
-        ];
-
-        // White background
-        $pdf->SetFillColor($colors['white'][0], $colors['white'][1], $colors['white'][2]);
+        // Set dark background for better logo visibility
+        $pdf->SetFillColor($this->brandColors['bg_dark'][0], $this->brandColors['bg_dark'][1], $this->brandColors['bg_dark'][2]);
         $pdf->Rect(0, 0, 210, 297, 'F');
 
-        // Header section
-        $this->drawProfessionalHeader($pdf, $colors, $event, $attendee->ticket_code);
+        // Add subtle gradient overlay
+        $this->addGradientBackground($pdf);
 
-        // Main ticket body
-        $this->drawTicketBody($pdf, $colors, $event, $attendee, $transaction, $ticket);
+        // Header section with brand styling
+        $this->drawBrandedHeader($pdf, $event, $attendee->ticket_code);
 
-        // QR Code section
-        $this->drawQRCodeSection($pdf, $colors, $event, $attendee);
+        // Main ticket body with improved layout
+        $this->drawEnhancedTicketBody($pdf, $event, $attendee, $transaction, $ticket);
 
-        // Footer section
-        $this->drawTicketFooter($pdf, $colors, $transaction);
+        // QR Code section with modern styling
+        $this->drawModernQRSection($pdf, $event, $attendee);
+
+        // Professional footer
+        $this->drawBrandedFooter($pdf, $transaction);
+
+        // Add decorative elements
+        $this->addDecorativeElements($pdf);
     }
 
     /**
-     * Draw professional header section
+     * Add gradient background effect
      */
-    private function drawProfessionalHeader(TCPDF $pdf, array $colors, $event, string $ticketCode): void
+    private function addGradientBackground(TCPDF $pdf): void
     {
-        // White header background
-        $pdf->SetFillColor($colors['white'][0], $colors['white'][1], $colors['white'][2]);
-        $pdf->Rect(0, 0, 210, 60, 'F');
+        // Create subtle gradient rectangles for depth
+        $pdf->SetAlpha(0.05);
+        $pdf->SetFillColor($this->brandColors['primary'][0], $this->brandColors['primary'][1], $this->brandColors['primary'][2]);
+        $pdf->Ellipse(50, -50, 200, 100, 0, 0, 360, 'F');
 
-        // Bottom border
-        $pdf->SetDrawColor($colors['border'][0], $colors['border'][1], $colors['border'][2]);
-        $pdf->Line(10, 60, 200, 60);
-
-        // Company logo section
-        $this->drawLogoSection($pdf, 20, 15);
-
-        // Event branding - black text
-        $pdf->SetTextColor($colors['black'][0], $colors['black'][1], $colors['black'][2]);
-        $pdf->SetFont('helvetica', 'B', 24);
-        $pdf->SetXY(70, 18);
-        $pdf->Cell(100, 15, 'EVENT TICKET', 0, 1, 'L');
-
-        $pdf->SetFont('helvetica', '', 10);
-        $pdf->SetXY(70, 35);
-        $pdf->Cell(100, 8, 'Powered by Eventlyy Event Management', 0, 1, 'L');
-
-        // Ticket number badge
-        $this->drawTicketNumberBadge($pdf, $colors, $ticketCode, 150, 20);
+        $pdf->SetFillColor($this->brandColors['secondary'][0], $this->brandColors['secondary'][1], $this->brandColors['secondary'][2]);
+        $pdf->Ellipse(160, 350, 180, 90, 0, 0, 360, 'F');
+        $pdf->SetAlpha(1);
     }
 
     /**
-     * Draw logo section with fallback
+     * Draw branded header with improved styling
      */
-    private function drawLogoSection(TCPDF $pdf, int $x, int $y): void
+    private function drawBrandedHeader(TCPDF $pdf, $event, string $ticketCode): void
     {
-        $logoPath = ROOT_PATH . '/public/dist/img/logo.png';
-        
+        // Header background with gradient effect
+        $pdf->SetFillColor($this->brandColors['bg_medium'][0], $this->brandColors['bg_medium'][1], $this->brandColors['bg_medium'][2]);
+        $pdf->RoundedRect(10, 10, 190, 60, 8, '1111', 'F');
+
+        // Border accent
+        $pdf->SetDrawColor($this->brandColors['primary'][0], $this->brandColors['primary'][1], $this->brandColors['primary'][2]);
+        $pdf->SetLineWidth(0.5);
+        $pdf->RoundedRect(10, 10, 190, 60, 8, '1111', 'D');
+
+        // Company logo section with better positioning
+        $this->drawEnhancedLogoSection($pdf, 25, 25);
+
+        // Event branding with better typography
+        $pdf->SetTextColor($this->brandColors['text_light'][0], $this->brandColors['text_light'][1], $this->brandColors['text_light'][2]);
+        $pdf->SetFont('helvetica', 'B', 20); // reduced from 28
+        $pdf->SetXY(85, 25);
+        $pdf->Cell(85, 10, 'EVENT TICKET', 0, 1, 'L');
+
+        $pdf->SetTextColor($this->brandColors['secondary'][0], $this->brandColors['secondary'][1], $this->brandColors['secondary'][2]);
+        $pdf->SetFont('helvetica', '', 9); // reduced from 11
+        $pdf->SetXY(85, 38);
+        $pdf->Cell(85, 6, 'Powered by Eventlyy', 0, 1, 'L');
+
+        // Move ticket badge further right and shrink height
+        $this->drawEnhancedTicketBadge($pdf, $ticketCode, 150, 18);
+    }
+
+    /**
+     * Draw enhanced logo section
+     */
+    private function drawEnhancedLogoSection(TCPDF $pdf, int $x, int $y): void
+    {
+        $logoPath = ROOT_PATH . '/public/dist/img/eventlyy.png';
+
         if (file_exists($logoPath)) {
             try {
-                $pdf->Image($logoPath, $x, $y, 35, 35, 'PNG', '', '', true, 150, '', false, false, 0, false, false, false);
+                // Add logo background for better visibility
+                $pdf->SetFillColor($this->brandColors['light_gray'][0], $this->brandColors['light_gray'][1], $this->brandColors['light_gray'][2]);
+                $pdf->RoundedRect($x - 2, $y - 2, 44, 44, 6, '1111', 'F');
+
+                $pdf->Image($logoPath, $x, $y, 40, 40, 'PNG', '', '', true, 150, '', false, false, 0, false, false, false);
             } catch (Exception $e) {
-                $this->drawLogoFallback($pdf, $x, $y);
+                $this->drawEnhancedLogoFallback($pdf, $x, $y);
             }
         } else {
-            $this->drawLogoFallback($pdf, $x, $y);
+            $this->drawEnhancedLogoFallback($pdf, $x, $y);
         }
     }
 
     /**
-     * Draw logo fallback design
+     * Draw enhanced logo fallback with brand colors
      */
-    private function drawLogoFallback(TCPDF $pdf, int $x, int $y): void
+    private function drawEnhancedLogoFallback(TCPDF $pdf, int $x, int $y): void
     {
-        // Simple text-based logo alternative
-        $pdf->SetTextColor(0, 0, 0);
-        $pdf->SetFont('helvetica', 'B', 16);
+        // Logo container with gradient
+        $pdf->SetFillColor($this->brandColors['primary'][0], $this->brandColors['primary'][1], $this->brandColors['primary'][2]);
+        $pdf->RoundedRect($x, $y, 40, 40, 8, '1111', 'F');
+
+        // Brand text
+        $pdf->SetTextColor($this->brandColors['white'][0], $this->brandColors['white'][1], $this->brandColors['white'][2]);
+        $pdf->SetFont('helvetica', 'B', 14);
         $pdf->SetXY($x, $y + 10);
-        $pdf->Cell(35, 12, 'EVENTLYY', 0, 0, 'C');
+        $pdf->Cell(40, 8, 'EVENT', 0, 0, 'C');
+
+        $pdf->SetXY($x, $y + 22);
+        $pdf->Cell(40, 8, 'LYYYY', 0, 0, 'C');
     }
 
     /**
-     * Draw ticket number badge
+     * Draw enhanced ticket badge
      */
-    private function drawTicketNumberBadge(TCPDF $pdf, array $colors, string $ticketCode, int $x, int $y): void
+    private function drawEnhancedTicketBadge(TCPDF $pdf, string $ticketCode, int $x, int $y): void
     {
-        // Badge background - light gray
-        $pdf->SetFillColor($colors['light_gray'][0], $colors['light_gray'][1], $colors['light_gray'][2]);
-        $pdf->SetDrawColor($colors['border'][0], $colors['border'][1], $colors['border'][2]);
-        $pdf->RoundedRect($x, $y, 45, 25, 4, '1111', 'FD');
+        // Badge background with gradient effect
+        $pdf->SetFillColor($this->brandColors['primary'][0], $this->brandColors['primary'][1], $this->brandColors['primary'][2]);
+        $pdf->RoundedRect($x, $y, 50, 30, 8, '1111', 'F');
 
-        // Badge content - black text
-        $pdf->SetTextColor($colors['black'][0], $colors['black'][1], $colors['black'][2]);
-        $pdf->SetFont('helvetica', 'B', 10);
-        $pdf->SetXY($x, $y + 5);
-        $pdf->Cell(45, 6, 'TICKET #', 0, 1, 'C');
+        // Badge border
+        $pdf->SetDrawColor($this->brandColors['secondary'][0], $this->brandColors['secondary'][1], $this->brandColors['secondary'][2]);
+        $pdf->SetLineWidth(0.5);
+        $pdf->RoundedRect($x, $y, 50, 30, 8, '1111', 'D');
+
+        // Badge content
+        $pdf->SetTextColor($this->brandColors['white'][0], $this->brandColors['white'][1], $this->brandColors['white'][2]);
+        $pdf->SetFont('helvetica', 'B', 9);
+        $pdf->SetXY($x, $y + 6);
+        $pdf->Cell(50, 6, 'TICKET #', 0, 1, 'C');
 
         $pdf->SetFont('helvetica', 'B', 12);
-        $pdf->SetXY($x, $y + 13);
-        $pdf->Cell(45, 8, $ticketCode, 0, 1, 'C');
+        $pdf->SetXY($x, $y + 16);
+        $pdf->Cell(50, 8, $ticketCode, 0, 1, 'C');
     }
 
     /**
-     * Draw main ticket body
+     * Draw enhanced ticket body with better formatting
      */
-    private function drawTicketBody(TCPDF $pdf, array $colors, $event, $attendee, $transaction, $ticket = null): void
+    private function drawEnhancedTicketBody(TCPDF $pdf, $event, $attendee, $transaction, $ticket = null): void
     {
-        $yPosition = 70;
+        $yPosition = 85;
 
-        // Event title
-        $pdf->SetTextColor($colors['black'][0], $colors['black'][1], $colors['black'][2]);
-        $pdf->SetFont('helvetica', 'B', 18);
-        $pdf->SetXY(20, $yPosition);
-        $pdf->MultiCell(170, 10, htmlspecialchars($event->event_title), 0, 'C');
-        $yPosition += 15;
+        // Event title section
+        $this->drawSectionCard($pdf, 15, $yPosition, 180, 25);
 
-        // Divider line
-        $pdf->SetDrawColor($colors['border'][0], $colors['border'][1], $colors['border'][2]);
-        $pdf->Line(20, $yPosition, 190, $yPosition);
-        $yPosition += 15;
+        $pdf->SetTextColor($this->brandColors['text_light'][0], $this->brandColors['text_light'][1], $this->brandColors['text_light'][2]);
+        $pdf->SetFont('helvetica', 'B', 22);
+        $pdf->SetXY(25, $yPosition + 8);
+        $pdf->MultiCell(160, 10, htmlspecialchars($event->event_title), 0, 'C');
+
+        $yPosition += 40;
 
         // Attendee information section
-        $pdf->SetFont('helvetica', 'B', 14);
-        $pdf->SetXY(20, $yPosition);
-        $pdf->Cell(80, 8, 'ATTENDEE INFORMATION', 0, 1);
-        $yPosition += 12;
-
-        $pdf->SetFont('helvetica', '', 11);
-        $this->drawInfoRow($pdf, 20, $yPosition, 'Name:', htmlspecialchars($attendee->name));
-        $yPosition += 8;
-        $this->drawInfoRow($pdf, 20, $yPosition, 'Email:', htmlspecialchars($attendee->email));
-        $yPosition += 8;
-        $this->drawInfoRow($pdf, 20, $yPosition, 'Phone:', htmlspecialchars($attendee->phone));
-        $yPosition += 15;
+        $this->drawInfoSection($pdf, 'ATTENDEE INFORMATION', $yPosition, [
+            'Name' => htmlspecialchars($attendee->name),
+            'Email' => htmlspecialchars($attendee->email),
+            'Phone' => htmlspecialchars($attendee->phone)
+        ]);
+        $yPosition += 60;
 
         // Event details section
-        $pdf->SetFont('helvetica', 'B', 14);
-        $pdf->SetXY(20, $yPosition);
-        $pdf->Cell(80, 8, 'EVENT DETAILS', 0, 1);
-        $yPosition += 12;
-
-        $pdf->SetFont('helvetica', '', 11);
-        $eventDate = date('F j, Y', strtotime($event->event_date));
+        $eventDate = date('l, F j, Y', strtotime($event->event_date));
         $startTime = date('g:i A', strtotime($event->start_time));
-        $this->drawInfoRow($pdf, 20, $yPosition, 'Date & Time:', $eventDate . ' at ' . $startTime);
-        $yPosition += 8;
-        $this->drawInfoRow($pdf, 20, $yPosition, 'Venue:', htmlspecialchars($event->venue));
-        $yPosition += 8;
-        $this->drawInfoRow($pdf, 20, $yPosition, 'City:', htmlspecialchars($event->city));
-        $yPosition += 15;
 
-        // Ticket information section
+        $this->drawInfoSection($pdf, 'EVENT DETAILS', $yPosition, [
+            'Date & Time' => $eventDate . ' at ' . $startTime,
+            'Venue' => htmlspecialchars($event->venue),
+            'Location' => htmlspecialchars($event->city)
+        ]);
+        $yPosition += 60;
+
+        // Ticket information section (if ticket exists)
         if ($ticket) {
-            $pdf->SetFont('helvetica', 'B', 14);
-            $pdf->SetXY(20, $yPosition);
-            $pdf->Cell(80, 8, 'TICKET INFORMATION', 0, 1);
-            $yPosition += 12;
+            $formattedAmount = $this->formatCurrency((float)$transaction->amount);
 
-            $pdf->SetFont('helvetica', '', 11);
-            $this->drawInfoRow($pdf, 20, $yPosition, 'Ticket Type:', htmlspecialchars($ticket->ticket_name));
-            $yPosition += 8;
-            
-            // Format amount properly
-            $formattedAmount = '₦' . number_format((float)$transaction->amount, 2);
-            $this->drawInfoRow($pdf, 20, $yPosition, 'Amount:', $formattedAmount);
-            $yPosition += 8;
-            
-            $this->drawInfoRow($pdf, 20, $yPosition, 'Reference ID:', $transaction->reference_id);
-            $yPosition += 15;
+            $this->drawInfoSection($pdf, 'TICKET INFORMATION', $yPosition, [
+                'Ticket Type' => htmlspecialchars($ticket->ticket_name),
+                'Amount Paid' => $formattedAmount,
+                'Reference ID' => $transaction->reference_id,
+                'Status' => ucfirst($attendee->status ?? 'confirmed')
+            ]);
         }
     }
 
     /**
-     * Draw information row with label and value
+     * Draw a section card background
      */
-    private function drawInfoRow(TCPDF $pdf, int $x, int $y, string $label, string $value): void
+    private function drawSectionCard(TCPDF $pdf, int $x, int $y, int $width, int $height): void
     {
-        $pdf->SetXY($x, $y);
-        $pdf->SetFont('helvetica', 'B', 11);
-        $pdf->Cell(40, 6, $label, 0, 0, 'L');
-        
-        $pdf->SetFont('helvetica', '', 11);
-        $pdf->SetXY($x + 40, $y);
-        $pdf->Cell(130, 6, $value, 0, 1, 'L');
+        $pdf->SetFillColor($this->brandColors['bg_light'][0], $this->brandColors['bg_light'][1], $this->brandColors['bg_light'][2]);
+        $pdf->RoundedRect($x, $y, $width, $height, 6, '1111', 'F');
+
+        $pdf->SetDrawColor($this->brandColors['border'][0], $this->brandColors['border'][1], $this->brandColors['border'][2]);
+        $pdf->SetLineWidth(0.2);
+        $pdf->RoundedRect($x, $y, $width, $height, 6, '1111', 'D');
     }
 
     /**
-     * Draw QR code section
+     * Draw information section with improved styling
      */
-    private function drawQRCodeSection(TCPDF $pdf, array $colors, $event, $attendee): void
+    private function drawInfoSection(TCPDF $pdf, string $title, int $yPosition, array $data): void
     {
-        $yPosition = 200;
+        // Section background
+        $this->drawSectionCard($pdf, 20, $yPosition, 170, 15 + (count($data) * 10));
 
-        // Generate QR code
+        // Section title
+        $pdf->SetTextColor($this->brandColors['secondary'][0], $this->brandColors['secondary'][1], $this->brandColors['secondary'][2]);
+        $pdf->SetFont('helvetica', 'B', 14);
+        $pdf->SetXY(30, $yPosition + 5);
+        $pdf->Cell(150, 8, $title, 0, 1, 'L');
+
+        $itemY = $yPosition + 18;
+        foreach ($data as $label => $value) {
+            $this->drawEnhancedInfoRow($pdf, 30, $itemY, $label . ':', $value);
+            $itemY += 10;
+        }
+    }
+
+    /**
+     * Draw enhanced information row
+     */
+    private function drawEnhancedInfoRow(TCPDF $pdf, int $x, int $y, string $label, string $value): void
+    {
+        // Label
+        $pdf->SetTextColor($this->brandColors['text_medium'][0], $this->brandColors['text_medium'][1], $this->brandColors['text_medium'][2]);
+        $pdf->SetFont('helvetica', '600', 11);
+        $pdf->SetXY($x, $y);
+        $pdf->Cell(50, 6, $label, 0, 0, 'L');
+
+        // Value
+        $pdf->SetTextColor($this->brandColors['text_light'][0], $this->brandColors['text_light'][1], $this->brandColors['text_light'][2]);
+        $pdf->SetFont('helvetica', '', 11);
+        $pdf->SetXY($x + 50, $y);
+        $pdf->Cell(120, 6, $value, 0, 1, 'L');
+    }
+
+    /**
+     * Draw modern QR code section
+     */
+    private function drawModernQRSection(TCPDF $pdf, $event, $attendee): void
+    {
+        $yPosition = 220;
+
+        // QR code container with modern styling
+        $pdf->SetFillColor($this->brandColors['bg_medium'][0], $this->brandColors['bg_medium'][1], $this->brandColors['bg_medium'][2]);
+        $pdf->RoundedRect(70, $yPosition, 70, 90, 12, '1111', 'F');
+
+        $pdf->SetDrawColor($this->brandColors['primary'][0], $this->brandColors['primary'][1], $this->brandColors['primary'][2]);
+        $pdf->SetLineWidth(0.8);
+        $pdf->RoundedRect(70, $yPosition, 70, 90, 12, '1111', 'D');
+
+        // Generate QR code with enhanced data
         $qrCodeData = json_encode([
             'ticket_code' => $attendee->ticket_code,
-            'event' => $event->event_title,
+            'event_id' => $event->id ?? null,
+            'event_title' => $event->event_title,
             'attendee_name' => $attendee->name,
-            'ticket_status' => $attendee->status
+            'status' => $attendee->status ?? 'confirmed',
+            'generated_at' => date('Y-m-d H:i:s')
         ]);
 
-        $qrCodeBase64 = $this->generateQrCodeBase64($qrCodeData);
-
-        // QR code container
-        $pdf->SetDrawColor($colors['border'][0], $colors['border'][1], $colors['border'][2]);
-        $pdf->SetFillColor($colors['white'][0], $colors['white'][1], $colors['white'][2]);
-        $pdf->RoundedRect(75, $yPosition, 60, 80, 5, '1111', 'FD');
-
-        // QR code image
+        $qrCodeBase64 = $this->generateQrCodeBase64($qrCodeData, 180);
         $imageData = base64_decode($qrCodeBase64);
-        $pdf->Image('@' . $imageData, 85, $yPosition + 10, 40, 40, 'PNG', '', '', true, 150, '', false, false, 0, false, false, false);
 
-        // QR code label
-        $pdf->SetTextColor($colors['black'][0], $colors['black'][1], $colors['black'][2]);
-        $pdf->SetFont('helvetica', 'B', 10);
-        $pdf->SetXY(75, $yPosition + 55);
-        $pdf->Cell(60, 6, 'Scan for Entry', 0, 1, 'C');
+        // QR code with white background for better scanning
+        $pdf->SetFillColor($this->brandColors['white'][0], $this->brandColors['white'][1], $this->brandColors['white'][2]);
+        $pdf->RoundedRect(80, $yPosition + 10, 50, 50, 6, '1111', 'F');
+        $pdf->Image('@' . $imageData, 85, $yPosition + 15, 40, 40, 'PNG');
 
-        // Ticket code
-        $pdf->SetFont('helvetica', '', 9);
-        $pdf->SetXY(75, $yPosition + 65);
-        $pdf->Cell(60, 6, 'Ticket: ' . $attendee->ticket_code, 0, 1, 'C');
+        // QR code labels
+        $pdf->SetTextColor($this->brandColors['text_light'][0], $this->brandColors['text_light'][1], $this->brandColors['text_light'][2]);
+        $pdf->SetFont('helvetica', 'B', 12);
+        $pdf->SetXY(70, $yPosition + 70);
+        $pdf->Cell(70, 6, 'Scan for Entry', 0, 1, 'C');
+
+        $pdf->SetTextColor($this->brandColors['secondary'][0], $this->brandColors['secondary'][1], $this->brandColors['secondary'][2]);
+        $pdf->SetFont('helvetica', '', 10);
+        $pdf->SetXY(70, $yPosition + 80);
+        $pdf->Cell(70, 6, $attendee->ticket_code, 0, 1, 'C');
     }
 
     /**
-     * Draw ticket footer
+     * Draw branded footer
      */
-    private function drawTicketFooter(TCPDF $pdf, array $colors, $transaction): void
+    private function drawBrandedFooter(TCPDF $pdf, $transaction): void
     {
-        $yPosition = 285;
+        $yPosition = 270;
+
+        // Footer background
+        $pdf->SetFillColor($this->brandColors['bg_medium'][0], $this->brandColors['bg_medium'][1], $this->brandColors['bg_medium'][2]);
+        $pdf->RoundedRect(15, $yPosition, 180, 20, 6, '1111', 'F');
 
         // Footer border
-        $pdf->SetDrawColor($colors['border'][0], $colors['border'][1], $colors['border'][2]);
-        $pdf->Line(10, $yPosition - 5, 200, $yPosition - 5);
+        $pdf->SetDrawColor($this->brandColors['primary'][0], $this->brandColors['primary'][1], $this->brandColors['primary'][2]);
+        $pdf->SetLineWidth(0.3);
+        $pdf->Line(25, $yPosition + 5, 185, $yPosition + 5);
 
         // Footer text
-        $pdf->SetTextColor($colors['black'][0], $colors['black'][1], $colors['black'][2]);
-        $pdf->SetFont('helvetica', 'I', 8);
-        $pdf->SetXY(10, $yPosition);
-        $pdf->Cell(190, 5, 'Generated by Eventlyy Event Management System • ' . date('M j, Y g:i A'), 0, 1, 'C');
-        
-        $pdf->SetXY(10, $yPosition + 5);
-        $pdf->Cell(190, 5, 'Transaction Ref: ' . $transaction->reference_id, 0, 1, 'C');
+        $pdf->SetTextColor($this->brandColors['text_medium'][0], $this->brandColors['text_medium'][1], $this->brandColors['text_medium'][2]);
+        $pdf->SetFont('helvetica', '', 9);
+        $pdf->SetXY(25, $yPosition + 8);
+        $pdf->Cell(160, 4, 'Generated by Eventlyy Event Management System • ' . date('M j, Y g:i A'), 0, 1, 'C');
+
+        $pdf->SetXY(25, $yPosition + 13);
+        $pdf->Cell(160, 4, 'Transaction Reference: ' . $transaction->reference_id, 0, 1, 'C');
     }
 
     /**
-     * Generate attendees report content
+     * Add decorative elements
+     */
+    private function addDecorativeElements(TCPDF $pdf): void
+    {
+        // Add subtle corner decorations
+        $pdf->SetAlpha(0.1);
+        $pdf->SetFillColor($this->brandColors['secondary'][0], $this->brandColors['secondary'][1], $this->brandColors['secondary'][2]);
+
+        // Top corners
+        $pdf->Circle(15, 15, 8, 0, 360, 'F');
+        $pdf->Circle(195, 15, 8, 0, 360, 'F');
+
+        // Bottom corners
+        $pdf->Circle(15, 282, 8, 0, 360, 'F');
+        $pdf->Circle(195, 282, 8, 0, 360, 'F');
+
+        $pdf->SetAlpha(1);
+    }
+
+    /**
+     * Format currency properly with Nigerian Naira symbol
+     */
+    private function formatCurrency(float $amount): string
+    {
+        // Ensure amount is properly formatted with 2 decimal places
+        $formattedNumber = number_format($amount, 2, '.', ',');
+        return '₦' . $formattedNumber;
+    }
+
+    /**
+     * Generate attendees report with enhanced styling
      */
     private function generateAttendeesReportContent(TCPDF $pdf, object $event, array $attendees, float $totalRevenue): void
     {
-        // White background
-        $pdf->SetFillColor(255, 255, 255);
+        // Dark background for consistency
+        $pdf->SetFillColor($this->brandColors['bg_dark'][0], $this->brandColors['bg_dark'][1], $this->brandColors['bg_dark'][2]);
         $pdf->Rect(0, 0, 210, 297, 'F');
 
-        // Report header
-        $pdf->SetTextColor(0, 0, 0);
-        $pdf->SetFont('helvetica', 'B', 20);
-        $pdf->SetXY(10, 15);
-        $pdf->Cell(190, 10, 'EVENT ATTENDEES REPORT', 0, 1, 'C');
+        // Report header with branding
+        $this->drawReportHeader($pdf, $event);
 
-        $pdf->SetFont('helvetica', 'B', 16);
-        $pdf->SetXY(10, 30);
-        $pdf->Cell(190, 8, htmlspecialchars($event->event_title), 0, 1, 'C');
+        // Event information section
+        $this->drawEventInfoSection($pdf, $event, 60);
 
-        $pdf->SetFont('helvetica', '', 10);
-        $pdf->SetXY(10, 40);
-        $pdf->Cell(190, 6, 'Generated on: ' . date('M j, Y g:i A'), 0, 1, 'C');
-
-        // Event details
-        $pdf->SetFont('helvetica', 'B', 12);
-        $pdf->SetXY(10, 55);
-        $pdf->Cell(190, 8, 'Event Information', 0, 1, 'L');
-        
-        $pdf->SetFont('helvetica', '', 10);
-        $yPosition = 65;
-        $eventDetails = [
-            ['Date:', date('M j, Y', strtotime($event->event_date))],
-            ['Time:', date('g:i A', strtotime($event->start_time))],
-            ['Venue:', htmlspecialchars($event->venue)],
-            ['City:', htmlspecialchars($event->city)],
-            ['Status:', ucfirst($event->status)]
-        ];
-
-        foreach ($eventDetails as $detail) {
-            $pdf->SetXY(20, $yPosition);
-            $pdf->Cell(30, 6, $detail[0], 0, 0, 'L');
-            $pdf->SetXY(50, $yPosition);
-            $pdf->Cell(150, 6, $detail[1], 0, 1, 'L');
-            $yPosition += 7;
-        }
-
-        // Summary statistics
-        $yPosition += 10;
-        $pdf->SetFont('helvetica', 'B', 12);
-        $pdf->SetXY(10, $yPosition);
-        $pdf->Cell(190, 8, 'Summary Statistics', 0, 1, 'L');
-        $yPosition += 10;
-
-        $confirmedCount = count(array_filter($attendees, fn($a) => $a->status === 'confirmed'));
-        $pendingCount = count(array_filter($attendees, fn($a) => $a->status === 'pending'));
-        $checkedInCount = count(array_filter($attendees, fn($a) => $a->status === 'checked'));
-        $formattedRevenue = '₦' . number_format((float)$totalRevenue, 2);
-
-        $stats = [
-            ['Total Registrations:', (string)count($attendees)],
-            ['Confirmed Attendees:', (string)$confirmedCount],
-            ['Pending Confirmations:', (string)$pendingCount],
-            ['Checked In:', (string)$checkedInCount],
-            ['Total Revenue:', $formattedRevenue]
-        ];
-
-        $pdf->SetFont('helvetica', '', 10);
-        foreach ($stats as $stat) {
-            $pdf->SetXY(20, $yPosition);
-            $pdf->Cell(50, 6, $stat[0], 0, 0, 'L');
-            $pdf->SetXY(70, $yPosition);
-            $pdf->Cell(50, 6, $stat[1], 0, 1, 'L');
-            $yPosition += 7;
-        }
+        // Statistics section
+        $this->drawStatisticsSection($pdf, $attendees, $totalRevenue, 120);
 
         // Attendees table
-        $yPosition += 15;
-        $this->drawAttendeesTable($pdf, $attendees, $yPosition);
+        $this->drawEnhancedAttendeesTable($pdf, $attendees, 180);
     }
 
     /**
-     * Draw attendees table
+     * Draw enhanced report header
      */
-    private function drawAttendeesTable(TCPDF $pdf, array $attendees, int $startY): void
+    private function drawReportHeader(TCPDF $pdf, object $event): void
+    {
+        // Header background
+        $pdf->SetFillColor($this->brandColors['primary'][0], $this->brandColors['primary'][1], $this->brandColors['primary'][2]);
+        $pdf->RoundedRect(15, 15, 180, 35, 8, '1111', 'F');
+
+        // Title
+        $pdf->SetTextColor($this->brandColors['white'][0], $this->brandColors['white'][1], $this->brandColors['white'][2]);
+        $pdf->SetFont('helvetica', 'B', 20);
+        $pdf->SetXY(15, 25);
+        $pdf->Cell(180, 8, 'EVENT ATTENDEES REPORT', 0, 1, 'C');
+
+        $pdf->SetFont('helvetica', 'B', 14);
+        $pdf->SetXY(15, 35);
+        $pdf->Cell(180, 8, htmlspecialchars($event->event_title), 0, 1, 'C');
+
+        // Generation info
+        $pdf->SetFont('helvetica', '', 9);
+        $pdf->SetXY(15, 45);
+        $pdf->Cell(180, 4, 'Generated on: ' . date('l, F j, Y \a\t g:i A'), 0, 1, 'C');
+    }
+
+    /**
+     * Draw event information section
+     */
+    private function drawEventInfoSection(TCPDF $pdf, object $event, int $yPosition): void
+    {
+        $this->drawSectionCard($pdf, 20, $yPosition, 170, 45);
+
+        // Section title
+        $pdf->SetTextColor($this->brandColors['secondary'][0], $this->brandColors['secondary'][1], $this->brandColors['secondary'][2]);
+        $pdf->SetFont('helvetica', 'B', 14);
+        $pdf->SetXY(30, $yPosition + 5);
+        $pdf->Cell(150, 8, 'EVENT INFORMATION', 0, 1, 'L');
+
+        // Event details in two columns
+        $leftColumn = [
+            'Date' => date('l, F j, Y', strtotime($event->event_date)),
+            'Time' => date('g:i A', strtotime($event->start_time)),
+            'Status' => ucfirst($event->status ?? 'active')
+        ];
+
+        $rightColumn = [
+            'Venue' => htmlspecialchars($event->venue),
+            'City' => htmlspecialchars($event->city),
+            'Category' => htmlspecialchars($event->category ?? 'General')
+        ];
+
+        $itemY = $yPosition + 18;
+        foreach ($leftColumn as $label => $value) {
+            $this->drawEnhancedInfoRow($pdf, 30, $itemY, $label . ':', $value);
+            $itemY += 8;
+        }
+
+        $itemY = $yPosition + 18;
+        foreach ($rightColumn as $label => $value) {
+            $this->drawEnhancedInfoRow($pdf, 110, $itemY, $label . ':', $value);
+            $itemY += 8;
+        }
+    }
+
+    /**
+     * Draw statistics section with visual enhancements
+     */
+    private function drawStatisticsSection(TCPDF $pdf, array $attendees, float $totalRevenue, int $yPosition): void
+    {
+        $this->drawSectionCard($pdf, 20, $yPosition, 170, 45);
+
+        // Section title
+        $pdf->SetTextColor($this->brandColors['secondary'][0], $this->brandColors['secondary'][1], $this->brandColors['secondary'][2]);
+        $pdf->SetFont('helvetica', 'B', 14);
+        $pdf->SetXY(30, $yPosition + 5);
+        $pdf->Cell(150, 8, 'SUMMARY STATISTICS', 0, 1, 'L');
+
+        // Calculate statistics
+        $confirmedCount = count(array_filter($attendees, fn($a) => ($a->status ?? 'confirmed') === 'confirmed'));
+        $pendingCount = count(array_filter($attendees, fn($a) => ($a->status ?? 'confirmed') === 'pending'));
+        $checkedInCount = count(array_filter($attendees, fn($a) => ($a->status ?? 'confirmed') === 'checked_in'));
+
+        $leftStats = [
+            'Total Registrations' => (string)count($attendees),
+            'Confirmed Attendees' => (string)$confirmedCount,
+            'Checked In' => (string)$checkedInCount
+        ];
+
+        $rightStats = [
+            'Pending Confirmations' => (string)$pendingCount,
+            'Total Revenue' => $this->formatCurrency($totalRevenue),
+            'Avg. Ticket Price' => count($attendees) > 0 ? $this->formatCurrency($totalRevenue / count($attendees)) : $this->formatCurrency(0)
+        ];
+
+        $itemY = $yPosition + 18;
+        foreach ($leftStats as $label => $value) {
+            $this->drawStatisticRow($pdf, 30, $itemY, $label . ':', $value);
+            $itemY += 8;
+        }
+
+        $itemY = $yPosition + 18;
+        foreach ($rightStats as $label => $value) {
+            $this->drawStatisticRow($pdf, 110, $itemY, $label . ':', $value);
+            $itemY += 8;
+        }
+    }
+
+    /**
+     * Draw statistic row with emphasis on values
+     */
+    private function drawStatisticRow(TCPDF $pdf, int $x, int $y, string $label, string $value): void
+    {
+        // Label
+        $pdf->SetTextColor($this->brandColors['text_medium'][0], $this->brandColors['text_medium'][1], $this->brandColors['text_medium'][2]);
+        $pdf->SetFont('helvetica', '', 10);
+        $pdf->SetXY($x, $y);
+        $pdf->Cell(40, 6, $label, 0, 0, 'L');
+
+        // Value with emphasis
+        $pdf->SetTextColor($this->brandColors['secondary'][0], $this->brandColors['secondary'][1], $this->brandColors['secondary'][2]);
+        $pdf->SetFont('helvetica', 'B', 11);
+        $pdf->SetXY($x + 40, $y);
+        $pdf->Cell(40, 6, $value, 0, 1, 'L');
+    }
+
+    /**
+     * Draw enhanced attendees table
+     */
+    private function drawEnhancedAttendeesTable(TCPDF $pdf, array $attendees, int $startY): void
     {
         if (empty($attendees)) {
+            $pdf->SetTextColor($this->brandColors['text_medium'][0], $this->brandColors['text_medium'][1], $this->brandColors['text_medium'][2]);
             $pdf->SetFont('helvetica', 'I', 12);
-            $pdf->SetXY(10, $startY);
-            $pdf->Cell(190, 10, 'No attendees found for this event.', 0, 1, 'C');
+            $pdf->SetXY(20, $startY);
+            $pdf->Cell(170, 10, 'No attendees found for this event.', 0, 1, 'C');
             return;
         }
 
-        $pdf->SetFont('helvetica', 'B', 10);
-        $pdf->SetFillColor(240, 240, 240);
-        
         // Table header
         $headers = ['#', 'Name', 'Email', 'Ticket Type', 'Amount', 'Status', 'Date'];
-        $widths = [10, 40, 50, 30, 25, 20, 25];
-        
-        $x = 10;
+        $widths = [12, 35, 50, 28, 25, 18, 22];
+
+        // Header background
+        $pdf->SetFillColor($this->brandColors['primary'][0], $this->brandColors['primary'][1], $this->brandColors['primary'][2]);
+        $pdf->SetTextColor($this->brandColors['white'][0], $this->brandColors['white'][1], $this->brandColors['white'][2]);
+        $pdf->SetFont('helvetica', 'B', 10);
+
+        $x = 20;
         foreach ($headers as $index => $header) {
             $pdf->SetXY($x, $startY);
             $pdf->Cell($widths[$index], 8, $header, 1, 0, 'C', true);
@@ -444,52 +606,60 @@ class PDFGenerator
         }
 
         $y = $startY + 8;
-        $pdf->SetFont('helvetica', '', 8);
-        
+        $pdf->SetFont('helvetica', '', 9);
+
         foreach ($attendees as $index => $attendee) {
             $fill = ($index % 2 == 0);
-            
+
             if ($fill) {
-                $pdf->SetFillColor(245, 245, 245);
+                $pdf->SetFillColor($this->brandColors['bg_light'][0], $this->brandColors['bg_light'][1], $this->brandColors['bg_light'][2]);
             } else {
-                $pdf->SetFillColor(255, 255, 255);
+                $pdf->SetFillColor($this->brandColors['bg_medium'][0], $this->brandColors['bg_medium'][1], $this->brandColors['bg_medium'][2]);
             }
 
-            $x = 10;
+            $x = 20;
             $cells = [
                 ($index + 1),
                 mb_strlen($attendee->name) > 25 ? mb_substr($attendee->name, 0, 22) . '...' : $attendee->name,
                 mb_strlen($attendee->email) > 30 ? mb_substr($attendee->email, 0, 27) . '...' : $attendee->email,
                 mb_strlen($attendee->ticket_name) > 20 ? mb_substr($attendee->ticket_name, 0, 17) . '...' : $attendee->ticket_name,
-                '₦' . number_format((float)$attendee->amount, 2),
+                $this->formatCurrency((float)$attendee->amount),
                 ucfirst($attendee->status),
                 date('M j, Y', strtotime($attendee->created_at))
             ];
 
             foreach ($cells as $cellIndex => $cell) {
                 $pdf->SetXY($x, $y);
-                $pdf->Cell($widths[$cellIndex], 6, htmlspecialchars((string)$cell), 1, 0, 'C', $fill);
+
+                if ($cellIndex === 4) { // Amount column - right align
+                    $pdf->Cell($widths[$cellIndex], 6, htmlspecialchars((string)$cell), 1, 0, 'R', $fill);
+                } else {
+                    $pdf->Cell($widths[$cellIndex], 6, htmlspecialchars((string)$cell), 1, 0, 'C', $fill);
+                }
+
                 $x += $widths[$cellIndex];
             }
 
             $y += 6;
-            
+
             // Check if we need a new page
             if ($y > 270 && $index < count($attendees) - 1) {
                 $pdf->AddPage();
                 $y = 20;
-                
+
                 // Redraw header on new page
                 $pdf->SetFont('helvetica', 'B', 10);
-                $pdf->SetFillColor(240, 240, 240);
-                $x = 10;
+                $pdf->SetFillColor($this->brandColors['primary'][0], $this->brandColors['primary'][1], $this->brandColors['primary'][2]);
+                $pdf->SetTextColor($this->brandColors['white'][0], $this->brandColors['white'][1], $this->brandColors['white'][2]);
+
+                $x = 20;
                 foreach ($headers as $headerIndex => $header) {
                     $pdf->SetXY($x, $y);
                     $pdf->Cell($widths[$headerIndex], 8, $header, 1, 0, 'C', true);
                     $x += $widths[$headerIndex];
                 }
                 $y += 8;
-                $pdf->SetFont('helvetica', '', 8);
+                $pdf->SetFont('helvetica', '', 9);
             }
         }
     }
