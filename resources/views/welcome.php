@@ -13,7 +13,7 @@
                 <h1 class="reveal">Discover. Book. Experience the Night.</h1>
                 <p class="lead mt-3 reveal delay-1">From live concerts to tech conferences, grab verified tickets fast with a silky-smooth checkout and instant mobile passes.</p>
                 <div class="d-flex gap-2 mt-3 reveal delay-2">
-                    <a href="#" class="btn btn-pulse"><i class="bi bi-lightning-charge-fill me-1"></i> Explore Events</a>
+                    <a href="{{{ url("/events") }}}" class="btn btn-pulse"><i class="bi bi-lightning-charge-fill me-1"></i> Explore Events</a>
                     <a href="#how" class="btn btn-ghost"><i class="bi bi-play-circle me-1"></i> How it works</a>
                 </div>
                 <div class="spin-bubble" aria-hidden="true"></div>
