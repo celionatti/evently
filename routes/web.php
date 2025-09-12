@@ -33,6 +33,8 @@ $router->get('/checkout/payment/{reference}', [CheckoutController::class, 'payme
 $router->post('/checkout/process-payment', [CheckoutController::class, 'processPayment']);
 $router->get('/checkout/verify-payment', [CheckoutController::class, 'verifyPayment']);
 $router->get('/checkout/success/{reference}', [CheckoutController::class, 'successPage']);
+$router->get('/checkout/download-ticket/{attendeeId}/{reference}', [CheckoutController::class, 'downloadTicket']);
+$router->get('/checkout/download-all-tickets/{reference}', [CheckoutController::class, 'downloadAllTickets']);
 
 // Auth: Login/SignUp
 $router->get('/login', [AuthController::class, 'login']);

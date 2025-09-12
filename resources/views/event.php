@@ -177,11 +177,11 @@ use App\models\Categories;
                                             <div class="small">
                                                 <div class="mb-1">
                                                     <i class="bi bi-envelope me-1"></i>
-                                                    <a href="mailto:{{{ $event->mail }}}" class="text-decoration-none">{{{ $event->mail }}}</a>
+                                                    <a href="mailto:{{{ $event->mail }}}" class="text-decoration-none fw-semibold text-white">{{{ $event->mail }}}</a>
                                                 </div>
                                                 <div class="mb-1">
                                                     <i class="bi bi-phone me-1"></i>
-                                                    <a href="tel:{{{ $event->phone }}}" class="text-decoration-none">{{{ $event->phone }}}</a>
+                                                    <a href="tel:{{{ $event->phone }}}" class="text-decoration-none fw-semibold text-white">{{{ $event->phone }}}</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -237,11 +237,11 @@ use App\models\Categories;
                             </button>
 
                             <div class="btn-group" role="group">
-                                <button class="btn btn-outline-secondary" onclick="shareEvent()">
+                                <button class="btn btn-outline-primary" onclick="shareEvent()">
                                     <i class="bi bi-share me-2"></i>
                                     Share Event
                                 </button>
-                                <button class="btn btn-outline-secondary" onclick="getDirections()">
+                                <button class="btn btn-outline-info" onclick="getDirections()">
                                     <i class="bi bi-map me-2"></i>
                                     Directions
                                 </button>
@@ -250,7 +250,7 @@ use App\models\Categories;
 
                         <!-- Footer Note -->
                         <div class="text-center mt-4 pt-3 border-top border-secondary">
-                            <small class="text-danger">
+                            <small class="text-danger fw-semibold">
                                 <i class="bi bi-exclamation-triangle me-1"></i>
                                 Ticket availability and pricing may vary at the door
                             </small>

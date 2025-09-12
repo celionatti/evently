@@ -10,11 +10,16 @@ use App\models\Ticket;
 use Trees\Http\Request;
 use App\models\Attendee;
 use Trees\Http\Response;
+use Endroid\QrCode\QrCode;
 use App\models\Transaction;
+use App\services\PDFGenerator;
 use Trees\Controller\Controller;
 use App\models\TransactionTicket;
 use Trees\Exception\TreesException;
+use Endroid\QrCode\Writer\PngWriter;
+use Endroid\QrCode\Encoding\Encoding;
 use Trees\Helper\Utils\CodeGenerator;
+use Endroid\QrCode\ErrorCorrectionLevel;
 use Trees\Helper\FlashMessages\FlashMessage;
 
 class CheckoutController extends Controller
@@ -22,6 +27,7 @@ class CheckoutController extends Controller
     private $paystackSecretKey;
     private $paystackPublicKey;
     private $codeGenerator;
+    private $pdfGenerator;
 
     public function onConstruct()
     {
@@ -31,6 +37,7 @@ class CheckoutController extends Controller
 
         $this->paystackSecretKey = $_ENV['PAYSTACK_SECRET_KEY'] ?? 'sk_test_your_secret_key';
         $this->paystackPublicKey = $_ENV['PAYSTACK_PUBLIC_KEY'] ?? 'pk_test_your_public_key';
+        $this->pdfGenerator = new PDFGenerator();
 
         // Initialize CodeGenerator with uniqueness checker
         $this->codeGenerator = new CodeGenerator(
@@ -703,4 +710,141 @@ class CheckoutController extends Controller
 
         return $this->render('checkout/success', $view);
     }
+
+    /**
+     * Download individual ticket as PDF
+     */
+    public function downloadTicket(Request $request, Response $response, $attendeeId, $reference)
+    {
+        try {
+            // Verify attendee exists and belongs to this transaction
+            $attendee = Attendee::find($attendeeId);
+            if (!$attendee) {
+                FlashMessage::setMessage('Ticket not found.', 'danger');
+                return $response->redirect('/events');
+            }
+
+            // Get transaction to verify reference
+            $transaction = Transaction::where(['reference_id' => $reference]);
+            if (empty($transaction)) {
+                FlashMessage::setMessage('Invalid transaction reference.', 'danger');
+                return $response->redirect('/events');
+            }
+            $transaction = array_shift($transaction);
+
+            // Verify attendee belongs to this transaction
+            if ($attendee->transaction_id != $transaction->id) {
+                FlashMessage::setMessage('Invalid ticket access.', 'danger');
+                return $response->redirect('/events');
+            }
+
+            // Get event details
+            $event = Event::find($attendee->event_id);
+            if (!$event) {
+                FlashMessage::setMessage('Event not found.', 'danger');
+                return $response->redirect('/events');
+            }
+
+            // Get ticket details
+            $ticket = null;
+            if ($attendee->ticket_id) {
+                $ticket = Ticket::find($attendee->ticket_id);
+            }
+
+            // Prepare ticket data for PDF generation
+            $ticketData = [
+                'event' => $event,
+                'attendee' => $attendee,
+                'transaction' => $transaction,
+                'ticket' => $ticket
+            ];
+
+            // Generate PDF using enhanced PdfGenerator service
+            $pdf = $this->pdfGenerator->generateTicketPdf($ticketData);
+
+            $filename = 'ticket_' . $attendee->ticket_code . '.pdf';
+            $this->pdfGenerator->outputPdfForDownload($pdf, $filename);
+        } catch (Exception $e) {
+            FlashMessage::setMessage('Error generating ticket PDF. Please try again.', 'danger');
+            return $response->redirect("/checkout/success/{$reference}");
+        }
+    }
+
+    /**
+     * Bulk download all tickets for a transaction as ZIP
+     */
+    public function downloadAllTickets(Request $request, Response $response, $reference)
+{
+    try {
+        // Get transaction
+        $transaction = Transaction::where(['reference_id' => $reference]);
+        if (empty($transaction)) {
+            FlashMessage::setMessage('Transaction not found.', 'danger');
+            return $response->redirect('/events');
+        }
+        $transaction = array_shift($transaction);
+
+        // Get all attendees for this transaction
+        $attendees = Attendee::where(['transaction_id' => $transaction->id]);
+        if (empty($attendees)) {
+            FlashMessage::setMessage('No tickets found.', 'danger');
+            return $response->redirect('/events');
+        }
+
+        // Get event details
+        $event = Event::find($transaction->event_id);
+        if (!$event) {
+            FlashMessage::setMessage('Event not found.', 'danger');
+            return $response->redirect('/events');
+        }
+
+        // Create ZIP archive
+        $zip = new \ZipArchive();
+        $zipFilename = tempnam(sys_get_temp_dir(), 'tickets_') . '.zip';
+
+        if ($zip->open($zipFilename, \ZipArchive::CREATE) !== TRUE) {
+            throw new Exception('Could not create ZIP file');
+        }
+
+        // Generate PDF for each attendee and add to ZIP
+        foreach ($attendees as $attendee) {
+            $ticket = null;
+            if ($attendee->ticket_id) {
+                $ticket = Ticket::find($attendee->ticket_id);
+            }
+
+            $ticketData = [
+                'event' => $event,
+                'attendee' => $attendee,
+                'transaction' => $transaction,
+                'ticket' => $ticket
+            ];
+            
+            $pdf = $this->pdfGenerator->generateTicketPdf($ticketData);
+            $pdfContent = $pdf->Output('', 'S');
+            
+            $filename = 'ticket-' . $attendee->ticket_code . '.pdf';
+            $zip->addFromString($filename, $pdfContent);
+        }
+
+        $zip->close();
+
+        // Set headers for ZIP download
+        $downloadFilename = 'tickets-' . $reference . '.zip';
+
+        $response->setHeader('Content-Type', 'application/zip');
+        $response->setHeader('Content-Disposition', 'attachment; filename="' . $downloadFilename . '"');
+        $response->setHeader('Content-Length', (string)filesize($zipFilename));
+
+        // Output ZIP content
+        readfile($zipFilename);
+
+        // Clean up temporary file
+        unlink($zipFilename);
+        exit;
+    } catch (Exception $e) {
+        FlashMessage::setMessage('Error generating tickets. Please try again.', 'danger');
+        return $response->redirect("/checkout/success/{$reference}");
+    }
+}
 }

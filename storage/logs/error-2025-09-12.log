@@ -1,0 +1,51 @@
+[2025-09-12 10:22:48] ErrorException: Undefined array key "event_name" in C:\xampp\htdocs\evently\app\services\PDFGenerator.php on line 33
+Stack trace:
+#0 C:\xampp\htdocs\evently\app\services\PDFGenerator.php(33): Trees\Exception\Handler\ExceptionHandler->handleError(2, 'Undefined array...', 'C:\\xampp\\htdocs...', 33)
+#1 C:\xampp\htdocs\evently\app\controllers\CheckoutController.php(763): App\services\PdfGenerator->generateTicketPdf(Array)
+#2 C:\xampp\htdocs\evently\core\Trees.php(234): App\Controllers\CheckoutController->downloadTicket(Object(Trees\Http\Request), Object(Trees\Http\Response), '3', 'EVT_1757588261_...')
+#3 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\Controllers...', 'downloadTicket', Array)
+#4 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#5 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#6 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#7 {main}
+
+[2025-09-12 10:33:24] ErrorException: Undefined array key "event_title" in C:\xampp\htdocs\evently\app\services\PDFGenerator.php on line 33
+Stack trace:
+#0 C:\xampp\htdocs\evently\app\services\PDFGenerator.php(33): Trees\Exception\Handler\ExceptionHandler->handleError(2, 'Undefined array...', 'C:\\xampp\\htdocs...', 33)
+#1 C:\xampp\htdocs\evently\app\controllers\CheckoutController.php(763): App\services\PdfGenerator->generateTicketPdf(Array)
+#2 C:\xampp\htdocs\evently\core\Trees.php(234): App\Controllers\CheckoutController->downloadTicket(Object(Trees\Http\Request), Object(Trees\Http\Response), '3', 'EVT_1757588261_...')
+#3 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\Controllers...', 'downloadTicket', Array)
+#4 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#5 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#6 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#7 {main}
+
+[2025-09-12 10:33:45] ErrorException: Attempt to read property "event_title" on array in C:\xampp\htdocs\evently\app\services\PDFGenerator.php on line 33
+Stack trace:
+#0 C:\xampp\htdocs\evently\app\services\PDFGenerator.php(33): Trees\Exception\Handler\ExceptionHandler->handleError(2, 'Attempt to read...', 'C:\\xampp\\htdocs...', 33)
+#1 C:\xampp\htdocs\evently\app\controllers\CheckoutController.php(763): App\services\PdfGenerator->generateTicketPdf(Array)
+#2 C:\xampp\htdocs\evently\core\Trees.php(234): App\Controllers\CheckoutController->downloadTicket(Object(Trees\Http\Request), Object(Trees\Http\Response), '3', 'EVT_1757588261_...')
+#3 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\Controllers...', 'downloadTicket', Array)
+#4 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#5 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#6 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#7 {main}
+
+[2025-09-12 11:01:13] Error: Call to undefined method App\services\PdfGenerator::generateTicketPdf() in C:\xampp\htdocs\evently\app\controllers\CheckoutController.php on line 763
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(234): App\Controllers\CheckoutController->downloadTicket(Object(Trees\Http\Request), Object(Trees\Http\Response), '3', 'EVT_1757588261_...')
+#1 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\Controllers...', 'downloadTicket', Array)
+#2 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#3 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#4 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#5 {main}
+
+[2025-09-12 11:06:33] Error: Class "ZipArchive" not found in C:\xampp\htdocs\evently\app\controllers\CheckoutController.php on line 802
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(234): App\Controllers\CheckoutController->downloadAllTickets(Object(Trees\Http\Request), Object(Trees\Http\Response), 'EVT_1757588261_...')
+#1 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\Controllers...', 'downloadAllTick...', Array)
+#2 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#3 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#4 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#5 {main}
+

@@ -19,6 +19,7 @@
         "ext-pdo": "*",
         "psr/container": "^2.0",
         "phpmailer/phpmailer": "^6.10",
-        "tecnickcom/tcpdf": "^6.10"
+        "tecnickcom/tcpdf": "^6.10",
+        "endroid/qr-code": "^6.0"
     }
 }
