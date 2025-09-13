@@ -1,5 +1,8 @@
 <?php
 
+use App\models\Ticket;
+use App\models\Categories;
+
 ?>
 
 <?php $this->start('content'); ?>
@@ -25,7 +28,7 @@
                     <div class="glide__track" data-glide-el="track">
                         <ul class="glide__slides">
                             <li class="glide__slide">
-                                <img class="w-100 rounded-4" src="https://images.unsplash.com/photo-1507874457470-272b3c8d8ee2?q=80&w=1400&auto=format&fit=crop" alt="Crowd at live concert" style="box-shadow:var(--shadow-1);">
+                                <img class="w-100 rounded-4" src="<?= get_image("dist/img/eventlyy.png") ?>" alt="Eventlyy" style="box-shadow:var(--shadow-1);">
                             </li>
                             <li class="glide__slide">
                                 <img class="w-100 rounded-4" src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?q=80&w=1400&auto=format&fit=crop" alt="Tech stage lights" style="box-shadow:var(--shadow-1);">
@@ -52,6 +55,8 @@
     </div>
 </header>
 
+<?php $this->partial('advert-wide'); ?>
+
 <!-- EVENTS -->
 <section id="events" class="py-5">
     <div class="container">
@@ -61,84 +66,66 @@
                 <p class="section-sub reveal delay-1">Hot picks near you—freshly updated daily.</p>
             </div>
             <div class="col-auto reveal delay-2">
-                <div class="input-group">
-                    <span class="input-group-text bg-transparent border-secondary"><i class="bi bi-geo-alt"></i></span>
-                    <input type="text" class="form-control bg-transparent border-secondary" placeholder="Filter by city (e.g., Lagos)">
-                    <button class="btn btn-ghost">Search</button>
-                </div>
+                <form action="/" method="get">
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-secondary text-info"><i class="bi bi-geo-alt"></i></span>
+                        <input type="text" name="city" class="form-control bg-transparent border-secondary" placeholder="Filter by city (e.g., Lagos)">
+                        <button type="submit" class="btn btn-ghost">Search</button>
+                    </div>
+                </form>
             </div>
         </div>
 
         <div class="row g-4">
-            <!-- Event Card 1 -->
-            <div class="col-12 col-md-6 col-xl-4 reveal">
-                <article class="event-card h-100 d-flex flex-column">
-                    <img class="event-img" src="https://images.unsplash.com/photo-1506157786151-b8491531f063?q=80&w=1400&auto=format&fit=crop" alt="Afrobeats Live poster">
-                    <div class="p-3 p-md-4">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="chip"><i class="bi bi-music-note-beamed"></i> Music</span>
-                            <span class="text-info-emphasis small"><i class="bi bi-calendar-event"></i> Fri • Oct 10</span>
-                        </div>
-                        <h5 class="mb-1">Afrobeats Live: Midnight Wave</h5>
-                        <p class="mb-3">Eko Convention Center, Lagos • 8:00 PM</p>
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div class="d-flex align-items-center gap-2">
-                                <span class="badge rounded-pill text-bg-primary">VIP</span>
-                                <span class="badge rounded-pill text-bg-info">Early Bird</span>
+            <?php foreach ($events as $event): ?>
+                <!-- Event Card -->
+                <div class="col-12 col-md-6 col-xl-4 reveal">
+                    <article class="event-card h-100 d-flex flex-column">
+                        <img class="event-img" src="<?php echo get_image($event->event_image); ?>" alt="<?php echo $event->event_title; ?>">
+                        <div class="p-3 p-md-4">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="chip">
+                                    <?php
+                                    $category = Categories::find($event->category);
+                                    $icon = getCategoryIcon($category->name);
+                                    ?>
+                                    <i class="bi <?php echo $this->escape($icon); ?>"></i> <?php echo $this->escape(ucfirst($category->name)); ?>
+                                </span>
+                                <span class="text-info-emphasis small"><i class="bi bi-calendar-event"></i> <?php echo $this->escape(date('D • M j', strtotime($event->event_date))); ?></span>
                             </div>
-                            <a href="#" class="btn btn-pulse btn-sm"><i class="bi bi-ticket-perforated me-1"></i> Get Tickets</a>
-                        </div>
-                    </div>
-                </article>
-            </div>
+                            <h5 class="mb-1"><?php echo $event->event_title; ?></h5>
+                            <p class="mb-3"><?php echo getExcerpt($event->description, 150); ?></p>
+                            <div class="d-flex align-items-center justify-content-between">
+                                <?php
+                                // Get minimum price from tickets
+                                $minPrice = null;
+                                $tickets = Ticket::where(['event_id' => $event->id]) ?? [];
 
-            <!-- Event Card 2 -->
-            <div class="col-12 col-md-6 col-xl-4 reveal delay-1">
-                <article class="event-card h-100 d-flex flex-column">
-                    <img class="event-img" src="https://images.unsplash.com/photo-1557800636-894a64c1696f?q=80&w=1400&auto=format&fit=crop" alt="TechCon Africa poster">
-                    <div class="p-3 p-md-4">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="chip"><i class="bi bi-cpu"></i> Tech</span>
-                            <span class="text-info-emphasis small"><i class="bi bi-calendar-event"></i> Sat • Nov 2</span>
-                        </div>
-                        <h5 class="mb-1">TechCon Africa 2025</h5>
-                        <p class="mb-3">Landmark Centre, Lagos • 9:00 AM</p>
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div class="d-flex align-items-center gap-2">
-                                <span class="badge rounded-pill text-bg-primary">Pro</span>
-                                <span class="badge rounded-pill text-bg-info">Startup</span>
+                                foreach ($tickets as $ticket) {
+                                    if ($ticket->price > 0 && ($minPrice === null || $ticket->price < $minPrice)) {
+                                        $minPrice = $ticket->price;
+                                    }
+                                }
+                                ?>
+                                <div class="d-flex align-items-center gap-2">
+                                    <?php if ($minPrice): ?>
+                                        <span class="badge rounded-pill text-bg-info">From ₦<?= number_format($minPrice) ?></span>
+                                    <?php else: ?>
+                                        <span class="badge rounded-pill text-bg-primary">Free</span>
+                                    <?php endif; ?>
+                                    <!-- <span class="badge rounded-pill text-bg-primary">VIP</span> -->
+                                    <!-- <span class="badge rounded-pill text-bg-info">Early Bird</span> -->
+                                </div>
+                                <a href="<?php echo $this->escape(url("/events/$event->id/{$event->slug}")); ?>" class="btn btn-pulse btn-sm"><i class="bi bi-ticket-perforated me-1"></i> Get Tickets</a>
                             </div>
-                            <a href="#" class="btn btn-pulse btn-sm"><i class="bi bi-ticket-perforated me-1"></i> Get Tickets</a>
                         </div>
-                    </div>
-                </article>
-            </div>
-
-            <!-- Event Card 3 -->
-            <div class="col-12 col-md-6 col-xl-4 reveal delay-2">
-                <article class="event-card h-100 d-flex flex-column">
-                    <img class="event-img" src="https://images.unsplash.com/photo-148atz-1?q=80&w=1400&auto=format&fit=crop" alt="Comedy Night poster" onerror="this.src='https://images.unsplash.com/photo-1551836022-d5d88e9218df?q=80&w=1400&auto=format&fit=crop'">
-                    <div class="p-3 p-md-4">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="chip"><i class="bi bi-emoji-laughing"></i> Comedy</span>
-                            <span class="text-info-emphasis small"><i class="bi bi-calendar-event"></i> Sun • Dec 14</span>
-                        </div>
-                        <h5 class="mb-1">Laughs & Lagos</h5>
-                        <p class="mb-3">Terra Kulture Arena, Lagos • 7:30 PM</p>
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div class="d-flex align-items-center gap-2">
-                                <span class="badge rounded-pill text-bg-primary">Front Row</span>
-                                <span class="badge rounded-pill text-bg-info">General</span>
-                            </div>
-                            <a href="#" class="btn btn-pulse btn-sm"><i class="bi bi-ticket-perforated me-1"></i> Get Tickets</a>
-                        </div>
-                    </div>
-                </article>
-            </div>
+                    </article>
+                </div>
+            <?php endforeach ?>
         </div>
 
         <div class="text-center mt-4 reveal delay-3">
-            <a href="#get-tickets" class="btn btn-ghost"><i class="bi bi-collection-play me-2"></i>View all events</a>
+            <a href="<?php echo $this->escape(url("/events")); ?>" class="btn btn-ghost"><i class="bi bi-collection-play me-2"></i>View all events</a>
         </div>
     </div>
 </section>
@@ -185,42 +172,17 @@
         </div>
 
         <div class="row g-4 align-items-stretch">
-            <!-- Music -->
-            <div class="col-12 col-md-6 col-xl-3 reveal">
-                <div class="category-card h-100">
-                    <div class="category-icon"><i class="bi bi-music-note-beamed"></i></div>
-                    <h5 class="mb-1">Music</h5>
-                    <p>Concerts, festivals, and live performances</p>
-                    <a href="#" class="btn btn-ghost w-100 mt-2">Explore</a>
+            <?php foreach ($categories as $category): ?>
+                <?php $icon = getCategoryIcon($category->name); ?>
+                <div class="col-12 col-md-6 col-xl-3 reveal">
+                    <div class="category-card h-100">
+                        <div class="category-icon"><i class="bi <?php echo $this->escape($icon); ?>"></i></div>
+                        <h5 class="mb-1"><?php echo $category->name; ?></h5>
+                        <p><?php echo $category->description; ?></p>
+                        <a href="<?php echo url("/events?category=$category->id"); ?>" class="btn btn-ghost w-100 mt-2">Explore</a>
+                    </div>
                 </div>
-            </div>
-            <!-- Tech -->
-            <div class="col-12 col-md-6 col-xl-3 reveal delay-1">
-                <div class="category-card h-100">
-                    <div class="category-icon"><i class="bi bi-cpu"></i></div>
-                    <h5 class="mb-1">Tech</h5>
-                    <p>Conferences, hackathons, and workshops</p>
-                    <a href="#" class="btn btn-ghost w-100 mt-2">Explore</a>
-                </div>
-            </div>
-            <!-- Arts -->
-            <div class="col-12 col-md-6 col-xl-3 reveal delay-2">
-                <div class="category-card h-100">
-                    <div class="category-icon"><i class="bi bi-palette"></i></div>
-                    <h5 class="mb-1">Arts & Culture</h5>
-                    <p>Exhibitions, theater, and cultural events</p>
-                    <a href="#" class="btn btn-ghost w-100 mt-2">Explore</a>
-                </div>
-            </div>
-            <!-- Sports -->
-            <div class="col-12 col-md-6 col-xl-3 reveal delay-3">
-                <div class="category-card h-100">
-                    <div class="category-icon"><i class="bi bi-trophy"></i></div>
-                    <h5 class="mb-1">Sports</h5>
-                    <p>Games, tournaments, and fitness events</p>
-                    <a href="#" class="btn btn-ghost w-100 mt-2">Explore</a>
-                </div>
-            </div>
+            <?php endforeach; ?>
         </div>
     </div>
 </section>

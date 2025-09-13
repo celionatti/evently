@@ -1330,6 +1330,62 @@ footer {
   max-width: 66.666667% !important;
 }
 
+/* Advertisement styles */
+.ad-container {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin: 2rem 0;
+  padding: 0.5rem;
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.ad-container:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-2);
+}
+
+.ad-label {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.5);
+  color: var(--text-2);
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  z-index: 2;
+}
+
+.ad-content {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.3s ease;
+}
+
+.ad-content:hover {
+  opacity: 0.9;
+}
+
+.ad-landscape {
+  aspect-ratio: 16/9;
+  /* max-height: 250px; */
+}
+
+.ad-portrait {
+  aspect-ratio: 9/16;
+  max-width: 300px;
+  margin: 0 auto;
+  /* max-height: 500px; */
+}
+
+.ad-section img {
+  object-fit: contain !important;
+}
+
 /* Responsive adjustments */
 @media (max-width: 576px) {
   .auth-card {
@@ -1411,6 +1467,14 @@ footer {
 
   .btn-container {
     flex-direction: column;
+  }
+
+  .ad-portrait {
+    max-width: 100%;
+  }
+
+  .ad-landscape {
+    /* max-height: 200px; */
   }
 }
 

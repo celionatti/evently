@@ -245,12 +245,12 @@ function getCategoryIcon(string $categoryName): string
 
     // Map icons to keywords
     $categoryIcons = [
-        'bi-music-note-beamed' => ['music', 'concert', 'band', 'dj', 'audio', 'song'],
+        'bi-music-note-beamed' => ['music', 'concert', 'band', 'dj', 'audio', 'song', 'party'],
         'bi-laptop'           => ['tech', 'computer', 'laptop', 'software', 'digital', 'coding'],
         'bi-palette'          => ['art', 'painting', 'gallery', 'exhibition', 'creative', 'design'],
         'bi-egg-fried'        => ['food', 'restaurant', 'cooking', 'culinary', 'dining', 'chef'],
         'bi-mic'              => ['comedy', 'standup', 'humor', 'joke', 'funny', 'mic'],
-        'bi-person-running'   => ['sports', 'fitness', 'game', 'athletic', 'running', 'competition'],
+        'bi-person-walking'   => ['sports', 'fitness', 'game', 'athletic', 'running', 'competition'],
         'bi-briefcase'        => ['business', 'networking', 'entrepreneur', 'startup', 'commerce'],
         'bi-book'             => ['education', 'learning', 'school', 'workshop', 'seminar', 'lecture']
     ];
