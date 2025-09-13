@@ -130,6 +130,8 @@ use App\models\Categories;
     </div>
 </section>
 
+<?php $this->partial('advert'); ?>
+
 <!-- HOW IT WORKS -->
 <section id="how" class="py-5">
     <div class="container">
@@ -163,7 +165,7 @@ use App\models\Categories;
     </div>
 </section>
 
-<!-- CATEGORIES (replaced pricing) -->
+<!-- CATEGORIES -->
 <section id="categories" class="py-5">
     <div class="container">
         <div class="row text-center mb-4">
