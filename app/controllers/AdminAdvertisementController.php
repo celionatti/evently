@@ -138,7 +138,7 @@ class AdminAdvertisementController extends Controller
         return $this->render('admin/advertisements/create');
     }
 
-    public function store(Request $request, Response $response)
+    public function insert(Request $request, Response $response)
     {
         if ("POST" !== $request->getMethod()) {
             return;
@@ -203,7 +203,7 @@ class AdminAdvertisementController extends Controller
                 unset($data['image_file'], $data['upload_type']);
             } else {
                 // Use provided URL
-                $data['image_url'] = $data['image_url'];
+                // $data['image_url'] = $data['image_url'];
                 unset($data['image_file'], $data['upload_type']);
             }
 

@@ -126,7 +126,7 @@ use Trees\Helper\Utils\TimeDateUtils;
                     </h5>
                 </div>
                 <div class="card-body">
-                    <form id="createAdvertisementForm" action="<?= url('/admin/advertisements/store') ?>" method="POST" enctype="multipart/form-data">
+                    <form id="createAdvertisementForm" action="" method="POST" enctype="multipart/form-data">
                         <div class="row">
                             <!-- Advertisement Title -->
                             <div class="col-12 mb-3">
