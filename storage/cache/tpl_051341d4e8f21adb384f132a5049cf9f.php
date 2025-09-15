@@ -4,7 +4,7 @@ use Trees\Helper\Utils\TimeDateUtils;
 
 ?>
 
-@section('content')
+<?php $this->start('content'); ?>
 <!-- Advertisements Section -->
 <div id="advertisements-section" class="content-section fade-in">
     <div class="d-flex justify-content-between align-items-center mb-4 gap-3 page-header">
@@ -54,10 +54,10 @@ use Trees\Helper\Utils\TimeDateUtils;
                                                     class="rounded shadow-sm"
                                                     style="width: 80px; height: 45px; object-fit: cover; border: 1px solid rgba(255, 255, 255, 0.1);" loading="lazy">
                                                 <div>
-                                                    <div class="fw-semibold text-white">{{{ $ad->title }}}</div>
+                                                    <div class="fw-semibold text-white"><?php echo $ad->title; ?></div>
                                                     <small class="text-secondary d-flex align-items-center gap-2">
                                                         <span class="badge bg-<?= $ad->ad_type == 'landscape' ? 'info' : 'purple' ?> px-2 py-1">
-                                                            <i class="bi bi-aspect-ratio me-1"></i>{{{ ucfirst($ad->ad_type) }}}
+                                                            <i class="bi bi-aspect-ratio me-1"></i><?php echo ucfirst($ad->ad_type); ?>
                                                         </span>
                                                         <?php if ($ad->is_featured): ?>
                                                             <span class="badge bg-warning px-2 py-1">
@@ -65,7 +65,7 @@ use Trees\Helper\Utils\TimeDateUtils;
                                                             </span>
                                                         <?php endif; ?>
                                                         <span class="text-muted">
-                                                            Priority: {{{ $ad->priority }}}
+                                                            Priority: <?php echo $ad->priority; ?>
                                                         </span>
                                                     </small>
                                                 </div>
@@ -74,13 +74,13 @@ use Trees\Helper\Utils\TimeDateUtils;
                                         <td data-label="Target URL">
                                             <div class="d-flex align-items-center gap-2">
                                                 <?php if ($ad->target_url): ?>
-                                                    <span class="text-break" title="{{{ $ad->target_url }}}" style="font-family: monospace; font-size: 0.85rem;">
-                                                        {{{ getExcerpt($ad->target_url, 25) }}}
+                                                    <span class="text-break" title="<?php echo $ad->target_url; ?>" style="font-family: monospace; font-size: 0.85rem;">
+                                                        <?php echo getExcerpt($ad->target_url, 25); ?>
                                                     </span>
-                                                    <button class="btn btn-ghost action-btn" onclick="copyToClipboard('{{{ $ad->target_url }}}')" title="Copy URL">
+                                                    <button class="btn btn-ghost action-btn" onclick="copyToClipboard('<?php echo $ad->target_url; ?>')" title="Copy URL">
                                                         <i class="bi bi-clipboard"></i>
                                                     </button>
-                                                    <a href="{{{ $ad->target_url }}}" target="_blank" class="btn btn-ghost action-btn" title="Open URL">
+                                                    <a href="<?php echo $ad->target_url; ?>" target="_blank" class="btn btn-ghost action-btn" title="Open URL">
                                                         <i class="bi bi-box-arrow-up-right"></i>
                                                     </a>
                                                 <?php else: ?>
@@ -119,10 +119,10 @@ use Trees\Helper\Utils\TimeDateUtils;
                                         <td data-label="Performance">
                                             <div class="text-center">
                                                 <div class="fw-medium text-info">
-                                                    <i class="bi bi-eye me-1"></i>{{{ number_format($ad->impressions) }}}
+                                                    <i class="bi bi-eye me-1"></i><?php echo number_format($ad->impressions); ?>
                                                 </div>
                                                 <div class="fw-medium text-success">
-                                                    <i class="bi bi-cursor me-1"></i>{{{ number_format($ad->clicks) }}}
+                                                    <i class="bi bi-cursor me-1"></i><?php echo number_format($ad->clicks); ?>
                                                 </div>
                                                 <?php if ($ad->impressions > 0): ?>
                                                     <small class="text-secondary">
@@ -135,29 +135,29 @@ use Trees\Helper\Utils\TimeDateUtils;
                                         </td>
                                         <td data-label="Status">
                                             <div class="text-center">
-                                                <span class="badge {{ $ad->is_active ? 'bg-success' : 'bg-secondary' }} text-capitalize">
-                                                    <i class="bi bi-{{ $ad->is_active ? 'check-circle' : 'pause-circle' }} me-1"></i>
-                                                    {{{ $ad->is_active ? 'Active' : 'Inactive' }}}
+                                                <span class="badge <?php echo $this->escape($ad->is_active ? 'bg-success' : 'bg-secondary'); ?> text-capitalize">
+                                                    <i class="bi bi-<?php echo $this->escape($ad->is_active ? 'check-circle' : 'pause-circle'); ?> me-1"></i>
+                                                    <?php echo $ad->is_active ? 'Active' : 'Inactive'; ?>
                                                 </span>
                                             </div>
                                         </td>
                                         <td data-label="Actions" class="text-end">
                                             <div class="d-flex gap-2 justify-content-end">
-                                                <a href="{{{ url("/admin/advertisements/view/{$ad->id}") }}}" class="btn btn-ghost action-btn" data-bs-toggle="tooltip" title="View Advertisement Details">
+                                                <a href="<?php echo url("/admin/advertisements/view/{$ad->id}"); ?>" class="btn btn-ghost action-btn" data-bs-toggle="tooltip" title="View Advertisement Details">
                                                     <i class="bi bi-eye"></i>
                                                 </a>
                                                 <button type="button" class="btn btn-outline-info action-btn"
                                                     onclick="toggleAdStatus()"
-                                                    data-bs-toggle="tooltip" title="{{ $ad->is_active ? 'Deactivate' : 'Activate' }} Advertisement">
-                                                    <i class="bi bi-{{ $ad->is_active ? 'pause' : 'play' }}"></i>
+                                                    data-bs-toggle="tooltip" title="<?php echo $this->escape($ad->is_active ? 'Deactivate' : 'Activate'); ?> Advertisement">
+                                                    <i class="bi bi-<?php echo $this->escape($ad->is_active ? 'pause' : 'play'); ?>"></i>
                                                 </button>
-                                                <a href="{{{ url("/admin/advertisements/edit/{$ad->id}") }}}" class="btn btn-outline-warning action-btn" data-bs-toggle="tooltip" title="Edit Advertisement">
+                                                <a href="<?php echo url("/admin/advertisements/edit/{$ad->id}"); ?>" class="btn btn-outline-warning action-btn" data-bs-toggle="tooltip" title="Edit Advertisement">
                                                     <i class="bi bi-pencil"></i>
                                                 </a>
                                                 <button type="button" class="btn btn-outline-danger action-btn"
                                                     data-bs-toggle="modal" data-bs-target="#deleteAdModal"
-                                                    data-ad-id="{{ $ad->id }}"
-                                                    data-ad-title="{{ $ad->title }}">
+                                                    data-ad-id="<?php echo $this->escape($ad->id); ?>"
+                                                    data-ad-title="<?php echo $this->escape($ad->title); ?>">
                                                     <i class="bi bi-trash"></i>
                                                 </button>
                                             </div>
@@ -184,7 +184,7 @@ use Trees\Helper\Utils\TimeDateUtils;
                         <i class="bi bi-megaphone"></i>
                     </div>
                     <h4 class="h5 mb-3">No Advertisements Found</h4>
-                    <p class="text-muted mb-4">You haven't created any advertisements yet. Start by creating your first advertisement campaign to reach more customers.</p>
+                    <p class="text-white mb-4">You haven't created any advertisements yet. Start by creating your first advertisement campaign to reach more customers.</p>
                     <a href="<?= url('/admin/advertisements/create') ?>" class="btn btn-pulse">
                         <i class="bi bi-megaphone me-2"></i>Create Your First Advertisement
                     </a>
@@ -279,9 +279,9 @@ use Trees\Helper\Utils\TimeDateUtils;
         </div>
     </div>
 </div>
-@endsection
+<?php $this->end(); ?>
 
-@section('scripts')
+<?php $this->start('scripts'); ?>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const deleteAdModal = document.getElementById('deleteAdModal');
@@ -373,4 +373,4 @@ use Trees\Helper\Utils\TimeDateUtils;
         });
     });
 </script>
-@endsection
+<?php $this->end(); ?>
