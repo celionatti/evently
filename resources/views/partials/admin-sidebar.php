@@ -31,6 +31,12 @@
                 </a>
             </li>
             <li class="sidebar-item">
+                <a href="<?= url("/admin/advertisements/manage") ?>" class="sidebar-link <?= active_nav([1, 2], ['admin', 'advertisement']) ? 'active' : '' ?>">
+                    <i class="bi bi-tv"></i>
+                    <span>Manage Adverts</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
                 <a href="<?= url("/admin/events/tickets-sales") ?>" class="sidebar-link">
                     <i class="bi bi-ticket-perforated"></i>
                     <span>Ticket Sales</span>

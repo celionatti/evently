@@ -9,9 +9,10 @@ use App\controllers\EventController;
 use App\Controllers\CheckoutController;
 use App\controllers\AdminUserController;
 use App\controllers\AdminEventController;
+use App\controllers\AdminProfileController;
 use App\controllers\AdminAttendeeController;
 use App\controllers\AdminCategoryController;
-use App\controllers\AdminProfileController;
+use App\controllers\AdminAdvertisementController;
 
 /** @var \Trees\Router\Router $router */
 
@@ -89,4 +90,14 @@ $router->group(['prefix' => '/admin/categories'], function ($router) {
     $router->get('/edit/{slug}', [AdminCategoryController::class, 'edit']);
     $router->post('/edit/{slug}', [AdminCategoryController::class, 'update']);
     $router->post('/delete/{slug}', [AdminCategoryController::class, 'delete']);
+});
+
+// Admin: Advertisement Routes
+$router->group(['prefix' => '/admin/advertisements'], function ($router) {
+    $router->get('/manage', [AdminAdvertisementController::class, 'manage']);
+    $router->get('/create', [AdminAdvertisementController::class, 'create']);
+    $router->post('/create', [AdminAdvertisementController::class, 'insert']);
+    $router->get('/edit/{slug}', [AdminAdvertisementController::class, 'edit']);
+    $router->post('/edit/{slug}', [AdminAdvertisementController::class, 'update']);
+    $router->post('/delete/{slug}', [AdminAdvertisementController::class, 'delete']);
 });

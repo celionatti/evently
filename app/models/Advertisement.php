@@ -24,6 +24,7 @@ class Advertisement extends Model implements ModelInterface
      */
     protected array $fillable = [
         'id',
+        'user_id',
         'title',
         'description',
         'image_url',
@@ -58,9 +59,9 @@ class Advertisement extends Model implements ModelInterface
         );
     }
 
-    public static function findByTitle(string $title): ?self
+    public static function findByUserId(string $user_id): ?self
     {
-        $results = static::where(['title' => $title]);
+        $results = static::where(['user_id' => $user_id]);
         return $results ? $results[0] : null;
     }
 }
