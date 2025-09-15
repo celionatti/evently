@@ -200,3 +200,5 @@
 [2025-09-12 19:37:00] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
 [2025-09-12 19:37:22] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
 [2025-09-12 19:37:23] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-15 14:35:34] [ERROR] Image processing failed: Unsupported image format: C:\xampp\tmp\phpC135.tmp_processed
+[2025-09-15 14:35:34] [INFO] File uploaded successfully: uploads/advertisements/68c81625e2dfb_3b93a19f.png

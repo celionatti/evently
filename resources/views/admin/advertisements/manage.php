@@ -38,9 +38,8 @@ use Trees\Helper\Utils\TimeDateUtils;
                             <thead>
                                 <tr>
                                     <th scope="col">Advertisement</th>
-                                    <th scope="col">Target URL</th>
                                     <th scope="col">Campaign Period</th>
-                                    <th scope="col">Performance</th>
+                                    <th scope="col">Sta's</th>
                                     <th scope="col">Status</th>
                                     <th scope="col" class="text-end">Actions</th>
                                 </tr>
@@ -64,28 +63,11 @@ use Trees\Helper\Utils\TimeDateUtils;
                                                                 <i class="bi bi-star-fill me-1"></i>Featured
                                                             </span>
                                                         <?php endif; ?>
-                                                        <span class="text-muted">
+                                                        <span class="text-warning">
                                                             Priority: {{{ $ad->priority }}}
                                                         </span>
                                                     </small>
                                                 </div>
-                                            </div>
-                                        </td>
-                                        <td data-label="Target URL">
-                                            <div class="d-flex align-items-center gap-2">
-                                                <?php if ($ad->target_url): ?>
-                                                    <span class="text-break" title="{{{ $ad->target_url }}}" style="font-family: monospace; font-size: 0.85rem;">
-                                                        {{{ getExcerpt($ad->target_url, 25) }}}
-                                                    </span>
-                                                    <button class="btn btn-ghost action-btn" onclick="copyToClipboard('{{{ $ad->target_url }}}')" title="Copy URL">
-                                                        <i class="bi bi-clipboard"></i>
-                                                    </button>
-                                                    <a href="{{{ $ad->target_url }}}" target="_blank" class="btn btn-ghost action-btn" title="Open URL">
-                                                        <i class="bi bi-box-arrow-up-right"></i>
-                                                    </a>
-                                                <?php else: ?>
-                                                    <span class="text-muted fst-italic">No target URL</span>
-                                                <?php endif; ?>
                                             </div>
                                         </td>
                                         <td data-label="Campaign Period">

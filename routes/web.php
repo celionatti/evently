@@ -97,7 +97,7 @@ $router->group(['prefix' => '/admin/advertisements'], function ($router) {
     $router->get('/manage', [AdminAdvertisementController::class, 'manage']);
     $router->get('/create', [AdminAdvertisementController::class, 'create']);
     $router->post('/create', [AdminAdvertisementController::class, 'insert']);
-    $router->get('/edit/{slug}', [AdminAdvertisementController::class, 'edit']);
-    $router->post('/edit/{slug}', [AdminAdvertisementController::class, 'update']);
-    $router->post('/delete/{slug}', [AdminAdvertisementController::class, 'delete']);
+    $router->get('/edit/{id}', [AdminAdvertisementController::class, 'edit']);
+    $router->post('/edit/{id}', [AdminAdvertisementController::class, 'update']);
+    $router->post('/delete/{id}', [AdminAdvertisementController::class, 'delete']);
 });

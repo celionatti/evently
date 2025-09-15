@@ -507,11 +507,5 @@ use Trees\Helper\Utils\TimeDateUtils;
         div.textContent = text;
         return div.innerHTML;
     }
-
-    // Toast notification function (assuming it exists globally)
-    function showToast(message, type = 'info') {
-        // Implement your toast notification logic here
-        console.log(`${type.toUpperCase()}: ${message}`);
-    }
 </script>
 @endsection

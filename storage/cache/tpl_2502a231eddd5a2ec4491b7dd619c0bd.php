@@ -126,7 +126,7 @@ use Trees\Helper\Utils\TimeDateUtils;
                     </h5>
                 </div>
                 <div class="card-body">
-                    <form id="createAdvertisementForm" action="<?= url('/admin/advertisements/store') ?>" method="POST" enctype="multipart/form-data">
+                    <form id="createAdvertisementForm" action="" method="POST" enctype="multipart/form-data">
                         <div class="row">
                             <!-- Advertisement Title -->
                             <div class="col-12 mb-3">
@@ -506,12 +506,6 @@ use Trees\Helper\Utils\TimeDateUtils;
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
-    }
-
-    // Toast notification function (assuming it exists globally)
-    function showToast(message, type = 'info') {
-        // Implement your toast notification logic here
-        console.log(`${type.toUpperCase()}: ${message}`);
     }
 </script>
 <?php $this->end(); ?>

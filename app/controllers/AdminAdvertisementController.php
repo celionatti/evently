@@ -159,7 +159,7 @@ class AdminAdvertisementController extends Controller
         // Handle image validation based on upload type
         $uploadType = $request->input('upload_type', 'file');
         if ($uploadType === 'file') {
-            $rules['image_file'] = 'required|file|mimes:image/jpg,image/jpeg,image/png,image/webp,image/gif|maxSize:5120|min:1|max:' . self::MAX_UPLOAD_FILES;
+            $rules['image_file'] = 'file|mimes:image/jpg,image/jpeg,image/png,image/webp,image/gif|maxSize:5120|min:1|max:' . self::MAX_UPLOAD_FILES;
         } else {
             $rules['image_url'] = 'required|url';
         }
