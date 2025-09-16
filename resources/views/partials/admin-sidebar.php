@@ -31,7 +31,7 @@
                 </a>
             </li>
             <li class="sidebar-item">
-                <a href="<?= url("/admin/advertisements/manage") ?>" class="sidebar-link <?= active_nav([1, 2], ['admin', 'advertisement']) ? 'active' : '' ?>">
+                <a href="<?= url("/admin/advertisements/manage") ?>" class="sidebar-link <?= active_nav([1, 2], ['admin', 'advertisements']) ? 'active' : '' ?>">
                     <i class="bi bi-tv"></i>
                     <span>Manage Adverts</span>
                 </a>

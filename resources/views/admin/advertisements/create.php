@@ -142,8 +142,11 @@ use Trees\Helper\Utils\TimeDateUtils;
                             <!-- Description -->
                             <div class="col-12 mb-3">
                                 <label for="description" class="form-label">Description <span class="text-danger">*</span></label>
-                                <textarea class="form-control" id="description" name="description" rows="4" required
-                                    placeholder="Describe your advertisement..."></textarea>
+                                <textarea class="form-control <?= has_error('description') ? 'is-invalid' : '' ?>" id="description" name="description" rows="4" required
+                                    placeholder="Describe your advertisement..."><?= old('description') ?></textarea>
+                                <?php if (has_error('description')): ?>
+                                    <div class="invalid-feedback"><?= get_error('description') ?></div>
+                                <?php endif; ?>
                                 <div class="form-text text-white">Brief description of what this advertisement is about</div>
                             </div>
 
@@ -168,8 +171,11 @@ use Trees\Helper\Utils\TimeDateUtils;
 
                                 <!-- File Upload Input -->
                                 <div id="file_upload_section" class="upload-section">
-                                    <input type="file" class="form-control" id="image_file" name="image_file"
+                                    <input type="file" class="form-control <?= has_error('image_file') ? 'is-invalid' : '' ?>" id="image_file" name="image_file"
                                         accept="image/*" onchange="previewImage(this)">
+                                    <?php if (has_error('image_file')): ?>
+                                        <div class="invalid-feedback"><?= get_error('image_file') ?></div>
+                                    <?php endif; ?>
                                     <div class="form-text text-white">
                                         <i class="bi bi-info-circle me-1"></i>
                                         Supported formats: JPG, PNG, GIF, WebP. Max size: 5MB. Recommended: 1200x630px for landscape, 600x900px for portrait.
@@ -178,8 +184,11 @@ use Trees\Helper\Utils\TimeDateUtils;
 
                                 <!-- URL Input -->
                                 <div id="url_upload_section" class="upload-section" style="display: none;">
-                                    <input type="url" class="form-control" id="image_url" name="image_url"
+                                    <input type="url" class="form-control <?= has_error('image_url') ? 'is-invalid' : '' ?>" id="image_url" name="image_url" value="<?= old('image_url') ?>"
                                         placeholder="https://example.com/image.jpg" onchange="previewImageFromUrl(this)">
+                                    <?php if (has_error('image_url')): ?>
+                                        <div class="invalid-feedback"><?= get_error('image_url') ?></div>
+                                    <?php endif; ?>
                                     <div class="form-text text-white">
                                         <i class="bi bi-info-circle me-1"></i>
                                         Enter a direct link to your image. Make sure the URL is publicly accessible.
@@ -200,38 +209,53 @@ use Trees\Helper\Utils\TimeDateUtils;
                             <!-- Target URL -->
                             <div class="col-12 mb-3">
                                 <label for="target_url" class="form-label">Target URL</label>
-                                <input type="url" class="form-control" id="target_url" name="target_url"
+                                <input type="url" class="form-control <?= has_error('target_url') ? 'is-invalid' : '' ?>" id="target_url" name="target_url" value="<?= old('target_url') ?>"
                                     placeholder="https://example.com/landing-page">
+                                <?php if (has_error('target_url')): ?>
+                                    <div class="invalid-feedback"><?= get_error('target_url') ?></div>
+                                <?php endif; ?>
                                 <div class="form-text text-white">Where users will be redirected when they click the advertisement (optional)</div>
                             </div>
 
                             <!-- Ad Type and Featured Row -->
                             <div class="col-md-6 mb-3">
                                 <label for="ad_type" class="form-label">Advertisement Type <span class="text-danger">*</span></label>
-                                <select class="form-select" id="ad_type" name="ad_type" required>
+                                <select class="form-select <?= has_error('ad_type') ? 'is-invalid' : '' ?>" id="ad_type" name="ad_type" required>
                                     <option value="">Select advertisement type</option>
-                                    <option value="landscape">Landscape (Horizontal)</option>
-                                    <option value="portrait">Portrait (Vertical)</option>
+                                    <option value="landscape" <?= old('ad_type') === 'landscape' ? 'selected' : '' ?>>Landscape (Horizontal)</option>
+                                    <option value="portrait" <?= old('ad_type') === 'portrait' ? 'selected' : '' ?>>Portrait (Vertical)</option>
                                 </select>
+                                <?php if (has_error('ad_type')): ?>
+                                    <div class="invalid-feedback"><?= get_error('ad_type') ?></div>
+                                <?php endif; ?>
                                 <div class="form-text text-white">Choose the orientation of your advertisement</div>
                             </div>
 
                             <div class="col-md-6 mb-3">
                                 <label for="priority" class="form-label">Priority</label>
-                                <input type="number" class="form-control" id="priority" name="priority" value="0" min="0" max="100">
+                                <input type="number" class="form-control <?= has_error('priority') ? 'is-invalid' : '' ?>" id="priority" name="priority" value="<?= old('priority', 0) ?>" min="0" max="100">
+                                <?php if (has_error('priority')): ?>
+                                    <div class="invalid-feedback"><?= get_error('priority') ?></div>
+                                <?php endif; ?>
                                 <div class="form-text text-white">Higher priority ads are shown more frequently (0-100)</div>
                             </div>
 
                             <!-- Campaign Period -->
                             <div class="col-md-6 mb-3">
                                 <label for="start_date" class="form-label">Start Date <span class="text-danger">*</span></label>
-                                <input type="datetime-local" class="form-control" id="start_date" name="start_date" required>
+                                <input type="datetime-local" class="form-control <?= has_error('start_date') ? 'is-invalid' : '' ?>" id="start_date" name="start_date" value="<?= old('start_date') ?>" required>
+                                <?php if (has_error('start_date')): ?>
+                                    <div class="invalid-feedback"><?= get_error('start_date') ?></div>
+                                <?php endif; ?>
                                 <div class="form-text text-white">When the advertisement campaign should start</div>
                             </div>
 
                             <div class="col-md-6 mb-3">
                                 <label for="end_date" class="form-label">End Date <span class="text-danger">*</span></label>
-                                <input type="datetime-local" class="form-control" id="end_date" name="end_date" required>
+                                <input type="datetime-local" class="form-control <?= has_error('end_date') ? 'is-invalid' : '' ?>" id="end_date" name="end_date" required>
+                                <?php if (has_error('end_date')): ?>
+                                    <div class="invalid-feedback"><?= get_error('end_date') ?></div>
+                                <?php endif; ?>
                                 <div class="form-text text-white">When the advertisement campaign should end</div>
                             </div>
 
