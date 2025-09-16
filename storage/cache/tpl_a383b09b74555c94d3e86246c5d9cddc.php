@@ -4,7 +4,7 @@ use Trees\Helper\Utils\TimeDateUtils;
 
 ?>
 
-@section('styles')
+<?php $this->start('styles'); ?>
 <style>
     .upload-section {
         transition: all 0.3s ease;
@@ -101,15 +101,15 @@ use Trees\Helper\Utils\TimeDateUtils;
         padding: 0.2rem 0.4rem;
     }
 </style>
-@endsection
+<?php $this->end(); ?>
 
-@section('content')
+<?php $this->start('content'); ?>
 <!-- Create Advertisement Section -->
 <div id="create-advertisement-section" class="content-section fade-in">
     <div class="d-flex justify-content-between align-items-center mb-4 gap-3 page-header">
         <div>
-            <h1 class="h2 mb-1">Create Advertisement</h1>
-            <p class="text-secondary">Create a new advertisement campaign to promote your business.</p>
+            <h1 class="h2 mb-1">Edit Advertisement</h1>
+            <p class="text-secondary">Update <?php echo $advertisement->title; ?> advertisement campaign.</p>
         </div>
         <a href="<?= url("/admin/advertisements") ?>" class="btn btn-outline-secondary">
             <i class="bi bi-arrow-left me-2"></i>Back to Advertisements
@@ -131,11 +131,8 @@ use Trees\Helper\Utils\TimeDateUtils;
                             <!-- Advertisement Title -->
                             <div class="col-12 mb-3">
                                 <label for="title" class="form-label">Advertisement Title <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control <?= has_error('title') ? 'is-invalid' : '' ?>" id="title" name="title" value="<?= old('title') ?>" required maxlength="255"
+                                <input type="text" class="form-control" id="title" name="title" value="<?php echo old('title', $advertisement->title); ?>" required maxlength="255"
                                     placeholder="Enter advertisement title">
-                                <?php if (has_error('title')): ?>
-                                    <div class="invalid-feedback"><?= get_error('title') ?></div>
-                                <?php endif; ?>
                                 <div class="form-text text-white">A catchy title for your advertisement</div>
                             </div>
 
@@ -143,7 +140,7 @@ use Trees\Helper\Utils\TimeDateUtils;
                             <div class="col-12 mb-3">
                                 <label for="description" class="form-label">Description <span class="text-danger">*</span></label>
                                 <textarea class="form-control" id="description" name="description" rows="4" required
-                                    placeholder="Describe your advertisement..."></textarea>
+                                    placeholder="Describe your advertisement..."><?php echo old('description', $advertisement->description); ?></textarea>
                                 <div class="form-text text-white">Brief description of what this advertisement is about</div>
                             </div>
 
@@ -178,7 +175,7 @@ use Trees\Helper\Utils\TimeDateUtils;
 
                                 <!-- URL Input -->
                                 <div id="url_upload_section" class="upload-section" style="display: none;">
-                                    <input type="url" class="form-control" id="image_url" name="image_url"
+                                    <input type="url" class="form-control" id="image_url" name="image_url" value="<?php echo old('image_url', $advertisement->image_url); ?>"
                                         placeholder="https://example.com/image.jpg" onchange="previewImageFromUrl(this)">
                                     <div class="form-text text-white">
                                         <i class="bi bi-info-circle me-1"></i>
@@ -189,7 +186,7 @@ use Trees\Helper\Utils\TimeDateUtils;
                                 <!-- Image Preview -->
                                 <div id="image_preview" class="mt-3" style="display: none;">
                                     <div class="preview-container">
-                                        <img id="preview_img" src="" alt="Preview" class="img-preview">
+                                        <img id="preview_img" src="<?= get_image($advertisement->image_url, '') ?>" alt="Preview" class="img-preview">
                                         <button type="button" class="btn btn-sm btn-outline-danger preview-remove" onclick="removePreview()">
                                             <i class="bi bi-x"></i>
                                         </button>
@@ -329,9 +326,9 @@ use Trees\Helper\Utils\TimeDateUtils;
         </div>
     </div>
 </div>
-@endsection
+<?php $this->end(); ?>
 
-@section('scripts')
+<?php $this->start('scripts'); ?>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Set default start date to now
@@ -513,4 +510,4 @@ use Trees\Helper\Utils\TimeDateUtils;
         return div.innerHTML;
     }
 </script>
-@endsection
+<?php $this->end(); ?>
