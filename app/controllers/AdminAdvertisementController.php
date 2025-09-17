@@ -418,7 +418,7 @@ class AdminAdvertisementController extends Controller
 
     public function toggleStatus(Request $request, Response $response, $id)
     {
-        if ("PUT" !== $request->getMethod()) {
+        if ("POST" !== $request->getMethod()) {
             return $response->json(['success' => false, 'message' => 'Invalid request method'], 405);
         }
 

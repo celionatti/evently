@@ -318,7 +318,7 @@ use Trees\Helper\Utils\TimeDateUtils;
             </div>
 
             <!-- Tips Card -->
-            <div class="dashboard-card mt-3 slide-up" style="animation-delay: 0.2s;">
+            <!-- <div class="dashboard-card mt-3 slide-up" style="animation-delay: 0.2s;">
                 <div class="card-header">
                     <h5 class="mb-0">
                         <i class="bi bi-lightbulb me-2"></i>
@@ -349,7 +349,7 @@ use Trees\Helper\Utils\TimeDateUtils;
                         </li>
                     </ul>
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
 </div>

@@ -1,0 +1,98 @@
+[2025-09-17 10:03:29] Trees\Exception\TreesException: Route not found for path: /dist/css/bootstrap.min.css.map in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-17 11:57:16] Trees\Exception\TreesException: Route not found for path: /dist/css/bootstrap.min.css.map in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-17 12:00:08] Trees\Exception\TreesException: Route not found for path: /dist/css/bootstrap.min.css.map in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-17 12:01:38] Trees\Exception\TreesException: Route not found for path: /dist/css/bootstrap.min.css.map in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-17 12:02:42] Trees\Exception\TreesException: Route not found for path: /dist/css/bootstrap.min.css.map in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-17 12:02:45] Trees\Exception\TreesException: Route not found for path: /dist/css/bootstrap.min.css.map in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-17 12:06:51] Trees\Exception\TreesException: Route not found for path: /admin/advertisements/edit/uploads/advertisements/68c81625e2dfb_3b93a19f.png in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-17 12:11:10] Trees\Exception\TreesException: Route not found for path: /dist/css/bootstrap.min.css.map in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-17 12:13:46] Trees\Exception\TreesException: Route not found for path: /dist/css/bootstrap.min.css.map in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-17 12:22:42] Trees\Exception\TreesException: Route not found for path: /dist/css/bootstrap.min.css.map in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-17 12:22:47] Trees\Exception\TreesException: Route not found for path: /dist/css/bootstrap.min.css.map in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-17 12:22:52] Trees\Exception\TreesException: Route not found for path: /admin/advertisements/update/1 in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-17 12:23:03] Trees\Exception\TreesException: Route not found for path: /admin/advertisements/update/1 in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-17 12:27:33] Trees\Exception\TreesException: Route not found for path: /admin/advertisements/view/1 in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
