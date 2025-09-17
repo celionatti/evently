@@ -125,3 +125,124 @@ Stack trace:
 #2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
 #3 {main}
 
+[17-Sep-2025 22:19:09 Africa/Lagos] [FileUploader] info: Created upload directory: uploads/articles/ with permissions 0755
+[2025-09-17 22:19:09] TypeError: App\controllers\AdminArticleController::manage(): Return value must be of type string, null returned in C:\xampp\htdocs\evently\app\controllers\AdminArticleController.php on line 58
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminArticleController->manage(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#1 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'manage', Array)
+#2 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#3 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#4 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#5 {main}
+
+[2025-09-17 22:19:09] ErrorException: Cannot modify header information - headers already sent by (output started at C:\xampp\htdocs\evently\core\View\View.php:153) in C:\xampp\htdocs\evently\core\Exception\Handler\ExceptionHandler.php on line 149
+Stack trace:
+#0 [internal function]: Trees\Exception\Handler\ExceptionHandler->handleError(2, 'Cannot modify h...', 'C:\\xampp\\htdocs...', 149)
+#1 C:\xampp\htdocs\evently\core\Exception\Handler\ExceptionHandler.php(149): header('Content-Type: t...')
+#2 C:\xampp\htdocs\evently\core\Exception\Handler\ExceptionHandler.php(97): Trees\Exception\Handler\ExceptionHandler->renderDevelopmentError(Object(TypeError), Array)
+#3 C:\xampp\htdocs\evently\core\Trees.php(147): Trees\Exception\Handler\ExceptionHandler->handleHttpException(Object(TypeError), Object(Trees\Http\Request))
+#4 C:\xampp\htdocs\evently\core\Trees.php(141): Trees\Trees->handleException(Object(TypeError))
+#5 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#6 {main}
+
+[17-Sep-2025 22:19:09 Africa/Lagos] PHP Warning:  Cannot modify header information - headers already sent by (output started at C:\xampp\htdocs\evently\core\View\View.php:153) in C:\xampp\htdocs\evently\core\Exception\Handler\ExceptionHandler.php on line 149
+[2025-09-17 22:19:15] TypeError: App\controllers\AdminArticleController::manage(): Return value must be of type string, null returned in C:\xampp\htdocs\evently\app\controllers\AdminArticleController.php on line 58
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminArticleController->manage(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#1 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'manage', Array)
+#2 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#3 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#4 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#5 {main}
+
+[2025-09-17 22:19:15] ErrorException: Cannot modify header information - headers already sent by (output started at C:\xampp\htdocs\evently\core\View\View.php:153) in C:\xampp\htdocs\evently\core\Exception\Handler\ExceptionHandler.php on line 149
+Stack trace:
+#0 [internal function]: Trees\Exception\Handler\ExceptionHandler->handleError(2, 'Cannot modify h...', 'C:\\xampp\\htdocs...', 149)
+#1 C:\xampp\htdocs\evently\core\Exception\Handler\ExceptionHandler.php(149): header('Content-Type: t...')
+#2 C:\xampp\htdocs\evently\core\Exception\Handler\ExceptionHandler.php(97): Trees\Exception\Handler\ExceptionHandler->renderDevelopmentError(Object(TypeError), Array)
+#3 C:\xampp\htdocs\evently\core\Trees.php(147): Trees\Exception\Handler\ExceptionHandler->handleHttpException(Object(TypeError), Object(Trees\Http\Request))
+#4 C:\xampp\htdocs\evently\core\Trees.php(141): Trees\Trees->handleException(Object(TypeError))
+#5 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#6 {main}
+
+[17-Sep-2025 22:19:15 Africa/Lagos] PHP Warning:  Cannot modify header information - headers already sent by (output started at C:\xampp\htdocs\evently\core\View\View.php:153) in C:\xampp\htdocs\evently\core\Exception\Handler\ExceptionHandler.php on line 149
+[2025-09-17 22:20:49] TypeError: App\controllers\AdminArticleController::manage(): Return value must be of type string, null returned in C:\xampp\htdocs\evently\app\controllers\AdminArticleController.php on line 58
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminArticleController->manage(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#1 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'manage', Array)
+#2 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#3 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#4 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#5 {main}
+
+[2025-09-17 22:20:49] ErrorException: Cannot modify header information - headers already sent by (output started at C:\xampp\htdocs\evently\core\View\View.php:153) in C:\xampp\htdocs\evently\core\Exception\Handler\ExceptionHandler.php on line 149
+Stack trace:
+#0 [internal function]: Trees\Exception\Handler\ExceptionHandler->handleError(2, 'Cannot modify h...', 'C:\\xampp\\htdocs...', 149)
+#1 C:\xampp\htdocs\evently\core\Exception\Handler\ExceptionHandler.php(149): header('Content-Type: t...')
+#2 C:\xampp\htdocs\evently\core\Exception\Handler\ExceptionHandler.php(97): Trees\Exception\Handler\ExceptionHandler->renderDevelopmentError(Object(TypeError), Array)
+#3 C:\xampp\htdocs\evently\core\Trees.php(147): Trees\Exception\Handler\ExceptionHandler->handleHttpException(Object(TypeError), Object(Trees\Http\Request))
+#4 C:\xampp\htdocs\evently\core\Trees.php(141): Trees\Trees->handleException(Object(TypeError))
+#5 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#6 {main}
+
+[17-Sep-2025 22:20:49 Africa/Lagos] PHP Warning:  Cannot modify header information - headers already sent by (output started at C:\xampp\htdocs\evently\core\View\View.php:153) in C:\xampp\htdocs\evently\core\Exception\Handler\ExceptionHandler.php on line 149
+[2025-09-17 22:21:14] TypeError: App\controllers\AdminArticleController::manage(): Return value must be of type string, null returned in C:\xampp\htdocs\evently\app\controllers\AdminArticleController.php on line 58
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminArticleController->manage(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#1 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'manage', Array)
+#2 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#3 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#4 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#5 {main}
+
+[2025-09-17 22:21:14] ErrorException: Cannot modify header information - headers already sent by (output started at C:\xampp\htdocs\evently\core\View\View.php:153) in C:\xampp\htdocs\evently\core\Exception\Handler\ExceptionHandler.php on line 149
+Stack trace:
+#0 [internal function]: Trees\Exception\Handler\ExceptionHandler->handleError(2, 'Cannot modify h...', 'C:\\xampp\\htdocs...', 149)
+#1 C:\xampp\htdocs\evently\core\Exception\Handler\ExceptionHandler.php(149): header('Content-Type: t...')
+#2 C:\xampp\htdocs\evently\core\Exception\Handler\ExceptionHandler.php(97): Trees\Exception\Handler\ExceptionHandler->renderDevelopmentError(Object(TypeError), Array)
+#3 C:\xampp\htdocs\evently\core\Trees.php(147): Trees\Exception\Handler\ExceptionHandler->handleHttpException(Object(TypeError), Object(Trees\Http\Request))
+#4 C:\xampp\htdocs\evently\core\Trees.php(141): Trees\Trees->handleException(Object(TypeError))
+#5 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#6 {main}
+
+[17-Sep-2025 22:21:14 Africa/Lagos] PHP Warning:  Cannot modify header information - headers already sent by (output started at C:\xampp\htdocs\evently\core\View\View.php:153) in C:\xampp\htdocs\evently\core\Exception\Handler\ExceptionHandler.php on line 149
+[2025-09-17 22:22:07] TypeError: App\controllers\AdminArticleController::manage(): Return value must be of type string, null returned in C:\xampp\htdocs\evently\app\controllers\AdminArticleController.php on line 58
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminArticleController->manage(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#1 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'manage', Array)
+#2 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#3 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#4 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#5 {main}
+
+[2025-09-17 22:22:07] ErrorException: Cannot modify header information - headers already sent by (output started at C:\xampp\htdocs\evently\core\View\View.php:153) in C:\xampp\htdocs\evently\core\Exception\Handler\ExceptionHandler.php on line 149
+Stack trace:
+#0 [internal function]: Trees\Exception\Handler\ExceptionHandler->handleError(2, 'Cannot modify h...', 'C:\\xampp\\htdocs...', 149)
+#1 C:\xampp\htdocs\evently\core\Exception\Handler\ExceptionHandler.php(149): header('Content-Type: t...')
+#2 C:\xampp\htdocs\evently\core\Exception\Handler\ExceptionHandler.php(97): Trees\Exception\Handler\ExceptionHandler->renderDevelopmentError(Object(TypeError), Array)
+#3 C:\xampp\htdocs\evently\core\Trees.php(147): Trees\Exception\Handler\ExceptionHandler->handleHttpException(Object(TypeError), Object(Trees\Http\Request))
+#4 C:\xampp\htdocs\evently\core\Trees.php(141): Trees\Trees->handleException(Object(TypeError))
+#5 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#6 {main}
+
+[17-Sep-2025 22:22:07 Africa/Lagos] PHP Warning:  Cannot modify header information - headers already sent by (output started at C:\xampp\htdocs\evently\core\View\View.php:153) in C:\xampp\htdocs\evently\core\Exception\Handler\ExceptionHandler.php on line 149
+[2025-09-17 22:22:39] TypeError: App\controllers\AdminArticleController::manage(): Return value must be of type string, null returned in C:\xampp\htdocs\evently\app\controllers\AdminArticleController.php on line 58
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminArticleController->manage(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#1 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'manage', Array)
+#2 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#3 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#4 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#5 {main}
+
+[2025-09-17 22:22:39] ErrorException: Cannot modify header information - headers already sent by (output started at C:\xampp\htdocs\evently\core\View\View.php:153) in C:\xampp\htdocs\evently\core\Exception\Handler\ExceptionHandler.php on line 149
+Stack trace:
+#0 [internal function]: Trees\Exception\Handler\ExceptionHandler->handleError(2, 'Cannot modify h...', 'C:\\xampp\\htdocs...', 149)
+#1 C:\xampp\htdocs\evently\core\Exception\Handler\ExceptionHandler.php(149): header('Content-Type: t...')
+#2 C:\xampp\htdocs\evently\core\Exception\Handler\ExceptionHandler.php(97): Trees\Exception\Handler\ExceptionHandler->renderDevelopmentError(Object(TypeError), Array)
+#3 C:\xampp\htdocs\evently\core\Trees.php(147): Trees\Exception\Handler\ExceptionHandler->handleHttpException(Object(TypeError), Object(Trees\Http\Request))
+#4 C:\xampp\htdocs\evently\core\Trees.php(141): Trees\Trees->handleException(Object(TypeError))
+#5 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#6 {main}
+
+[17-Sep-2025 22:22:39 Africa/Lagos] PHP Warning:  Cannot modify header information - headers already sent by (output started at C:\xampp\htdocs\evently\core\View\View.php:153) in C:\xampp\htdocs\evently\core\Exception\Handler\ExceptionHandler.php on line 149

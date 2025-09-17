@@ -9,6 +9,7 @@ use App\controllers\EventController;
 use App\Controllers\CheckoutController;
 use App\controllers\AdminUserController;
 use App\controllers\AdminEventController;
+use App\controllers\AdminArticleController;
 use App\controllers\AdminProfileController;
 use App\controllers\AdminAttendeeController;
 use App\controllers\AdminCategoryController;
@@ -53,6 +54,17 @@ $router->get('/admin', [AdminController::class, 'dashboard']);
 $router->group(['prefix' => '/admin'], function ($router) {
     $router->get('/dashboard', [AdminController::class, 'dashboard']);
     $router->get('/profile', [AdminProfileController::class, 'profile']);
+});
+
+// Admin: Articles Routes
+$router->group(['prefix' => '/admin/articles'], function ($router) {
+    $router->get('/manage', [AdminArticleController::class, 'manage']);
+    $router->get('/view/{slug}', [AdminArticleController::class, 'view']);
+    $router->get('/create', [AdminArticleController::class, 'create']);
+    $router->post('/create', [AdminArticleController::class, 'insert']);
+    $router->get('/edit/{slug}', [AdminArticleController::class, 'edit']);
+    $router->post('/edit/{slug}', [AdminArticleController::class, 'update']);
+    $router->post('/delete/{slug}', [AdminArticleController::class, 'delete']);
 });
 
 // Admin: Events Routes

@@ -15,27 +15,35 @@
             <li class="sidebar-item">
                 <a href="<?= url("/admin/events/manage") ?>" class="sidebar-link <?= active_nav([1, 2], ['admin', 'events']) ? 'active' : '' ?>">
                     <i class="bi bi-calendar-event"></i>
-                    <span>My Events</span>
+                    <span><?php echo isAdmin() ? '' : 'My' ?> Events</span>
                 </a>
             </li>
             <li class="sidebar-item">
-                <a href="<?= url("/admin/categories/manage") ?>" class="sidebar-link <?= active_nav([1, 2], ['admin', 'categories']) ? 'active' : '' ?>">
-                    <i class="bi bi-tags"></i>
-                    <span>Manage Category</span>
+                <a href="<?= url("/admin/articles/manage") ?>" class="sidebar-link <?= active_nav([1, 2], ['admin', 'articles']) ? 'active' : '' ?>">
+                    <i class="bi bi-sticky"></i>
+                    <span><?php echo isAdmin() ? '' : 'My' ?> Articles</span>
                 </a>
             </li>
-            <li class="sidebar-item">
-                <a href="<?= url("/admin/users/manage") ?>" class="sidebar-link <?= active_nav([1, 2], ['admin', 'users']) ? 'active' : '' ?>">
-                    <i class="bi bi-person-vcard"></i>
-                    <span>Manage Users</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a href="<?= url("/admin/advertisements/manage") ?>" class="sidebar-link <?= active_nav([1, 2], ['admin', 'advertisements']) ? 'active' : '' ?>">
-                    <i class="bi bi-tv"></i>
-                    <span>Manage Adverts</span>
-                </a>
-            </li>
+            <?php if (isAdmin()): ?>
+                <li class="sidebar-item">
+                    <a href="<?= url("/admin/categories/manage") ?>" class="sidebar-link <?= active_nav([1, 2], ['admin', 'categories']) ? 'active' : '' ?>">
+                        <i class="bi bi-tags"></i>
+                        <span>Manage Category</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="<?= url("/admin/users/manage") ?>" class="sidebar-link <?= active_nav([1, 2], ['admin', 'users']) ? 'active' : '' ?>">
+                        <i class="bi bi-person-vcard"></i>
+                        <span>Manage Users</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="<?= url("/admin/advertisements/manage") ?>" class="sidebar-link <?= active_nav([1, 2], ['admin', 'advertisements']) ? 'active' : '' ?>">
+                        <i class="bi bi-tv"></i>
+                        <span>Manage Adverts</span>
+                    </a>
+                </li>
+            <?php endif; ?>
             <li class="sidebar-item">
                 <a href="<?= url("/admin/events/tickets-sales") ?>" class="sidebar-link">
                     <i class="bi bi-ticket-perforated"></i>
