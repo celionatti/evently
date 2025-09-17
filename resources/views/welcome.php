@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\models\Ticket;
 use App\models\Categories;
 
@@ -109,7 +111,7 @@ use App\models\Categories;
                                 ?>
                                 <div class="d-flex align-items-center gap-2">
                                     <?php if ($minPrice): ?>
-                                        <span class="badge rounded-pill text-bg-info">From ₦<?= number_format($minPrice) ?></span>
+                                        <span class="badge rounded-pill text-bg-info">From ₦<?= number_format((float)$minPrice) ?></span>
                                     <?php else: ?>
                                         <span class="badge rounded-pill text-bg-primary">Free</span>
                                     <?php endif; ?>

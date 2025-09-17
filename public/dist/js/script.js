@@ -46,28 +46,28 @@ revealItems.forEach((el) => io.observe(el));
 
 // Ticket modal: hydrate event title from triggers
 const ticketModal = document.getElementById("ticketModal");
-ticketModal.addEventListener("show.bs.modal", (e) => {
-  const btn = e.relatedTarget;
-  const evName = btn?.dataset.event || "Tickets";
-  const tier = btn?.dataset.tier;
-  ticketModal.querySelector("[data-event-label]").textContent = evName;
+// ticketModal.addEventListener("show.bs.modal", (e) => {
+//   const btn = e.relatedTarget;
+//   const evName = btn?.dataset.event || "Tickets";
+//   const tier = btn?.dataset.tier;
+//   ticketModal.querySelector("[data-event-label]").textContent = evName;
 
-  // Preselect tier if provided
-  const tierSelect = ticketModal.querySelector('select[name="tier"]');
-  if (tier) {
-    [...tierSelect.options].forEach((o) => (o.selected = o.text === tier));
-  } else {
-    tierSelect.selectedIndex = 0;
-  }
+//   // Preselect tier if provided
+//   const tierSelect = ticketModal.querySelector('select[name="tier"]');
+//   if (tier) {
+//     [...tierSelect.options].forEach((o) => (o.selected = o.text === tier));
+//   } else {
+//     tierSelect.selectedIndex = 0;
+//   }
 
-  // Reset counts & totals
-  ticketModal.querySelector('input[name="qty"]').value = 2;
-  updateTotals();
-});
+//   // Reset counts & totals
+//   ticketModal.querySelector('input[name="qty"]').value = 2;
+//   updateTotals();
+// });
 
 // Pricing logic for modal
 const priceMap = { General: 15000, VIP: 45000, Group: 60000 };
-const feesRate = 0.07; // 7% platform + payment
+const feesRate = 0.07;
 
 function formatNaira(n) {
   return new Intl.NumberFormat("en-NG", {
@@ -77,21 +77,21 @@ function formatNaira(n) {
   }).format(n);
 }
 
-function updateTotals() {
-  const tier = ticketModal.querySelector('select[name="tier"]').value;
-  const qty = parseInt(
-    ticketModal.querySelector('input[name="qty"]').value || 0,
-    10
-  );
-  const base = priceMap[tier] || 0;
-  const subtotal = base * qty;
-  const fees = Math.round(subtotal * feesRate);
-  const total = subtotal + fees;
-  ticketModal.querySelector("[data-subtotal]").textContent =
-    formatNaira(subtotal);
-  ticketModal.querySelector("[data-fees]").textContent = formatNaira(fees);
-  ticketModal.querySelector("[data-total]").textContent = formatNaira(total);
-}
+// function updateTotals() {
+//   const tier = ticketModal.querySelector('select[name="tier"]').value;
+//   const qty = parseInt(
+//     ticketModal.querySelector('input[name="qty"]').value || 0,
+//     10
+//   );
+//   const base = priceMap[tier] || 0;
+//   const subtotal = base * qty;
+//   const fees = Math.round(subtotal * feesRate);
+//   const total = subtotal + fees;
+//   ticketModal.querySelector("[data-subtotal]").textContent =
+//     formatNaira(subtotal);
+//   ticketModal.querySelector("[data-fees]").textContent = formatNaira(fees);
+//   ticketModal.querySelector("[data-total]").textContent = formatNaira(total);
+// }
 
 ["change", "keyup", "input"].forEach((evt) => {
   ticketModal.addEventListener(evt, (e) => {

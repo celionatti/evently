@@ -25,8 +25,12 @@ use App\controllers\AdminAdvertisementController;
  */
 
 $router->get('/', [SiteController::class, 'index']);
+$router->get('/about-us', [SiteController::class, 'about']);
 $router->get('/events', [EventController::class, 'events']);
 $router->get('/events/{id}/{slug}', [EventController::class, 'event']);
+
+$router->get('/terms-and-conditions', [SiteController::class, 'terms']);
+$router->get('/privacy-policy', [SiteController::class, 'policy']);
 
 // Checkout Ticket Transaction
 $router->post('/checkout/tickets', [CheckoutController::class, 'processCheckout']);

@@ -62,4 +62,25 @@ class SiteController extends Controller
 
         return $this->render('welcome', $view);
     }
+
+    public function about()
+    {
+        $view = [];
+
+        return $this->render('about', $view);
+    }
+
+    public function terms()
+    {
+        $view = [];
+
+        return $this->render('pages/terms', $view);
+    }
+
+    public function policy()
+    {
+        $view = [];
+
+        return $this->render('pages/policy', $view);
+    }
 }
