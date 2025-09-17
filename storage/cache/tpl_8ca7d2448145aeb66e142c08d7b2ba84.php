@@ -7,6 +7,8 @@ use App\models\Categories;
 <?php $this->start('content'); ?>
 <?php $this->partial('nav'); ?>
 
+<?php $this->partial('advert-wide', ['ads' => $advertisements]); ?>
+
 <!-- EVENT HERO -->
 <section class="event-hero">
     <div class="container">
@@ -261,6 +263,8 @@ use App\models\Categories;
         </div>
     </div>
 </section>
+
+<?php $this->partial('advert-wide', ['ads' => $advertisements]); ?>
 
 <?php $this->partial('footer'); ?>
 

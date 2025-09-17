@@ -7,6 +7,8 @@ use App\models\Categories;
 @section('content')
 @include('nav')
 
+@include('advert-wide', ['ads' => $advertisements])
+
 <!-- EVENT HERO -->
 <section class="event-hero">
     <div class="container">
@@ -261,6 +263,8 @@ use App\models\Categories;
         </div>
     </div>
 </section>
+
+@include('advert-wide', ['ads' => $advertisements])
 
 @include('footer')
 

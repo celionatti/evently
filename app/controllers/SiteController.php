@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\controllers;
 
+use App\models\Advertisement;
 use App\models\Categories;
 use App\models\Event;
 use Trees\Http\Request;
@@ -49,11 +50,14 @@ class SiteController extends Controller
 
         $categories = Categories::where(['status' => 'active']);
 
+        $advertisements = Advertisement::where(['is_active' => '1']);
+
         $view = [
             'events' => $eventsData['data'],
             'pagination' => $paginationLinks,
             'currentCity' => $city,
-            'categories' => $categories
+            'categories' => $categories,
+            'advertisements' => $advertisements
         ];
 
         return $this->render('welcome', $view);

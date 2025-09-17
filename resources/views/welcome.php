@@ -55,7 +55,7 @@ use App\models\Categories;
     </div>
 </header>
 
-@include('advert-wide')
+@include('advert-wide', ['ads' => $advertisements])
 
 <!-- EVENTS -->
 <section id="events" class="py-5">
@@ -130,7 +130,7 @@ use App\models\Categories;
     </div>
 </section>
 
-@include('advert')
+@include('advert', ['ads' => $advertisements])
 
 <!-- HOW IT WORKS -->
 <section id="how" class="py-5">

@@ -9,6 +9,7 @@ use App\models\Ticket;
 use Trees\Http\Request;
 use Trees\Http\Response;
 use App\models\Categories;
+use App\models\Advertisement;
 use Trees\Helper\Cities\Cities;
 use Trees\Pagination\Paginator;
 use Trees\Controller\Controller;
@@ -87,6 +88,8 @@ class EventController extends Controller
             $featuredEvents = array_slice($featuredEvents, 0, 3);
         }
 
+        $advertisements = Advertisement::where(['is_active' => '1']);
+
         $view = [
             'events' => $eventsData['data'],
             'pagination' => $paginationLinks,
@@ -97,7 +100,8 @@ class EventController extends Controller
             'currentCategory' => $category,
             'currentCity' => $city,
             'currentFeatured' => $featured,
-            'totalEvents' => $eventsData['meta']['total'] ?? 0
+            'totalEvents' => $eventsData['meta']['total'] ?? 0,
+            'advertisements' => $advertisements
         ];
 
         return $this->render('events', $view);
@@ -176,6 +180,8 @@ class EventController extends Controller
             }
         }
 
+        $advertisements = Advertisement::where(['is_active' => '1']);
+
         // Update page title
         $this->view->setTitle($event->event_title . " | Eventlyy");
 
@@ -186,7 +192,8 @@ class EventController extends Controller
             'daysUntilEvent' => $daysUntilEvent,
             'timeUntilEvent' => $timeUntilEvent,
             'minPrice' => $minPrice,
-            'eventDateTime' => $eventDateTime
+            'eventDateTime' => $eventDateTime,
+            'advertisements' => $advertisements
         ];
 
         return $this->render('event', $view);

@@ -96,3 +96,32 @@ Stack trace:
 #2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
 #3 {main}
 
+[2025-09-17 13:43:32] Trees\Exception\TreesException: Route not found for path: /terms-and-conditions in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-17 13:44:12] ErrorException: Undefined variable $advertisements in C:\xampp\htdocs\evently\storage\cache\temp_68caad1c3a2cf9.35136090.php on line 222
+Stack trace:
+#0 C:\xampp\htdocs\evently\storage\cache\temp_68caad1c3a2cf9.35136090.php(222): Trees\Exception\Handler\ExceptionHandler->handleError(2, 'Undefined varia...', 'C:\\xampp\\htdocs...', 222)
+#1 C:\xampp\htdocs\evently\core\View\View.php(559): include('C:\\xampp\\htdocs...')
+#2 C:\xampp\htdocs\evently\core\View\View.php(298): Trees\View\View->evaluateTemplate('<?php\r\n\r\nuse Ap...', Array, 'C:\\xampp\\htdocs...')
+#3 C:\xampp\htdocs\evently\core\View\View.php(147): Trees\View\View->renderTemplate('events', Array)
+#4 C:\xampp\htdocs\evently\core\Controller\Controller.php(34): Trees\View\View->render('events', Array)
+#5 C:\xampp\htdocs\evently\app\controllers\EventController.php(103): Trees\Controller\Controller->render('events', Array)
+#6 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\EventController->events(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#7 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'events', Array)
+#8 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#9 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#10 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#11 {main}
+
+[2025-09-17 14:00:00] Trees\Exception\TreesException: Route not found for path: /about-us in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+

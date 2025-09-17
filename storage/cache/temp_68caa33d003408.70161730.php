@@ -130,7 +130,7 @@ use App\models\Categories;
     </div>
 </section>
 
-<?php $this->partial('advert', ['ads' => $advertisements]); ?>
+<?php $this->partial('advert'); ?>
 
 <!-- HOW IT WORKS -->
 <section id="how" class="py-5">

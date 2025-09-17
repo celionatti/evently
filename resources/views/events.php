@@ -219,8 +219,9 @@ use App\models\Categories;
     <?php endif; ?>
 </section>
 
+@include('advert', ['ads' => $advertisements])
 <!-- NEWSLETTER SECTION -->
-<section class="container">
+<!-- <section class="container">
     <div class="newsletter-section reveal">
         <h3 class="newsletter-title">Never Miss an Event</h3>
         <p class="newsletter-text">Subscribe to our newsletter and be the first to know about new events, exclusive deals, and special promotions.</p>
@@ -230,7 +231,7 @@ use App\models\Categories;
             <button type="submit" class="btn btn-pulse">Subscribe</button>
         </form>
     </div>
-</section>
+</section> -->
 
 @include('footer')
 @endsection
