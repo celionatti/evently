@@ -321,7 +321,7 @@
 <body>
   <div class="notification-banner">
     <i class="bi bi-info-circle me-2"></i>
-    Scheduled maintenance in progress • Expected completion in 2 hours
+    Scheduled maintenance in progress • Expected completion in 5 hours
   </div>
 
   <div class="floating-elements">
@@ -405,7 +405,7 @@
     // Countdown timer
     function updateCountdown() {
       const countdownElement = document.getElementById('countdown');
-      let totalSeconds = 2 * 3600 + 15 * 60 + 30; // 2 hours, 15 minutes, 30 seconds
+      let totalSeconds = 5 * 3600 + 15 * 60 + 30; // 5 hours, 15 minutes, 30 seconds
 
       function tick() {
         const hours = Math.floor(totalSeconds / 3600);

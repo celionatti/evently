@@ -54,11 +54,44 @@ try {
     }
 
     exit;
-    // die("Missing required environment variables");
 }
 
 // Set default timezone
 date_default_timezone_set($_ENV['APP_TIMEZONE'] ?? 'Africa/Lagos');
+
+// Check if maintenance mode is enabled and environment is production
+$isMaintenance = ($_ENV['APP_MAINTENANCE'] ?? 'false') === 'true';
+$isProduction = ($_ENV['APP_ENV'] ?? 'development') === 'production';
+
+if ($isMaintenance && $isProduction) {
+    // Serve maintenance page
+    http_response_code(503); // Service Unavailable
+    header('Retry-After: 3600'); // Retry after 1 hour
+    
+    // Check if upgrade.html exists, otherwise show a default message
+    $maintenancePage = ROOT_PATH . '/resources/views/upgrade.html';
+    if (file_exists($maintenancePage)) {
+        readfile($maintenancePage);
+    } else {
+        // Fallback maintenance message
+        echo '<!DOCTYPE html>
+        <html>
+        <head>
+            <title>Maintenance Mode</title>
+            <style>
+                body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+                h1 { color: #333; }
+                p { color: #666; }
+            </style>
+        </head>
+        <body>
+            <h1>Maintenance Mode</h1>
+            <p>The application is currently undergoing maintenance. Please check back later.</p>
+        </body>
+        </html>';
+    }
+    exit;
+}
 
 $trees = Trees::getInstance();
 
