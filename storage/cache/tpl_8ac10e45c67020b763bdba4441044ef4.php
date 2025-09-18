@@ -139,8 +139,8 @@ use Trees\Helper\Utils\TimeDateUtils;
                     <div class="empty-state-icon">
                         <i class="bi bi-calendar-event"></i>
                     </div>
-                    <h4 class="h5 mb-3">No Events Found</h4>
-                    <p class="text-muted mb-4">You haven't created any events yet. Start by creating your first event to manage bookings and track performance.</p>
+                    <h4 class="h5 mb-3 text-white">No Events Found</h4>
+                    <p class="text-white mb-4">You haven't created any events yet. Start by creating your first event to manage bookings and track performance.</p>
                     <a href="<?= url('/admin/events/create') ?>" class="btn btn-pulse">
                         <i class="bi bi-calendar2-event me-2"></i>Create Your First Event
                     </a>

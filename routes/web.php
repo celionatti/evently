@@ -54,6 +54,7 @@ $router->get('/admin', [AdminController::class, 'dashboard']);
 $router->group(['prefix' => '/admin'], function ($router) {
     $router->get('/dashboard', [AdminController::class, 'dashboard']);
     $router->get('/profile', [AdminProfileController::class, 'profile']);
+    $router->post('/profile', [AdminProfileController::class, 'update']);
 });
 
 // Admin: Articles Routes

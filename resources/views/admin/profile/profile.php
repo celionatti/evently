@@ -28,15 +28,15 @@ declare(strict_types=1);
 
                     <div class="profile-stats justify-content-center mb-4">
                         <div class="profile-stat">
-                            <div class="profile-stat-value">12</div>
+                            <div class="profile-stat-value">{{{ $user->events ?? 0 }}}</div>
                             <div class="profile-stat-label">Events</div>
                         </div>
                         <div class="profile-stat">
-                            <div class="profile-stat-value">2.4K</div>
+                            <div class="profile-stat-value">{{{ $user->attendees ?? '0.0k' }}}</div>
                             <div class="profile-stat-label">Attendees</div>
                         </div>
                         <div class="profile-stat">
-                            <div class="profile-stat-value">4.2</div>
+                            <div class="profile-stat-value">{{{ $user->rating ?? 0 }}}</div>
                             <div class="profile-stat-label">Rating</div>
                         </div>
                     </div>
@@ -69,47 +69,75 @@ declare(strict_types=1);
                 <div class="tab-content" id="profileTabsContent">
                     <!-- Personal Info Tab -->
                     <div class="tab-pane fade show active" id="personal" role="tabpanel">
-                        <form action="" method="POST">
+                        <form action="<?php url('/admin/profile') ?>" method="POST">
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label class="form-label">Name</label>
-                                    <input type="text" name="name" class="form-control" value="{{{ old('name', $user->name) }}}" placeholder="First Name">
+                                    <input type="text" name="name" class="form-control <?= has_error('name') ? 'is-invalid' : '' ?>" value="{{{ old('name', $user->name) }}}" placeholder="First Name">
+                                    <?php if (has_error('name')): ?>
+                                        <div class="invalid-feedback"><?= get_error('name') ?></div>
+                                    <?php endif; ?>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Other Name</label>
-                                    <input type="text" name="other_name" class="form-control" value="{{{ old('other_name', $user->other_name) }}}" placeholder="Other Name">
+                                    <input type="text" name="other_name" class="form-control <?= has_error('other_name') ? 'is-invalid' : '' ?>" value="{{{ old('other_name', $user->other_name) }}}" placeholder="Other Name">
+                                    <?php if (has_error('other_name')): ?>
+                                        <div class="invalid-feedback"><?= get_error('other_name') ?></div>
+                                    <?php endif; ?>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Email Address</label>
-                                    <input type="email" name="email" class="form-control" value="{{{ old('email', $user->email) }}}" placeholder="example@mail.com" disabled>
+                                    <input type="email" name="email" class="form-control <?= has_error('email') ? 'is-invalid' : '' ?>" value="{{{ old('email', $user->email) }}}" placeholder="example@mail.com" disabled>
+                                    <?php if (has_error('email')): ?>
+                                        <div class="invalid-feedback"><?= get_error('email') ?></div>
+                                    <?php endif; ?>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Phone Number</label>
-                                    <input type="tel" name="phone" class="form-control" value="{{{ old('phone', $user->phone) }}}" placeholder="e.g., +234 812 345 6789">
+                                    <input type="tel" name="phone" class="form-control <?= has_error('phone') ? 'is-invalid' : '' ?>" value="{{{ old('phone', $user->phone) }}}" placeholder="e.g., +234 812 345 6789">
+                                    <?php if (has_error('phone')): ?>
+                                        <div class="invalid-feedback"><?= get_error('phone') ?></div>
+                                    <?php endif; ?>
                                 </div>
                                 <div class="col-12">
                                     <label class="form-label">Bio</label>
-                                    <textarea class="form-control" name="bio" rows="3" placeholder="Professional event organizer with 5+ years of experience creating memorable experiences.">{{{ old('bio', $user->bio) }}}</textarea>
+                                    <textarea class="form-control <?= has_error('bio') ? 'is-invalid' : '' ?>" name="bio" rows="3" placeholder="Professional event organizer with 5+ years of experience creating memorable experiences.">{{{ old('bio', $user->bio) }}}</textarea>
+                                    <?php if (has_error('bio')): ?>
+                                        <div class="invalid-feedback"><?= get_error('bio') ?></div>
+                                    <?php endif; ?>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Business Name(Organization)</label>
-                                    <input type="text" name="business_name" class="form-control" value="{{{ old('business_name', $user->business_name) }}}" placeholder="Your Business or Organization Name">
+                                    <input type="text" name="business_name" class="form-control <?= has_error('business_name') ? 'is-invalid' : '' ?>" value="{{{ old('business_name', $user->business_name) }}}" placeholder="Your Business or Organization Name">
+                                    <?php if (has_error('business_name')): ?>
+                                        <div class="invalid-feedback"><?= get_error('business_name') ?></div>
+                                    <?php endif; ?>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Website</label>
-                                    <input type="url" name="website" class="form-control" value="{{{ old('website', $user->website) }}}" placeholder="https://yourwebsite.com">
+                                    <input type="url" name="website" class="form-control <?= has_error('website') ? 'is-invalid' : '' ?>" value="{{{ old('website', $user->website) }}}" placeholder="https://yourwebsite.com">
+                                    <?php if (has_error('website')): ?>
+                                        <div class="invalid-feedback"><?= get_error('website') ?></div>
+                                    <?php endif; ?>
                                 </div>
                                 <div class="col-12">
                                     <label class="form-label">Address</label>
-                                    <input type="text" name="address" class="form-control" value="{{{ old('address', $user->address) }}}" placeholder="123 Event Street, Victoria Island">
+                                    <input type="text" name="address" class="form-control <?= has_error('address') ? 'is-invalid' : '' ?>" value="{{{ old('address', $user->address) }}}" placeholder="123 Event Street, Victoria Island">
+                                    <?php if (has_error('address')): ?>
+                                        <div class="invalid-feedback"><?= get_error('address') ?></div>
+                                    <?php endif; ?>
                                 </div>
                                 <div class="col-md-12">
                                     <label class="form-label">Country</label>
-                                    <select name="country" class="form-select" aria-placeholder="Select Country">
-                                        <option selected>Nigeria</option>
-                                        <option>UK</option>
-                                        <option>Kenya</option>
+                                    <select name="country" class="form-select <?= has_error('country') ? 'is-invalid' : '' ?>" aria-placeholder="Select Country">
+                                        <option value="">Select Country</option>
+                                        <?php foreach ($countries as $country): ?>
+                                            <option value="{{{ $country }}}" <?= old('country', $user->country) == $country ? 'selected' : '' ?>>{{{ $country }}}</option>
+                                        <?php endforeach; ?>
                                     </select>
+                                    <?php if (has_error('country')): ?>
+                                        <div class="invalid-feedback"><?= get_error('country') ?></div>
+                                    <?php endif; ?>
                                 </div>
                                 <div class="col-12 mt-4">
                                     <button type="submit" class="btn btn-pulse">
