@@ -119,3 +119,13 @@ $router->group(['prefix' => '/admin/advertisements'], function ($router) {
     $router->post('/edit/{id}', [AdminAdvertisementController::class, 'update']);
     $router->post('/delete/{id}', [AdminAdvertisementController::class, 'delete']);
 });
+
+// Admin: Setting Routes
+$router->group(['prefix' => '/admin/settings'], function ($router) {
+    $router->get('/manage', [AdminAdvertisementController::class, 'manage']);
+    $router->get('/create', [AdminAdvertisementController::class, 'create']);
+    $router->post('/create', [AdminAdvertisementController::class, 'insert']);
+    $router->get('/edit/{id}', [AdminAdvertisementController::class, 'edit']);
+    $router->post('/edit/{id}', [AdminAdvertisementController::class, 'update']);
+    $router->post('/delete/{id}', [AdminAdvertisementController::class, 'delete']);
+});
