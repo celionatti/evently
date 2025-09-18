@@ -69,46 +69,45 @@ declare(strict_types=1);
                 <div class="tab-content" id="profileTabsContent">
                     <!-- Personal Info Tab -->
                     <div class="tab-pane fade show active" id="personal" role="tabpanel">
-                        <form action="<?php url('/admin/profile') ?>" method="POST">
+                        <form action="<?php echo url('/admin/profile') ?>" method="POST">
                             <div class="row g-3">
                                 <div class="col-md-6">
-                                    <label class="form-label">Name</label>
-                                    <input type="text" name="name" class="form-control <?= has_error('name') ? 'is-invalid' : '' ?>" value="{{{ old('name', $user->name) }}}" placeholder="First Name">
+                                    <label class="form-label">Name <span class="text-danger">*</span></label>
+                                    <input type="text" name="name" class="form-control <?= has_error('name') ? 'is-invalid' : '' ?>" value="{{{ old('name', $user->name) }}}" placeholder="First Name" required>
                                     <?php if (has_error('name')): ?>
                                         <div class="invalid-feedback"><?= get_error('name') ?></div>
                                     <?php endif; ?>
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label">Other Name</label>
-                                    <input type="text" name="other_name" class="form-control <?= has_error('other_name') ? 'is-invalid' : '' ?>" value="{{{ old('other_name', $user->other_name) }}}" placeholder="Other Name">
+                                    <label class="form-label">Other Name <span class="text-danger">*</span></label>
+                                    <input type="text" name="other_name" class="form-control <?= has_error('other_name') ? 'is-invalid' : '' ?>" value="{{{ old('other_name', $user->other_name) }}}" placeholder="Last Name" required>
                                     <?php if (has_error('other_name')): ?>
                                         <div class="invalid-feedback"><?= get_error('other_name') ?></div>
                                     <?php endif; ?>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Email Address</label>
-                                    <input type="email" name="email" class="form-control <?= has_error('email') ? 'is-invalid' : '' ?>" value="{{{ old('email', $user->email) }}}" placeholder="example@mail.com" disabled>
-                                    <?php if (has_error('email')): ?>
-                                        <div class="invalid-feedback"><?= get_error('email') ?></div>
-                                    <?php endif; ?>
+                                    <input type="email" name="email" class="form-control" value="{{{ $user->email }}}" placeholder="example@mail.com" disabled readonly>
+                                    <small class="text-muted">Email cannot be changed for security reasons</small>
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label">Phone Number</label>
-                                    <input type="tel" name="phone" class="form-control <?= has_error('phone') ? 'is-invalid' : '' ?>" value="{{{ old('phone', $user->phone) }}}" placeholder="e.g., +234 812 345 6789">
+                                    <label class="form-label">Phone Number <span class="text-danger">*</span></label>
+                                    <input type="tel" name="phone" class="form-control <?= has_error('phone') ? 'is-invalid' : '' ?>" value="{{{ old('phone', $user->phone) }}}" placeholder="e.g., +234 812 345 6789" required>
                                     <?php if (has_error('phone')): ?>
                                         <div class="invalid-feedback"><?= get_error('phone') ?></div>
                                     <?php endif; ?>
                                 </div>
                                 <div class="col-12">
                                     <label class="form-label">Bio</label>
-                                    <textarea class="form-control <?= has_error('bio') ? 'is-invalid' : '' ?>" name="bio" rows="3" placeholder="Professional event organizer with 5+ years of experience creating memorable experiences.">{{{ old('bio', $user->bio) }}}</textarea>
+                                    <textarea class="form-control <?= has_error('bio') ? 'is-invalid' : '' ?>" name="bio" rows="3" placeholder="Professional event organizer with 5+ years of experience creating memorable experiences." maxlength="500">{{{ old('bio', $user->bio) }}}</textarea>
+                                    <small class="text-muted">Maximum 500 characters</small>
                                     <?php if (has_error('bio')): ?>
                                         <div class="invalid-feedback"><?= get_error('bio') ?></div>
                                     <?php endif; ?>
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label">Business Name(Organization)</label>
-                                    <input type="text" name="business_name" class="form-control <?= has_error('business_name') ? 'is-invalid' : '' ?>" value="{{{ old('business_name', $user->business_name) }}}" placeholder="Your Business or Organization Name">
+                                    <label class="form-label">Business Name (Organization)</label>
+                                    <input type="text" name="business_name" class="form-control <?= has_error('business_name') ? 'is-invalid' : '' ?>" value="{{{ old('business_name', $user->business_name) }}}" placeholder="Your Business or Organization Name" maxlength="100">
                                     <?php if (has_error('business_name')): ?>
                                         <div class="invalid-feedback"><?= get_error('business_name') ?></div>
                                     <?php endif; ?>
@@ -120,16 +119,16 @@ declare(strict_types=1);
                                         <div class="invalid-feedback"><?= get_error('website') ?></div>
                                     <?php endif; ?>
                                 </div>
-                                <div class="col-12">
-                                    <label class="form-label">Address</label>
-                                    <input type="text" name="address" class="form-control <?= has_error('address') ? 'is-invalid' : '' ?>" value="{{{ old('address', $user->address) }}}" placeholder="123 Event Street, Victoria Island">
+                                <div class="col-md-8">
+                                    <label class="form-label">Address <span class="text-danger">*</span></label>
+                                    <input type="text" name="address" class="form-control <?= has_error('address') ? 'is-invalid' : '' ?>" value="{{{ old('address', $user->address) }}}" placeholder="123 Event Street, Victoria Island" required maxlength="100">
                                     <?php if (has_error('address')): ?>
                                         <div class="invalid-feedback"><?= get_error('address') ?></div>
                                     <?php endif; ?>
                                 </div>
-                                <div class="col-md-12">
-                                    <label class="form-label">Country</label>
-                                    <select name="country" class="form-select <?= has_error('country') ? 'is-invalid' : '' ?>" aria-placeholder="Select Country">
+                                <div class="col-md-4">
+                                    <label class="form-label">Country <span class="text-danger">*</span></label>
+                                    <select name="country" class="form-select <?= has_error('country') ? 'is-invalid' : '' ?>" required>
                                         <option value="">Select Country</option>
                                         <?php foreach ($countries as $country): ?>
                                             <option value="{{{ $country }}}" <?= old('country', $user->country) == $country ? 'selected' : '' ?>>{{{ $country }}}</option>
@@ -150,21 +149,37 @@ declare(strict_types=1);
 
                     <!-- Security Tab -->
                     <div class="tab-pane fade" id="security" role="tabpanel">
-                        <form>
+                        <form action="<?php echo url('/admin/profile/change-password') ?>" method="POST">
                             <div class="mb-4">
                                 <h5 class="mb-3">Change Password</h5>
                                 <div class="row g-3">
                                     <div class="col-12">
-                                        <label class="form-label">Current Password</label>
-                                        <input type="password" class="form-control">
+                                        <label class="form-label">Current Password <span class="text-danger">*</span></label>
+                                        <input type="password" name="current_password" class="form-control <?= has_error('current_password') ? 'is-invalid' : '' ?>" placeholder="Enter your current password" required minlength="6">
+                                        <?php if (has_error('current_password')): ?>
+                                            <div class="invalid-feedback"><?= get_error('current_password') ?></div>
+                                        <?php endif; ?>
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label">New Password</label>
-                                        <input type="password" class="form-control">
+                                        <label class="form-label">New Password <span class="text-danger">*</span></label>
+                                        <input type="password" name="new_password" class="form-control <?= has_error('new_password') ? 'is-invalid' : '' ?>" placeholder="Enter new password" required minlength="6">
+                                        <small class="text-muted">Minimum 6 characters</small>
+                                        <?php if (has_error('new_password')): ?>
+                                            <div class="invalid-feedback"><?= get_error('new_password') ?></div>
+                                        <?php endif; ?>
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label">Confirm New Password</label>
-                                        <input type="password" class="form-control">
+                                        <label class="form-label">Confirm New Password <span class="text-danger">*</span></label>
+                                        <input type="password" name="confirm_password" class="form-control <?= has_error('confirm_password') ? 'is-invalid' : '' ?>" placeholder="Confirm new password" required minlength="6">
+                                        <?php if (has_error('confirm_password')): ?>
+                                            <div class="invalid-feedback"><?= get_error('confirm_password') ?></div>
+                                        <?php endif; ?>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="alert alert-info">
+                                            <i class="bi bi-info-circle me-2"></i>
+                                            <strong>Security Notice:</strong> Changing your password will require you to login again on all devices for security purposes.
+                                        </div>
                                     </div>
                                     <div class="col-12">
                                         <button type="submit" class="btn btn-pulse">
@@ -180,12 +195,38 @@ declare(strict_types=1);
                                 <h5 class="mb-3">Two-Factor Authentication</h5>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
-                                        <h6 class="mb-1">Status: <span class="text-secondary">Pending</span></h6>
+                                        <h6 class="mb-1">Status: <span class="text-warning">Coming Soon</span></h6>
                                         <p class="text-secondary mb-0">Add an extra layer of security to your account</p>
                                     </div>
                                     <button type="button" class="btn btn-ghost disabled">
                                         <i class="bi bi-gear me-1"></i>Manage
                                     </button>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <h5 class="mb-3">Account Information</h5>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <small class="text-muted">Member Since</small>
+                                        <div class="fw-medium">{{{ date('F j, Y', strtotime($user->created_at)) }}}</div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <small class="text-muted">Last Updated</small>
+                                        <div class="fw-medium">{{{ date('F j, Y g:i A', strtotime($user->updated_at)) }}}</div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <small class="text-muted">User ID</small>
+                                        <div class="fw-medium text-muted">{{{ $user->user_id }}}</div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <small class="text-muted">Account Role</small>
+                                        <div class="fw-medium">
+                                            <span class="badge <?= $user->role === 'admin' ? 'bg-danger' : 'bg-primary' ?>">
+                                                {{{ ucfirst($user->role) }}}
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </form>
@@ -196,4 +237,43 @@ declare(strict_types=1);
         </div>
     </div>
 </div>
+
+<script>
+// Add character counter for bio field
+document.addEventListener('DOMContentLoaded', function() {
+    const bioField = document.querySelector('textarea[name="bio"]');
+    if (bioField) {
+        const charCount = document.createElement('small');
+        charCount.className = 'text-muted float-end';
+        charCount.id = 'bio-char-count';
+        
+        function updateCharCount() {
+            const remaining = 500 - bioField.value.length;
+            charCount.textContent = `${bioField.value.length}/500`;
+            charCount.className = remaining < 50 ? 'text-danger float-end' : 'text-muted float-end';
+        }
+        
+        bioField.addEventListener('input', updateCharCount);
+        bioField.parentNode.appendChild(charCount);
+        updateCharCount(); // Initialize count
+    }
+});
+
+// Form validation enhancement
+(function() {
+    'use strict';
+    window.addEventListener('load', function() {
+        var forms = document.getElementsByClassName('needs-validation');
+        var validation = Array.prototype.filter.call(forms, function(form) {
+            form.addEventListener('submit', function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    }, false);
+})();
+</script>
 @endsection

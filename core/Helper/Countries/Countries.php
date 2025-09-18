@@ -135,7 +135,7 @@ class Countries
         'BA' => ['name' => 'Bosnia and Herzegovina', 'continent' => 'Europe'],
         'BG' => ['name' => 'Bulgaria', 'continent' => 'Europe'],
         'HR' => ['name' => 'Croatia', 'continent' => 'Europe'],
-        'CY' => ['name' => 'Cyprus', 'continent' => 'Europe'],
+        // 'CY' => ['name' => 'Cyprus', 'continent' => 'Europe'],
         'CZ' => ['name' => 'Czech Republic', 'continent' => 'Europe'],
         'DK' => ['name' => 'Denmark', 'continent' => 'Europe'],
         'EE' => ['name' => 'Estonia', 'continent' => 'Europe'],

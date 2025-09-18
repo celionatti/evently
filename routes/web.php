@@ -55,6 +55,7 @@ $router->group(['prefix' => '/admin'], function ($router) {
     $router->get('/dashboard', [AdminController::class, 'dashboard']);
     $router->get('/profile', [AdminProfileController::class, 'profile']);
     $router->post('/profile', [AdminProfileController::class, 'update']);
+    $router->post('/profile/change-password', [AdminProfileController::class, 'change_password']);
 });
 
 // Admin: Articles Routes

@@ -216,3 +216,5 @@
 [2025-09-17 14:11:14] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
 [2025-09-18 11:19:03] [ERROR] Image processing failed: Unsupported image format: C:\xampp\tmp\php646C.tmp_processed
 [2025-09-18 11:19:04] [INFO] File uploaded successfully: uploads/articles/68cbdc97a0700_780b421d.png
+[2025-09-18 18:58:08] [ERROR] Image processing failed: Unsupported image format: C:\xampp\tmp\phpEEFA.tmp_processed
+[2025-09-18 18:58:08] [INFO] File uploaded successfully: uploads/articles/68cc482fec11c_ffa01fce.jfif
