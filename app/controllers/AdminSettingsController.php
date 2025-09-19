@@ -101,51 +101,6 @@ class AdminSettingsController extends Controller
     }
 
     /**
-     * Test email configuration
-     */
-    public function testEmail(Request $request, Response $response)
-    {
-        if ("POST" !== $request->getMethod()) {
-            return $response->json(['success' => false, 'message' => 'Invalid request method'], 405);
-        }
-
-        $testEmail = $request->input('test_email');
-        if (empty($testEmail) || !filter_var($testEmail, FILTER_VALIDATE_EMAIL)) {
-            return $response->json(['success' => false, 'message' => 'Valid email address is required'], 400);
-        }
-
-        try {
-            // Get email settings
-            $smtpHost = Setting::get('smtp_host');
-            $smtpPort = Setting::get('smtp_port', 587);
-            $smtpUsername = Setting::get('smtp_username');
-            $smtpPassword = Setting::get('smtp_password');
-            $smtpEncryption = Setting::get('smtp_encryption', 'tls');
-            $fromName = Setting::get('mail_from_name', 'Eventlyy');
-            $fromEmail = Setting::get('mail_from_address');
-
-            if (empty($smtpHost) || empty($smtpUsername) || empty($fromEmail)) {
-                return $response->json([
-                    'success' => false, 
-                    'message' => 'Email configuration is incomplete. Please configure SMTP settings first.'
-                ], 400);
-            }
-
-            // Test email sending (you'll need to implement your email service)
-            $result = $this->sendTestEmail($testEmail, $smtpHost, $smtpPort, $smtpUsername, $smtpPassword, $smtpEncryption, $fromName, $fromEmail);
-            
-            if ($result['success']) {
-                return $response->json(['success' => true, 'message' => 'Test email sent successfully!']);
-            } else {
-                return $response->json(['success' => false, 'message' => 'Failed to send test email: ' . $result['error']], 500);
-            }
-
-        } catch (\Exception $e) {
-            return $response->json(['success' => false, 'message' => 'Email test failed: ' . $e->getMessage()], 500);
-        }
-    }
-
-    /**
      * Test payment configuration
      */
     public function testPayment(Request $request, Response $response)
@@ -165,7 +120,7 @@ class AdminSettingsController extends Controller
                 ], 400);
             }
 
-            // Test Paystack connection (basic API call)
+            // Test Paystack connection
             $result = $this->testPaystackConnection($secretKey);
             
             if ($result['success']) {
@@ -202,208 +157,36 @@ class AdminSettingsController extends Controller
     }
 
     /**
-     * Export settings as JSON
-     */
-    public function exportSettings(Request $request, Response $response)
-    {
-        try {
-            $settings = Setting::getAllGrouped();
-            
-            // Remove sensitive data
-            $sensitiveKeys = Setting::getSensitiveKeys();
-            foreach ($settings as $category => &$categorySettings) {
-                foreach ($categorySettings as $key => &$setting) {
-                    if (in_array($key, $sensitiveKeys)) {
-                        $setting['value'] = '***HIDDEN***';
-                        $setting['raw_value'] = '***HIDDEN***';
-                    }
-                }
-            }
-
-            $exportData = [
-                'export_date' => date('Y-m-d H:i:s'),
-                'application' => Setting::get('app_name', 'Eventlyy'),
-                'version' => '1.0.0', // You might want to get this dynamically
-                'settings' => $settings
-            ];
-
-            $filename = 'settings_export_' . date('Y-m-d_H-i-s') . '.json';
-            
-            $response->setHeader('Content-Type', 'application/json');
-            $response->setHeader('Content-Disposition', 'attachment; filename="' . $filename . '"');
-            
-            return $response->send(json_encode($exportData, JSON_PRETTY_PRINT));
-
-        } catch (\Exception $e) {
-            FlashMessage::setMessage("Export failed: " . $e->getMessage(), 'danger');
-            return $response->redirect("/admin/settings");
-        }
-    }
-
-    /**
-     * Import settings from JSON
-     */
-    public function importSettings(Request $request, Response $response)
-    {
-        if ("POST" !== $request->getMethod()) {
-            return $response->redirect("/admin/settings");
-        }
-
-        if (!$request->hasFile('settings_file')) {
-            FlashMessage::setMessage("Please select a settings file to import.", 'danger');
-            return $response->redirect("/admin/settings?tab=system");
-        }
-
-        try {
-            $file = $request->file('settings_file');
-            
-            if ($file->getClientMediaType() !== 'application/json') {
-                FlashMessage::setMessage("Invalid file type. Please upload a JSON file.", 'danger');
-                return $response->redirect("/admin/settings?tab=system");
-            }
-
-            $content = file_get_contents($file->getPath());
-            $importData = json_decode($content, true);
-
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                FlashMessage::setMessage("Invalid JSON file format.", 'danger');
-                return $response->redirect("/admin/settings?tab=system");
-            }
-
-            if (!isset($importData['settings'])) {
-                FlashMessage::setMessage("Invalid settings file structure.", 'danger');
-                return $response->redirect("/admin/settings?tab=system");
-            }
-
-            // Import settings
-            $imported = 0;
-            $skipped = 0;
-            $sensitiveKeys = Setting::getSensitiveKeys();
-
-            foreach ($importData['settings'] as $category => $categorySettings) {
-                foreach ($categorySettings as $key => $settingData) {
-                    // Skip sensitive keys for security
-                    if (in_array($key, $sensitiveKeys)) {
-                        $skipped++;
-                        continue;
-                    }
-
-                    if (Setting::exists($key)) {
-                        if (Setting::set($key, $settingData['raw_value'] ?? $settingData['value'])) {
-                            $imported++;
-                        }
-                    }
-                }
-            }
-
-            $message = "Import completed! {$imported} settings imported";
-            if ($skipped > 0) {
-                $message .= ", {$skipped} sensitive settings skipped for security";
-            }
-
-            FlashMessage::setMessage($message, 'success');
-            return $response->redirect("/admin/settings?tab=system");
-
-        } catch (\Exception $e) {
-            FlashMessage::setMessage("Import failed: " . $e->getMessage(), 'danger');
-            return $response->redirect("/admin/settings?tab=system");
-        }
-    }
-
-    /**
-     * Send test email
-     */
-    private function sendTestEmail(string $to, string $host, int $port, string $username, string $password, string $encryption, string $fromName, string $fromEmail): array
-    {
-        // This is a placeholder - implement your actual email sending logic here
-        // You might use PHPMailer, SwiftMailer, or your framework's email service
-        
-        try {
-            // Example implementation (you'll need to adapt this to your email service)
-            /*
-            $mailer = new \PHPMailer\PHPMailer\PHPMailer(true);
-            $mailer->isSMTP();
-            $mailer->Host = $host;
-            $mailer->SMTPAuth = true;
-            $mailer->Username = $username;
-            $mailer->Password = $password;
-            $mailer->SMTPSecure = $encryption;
-            $mailer->Port = $port;
-
-            $mailer->setFrom($fromEmail, $fromName);
-            $mailer->addAddress($to);
-            $mailer->Subject = 'Test Email from ' . Setting::get('app_name', 'Eventlyy');
-            $mailer->Body = 'This is a test email to verify your SMTP configuration is working correctly.';
-
-            $mailer->send();
-            */
-
-            // For now, return success (replace with actual implementation)
-            return ['success' => true];
-            
-        } catch (\Exception $e) {
-            return ['success' => false, 'error' => $e->getMessage()];
-        }
-    }
-
-    /**
-     * Test Paystack connection
-     */
-    private function testPaystackConnection(string $secretKey): array
-    {
-        try {
-            $curl = curl_init();
-            curl_setopt_array($curl, [
-                CURLOPT_URL => "https://api.paystack.co/bank",
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_HTTPHEADER => [
-                    "Authorization: Bearer " . $secretKey,
-                    "Cache-Control: no-cache",
-                ],
-            ]);
-
-            $response = curl_exec($curl);
-            $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-            curl_close($curl);
-
-            if ($httpCode === 200) {
-                $result = json_decode($response, true);
-                if ($result && isset($result['status']) && $result['status'] === true) {
-                    return ['success' => true];
-                }
-            }
-
-            return ['success' => false, 'error' => 'Invalid API response or credentials'];
-            
-        } catch (\Exception $e) {
-            return ['success' => false, 'error' => $e->getMessage()];
-        }
-    }
-
-    /**
      * Clear application cache
      */
     private function clearApplicationCache(): bool
     {
         try {
-            // Implement your cache clearing logic here
-            // This might involve clearing file cache, Redis, Memcached, etc.
+            $cleared = true;
             
-            // Example for file-based cache
-            $cacheDir = ROOT_PATH . '/storage/cache';
-            if (is_dir($cacheDir)) {
-                $this->clearDirectory($cacheDir);
+            // Clear file-based cache
+            if (defined('ROOT_PATH')) {
+                $cacheDir = ROOT_PATH . '/storage/cache';
+                if (is_dir($cacheDir)) {
+                    $cleared = $cleared && $this->clearDirectory($cacheDir, false);
+                }
+
+                // Clear view cache if exists
+                $viewCacheDir = ROOT_PATH . '/storage/views';
+                if (is_dir($viewCacheDir)) {
+                    $cleared = $cleared && $this->clearDirectory($viewCacheDir, false);
+                }
             }
 
-            // Clear view cache if exists
-            $viewCacheDir = ROOT_PATH . '/storage/views';
-            if (is_dir($viewCacheDir)) {
-                $this->clearDirectory($viewCacheDir);
-            }
-
-            return true;
+            // Add other cache clearing logic here (Redis, Memcached, etc.)
+            
+            return $cleared;
             
         } catch (\Exception $e) {
+            // Log error if logger is available
+            if (class_exists('\Trees\Logger\Logger')) {
+                \Trees\Logger\Logger::exception($e);
+            }
             return false;
         }
     }
@@ -411,16 +194,45 @@ class AdminSettingsController extends Controller
     /**
      * Recursively clear directory contents
      */
-    private function clearDirectory(string $dir): void
+    private function clearDirectory(string $dir, bool $removeDir = false): bool
     {
-        $files = glob($dir . '/*');
-        foreach ($files as $file) {
-            if (is_file($file)) {
-                unlink($file);
-            } elseif (is_dir($file)) {
-                $this->clearDirectory($file);
-                rmdir($file);
+        if (!is_dir($dir)) {
+            return true;
+        }
+
+        try {
+            $files = scandir($dir);
+            if ($files === false) {
+                return false;
             }
+
+            foreach ($files as $file) {
+                if ($file === '.' || $file === '..') {
+                    continue;
+                }
+
+                $filePath = $dir . DIRECTORY_SEPARATOR . $file;
+                
+                if (is_file($filePath)) {
+                    if (!unlink($filePath)) {
+                        return false;
+                    }
+                } elseif (is_dir($filePath)) {
+                    if (!$this->clearDirectory($filePath, true)) {
+                        return false;
+                    }
+                }
+            }
+
+            // Remove the directory itself if requested
+            if ($removeDir && !rmdir($dir)) {
+                return false;
+            }
+
+            return true;
+            
+        } catch (\Exception $e) {
+            return false;
         }
     }
 

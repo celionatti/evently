@@ -1,0 +1,81 @@
+[2025-09-19 00:02:55] Trees\Exception\TreesException: Route not found for path: /admin/settings/clear-cache in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-19 00:03:31] Trees\Exception\TreesException: Route not found for path: /admin/settings in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-19 00:06:09] Trees\Exception\TreesException: Route not found for path: /admin/settings in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-19 00:06:21] Trees\Exception\TreesException: Route not found for path: /admin/settings in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-19 00:06:32] Trees\Exception\TreesException: Route not found for path: /admin/settings in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-19 01:17:30] Error: Call to a member function updateInstance() on null in C:\xampp\htdocs\evently\app\controllers\AdminSettingsController.php on line 84
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminSettingsController->update(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#1 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'update', Array)
+#2 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#3 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#4 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#5 {main}
+
+[2025-09-19 01:30:41] TypeError: Trees\Database\Model\Model::where(): Argument #1 ($conditions) must be of type array, string given, called in C:\xampp\htdocs\evently\app\controllers\AdminSettingsController.php on line 68 in C:\xampp\htdocs\evently\core\Database\Model\Model.php on line 724
+Stack trace:
+#0 C:\xampp\htdocs\evently\app\controllers\AdminSettingsController.php(68): Trees\Database\Model\Model::where('facebook_url')
+#1 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminSettingsController->update(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#2 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'update', Array)
+#3 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#4 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#5 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#6 {main}
+
+[2025-09-19 01:34:24] ErrorException: Attempt to read property "is_editable" on array in C:\xampp\htdocs\evently\app\controllers\AdminSettingsController.php on line 70
+Stack trace:
+#0 C:\xampp\htdocs\evently\app\controllers\AdminSettingsController.php(70): Trees\Exception\Handler\ExceptionHandler->handleError(2, 'Attempt to read...', 'C:\\xampp\\htdocs...', 70)
+#1 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminSettingsController->update(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#2 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'update', Array)
+#3 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#4 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#5 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#6 {main}
+
+[2025-09-19 01:40:44] ErrorException: Undefined array key 0 in C:\xampp\htdocs\evently\app\controllers\AdminSettingsController.php on line 69
+Stack trace:
+#0 C:\xampp\htdocs\evently\app\controllers\AdminSettingsController.php(69): Trees\Exception\Handler\ExceptionHandler->handleError(2, 'Undefined array...', 'C:\\xampp\\htdocs...', 69)
+#1 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminSettingsController->update(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#2 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'update', Array)
+#3 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#4 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#5 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#6 {main}
+
+[2025-09-19 02:20:43] Trees\Exception\TreesException: Route not found for path: /admin/settings/export in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+

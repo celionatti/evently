@@ -44,12 +44,6 @@
                     </a>
                 </li>
             <?php endif; ?>
-            <li class="sidebar-item">
-                <a href="<?= url("/admin/events/tickets-sales") ?>" class="sidebar-link">
-                    <i class="bi bi-ticket-perforated"></i>
-                    <span>Ticket Sales</span>
-                </a>
-            </li>
             <!-- <li class="sidebar-item">
                 <a href="#" class="sidebar-link" data-section="payments">
                     <i class="bi bi-credit-card"></i>
@@ -60,6 +54,12 @@
                 <a href="<?= url("/admin/profile") ?>" class="sidebar-link <?= active_nav([1, 2], ['admin', 'profile']) ? 'active' : '' ?>" data-section="profile">
                     <i class="bi bi-person"></i>
                     <span>Profile</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="<?= url("/admin/settings") ?>" class="sidebar-link">
+                    <i class="bi bi-sliders"></i>
+                    <span>Settings</span>
                 </a>
             </li>
         </ul>

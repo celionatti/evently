@@ -13,6 +13,7 @@ use App\controllers\AdminArticleController;
 use App\controllers\AdminProfileController;
 use App\controllers\AdminAttendeeController;
 use App\controllers\AdminCategoryController;
+use App\controllers\AdminSettingsController;
 use App\controllers\AdminAdvertisementController;
 
 /** @var \Trees\Router\Router $router */
@@ -122,10 +123,12 @@ $router->group(['prefix' => '/admin/advertisements'], function ($router) {
 
 // Admin: Setting Routes
 $router->group(['prefix' => '/admin/settings'], function ($router) {
-    $router->get('/manage', [AdminAdvertisementController::class, 'manage']);
-    $router->get('/create', [AdminAdvertisementController::class, 'create']);
-    $router->post('/create', [AdminAdvertisementController::class, 'insert']);
-    $router->get('/edit/{id}', [AdminAdvertisementController::class, 'edit']);
-    $router->post('/edit/{id}', [AdminAdvertisementController::class, 'update']);
-    $router->post('/delete/{id}', [AdminAdvertisementController::class, 'delete']);
+    $router->get('', [AdminSettingsController::class, 'manage']);
+    $router->post('', [AdminSettingsController::class, 'update']);
+    $router->post('/test-email', [AdminSettingsController::class, 'testEmail']);
+    $router->post('/test-payment', [AdminSettingsController::class, 'testPayment']);
+    $router->post('/clear-cache', [AdminSettingsController::class, 'clearCache']);
+    $router->post('/export', [AdminSettingsController::class, 'exportSettings']);
+    $router->post('/import', [AdminSettingsController::class, 'importSettings']);
 });
+// $router->post('/admin/settings', [AdminSettingsController::class, 'index']);

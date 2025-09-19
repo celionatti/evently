@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 ?>
 
-@section('styles')
+<?php $this->start('styles'); ?>
 <style>
     .nav-pills .nav-link {
         margin-bottom: 0.5rem;
@@ -42,9 +42,9 @@ declare(strict_types=1);
         }
     }
 </style>
-@endsection
+<?php $this->end(); ?>
 
-@section('content')
+<?php $this->start('content'); ?>
 <div id="settings-section" class="content-section">
     <div class="mb-4">
         <h1 class="h2 mb-1">System Settings</h1>
@@ -285,9 +285,9 @@ declare(strict_types=1);
         </div>
     </div>
 </div>
-@endsection
+<?php $this->end(); ?>
 
-@section('scripts')
+<?php $this->start('scripts'); ?>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Test Email Functionality
@@ -450,4 +450,4 @@ declare(strict_types=1);
         }, false);
     })();
 </script>
-@endsection
+<?php $this->end(); ?>
