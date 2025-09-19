@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\models\User;
 use Trees\Database\Model\Model;
+use Trees\Database\Relationships\BelongsTo;
 use Trees\Database\Interface\ModelInterface;
 use Trees\Database\QueryBuilder\QueryBuilder;
 
@@ -311,5 +313,13 @@ class Article extends Model implements ModelInterface
         }
         
         return parent::updateInstance($data);
+    }
+
+    /**
+     * Define the relationship with event
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 }

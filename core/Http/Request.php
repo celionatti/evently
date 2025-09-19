@@ -78,6 +78,31 @@ class Request
         return $_POST;
     }
 
+    /**
+     * Get the raw body content of the request
+     *
+     * @return string The raw request body
+     */
+    public function getBody(): string
+    {
+        return $this->content;
+    }
+
+    /**
+     * Get the request body as JSON decoded array
+     *
+     * @return array|null The decoded JSON data or null if invalid
+     */
+    public function getJsonBody(): ?array
+    {
+        if (empty($this->content)) {
+            return null;
+        }
+
+        $decoded = json_decode($this->content, true);
+        return json_last_error() === JSON_ERROR_NONE ? $decoded : null;
+    }
+
     public function validate(array $rules, bool $throw = true): bool
     {
         $validator = new Validator($this->all(), $rules);
@@ -183,7 +208,7 @@ class Request
     public function isPrefetch(): bool
     {
         return strtolower($this->header('X-Purpose', '')) === 'prefetch' ||
-               strtolower($this->header('X-Moz', '')) === 'prefetch';
+            strtolower($this->header('X-Moz', '')) === 'prefetch';
     }
 
     public function url(): string
@@ -252,8 +277,8 @@ class Request
     {
         $accept = $this->header('Accept', '');
         return str_contains($accept, 'application/json') ||
-               str_contains($accept, 'application/*') ||
-               str_contains($accept, '*/*');
+            str_contains($accept, 'application/*') ||
+            str_contains($accept, '*/*');
     }
 
     public function isSecure(): bool
@@ -380,7 +405,7 @@ class Request
             'body_params' => $this->bodyParams,
             'headers' => $this->headers,
             'cookies' => $this->cookies,
-            'files' => array_map(function($file) {
+            'files' => array_map(function ($file) {
                 if (is_array($file)) {
                     return array_map(fn($f) => $this->fileToArray($f), $file);
                 }

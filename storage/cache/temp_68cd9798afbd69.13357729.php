@@ -1,8 +1,8 @@
 <?php
 
-declare(strict_types=1);
-
 use App\models\User;
+
+declare(strict_types=1);
 
 ?>
 
@@ -47,8 +47,9 @@ use App\models\User;
                                 <i class="bi bi-person"></i>
                                 <?php 
                                     $user = User::find($article->id);
+                                    dd($user);
                                 ?>
-                                <span class="text-capitalize">By <?php echo $user->name . ' ' . $user->other_name; ?></span>
+                                <span>By Sarah Johnson</span>
                             </div>
                             <div class="event-detail">
                                 <i class="bi bi-clock"></i>
@@ -63,7 +64,7 @@ use App\models\User;
                                 <?php echo $article->likes ?? 0; ?>
                                 <?php endif; ?>
                             </div>
-                            <a href="<?php echo url("/articles/$article->id/$article->slug") ?>" class="btn btn-pulse btn-sm">Read More</a>
+                            <a href="#" class="btn btn-pulse btn-sm">Read More</a>
                         </div>
                     </div>
                 </div>

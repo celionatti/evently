@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\models;
 
+use App\Models\Article;
 use Trees\Database\Model\Model;
+use Trees\Database\Relationships\HasMany;
 use Trees\Database\Interface\ModelInterface;
 use Trees\Database\QueryBuilder\QueryBuilder;
 
@@ -294,5 +296,13 @@ class User extends Model implements ModelInterface
     public function updateLastLogin(): void
     {
         $this->update(['updated_at' => new \DateTime()]);
+    }
+
+    /**
+     * Define the relationship with tickets
+     */
+    public function articles(): HasMany
+    {
+        return $this->hasMany(Article::class, 'user_id', 'id');
     }
 }

@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use App\models\User;
+
 ?>
 
 @section('content')
@@ -43,19 +45,25 @@ declare(strict_types=1);
                         <div class="event-details">
                             <div class="event-detail">
                                 <i class="bi bi-person"></i>
-                                <span>By Sarah Johnson</span>
+                                <?php 
+                                    $user = User::find($article->id);
+                                ?>
+                                <span class="text-capitalize">By {{{ $user->name . ' ' . $user->other_name }}}</span>
                             </div>
                             <div class="event-detail">
                                 <i class="bi bi-clock"></i>
-                                <span>8 min read • May 15, 2025</span>
+                                <span>{{{ getReadingTime($article->content) }}} min read • {{ date('M j, Y', strtotime($article->created_at)) }}</span>
                             </div>
                         </div>
 
                         <div class="event-footer">
                             <div class="event-price">
-                                <i class="bi bi-hand-thumbs-up"></i> 243
+                                <?php if($article->likes > 0): ?>
+                                <i class="bi bi-hand-thumbs-up"></i> 
+                                {{{ $article->likes ?? 0 }}}
+                                <?php endif; ?>
                             </div>
-                            <a href="#" class="btn btn-pulse btn-sm">Read More</a>
+                            <a href="<?php echo url("/articles/$article->id/$article->slug") ?>" class="btn btn-pulse btn-sm">Read More</a>
                         </div>
                     </div>
                 </div>

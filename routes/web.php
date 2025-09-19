@@ -32,7 +32,7 @@ $router->get('/about-us', [SiteController::class, 'about']);
 $router->get('/events', [EventController::class, 'events']);
 $router->get('/events/{id}/{slug}', [EventController::class, 'event']);
 $router->get('/articles', [ArticleController::class, 'articles']);
-$router->get('/articles/{slug}', [ArticleController::class, 'article']);
+$router->get('/articles/{id}/{slug}', [ArticleController::class, 'article']);
 
 $router->get('/terms-and-conditions', [SiteController::class, 'terms']);
 $router->get('/privacy-policy', [SiteController::class, 'policy']);
@@ -126,13 +126,12 @@ $router->group(['prefix' => '/admin/advertisements'], function ($router) {
 
 // Admin: Setting Routes
 $router->group(['prefix' => '/admin/settings'], function ($router) {
-    $router->get('', [AdminSettingsController::class, 'manage']);
+    $router->get('/manage', [AdminSettingsController::class, 'manage']);
     $router->get('/create', [AdminSettingsController::class, 'create']);
-    $router->post('/create', [AdminSettingsController::class, 'store']);
+    $router->post('/create', [AdminSettingsController::class, 'insert']);
     $router->get('/edit/{id}', [AdminSettingsController::class, 'edit']);
     $router->post('/edit/{id}', [AdminSettingsController::class, 'update']);
     $router->post('/delete/{id}', [AdminSettingsController::class, 'delete']);
-    $router->post('/update', [AdminSettingsController::class, 'bulkUpdate']);
     $router->post('/update-setting', [AdminSettingsController::class, 'updateSetting']);
     $router->post('/clear-cache', [AdminSettingsController::class, 'clearCache']);
 });

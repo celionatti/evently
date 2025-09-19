@@ -61,4 +61,24 @@ class ArticleController extends Controller
 
         return $this->render('articles', $view);
     }
+
+    public function article(Request $request, Response $response, $id, $slug)
+    {
+        // Find article by slug or ID
+        $article = null;
+
+        // Try to find by slug first, then by ID
+        if (is_numeric($id)) {
+            $article = Article::find($id);
+        } else {
+            // Find by slug
+            $articles = Article::where(['slug' => $slug]);
+            $article = !empty($articles) ? $articles[0] : null;
+        }
+
+        if (!$article) {
+            FlashMessage::setMessage("Article not found!", 'danger');
+            return $response->redirect("/articles");
+        }
+    }
 }

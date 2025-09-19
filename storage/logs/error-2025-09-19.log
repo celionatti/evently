@@ -179,3 +179,101 @@ Stack trace:
 #2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
 #3 {main}
 
+[2025-09-19 16:05:11] ErrorException: Undefined variable $event in C:\xampp\htdocs\evently\storage\cache\temp_68cd7127c38d64.00065623.php on line 50
+Stack trace:
+#0 C:\xampp\htdocs\evently\storage\cache\temp_68cd7127c38d64.00065623.php(50): Trees\Exception\Handler\ExceptionHandler->handleError(2, 'Undefined varia...', 'C:\\xampp\\htdocs...', 50)
+#1 C:\xampp\htdocs\evently\core\View\View.php(559): include('C:\\xampp\\htdocs...')
+#2 C:\xampp\htdocs\evently\core\View\View.php(298): Trees\View\View->evaluateTemplate('<?php\r\n\r\ndeclar...', Array, 'C:\\xampp\\htdocs...')
+#3 C:\xampp\htdocs\evently\core\View\View.php(147): Trees\View\View->renderTemplate('articles', Array)
+#4 C:\xampp\htdocs\evently\core\Controller\Controller.php(34): Trees\View\View->render('articles', Array)
+#5 C:\xampp\htdocs\evently\app\controllers\ArticleController.php(62): Trees\Controller\Controller->render('articles', Array)
+#6 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\ArticleController->articles(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#7 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'articles', Array)
+#8 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#9 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#10 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#11 {main}
+
+[19-Sep-2025 18:49:12 Africa/Lagos] PHP Fatal error:  strict_types declaration must be the very first statement in the script in C:\xampp\htdocs\evently\storage\cache\temp_68cd9798afbd69.13357729.php on line 5
+[2025-09-19 18:49:13] ErrorException: strict_types declaration must be the very first statement in the script in C:\xampp\htdocs\evently\storage\cache\temp_68cd9798afbd69.13357729.php on line 5
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Exception\Handler\ExceptionHandler.php(120): Trees\Exception\Handler\ExceptionHandler->handleError(64, 'strict_types de...', 'C:\\xampp\\htdocs...', 5)
+#1 [internal function]: Trees\Exception\Handler\ExceptionHandler->handleShutdown()
+#2 {main}
+
+[2025-09-19 19:15:23] Error: Call to undefined method Trees\Http\Request::bodyParams() in C:\xampp\htdocs\evently\app\controllers\AdminSettingsController.php on line 275
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminSettingsController->updateSetting(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#1 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'updateSetting', Array)
+#2 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#3 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#4 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#5 {main}
+
+[2025-09-19 19:22:23] Error: Cannot access private property Trees\Http\Request::$content in C:\xampp\htdocs\evently\app\controllers\AdminSettingsController.php on line 276
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminSettingsController->updateSetting(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#1 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'updateSetting', Array)
+#2 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#3 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#4 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#5 {main}
+
+[2025-09-19 19:26:05] Trees\Exception\TreesException: Route not found for path: /dist/css/bootstrap.min.css.map in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-19 19:26:26] Trees\Exception\TreesException: Route not found for path: /dist/css/bootstrap.min.css.map in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-19 19:26:40] Error: Cannot access private property Trees\Http\Request::$content in C:\xampp\htdocs\evently\app\controllers\AdminSettingsController.php on line 276
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminSettingsController->updateSetting(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#1 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'updateSetting', Array)
+#2 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#3 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#4 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#5 {main}
+
+[2025-09-19 19:31:15] Trees\Exception\TreesException: Route not found for path: /admin/settings/manage in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-19 19:36:17] Trees\Exception\TreesException: Route not found for path: /admin/settings/insert in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-19 19:37:13] Trees\Exception\TreesException: Database error during unique validation: Database query failed: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'key = 'app_width'' at line 1 in C:\xampp\htdocs\evently\core\Validation\Validator.php on line 751
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Validation\Validator.php(185): Trees\Validation\Validator->validateUnique('key', 'settings.key')
+#1 C:\xampp\htdocs\evently\core\Validation\Validator.php(115): Trees\Validation\Validator->applyRule('key', 'unique:settings...')
+#2 C:\xampp\htdocs\evently\core\Validation\Validator.php(195): Trees\Validation\Validator->passes()
+#3 C:\xampp\htdocs\evently\core\Http\Request.php(85): Trees\Validation\Validator->fails()
+#4 C:\xampp\htdocs\evently\app\controllers\AdminSettingsController.php(109): Trees\Http\Request->validate(Array, false)
+#5 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminSettingsController->insert(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#6 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'insert', Array)
+#7 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#8 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#9 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#10 {main}
+
+[2025-09-19 19:49:44] Trees\Exception\TreesException: Route not found for path: /admin/settings in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+

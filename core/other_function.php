@@ -471,3 +471,12 @@ if (!function_exists('fetchData')) {
         }
     }
 }
+
+if(!function_exists('getReadingTime')) {
+    function getReadingTime($content): int
+    {
+        $wordCount = str_word_count(strip_tags($content));
+        // Average reading speed is 200-250 words per minute
+        return max(1, ceil($wordCount / 225));
+    }
+}

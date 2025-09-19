@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 ?>
 
-@section('styles')
+<?php $this->start('styles'); ?>
 <style>
     .dashboard-card {
         background: inherit;
@@ -13,9 +13,9 @@ declare(strict_types=1);
         padding: 2rem;
     }
 </style>
-@endsection
+<?php $this->end(); ?>
 
-@section('content')
+<?php $this->start('content'); ?>
 <div class="content-section">
     <div class="mb-4">
         <div class="d-flex justify-content-between align-items-center">
@@ -207,9 +207,9 @@ declare(strict_types=1);
         </div>
     </div>
 </div>
-@endsection
+<?php $this->end(); ?>
 
-@section('scripts')
+<?php $this->start('scripts'); ?>
 <script>
     function updateValueField() {
         const type = document.getElementById('type').value;
@@ -279,4 +279,4 @@ declare(strict_types=1);
         updateValueField();
     });
 </script>
-@endsection
+<?php $this->end(); ?>
