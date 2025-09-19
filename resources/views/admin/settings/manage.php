@@ -105,21 +105,9 @@ declare(strict_types=1);
                         </h4>
 
                         <div class="btn-group">
-                            <?php if ($category === 'email'): ?>
-                                <button type="button" class="btn btn-outline-primary" id="testEmailBtn">
-                                    <i class="bi bi-envelope-check me-1"></i>Test Email
-                                </button>
-                            <?php elseif ($category === 'payment'): ?>
-                                <button type="button" class="btn btn-outline-primary" id="testPaymentBtn">
-                                    <i class="bi bi-credit-card-2-front me-1"></i>Test Payment
-                                </button>
-                            <?php elseif ($category === 'cache'): ?>
+                            <?php if ($category === 'cache'): ?>
                                 <button type="button" class="btn btn-outline-warning" id="clearCacheBtn">
                                     <i class="bi bi-trash me-1"></i>Clear Cache
-                                </button>
-                            <?php elseif ($category === 'system'): ?>
-                                <button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#importExportModal">
-                                    <i class="bi bi-arrow-down-up me-1"></i>Import/Export
                                 </button>
                             <?php endif; ?>
                         </div>
@@ -132,12 +120,12 @@ declare(strict_types=1);
                                     <label class="form-label">
                                         <?= ucwords(str_replace('_', ' ', $key)) ?>
                                         <?php if ($setting['type'] === 'boolean'): ?>
-                                            <small class="text-muted">(Enable/Disable)</small>
+                                            <small class="text-white">(Enable/Disable)</small>
                                         <?php endif; ?>
                                     </label>
 
                                     <?php if ($setting['description']): ?>
-                                        <small class="text-muted d-block mb-2"><?= htmlspecialchars($setting['description']) ?></small>
+                                        <small class="text-white d-block mb-2"><?= htmlspecialchars($setting['description']) ?></small>
                                     <?php endif; ?>
 
                                     <?php if ($setting['type'] === 'boolean'): ?>
@@ -248,43 +236,6 @@ declare(strict_types=1);
     </div>
 </div>
 
-<!-- Import/Export Modal -->
-<div class="modal fade" id="importExportModal" tabindex="-1" aria-labelledby="importExportModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="importExportModalLabel">Import/Export Settings</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="row g-3">
-                    <div class="col-12">
-                        <h6>Export Settings</h6>
-                        <p class="text-muted small">Download current settings as a JSON file (sensitive data will be excluded)</p>
-                        <a href="<?= url('/admin/settings/export') ?>" class="btn btn-outline-primary">
-                            <i class="bi bi-download me-1"></i>Export Settings
-                        </a>
-                    </div>
-                    <div class="col-12">
-                        <hr>
-                    </div>
-                    <div class="col-12">
-                        <form action="<?= url('/admin/settings/import') ?>" method="POST" enctype="multipart/form-data">
-                            <h6>Import Settings</h6>
-                            <p class="text-muted small">Upload a JSON settings file (sensitive settings will be skipped for security)</p>
-                            <div class="mb-3">
-                                <input type="file" class="form-control" name="settings_file" accept=".json" required>
-                            </div>
-                            <button type="submit" class="btn btn-outline-success">
-                                <i class="bi bi-upload me-1"></i>Import Settings
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 @endsection
 
 @section('scripts')
@@ -293,83 +244,7 @@ declare(strict_types=1);
         // Test Email Functionality
         const testEmailBtn = document.getElementById('testEmailBtn');
         const testEmailModal = new bootstrap.Modal(document.getElementById('testEmailModal'));
-        const sendTestEmailBtn = document.getElementById('sendTestEmailBtn');
 
-        if (testEmailBtn) {
-            testEmailBtn.addEventListener('click', function() {
-                testEmailModal.show();
-            });
-        }
-
-        if (sendTestEmailBtn) {
-            sendTestEmailBtn.addEventListener('click', function() {
-                const testEmail = document.getElementById('testEmail').value;
-                if (!testEmail) {
-                    alert('Please enter a valid email address');
-                    return;
-                }
-
-                sendTestEmailBtn.disabled = true;
-                sendTestEmailBtn.innerHTML = '<i class="bi bi-hourglass-split me-1"></i>Sending...';
-
-                fetch('<?= url('/admin/settings/test-email') ?>', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            test_email: testEmail
-                        })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert('Test email sent successfully!');
-                            testEmailModal.hide();
-                        } else {
-                            alert('Failed to send test email: ' + data.message);
-                        }
-                    })
-                    .catch(error => {
-                        alert('Error: ' + error.message);
-                    })
-                    .finally(() => {
-                        sendTestEmailBtn.disabled = false;
-                        sendTestEmailBtn.innerHTML = '<i class="bi bi-send me-1"></i>Send Test Email';
-                    });
-            });
-        }
-
-        // Test Payment Functionality
-        const testPaymentBtn = document.getElementById('testPaymentBtn');
-        if (testPaymentBtn) {
-            testPaymentBtn.addEventListener('click', function() {
-                testPaymentBtn.disabled = true;
-                testPaymentBtn.innerHTML = '<i class="bi bi-hourglass-split me-1"></i>Testing...';
-
-                fetch('<?= url('/admin/settings/test-payment') ?>', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert('Payment gateway connection successful!');
-                        } else {
-                            alert('Payment test failed: ' + data.message);
-                        }
-                    })
-                    .catch(error => {
-                        alert('Error: ' + error.message);
-                    })
-                    .finally(() => {
-                        testPaymentBtn.disabled = false;
-                        testPaymentBtn.innerHTML = '<i class="bi bi-credit-card-2-front me-1"></i>Test Payment';
-                    });
-            });
-        }
 
         // Clear Cache Functionality
         const clearCacheBtn = document.getElementById('clearCacheBtn');
