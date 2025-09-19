@@ -17,6 +17,7 @@
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
                 <li class="nav-item"><a class="nav-link" href="<?= url("/events") ?>">Discover Events</a></li>
+                <li class="nav-item"><a class="nav-link" href="<?= url("/articles") ?>">Articles</a></li>
                 <li class="nav-item"><a class="nav-link" href="<?= url("/about-us") ?>">About Us</a></li>
 
                 <?php if (isAuthenticated()): ?>

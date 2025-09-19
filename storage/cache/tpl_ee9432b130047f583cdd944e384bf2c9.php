@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 ?>
 
-@section('content')
+<?php $this->start('content'); ?>
 <div id="profile-section" class="content-section">
     <div class="mb-4">
         <h1 class="h2 mb-1">Profile Settings</h1>
@@ -16,10 +16,10 @@ declare(strict_types=1);
         <div class="col-lg-4">
             <div class="dashboard-card">
                 <div class="text-center">
-                    <img src="{{{ get_image("", "/dist/img/no_image.png") }}}"
+                    <img src="<?php echo get_image("", "/dist/img/no_image.png"); ?>"
                         class="profile-avatar mb-3" alt="Profile Avatar">
-                    <h3 class="text-capitalize">{{{ $user->name . ' ' . $user->other_name }}}</h3>
-                    <p class="text-secondary">{{{ $user->role === 'admin' ? 'Administrator' : 'Event Manager' }}}</p>
+                    <h3 class="text-capitalize"><?php echo $user->name . ' ' . $user->other_name; ?></h3>
+                    <p class="text-secondary"><?php echo $user->role === 'admin' ? 'Administrator' : 'Event Manager'; ?></p>
 
                     <div class="security-badge mb-3 mx-auto">
                         <i class="bi bi-shield-check"></i>
@@ -28,15 +28,15 @@ declare(strict_types=1);
 
                     <div class="profile-stats justify-content-center mb-4">
                         <div class="profile-stat">
-                            <div class="profile-stat-value">{{{ $user->events ?? 0 }}}</div>
+                            <div class="profile-stat-value"><?php echo $user->events ?? 0; ?></div>
                             <div class="profile-stat-label">Events</div>
                         </div>
                         <div class="profile-stat">
-                            <div class="profile-stat-value">{{{ $user->attendees ?? '0.0k' }}}</div>
+                            <div class="profile-stat-value"><?php echo $user->attendees ?? '0.0k'; ?></div>
                             <div class="profile-stat-label">Attendees</div>
                         </div>
                         <div class="profile-stat">
-                            <div class="profile-stat-value">{{{ $user->rating ?? 0 }}}</div>
+                            <div class="profile-stat-value"><?php echo $user->rating ?? 0; ?></div>
                             <div class="profile-stat-label">Rating</div>
                         </div>
                     </div>
@@ -73,33 +73,33 @@ declare(strict_types=1);
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label class="form-label">Name <span class="text-danger">*</span></label>
-                                    <input type="text" name="name" class="form-control <?= has_error('name') ? 'is-invalid' : '' ?>" value="{{{ old('name', $user->name) }}}" placeholder="First Name" required>
+                                    <input type="text" name="name" class="form-control <?= has_error('name') ? 'is-invalid' : '' ?>" value="<?php echo old('name', $user->name); ?>" placeholder="First Name" required>
                                     <?php if (has_error('name')): ?>
                                         <div class="invalid-feedback"><?= get_error('name') ?></div>
                                     <?php endif; ?>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Other Name <span class="text-danger">*</span></label>
-                                    <input type="text" name="other_name" class="form-control <?= has_error('other_name') ? 'is-invalid' : '' ?>" value="{{{ old('other_name', $user->other_name) }}}" placeholder="Last Name" required>
+                                    <input type="text" name="other_name" class="form-control <?= has_error('other_name') ? 'is-invalid' : '' ?>" value="<?php echo old('other_name', $user->other_name); ?>" placeholder="Last Name" required>
                                     <?php if (has_error('other_name')): ?>
                                         <div class="invalid-feedback"><?= get_error('other_name') ?></div>
                                     <?php endif; ?>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Email Address</label>
-                                    <input type="email" name="email" class="form-control" value="{{{ $user->email }}}" placeholder="example@mail.com" disabled readonly>
+                                    <input type="email" name="email" class="form-control" value="<?php echo $user->email; ?>" placeholder="example@mail.com" disabled readonly>
                                     <small class="text-white">Email cannot be changed for security reasons</small>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Phone Number <span class="text-danger">*</span></label>
-                                    <input type="tel" name="phone" class="form-control <?= has_error('phone') ? 'is-invalid' : '' ?>" value="{{{ old('phone', $user->phone) }}}" placeholder="e.g., +234 812 345 6789" required>
+                                    <input type="tel" name="phone" class="form-control <?= has_error('phone') ? 'is-invalid' : '' ?>" value="<?php echo old('phone', $user->phone); ?>" placeholder="e.g., +234 812 345 6789" required>
                                     <?php if (has_error('phone')): ?>
                                         <div class="invalid-feedback"><?= get_error('phone') ?></div>
                                     <?php endif; ?>
                                 </div>
                                 <div class="col-12">
                                     <label class="form-label">Bio</label>
-                                    <textarea class="form-control <?= has_error('bio') ? 'is-invalid' : '' ?>" name="bio" rows="3" placeholder="Professional event organizer with 5+ years of experience creating memorable experiences." maxlength="500">{{{ old('bio', $user->bio) }}}</textarea>
+                                    <textarea class="form-control <?= has_error('bio') ? 'is-invalid' : '' ?>" name="bio" rows="3" placeholder="Professional event organizer with 5+ years of experience creating memorable experiences." maxlength="500"><?php echo old('bio', $user->bio); ?></textarea>
                                     <small class="text-white">Maximum 500 characters</small>
                                     <?php if (has_error('bio')): ?>
                                         <div class="invalid-feedback"><?= get_error('bio') ?></div>
@@ -107,21 +107,21 @@ declare(strict_types=1);
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Business Name (Organization)</label>
-                                    <input type="text" name="business_name" class="form-control <?= has_error('business_name') ? 'is-invalid' : '' ?>" value="{{{ old('business_name', $user->business_name) }}}" placeholder="Your Business or Organization Name" maxlength="100">
+                                    <input type="text" name="business_name" class="form-control <?= has_error('business_name') ? 'is-invalid' : '' ?>" value="<?php echo old('business_name', $user->business_name); ?>" placeholder="Your Business or Organization Name" maxlength="100">
                                     <?php if (has_error('business_name')): ?>
                                         <div class="invalid-feedback"><?= get_error('business_name') ?></div>
                                     <?php endif; ?>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Website</label>
-                                    <input type="url" name="website" class="form-control <?= has_error('website') ? 'is-invalid' : '' ?>" value="{{{ old('website', $user->website) }}}" placeholder="https://yourwebsite.com">
+                                    <input type="url" name="website" class="form-control <?= has_error('website') ? 'is-invalid' : '' ?>" value="<?php echo old('website', $user->website); ?>" placeholder="https://yourwebsite.com">
                                     <?php if (has_error('website')): ?>
                                         <div class="invalid-feedback"><?= get_error('website') ?></div>
                                     <?php endif; ?>
                                 </div>
                                 <div class="col-md-8">
                                     <label class="form-label">Address <span class="text-danger">*</span></label>
-                                    <input type="text" name="address" class="form-control <?= has_error('address') ? 'is-invalid' : '' ?>" value="{{{ old('address', $user->address) }}}" placeholder="123 Event Street, Victoria Island" required maxlength="100">
+                                    <input type="text" name="address" class="form-control <?= has_error('address') ? 'is-invalid' : '' ?>" value="<?php echo old('address', $user->address); ?>" placeholder="123 Event Street, Victoria Island" required maxlength="100">
                                     <?php if (has_error('address')): ?>
                                         <div class="invalid-feedback"><?= get_error('address') ?></div>
                                     <?php endif; ?>
@@ -131,7 +131,7 @@ declare(strict_types=1);
                                     <select name="country" class="form-select <?= has_error('country') ? 'is-invalid' : '' ?>" required>
                                         <option value="">Select Country</option>
                                         <?php foreach ($countries as $country): ?>
-                                            <option value="{{{ $country }}}" <?= old('country', $user->country) == $country ? 'selected' : '' ?>>{{{ $country }}}</option>
+                                            <option value="<?php echo $country; ?>" <?= old('country', $user->country) == $country ? 'selected' : '' ?>><?php echo $country; ?></option>
                                         <?php endforeach; ?>
                                     </select>
                                     <?php if (has_error('country')): ?>
@@ -209,21 +209,21 @@ declare(strict_types=1);
                                 <div class="row g-3">
                                     <div class="col-md-6">
                                         <small class="text-white">Member Since</small>
-                                        <div class="fw-medium">{{{ date('F j, Y', strtotime($user->created_at)) }}}</div>
+                                        <div class="fw-medium"><?php echo date('F j, Y', strtotime($user->created_at)); ?></div>
                                     </div>
                                     <div class="col-md-6">
                                         <small class="text-white">Last Updated</small>
-                                        <div class="fw-medium">{{{ date('F j, Y g:i A', strtotime($user->updated_at)) }}}</div>
+                                        <div class="fw-medium"><?php echo date('F j, Y g:i A', strtotime($user->updated_at)); ?></div>
                                     </div>
                                     <div class="col-md-6">
                                         <small class="text-white">User ID</small>
-                                        <div class="fw-medium text-white">{{{ $user->user_id }}}</div>
+                                        <div class="fw-medium text-white"><?php echo $user->user_id; ?></div>
                                     </div>
                                     <div class="col-md-6">
                                         <small class="text-white">Account Role</small>
                                         <div class="fw-medium">
                                             <span class="badge <?= $user->role === 'admin' ? 'bg-danger' : 'bg-primary' ?>">
-                                                {{{ ucfirst($user->role) }}}
+                                                <?php echo ucfirst($user->role); ?>
                                             </span>
                                         </div>
                                     </div>
@@ -276,4 +276,4 @@ document.addEventListener('DOMContentLoaded', function() {
     }, false);
 })();
 </script>
-@endsection
+<?php $this->end(); ?>

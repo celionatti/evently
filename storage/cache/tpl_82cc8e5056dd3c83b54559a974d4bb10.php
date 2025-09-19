@@ -7,16 +7,16 @@ use App\models\Categories;
 
 ?>
 
-@section('styles')
+<?php $this->start('styles'); ?>
 <style>
     .min-vh-50 {
         min-height: 50vh;
     }
 </style>
-@endsection
+<?php $this->end(); ?>
 
-@section('content')
-@include('nav')
+<?php $this->start('content'); ?>
+<?php $this->partial('nav'); ?>
 
 <!-- HERO SECTION -->
 <section class="page-hero">
@@ -142,7 +142,7 @@ use App\models\Categories;
             <?php foreach ($events as $index => $event): ?>
                 <!-- Event -->
                 <div class="event-card reveal <?= $index % 3 === 1 ? 'delay-1' : ($index % 3 === 2 ? 'delay-2' : '') ?>">
-                    <img src="{{ get_image($event->event_image, "https://images.unsplash.com/photo-1506157786151-b8491531f063?q=80&w=500&auto=format&fit=crop") }}" alt="{{{ $event->event_title }}}" class="event-img">
+                    <img src="<?php echo $this->escape(get_image($event->event_image, "https://images.unsplash.com/photo-1506157786151-b8491531f063?q=80&w=500&auto=format&fit=crop")); ?>" alt="<?php echo $event->event_title; ?>" class="event-img">
                     <div class="event-content">
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="event-category">
@@ -158,17 +158,17 @@ use App\models\Categories;
                                 </div>
                             <?php endif; ?>
                         </div>
-                        <h3 class="event-title">{{{ $event->event_title }}}</h3>
-                        <p class="event-description">{{{ getExcerpt($event->description, 150) }}}</p>
+                        <h3 class="event-title"><?php echo $event->event_title; ?></h3>
+                        <p class="event-description"><?php echo getExcerpt($event->description, 150); ?></p>
 
                         <div class="event-details">
                             <div class="event-detail">
                                 <i class="bi bi-calendar-event"></i>
-                                <span>{{ date('D, M j', strtotime($event->event_date)) }} • {{ date('g:i A', strtotime($event->start_time ?? '00:00:00')) }}</span>
+                                <span><?php echo $this->escape(date('D, M j', strtotime($event->event_date))); ?> • <?php echo $this->escape(date('g:i A', strtotime($event->start_time ?? '00:00:00'))); ?></span>
                             </div>
                             <div class="event-detail">
                                 <i class="bi bi-geo-alt"></i>
-                                <span class="text-capitalize">{{{ $event->venue }}}, {{{ $event->city }}}</span>
+                                <span class="text-capitalize"><?php echo $event->venue; ?>, <?php echo $event->city; ?></span>
                             </div>
                         </div>
 
@@ -191,14 +191,14 @@ use App\models\Categories;
                                     Free
                                 <?php endif; ?>
                             </div>
-                            <a href='{{ url("/events/$event->id/{$event->slug}") }}' class="btn btn-pulse btn-sm">View Event</a>
+                            <a href='<?php echo $this->escape(url("/events/$event->id/{$event->slug}")); ?>' class="btn btn-pulse btn-sm">View Event</a>
                         </div>
                     </div>
                 </div>
             <?php endforeach; ?>
         </div>
         <!-- Pagination -->
-        {{{ $pagination }}}
+        <?php echo $pagination; ?>
     <?php else: ?>
         <div class="col-12">
             <div class="d-flex justify-content-center align-items-center min-vh-50">
@@ -221,24 +221,24 @@ use App\models\Categories;
     <?php endif; ?>
 </section>
 
-@include('advert', ['ads' => $advertisements])
+<?php $this->partial('advert', ['ads' => $advertisements]); ?>
 <!-- NEWSLETTER SECTION -->
 <!-- <section class="container">
     <div class="newsletter-section reveal">
         <h3 class="newsletter-title">Never Miss an Event</h3>
         <p class="newsletter-text">Subscribe to our newsletter and be the first to know about new events, exclusive deals, and special promotions.</p>
 
-        <form class="newsletter-form" action="{{ url('/newsletter/subscribe') }}" method="post">
+        <form class="newsletter-form" action="<?php echo $this->escape(url('/newsletter/subscribe')); ?>" method="post">
             <input type="email" name="email" class="newsletter-input" placeholder="Your email address">
             <button type="submit" class="btn btn-pulse">Subscribe</button>
         </form>
     </div>
 </section> -->
 
-@include('footer')
-@endsection
+<?php $this->partial('footer'); ?>
+<?php $this->end(); ?>
 
-@section('scripts')
+<?php $this->start('scripts'); ?>
 <script src="/dist/js/script.js"></script>
 <script>
     // Change per page function
@@ -279,4 +279,4 @@ use App\models\Categories;
         }
     });
 </script>
-@endsection
+<?php $this->end(); ?>

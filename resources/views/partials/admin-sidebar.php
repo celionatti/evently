@@ -57,7 +57,7 @@
                 </a>
             </li>
             <li class="sidebar-item">
-                <a href="<?= url("/admin/settings") ?>" class="sidebar-link">
+                <a href="<?= url("/admin/settings") ?>" class="sidebar-link <?= active_nav([1, 2], ['admin', 'settings']) ? 'active' : '' ?>">
                     <i class="bi bi-sliders"></i>
                     <span>Settings</span>
                 </a>

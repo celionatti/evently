@@ -6,10 +6,10 @@ use App\models\Categories;
 
 ?>
 
-@section('content')
-@include('nav')
+<?php $this->start('content'); ?>
+<?php $this->partial('nav'); ?>
 
-@include('advert-wide', ['ads' => $advertisements])
+<?php $this->partial('advert-wide', ['ads' => $advertisements]); ?>
 
 <!-- EVENT HERO -->
 <section class="event-hero">
@@ -24,15 +24,15 @@ use App\models\Categories;
                         ?>
                         <i class="bi <?= $icon ?>"></i> <?= ucfirst($category->name) ?>
                     </span>
-                    <h1>{{{ $event->event_title }}}</h1>
+                    <h1><?php echo $event->event_title; ?></h1>
                     <div class="d-flex flex-wrap gap-3 align-items-center mt-3">
                         <div class="d-flex align-items-center gap-2">
                             <i class="bi bi-calendar-event text-info-emphasis"></i>
-                            <span>{{ date('l, F j, Y', strtotime($event->event_date)) }} • {{ date('g:i A', strtotime($event->start_time ?? '00:00:00')) }}</span>
+                            <span><?php echo $this->escape(date('l, F j, Y', strtotime($event->event_date))); ?> • <?php echo $this->escape(date('g:i A', strtotime($event->start_time ?? '00:00:00'))); ?></span>
                         </div>
                         <div class="d-flex align-items-center gap-2">
                             <i class="bi bi-geo-alt text-info-emphasis"></i>
-                            <span class="text-capitalize">{{{ $event->venue }}}, {{{ $event->city }}}</span>
+                            <span class="text-capitalize"><?php echo $event->venue; ?>, <?php echo $event->city; ?></span>
                         </div>
                     </div>
                 </div>
@@ -52,13 +52,13 @@ use App\models\Categories;
         <div class="two-column-layout">
             <!-- LEFT COLUMN - Event Image and Details -->
             <div class="left-column">
-                <img src="{{ get_image($event->event_image, "https://images.unsplash.com/photo-1506157786151-b8491531f063?q=80&w=500&auto=format&fit=crop") }}"
-                    alt="{{{ $event->event_title }}}" class="event-hero-img reveal w-100 mb-4" loading="lazy">
+                <img src="<?php echo $this->escape(get_image($event->event_image, "https://images.unsplash.com/photo-1506157786151-b8491531f063?q=80&w=500&auto=format&fit=crop")); ?>"
+                    alt="<?php echo $event->event_title; ?>" class="event-hero-img reveal w-100 mb-4" loading="lazy">
 
                 <h2 class="section-title reveal">Event Details</h2>
 
                 <div class="reveal delay-1">
-                    <p>{{{ $event->description }}}</p>
+                    <p><?php echo $event->description; ?></p>
                 </div>
             </div>
 
@@ -181,11 +181,11 @@ use App\models\Categories;
                                             <div class="small">
                                                 <div class="mb-1">
                                                     <i class="bi bi-envelope me-1"></i>
-                                                    <a href="mailto:{{{ $event->mail }}}" class="text-decoration-none fw-semibold text-white">{{{ $event->mail }}}</a>
+                                                    <a href="mailto:<?php echo $event->mail; ?>" class="text-decoration-none fw-semibold text-white"><?php echo $event->mail; ?></a>
                                                 </div>
                                                 <div class="mb-1">
                                                     <i class="bi bi-phone me-1"></i>
-                                                    <a href="tel:{{{ $event->phone }}}" class="text-decoration-none fw-semibold text-white">{{{ $event->phone }}}</a>
+                                                    <a href="tel:<?php echo $event->phone; ?>" class="text-decoration-none fw-semibold text-white"><?php echo $event->phone; ?></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -199,7 +199,7 @@ use App\models\Categories;
                                             <div>
                                                 <h6 class="mb-1 text-info">Follow Updates</h6>
                                                 <p class="mb-1 small text-white">Stay updated on social media for any announcements:</p>
-                                                <a href="{{{ $event->social }}}" target="_blank" class="btn btn-outline-info btn-sm">
+                                                <a href="<?php echo $event->social; ?>" target="_blank" class="btn btn-outline-info btn-sm">
                                                     <i class="bi bi-arrow-up-right-square me-1"></i>
                                                     Follow Event Page
                                                 </a>
@@ -220,15 +220,15 @@ use App\models\Categories;
                             <div class="small text-white">
                                 <div class="d-flex align-items-center mb-2">
                                     <i class="bi bi-calendar3 me-2"></i>
-                                    <span>{{ date('l, F j, Y', strtotime($event->event_date)) }}</span>
+                                    <span><?php echo $this->escape(date('l, F j, Y', strtotime($event->event_date))); ?></span>
                                 </div>
                                 <div class="d-flex align-items-center mb-2">
                                     <i class="bi bi-clock me-2"></i>
-                                    <span>{{ date('g:i A', strtotime($event->start_time ?? '00:00:00')) }}</span>
+                                    <span><?php echo $this->escape(date('g:i A', strtotime($event->start_time ?? '00:00:00'))); ?></span>
                                 </div>
                                 <div class="d-flex align-items-start mb-3">
                                     <i class="bi bi-geo-alt me-2 mt-1"></i>
-                                    <span class="text-capitalize">{{{ $event->venue }}}, {{{ $event->city }}}</span>
+                                    <span class="text-capitalize"><?php echo $event->venue; ?>, <?php echo $event->city; ?></span>
                                 </div>
                             </div>
                         </div>
@@ -266,9 +266,9 @@ use App\models\Categories;
     </div>
 </section>
 
-@include('advert-wide', ['ads' => $advertisements])
+<?php $this->partial('advert-wide', ['ads' => $advertisements]); ?>
 
-@include('footer')
+<?php $this->partial('footer'); ?>
 
 <!-- Checkout Modal -->
 <div class="modal fade" id="checkoutModal" tabindex="-1" aria-labelledby="checkoutModalLabel" aria-hidden="true">
@@ -330,9 +330,9 @@ use App\models\Categories;
         </div>
     </div>
 </div>
-@endsection
+<?php $this->end(); ?>
 
-@section('scripts')
+<?php $this->start('scripts'); ?>
 <script src="/dist/js/script.js"></script>
 <script>
     // Convert PHP ticket data to JavaScript object - CHANGED TO USE ID INSTEAD OF SLUG
@@ -576,10 +576,10 @@ use App\models\Categories;
     }
 
     function addToCalendar() {
-        const eventTitle = encodeURIComponent("{{{ $event->event_title }}}");
-        const eventDate = "{{ date('Ymd\\THis', strtotime($event->event_date . ' ' . ($event->start_time ?? '00:00:00'))) }}";
-        const eventLocation = encodeURIComponent("{{{ $event->venue }}}, {{{ $event->city }}}");
-        const eventDescription = encodeURIComponent("{{{ substr($event->description, 0, 200) }}}...");
+        const eventTitle = encodeURIComponent("<?php echo $event->event_title; ?>");
+        const eventDate = "<?php echo $this->escape(date('Ymd\\THis', strtotime($event->event_date . ' ' . ($event->start_time ?? '00:00:00')))); ?>";
+        const eventLocation = encodeURIComponent("<?php echo $event->venue; ?>, <?php echo $event->city; ?>");
+        const eventDescription = encodeURIComponent("<?php echo substr($event->description, 0, 200); ?>...");
 
         const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${eventTitle}&dates=${eventDate}/${eventDate}&location=${eventLocation}&details=${eventDescription}`;
 
@@ -591,7 +591,7 @@ use App\models\Categories;
     }
 
     function getDirections() {
-        const address = encodeURIComponent("{{{ $event->venue }}}, {{{ $event->city }}}");
+        const address = encodeURIComponent("<?php echo $event->venue; ?>, <?php echo $event->city; ?>");
         const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${address}`;
         window.open(mapsUrl, '_blank');
     }
@@ -600,4 +600,4 @@ use App\models\Categories;
     setInterval(updateCountdown, 1000);
     updateCountdown();
 </script>
-@endsection
+<?php $this->end(); ?>

@@ -6,6 +6,7 @@ use App\controllers\AuthController;
 use App\controllers\SiteController;
 use App\controllers\AdminController;
 use App\controllers\EventController;
+use App\controllers\ArticleController;
 use App\Controllers\CheckoutController;
 use App\controllers\AdminUserController;
 use App\controllers\AdminEventController;
@@ -30,6 +31,8 @@ $router->get('/', [SiteController::class, 'index']);
 $router->get('/about-us', [SiteController::class, 'about']);
 $router->get('/events', [EventController::class, 'events']);
 $router->get('/events/{id}/{slug}', [EventController::class, 'event']);
+$router->get('/articles', [ArticleController::class, 'articles']);
+$router->get('/articles/{slug}', [ArticleController::class, 'article']);
 
 $router->get('/terms-and-conditions', [SiteController::class, 'terms']);
 $router->get('/privacy-policy', [SiteController::class, 'policy']);
