@@ -31,6 +31,72 @@ declare(strict_types=1);
         font-size: 0.875rem;
     }
 
+    .setting-item {
+        transition: all 0.3s ease;
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        border-radius: 0.375rem;
+        border: 1px solid #e9ecef;
+        position: relative;
+    }
+
+    .setting-item:hover {
+        background-color: inherit;
+        border-color: var(--blue-3);
+        border: 2px dashed var(--blue-1);
+    }
+
+    .setting-actions {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .setting-item:hover .setting-actions {
+        opacity: 1;
+    }
+
+    .setting-edit-btn {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+    }
+
+    .setting-save-btn {
+        display: none;
+        margin-top: 0.5rem;
+    }
+
+    .setting-item.edit-mode {
+        border: 2px solid var(--bs-primary);
+        background-color: rgba(var(--bs-primary-rgb), 0.05);
+    }
+
+    .setting-item.edit-mode .setting-view-mode {
+        display: none;
+    }
+
+    .setting-item.edit-mode .setting-edit-mode {
+        display: block;
+    }
+
+    .setting-view-mode {
+        display: block;
+    }
+
+    .setting-edit-mode {
+        display: none;
+    }
+
+    .setting-value-display {
+        min-height: 2.5rem;
+        padding: 0.375rem 0.75rem;
+        border-radius: 0.375rem;
+        background-color: inherit;
+        border: 1px solid var(--blue-1);
+    }
+
     @media (max-width: 768px) {
         .nav-pills {
             flex-direction: column;
@@ -39,6 +105,15 @@ declare(strict_types=1);
         .nav-pills .nav-link {
             margin-right: 0;
             margin-bottom: 0.25rem;
+        }
+
+        .setting-actions {
+            position: relative;
+            top: 0;
+            right: 0;
+            opacity: 1;
+            margin-bottom: 0.5rem;
+            text-align: right;
         }
     }
 </style>
@@ -95,9 +170,7 @@ declare(strict_types=1);
                 role="tabpanel"
                 aria-labelledby="<?= $category ?>-tab">
 
-                <form action="<?= url('/admin/settings') ?>" method="POST" class="dashboard-card" enctype="multipart/form-data">
-                    <input type="hidden" name="category" value="<?= $category ?>">
-
+                <div class="dashboard-card">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h4 class="mb-0">
                             <i class="<?= $tabLabels[$category][1] ?> me-2"></i>
@@ -115,124 +188,147 @@ declare(strict_types=1);
 
                     <div class="row g-3">
                         <?php foreach ($categorySettings as $key => $setting): ?>
-                            <?php if ($setting['is_editable']): ?>
-                                <div class="col-md-6">
-                                    <label class="form-label">
-                                        <?= ucwords(str_replace('_', ' ', $key)) ?>
-                                        <?php if ($setting['type'] === 'boolean'): ?>
-                                            <small class="text-white">(Enable/Disable)</small>
-                                        <?php endif; ?>
-                                    </label>
-
-                                    <?php if ($setting['description']): ?>
-                                        <small class="text-white d-block mb-2"><?= htmlspecialchars($setting['description']) ?></small>
-                                    <?php endif; ?>
-
-                                    <?php if ($setting['type'] === 'boolean'): ?>
-                                        <div class="form-check form-switch">
-                                            <input type="hidden" name="settings[<?= $key ?>]" value="0">
-                                            <input class="form-check-input"
-                                                type="checkbox"
-                                                name="settings[<?= $key ?>]"
-                                                value="1"
-                                                <?= $setting['value'] ? 'checked' : '' ?>>
-                                            <label class="form-check-label">
-                                                <?= $setting['value'] ? 'Enabled' : 'Disabled' ?>
-                                            </label>
-                                        </div>
-
-                                    <?php elseif ($setting['type'] === 'text'): ?>
-                                        <textarea class="form-control <?= has_error("settings.{$key}") ? 'is-invalid' : '' ?>"
-                                            name="settings[<?= $key ?>]"
-                                            rows="4"
-                                            placeholder="<?= htmlspecialchars($setting['description'] ?? '') ?>"><?= htmlspecialchars($setting['raw_value']) ?></textarea>
-
-                                    <?php elseif ($setting['type'] === 'integer'): ?>
-                                        <input type="number"
-                                            class="form-control <?= has_error("settings.{$key}") ? 'is-invalid' : '' ?>"
-                                            name="settings[<?= $key ?>]"
-                                            value="<?= htmlspecialchars($setting['raw_value']) ?>"
-                                            placeholder="<?= htmlspecialchars($setting['description'] ?? '') ?>">
-
-                                    <?php elseif ($setting['type'] === 'email'): ?>
-                                        <input type="email"
-                                            class="form-control <?= has_error("settings.{$key}") ? 'is-invalid' : '' ?>"
-                                            name="settings[<?= $key ?>]"
-                                            value="<?= htmlspecialchars($setting['raw_value']) ?>"
-                                            placeholder="example@domain.com">
-
-                                    <?php elseif ($setting['type'] === 'url'): ?>
-                                        <input type="url"
-                                            class="form-control <?= has_error("settings.{$key}") ? 'is-invalid' : '' ?>"
-                                            name="settings[<?= $key ?>]"
-                                            value="<?= htmlspecialchars($setting['raw_value']) ?>"
-                                            placeholder="https://example.com">
-
-                                    <?php elseif (in_array($key, ['smtp_password', 'paystack_secret_key', 'google_maps_api_key'])): ?>
-                                        <!-- Sensitive fields -->
-                                        <div class="input-group">
-                                            <input type="password"
-                                                class="form-control <?= has_error("settings.{$key}") ? 'is-invalid' : '' ?>"
-                                                name="settings[<?= $key ?>]"
-                                                value="<?= htmlspecialchars($setting['raw_value']) ?>"
-                                                placeholder="Enter <?= strtolower(str_replace('_', ' ', $key)) ?>">
-                                            <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility(this)">
-                                                <i class="bi bi-eye"></i>
-                                            </button>
-                                        </div>
-
-                                    <?php else: ?>
-                                        <!-- Default string input -->
-                                        <input type="text"
-                                            class="form-control <?= has_error("settings.{$key}") ? 'is-invalid' : '' ?>"
-                                            name="settings[<?= $key ?>]"
-                                            value="<?= htmlspecialchars($setting['raw_value']) ?>"
-                                            placeholder="<?= htmlspecialchars($setting['description'] ?? '') ?>">
-                                    <?php endif; ?>
-
-                                    <?php if (has_error("settings.{$key}")): ?>
-                                        <div class="invalid-feedback"><?= get_error("settings.{$key}") ?></div>
+                            <div class="col-md-6 setting-item" id="setting-<?= $key ?>">
+                                <div class="setting-actions">
+                                    <?php if ($setting['is_editable']): ?>
+                                        <button type="button" class="btn btn-sm btn-outline-primary setting-edit-btn"
+                                            data-key="<?= $key ?>"
+                                            data-setting='<?= json_encode($setting) ?>'>
+                                            <i class="bi bi-pencil"></i> Edit
+                                        </button>
                                     <?php endif; ?>
                                 </div>
-                            <?php endif; ?>
+
+                                <label class="form-label fw-bold">
+                                    <?= ucwords(str_replace('_', ' ', $key)) ?>
+                                    <?php if ($setting['type'] === 'boolean'): ?>
+                                        <small class="text-muted">(Enable/Disable)</small>
+                                    <?php endif; ?>
+                                </label>
+
+                                <?php if ($setting['description']): ?>
+                                    <small class="text-muted d-block mb-2"><?= htmlspecialchars($setting['description']) ?></small>
+                                <?php endif; ?>
+
+                                <!-- View Mode (Display only) -->
+                                <div class="setting-view-mode">
+                                    <div class="setting-value-display">
+                                        <?php if ($setting['type'] === 'boolean'): ?>
+                                            <span class="badge bg-<?= $setting['value'] ? 'success' : 'secondary' ?>">
+                                                <?= $setting['value'] ? 'Enabled' : 'Disabled' ?>
+                                            </span>
+                                        <?php elseif ($setting['type'] === 'text'): ?>
+                                            <div class="text-truncate" style="max-height: 3rem; overflow: hidden;">
+                                                <?= nl2br(htmlspecialchars($setting['raw_value'] ?? 'Not set')) ?>
+                                            </div>
+                                        <?php elseif (in_array($key, ['smtp_password', 'paystack_secret_key', 'google_maps_api_key'])): ?>
+                                            ••••••••
+                                        <?php else: ?>
+                                            <?= htmlspecialchars($setting['raw_value'] ?? 'Not set') ?>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+
+                                <!-- Edit Mode (Form inputs) -->
+                                <?php if ($setting['is_editable']): ?>
+                                    <div class="setting-edit-mode">
+                                        <form class="setting-form" data-key="<?= $key ?>">
+                                            <input type="hidden" name="type" value="<?= $setting['type'] ?>">
+
+                                            <?php if ($setting['type'] === 'boolean'): ?>
+                                                <div class="form-check form-switch">
+                                                    <input type="hidden" name="value" value="0">
+                                                    <input class="form-check-input setting-input"
+                                                        type="checkbox"
+                                                        name="value"
+                                                        value="1"
+                                                        data-type="boolean"
+                                                        <?= $setting['value'] ? 'checked' : '' ?>>
+                                                    <label class="form-check-label">
+                                                        <?= $setting['value'] ? 'Enabled' : 'Disabled' ?>
+                                                    </label>
+                                                </div>
+
+                                            <?php elseif ($setting['type'] === 'text'): ?>
+                                                <textarea class="form-control setting-input <?= has_error("settings.{$key}") ? 'is-invalid' : '' ?>"
+                                                    name="value"
+                                                    data-type="text"
+                                                    rows="4"
+                                                    placeholder="<?= htmlspecialchars($setting['description'] ?? '') ?>"><?= htmlspecialchars($setting['raw_value']) ?></textarea>
+
+                                            <?php elseif ($setting['type'] === 'integer'): ?>
+                                                <input type="number"
+                                                    class="form-control setting-input <?= has_error("settings.{$key}") ? 'is-invalid' : '' ?>"
+                                                    name="value"
+                                                    data-type="integer"
+                                                    value="<?= htmlspecialchars($setting['raw_value']) ?>"
+                                                    placeholder="<?= htmlspecialchars($setting['description'] ?? '') ?>">
+
+                                            <?php elseif ($setting['type'] === 'email'): ?>
+                                                <input type="email"
+                                                    class="form-control setting-input <?= has_error("settings.{$key}") ? 'is-invalid' : '' ?>"
+                                                    name="value"
+                                                    data-type="email"
+                                                    value="<?= htmlspecialchars($setting['raw_value']) ?>"
+                                                    placeholder="example@domain.com">
+
+                                            <?php elseif ($setting['type'] === 'url'): ?>
+                                                <input type="url"
+                                                    class="form-control setting-input <?= has_error("settings.{$key}") ? 'is-invalid' : '' ?>"
+                                                    name="value"
+                                                    data-type="url"
+                                                    value="<?= htmlspecialchars($setting['raw_value']) ?>"
+                                                    placeholder="https://example.com">
+
+                                            <?php elseif (in_array($key, ['smtp_password', 'paystack_secret_key', 'google_maps_api_key'])): ?>
+                                                <!-- Sensitive fields -->
+                                                <div class="input-group">
+                                                    <input type="password"
+                                                        class="form-control setting-input <?= has_error("settings.{$key}") ? 'is-invalid' : '' ?>"
+                                                        name="value"
+                                                        data-type="password"
+                                                        value="<?= htmlspecialchars($setting['raw_value']) ?>"
+                                                        placeholder="Enter <?= strtolower(str_replace('_', ' ', $key)) ?>">
+                                                    <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility(this)">
+                                                        <i class="bi bi-eye"></i>
+                                                    </button>
+                                                </div>
+
+                                            <?php else: ?>
+                                                <!-- Default string input -->
+                                                <input type="text"
+                                                    class="form-control setting-input <?= has_error("settings.{$key}") ? 'is-invalid' : '' ?>"
+                                                    name="value"
+                                                    data-type="string"
+                                                    value="<?= htmlspecialchars($setting['raw_value']) ?>"
+                                                    placeholder="<?= htmlspecialchars($setting['description'] ?? '') ?>">
+                                            <?php endif; ?>
+
+                                            <?php if (has_error("settings.{$key}")): ?>
+                                                <div class="invalid-feedback"><?= get_error("settings.{$key}") ?></div>
+                                            <?php endif; ?>
+
+                                            <div class="mt-2">
+                                                <button type="submit" class="btn btn-sm btn-success">
+                                                    <i class="bi bi-check me-1"></i>Save
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-secondary setting-cancel-btn">
+                                                    <i class="bi bi-x me-1"></i>Cancel
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                <?php else: ?>
+                                    <div class="text-muted small mt-1">
+                                        <i class="bi bi-lock"></i> This setting is read-only
+                                    </div>
+                                <?php endif; ?>
+                            </div>
                         <?php endforeach; ?>
                     </div>
-
-                    <div class="mt-4 pt-3 border-top">
-                        <button type="submit" class="btn btn-pulse">
-                            <i class="bi bi-check-circle me-2"></i>Save <?= ucfirst($category) ?> Settings
-                        </button>
-                    </div>
-                </form>
+                </div>
             </div>
         <?php endforeach; ?>
-    </div>
-</div>
-
-<!-- Test Email Modal -->
-<div class="modal fade" id="testEmailModal" tabindex="-1" aria-labelledby="testEmailModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="testEmailModalLabel">Test Email Configuration</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="testEmailForm">
-                    <div class="mb-3">
-                        <label for="testEmail" class="form-label">Test Email Address</label>
-                        <input type="email" class="form-control" id="testEmail" required>
-                        <div class="form-text">Enter an email address to receive the test email</div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="sendTestEmailBtn">
-                    <i class="bi bi-send me-1"></i>Send Test Email
-                </button>
-            </div>
-        </div>
     </div>
 </div>
 
@@ -241,10 +337,58 @@ declare(strict_types=1);
 <?php $this->start('scripts'); ?>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Test Email Functionality
-        const testEmailBtn = document.getElementById('testEmailBtn');
-        const testEmailModal = new bootstrap.Modal(document.getElementById('testEmailModal'));
+        // Edit button functionality
+        document.querySelectorAll('.setting-edit-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const key = this.dataset.key;
+                const settingItem = this.closest('.setting-item');
 
+                // Enter edit mode
+                settingItem.classList.add('edit-mode');
+
+                // Focus on the first input
+                const firstInput = settingItem.querySelector('input, textarea, select');
+                if (firstInput) {
+                    firstInput.focus();
+                }
+            });
+        });
+
+        // Cancel button functionality
+        document.querySelectorAll('.setting-cancel-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const settingItem = this.closest('.setting-item');
+                settingItem.classList.remove('edit-mode');
+            });
+        });
+
+        // Form submission
+        document.querySelectorAll('.setting-form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const key = this.dataset.key;
+                const formData = new FormData(this);
+                const data = {
+                    key: key,
+                    value: formData.get('value'),
+                    type: formData.get('type')
+                };
+
+                // For checkboxes, get the checked value
+                const checkbox = this.querySelector('input[type="checkbox"]');
+                if (checkbox) {
+                    data.value = checkbox.checked ? '1' : '0';
+                }
+
+                const submitBtn = this.querySelector('button[type="submit"]');
+                const originalHtml = submitBtn.innerHTML;
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-1"></i>Saving...';
+
+                saveIndividualSetting(key, data.value, submitBtn, this);
+            });
+        });
 
         // Clear Cache Functionality
         const clearCacheBtn = document.getElementById('clearCacheBtn');
@@ -292,6 +436,74 @@ declare(strict_types=1);
         });
     });
 
+    // Save individual setting via AJAX
+    function saveIndividualSetting(id, value, button, form) {
+        const originalHtml = button.innerHTML;
+        button.disabled = true;
+        button.innerHTML = '<i class="bi bi-hourglass-split me-1"></i>Saving...';
+
+        fetch('<?= url('/admin/settings/update-setting') ?>', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({
+                    id: id, // Send ID instead of key
+                    value: value
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update UI
+                    const settingItem = form.closest('.setting-item');
+                    settingItem.classList.remove('edit-mode');
+
+                    // Update the display value
+                    const displayElement = settingItem.querySelector('.setting-value-display');
+                    if (displayElement) {
+                        // For boolean values
+                        if (value === '1' || value === '0') {
+                            const isEnabled = value === '1';
+                            displayElement.innerHTML = `<span class="badge bg-${isEnabled ? 'success' : 'secondary'}">${isEnabled ? 'Enabled' : 'Disabled'}</span>`;
+                        }
+                        // For sensitive fields (mask with dots)
+                        else if (data.data.type === 'password' || ['smtp_password', 'paystack_secret_key', 'google_maps_api_key'].includes(data.data.key)) {
+                            displayElement.textContent = '••••••••';
+                        }
+                        // For text areas
+                        else if (form.querySelector('textarea')) {
+                            displayElement.innerHTML = `<div class="text-truncate" style="max-height: 3rem; overflow: hidden;">${escapeHtml(value)}</div>`;
+                        }
+                        // For other values
+                        else {
+                            displayElement.textContent = value || 'Not set';
+                        }
+                    }
+
+                    // Show success message
+                    showToast('Success', data.message, 'success');
+                } else {
+                    showToast('Error', data.message, 'danger');
+                }
+            })
+            .catch(error => {
+                showToast('Error', 'Network error: ' + error.message, 'danger');
+            })
+            .finally(() => {
+                button.disabled = false;
+                button.innerHTML = originalHtml;
+            });
+    }
+
+    // Helper function to escape HTML
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
     // Toggle password visibility
     function togglePasswordVisibility(button) {
         const input = button.parentElement.querySelector('input');
@@ -307,22 +519,5 @@ declare(strict_types=1);
             icon.classList.add('bi-eye');
         }
     }
-
-    // Form validation
-    (function() {
-        'use strict';
-        window.addEventListener('load', function() {
-            var forms = document.getElementsByTagName('form');
-            Array.prototype.filter.call(forms, function(form) {
-                form.addEventListener('submit', function(event) {
-                    if (form.checkValidity() === false) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-                    form.classList.add('was-validated');
-                }, false);
-            });
-        }, false);
-    })();
 </script>
 <?php $this->end(); ?>

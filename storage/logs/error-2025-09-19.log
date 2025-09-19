@@ -79,3 +79,66 @@ Stack trace:
 #2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
 #3 {main}
 
+[2025-09-19 10:10:04] Trees\Exception\TreesException: Route not found for path: /admin/settings/create in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[19-Sep-2025 11:21:26 Africa/Lagos] PHP Fatal error:  strict_types declaration must be the very first statement in the script in C:\xampp\htdocs\evently\storage\cache\temp_68cd2ea68c8260.41897835.php on line 4
+[2025-09-19 11:21:26] ErrorException: strict_types declaration must be the very first statement in the script in C:\xampp\htdocs\evently\storage\cache\temp_68cd2ea68c8260.41897835.php on line 4
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Exception\Handler\ExceptionHandler.php(120): Trees\Exception\Handler\ExceptionHandler->handleError(64, 'strict_types de...', 'C:\\xampp\\htdocs...', 4)
+#1 [internal function]: Trees\Exception\Handler\ExceptionHandler->handleShutdown()
+#2 {main}
+
+[2025-09-19 11:23:23] Trees\Exception\TreesException: Route not found for path: /admin/settings/update in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-19 11:26:33] Trees\Exception\TreesException: Route not found for path: /admin/settings/update in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-19 11:32:56] Trees\Exception\TreesException: Route not found for path: /admin/settings/update-setting in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-19 11:33:03] Trees\Exception\TreesException: Route not found for path: /admin/settings/update-setting in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-19 12:21:32] Trees\Exception\TreesException: Route not found for path: /dist/css/bootstrap.min.css.map in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-19 12:21:37] Trees\Exception\TreesException: Route not found for path: /dist/css/bootstrap.min.css.map in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-19 12:22:52] Trees\Exception\TreesException: Route not found for path: /dist/css/bootstrap.min.css.map in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+

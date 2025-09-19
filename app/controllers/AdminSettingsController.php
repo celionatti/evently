@@ -2,14 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\controllers;
+namespace App\Controllers;
 
-use App\models\Setting;
 use Trees\Http\Request;
 use Trees\Http\Response;
 use Trees\Controller\Controller;
+use App\Models\Setting;
 use Trees\Helper\FlashMessages\FlashMessage;
-use Trees\Exception\TreesException;
+use Trees\Database\Database;
+use Trees\Database\QueryBuilder\QueryBuilder;
 
 class AdminSettingsController extends Controller
 {
@@ -19,118 +20,349 @@ class AdminSettingsController extends Controller
     {
         requireAuth();
         if (!isAdmin()) {
-            FlashMessage::setMessage("Access denied. Administrator privileges required.", 'danger');
-            return redirect("/admin/dashboard");
+            FlashMessage::setMessage("Access denied. Admin privileges required.", 'danger');
+            return redirect("/");
         }
+        
         $this->view->setLayout('admin');
         $this->settingModel = new Setting();
-        $name = "Eventlyy";
-        $this->view->setTitle("{$name} Admin | Settings");
     }
 
     /**
-     * Display settings page
+     * Display all settings grouped by category
      */
     public function manage(Request $request, Response $response)
     {
-        $activeTab = $request->query('tab', 'application');
-        $settings = Setting::getAllGrouped();
-        $categories = Setting::getCategories();
-
+        // Get all settings
+        $allSettings = Setting::all();
+        
+        // Group settings by category
+        $settingsByCategory = [];
+        foreach ($allSettings as $setting) {
+            $settingsByCategory[$setting->category][$setting->key] = [
+                'id' => $setting->id,
+                'value' => $this->getProcessedValue($setting),
+                'raw_value' => $setting->value,
+                'type' => $setting->type,
+                'description' => $setting->description,
+                'is_editable' => (bool)$setting->is_editable
+            ];
+        }
+        
+        // Determine active tab (default to first category)
+        $categories = array_keys($settingsByCategory);
+        $activeTab = $request->query('tab', $categories[0] ?? 'general');
+        
         $view = [
-            'settings' => $settings,
-            'categories' => $categories,
-            'activeTab' => $activeTab
+            'settings' => $settingsByCategory,
+            'activeTab' => $activeTab,
+            'categories' => $categories
         ];
-
+        
         return $this->render('admin/settings/manage', $view);
     }
 
     /**
-     * Update settings
+     * Process setting value based on type
      */
-    public function update(Request $request, Response $response)
+    private function getProcessedValue(Setting $setting)
+    {
+        switch ($setting->type) {
+            case 'boolean':
+                return (bool)$setting->value;
+            case 'integer':
+                return (int)$setting->value;
+            case 'json':
+                return json_decode($setting->value, true) ?? $setting->value;
+            default:
+                return $setting->value;
+        }
+    }
+
+    /**
+     * Show form to create a new setting
+     */
+    public function create(Request $request, Response $response)
+    {
+        // Get all existing categories for the datalist
+        $db = Database::getInstance();
+        $builder = new QueryBuilder($db);
+        $categories = $builder->table('settings')
+            ->select('DISTINCT category')
+            ->orderBy('category')
+            ->get();
+        
+        $categoryList = array_map(function($item) {
+            return $item->category;
+        }, $categories);
+        
+        $view = [
+            'categories' => $categoryList
+        ];
+        
+        return $this->render('admin/settings/create', $view);
+    }
+
+    /**
+     * Store a new setting
+     */
+    public function store(Request $request, Response $response)
     {
         if ("POST" !== $request->getMethod()) {
             return $response->redirect("/admin/settings");
         }
 
-        $category = $request->input('category', 'application');
-        $settings = $request->input('settings', []);
-
-        if (empty($settings)) {
-            FlashMessage::setMessage("No settings to update.", 'warning');
-            return $response->redirect("/admin/settings?tab={$category}");
-        }
-
-        // Validate settings
-        $errors = [];
-        foreach ($settings as $key => $value) {
-            $setting = Setting::findByKey($key);
-            if ($setting && $setting->is_editable) {
-                if (!Setting::validateValue($value, $setting->type)) {
-                    $errors[$key] = "Invalid {$setting->type} value for {$setting->description}";
-                }
-            }
-        }
-
-        if (!empty($errors)) {
-            set_form_error($errors);
+        $rules = $this->settingModel->rules();
+        
+        if (!$request->validate($rules, false)) {
             set_form_data($request->all());
-            return $response->redirect("/admin/settings?tab={$category}");
+            set_form_error($request->getErrors());
+            return $response->redirect("/admin/settings/create");
         }
 
         try {
-            if (Setting::updateMultiple($settings)) {
-                FlashMessage::setMessage("Settings updated successfully!");
-                
-                // Clear any application cache if needed
-                $this->clearApplicationCache();
-                
-                return $response->redirect("/admin/settings?tab={$category}");
-            } else {
-                throw new \RuntimeException('Settings update failed');
+            $data = $request->all();
+            
+            // Process boolean value
+            if ($data['type'] === 'boolean') {
+                $data['value'] = isset($data['value']) && $data['value'] == '1' ? '1' : '0';
             }
-        } catch (TreesException $e) {
-            FlashMessage::setMessage("Update failed: " . $e->getMessage(), 'danger');
-            return $response->redirect("/admin/settings?tab={$category}");
+            
+            // Check if key already exists
+            $existing = Setting::where(['key' => $data['key']]);
+            if (!empty($existing)) {
+                FlashMessage::setMessage("Setting key already exists. Please choose a unique key.", 'danger');
+                set_form_data($request->all());
+                return $response->redirect("/admin/settings/create");
+            }
+            
+            // Create the setting
+            $settingId = Setting::create($data);
+            
+            if ($settingId) {
+                FlashMessage::setMessage("Setting created successfully!");
+                return $response->redirect("/admin/settings");
+            } else {
+                throw new \Exception("Failed to create setting");
+            }
         } catch (\Exception $e) {
-            FlashMessage::setMessage("Update failed: " . $e->getMessage(), 'danger');
-            return $response->redirect("/admin/settings?tab={$category}");
+            set_form_data($request->all());
+            FlashMessage::setMessage("Creation Failed! Please try again. Error: " . $e->getMessage(), 'danger');
+            return $response->redirect("/admin/settings/create");
         }
     }
 
     /**
-     * Test payment configuration
+     * Show form to edit a setting
      */
-    public function testPayment(Request $request, Response $response)
+    public function edit(Request $request, Response $response, $id)
+    {
+        $setting = Setting::find($id);
+        
+        if (!$setting) {
+            FlashMessage::setMessage("Setting not found!", 'danger');
+            return $response->redirect("/admin/settings");
+        }
+        
+        // Get all existing categories for the datalist
+        $db = Database::getInstance();
+        $builder = new QueryBuilder($db);
+        $categories = $builder->table('settings')
+            ->select('DISTINCT category')
+            ->orderBy('category')
+            ->get();
+        
+        $categoryList = array_map(function($item) {
+            return $item->category;
+        }, $categories);
+        
+        $view = [
+            'setting' => $setting,
+            'categories' => $categoryList
+        ];
+        
+        return $this->render('admin/settings/edit', $view);
+    }
+
+    /**
+     * Update a setting by ID
+     */
+    public function update(Request $request, Response $response, $id)
     {
         if ("POST" !== $request->getMethod()) {
-            return $response->json(['success' => false, 'message' => 'Invalid request method'], 405);
+            return $response->redirect("/admin/settings");
+        }
+
+        $setting = Setting::find($id);
+        
+        if (!$setting) {
+            FlashMessage::setMessage("Setting not found!", 'danger');
+            return $response->redirect("/admin/settings");
+        }
+
+        $rules = $this->settingModel->rules();
+        
+        if (!$request->validate($rules, false)) {
+            set_form_data($request->all());
+            set_form_error($request->getErrors());
+            return $response->redirect("/admin/settings/edit/{$id}");
         }
 
         try {
-            $publicKey = Setting::get('paystack_public_key');
-            $secretKey = Setting::get('paystack_secret_key');
-
-            if (empty($publicKey) || empty($secretKey)) {
-                return $response->json([
-                    'success' => false,
-                    'message' => 'Payment configuration is incomplete. Please configure Paystack keys first.'
-                ], 400);
-            }
-
-            // Test Paystack connection
-            $result = $this->testPaystackConnection($secretKey);
+            $data = $request->all();
             
-            if ($result['success']) {
-                return $response->json(['success' => true, 'message' => 'Payment gateway connection successful!']);
-            } else {
-                return $response->json(['success' => false, 'message' => 'Payment test failed: ' . $result['error']], 500);
+            // Process boolean value
+            if ($data['type'] === 'boolean') {
+                $data['value'] = isset($data['value']) && $data['value'] == '1' ? '1' : '0';
             }
-
+            
+            // Check if key already exists (excluding current setting)
+            $existing = Setting::where(['key' => $data['key']]);
+            if (!empty($existing)) {
+                foreach ($existing as $existingSetting) {
+                    if ($existingSetting->id != $id) {
+                        FlashMessage::setMessage("Setting key already exists. Please choose a unique key.", 'danger');
+                        set_form_data($request->all());
+                        return $response->redirect("/admin/settings/edit/{$id}");
+                    }
+                }
+            }
+            
+            // Update the setting
+            $updated = $setting->updateInstance($data);
+            
+            if ($updated) {
+                FlashMessage::setMessage("Setting updated successfully!");
+                return $response->redirect("/admin/settings");
+            } else {
+                throw new \Exception("Failed to update setting");
+            }
         } catch (\Exception $e) {
-            return $response->json(['success' => false, 'message' => 'Payment test failed: ' . $e->getMessage()], 500);
+            set_form_data($request->all());
+            FlashMessage::setMessage("Update Failed! Please try again. Error: " . $e->getMessage(), 'danger');
+            return $response->redirect("/admin/settings/edit/{$id}");
+        }
+    }
+
+    /**
+     * Delete a setting by ID
+     */
+    public function delete(Request $request, Response $response, $id)
+    {
+        if ("POST" !== $request->getMethod()) {
+            return $response->redirect("/admin/settings");
+        }
+
+        $setting = Setting::find($id);
+        
+        if (!$setting) {
+            FlashMessage::setMessage("Setting not found!", 'danger');
+            return $response->redirect("/admin/settings");
+        }
+
+        try {
+            if ($setting->delete()) {
+                FlashMessage::setMessage("Setting deleted successfully!");
+            } else {
+                throw new \Exception("Failed to delete setting");
+            }
+        } catch (\Exception $e) {
+            FlashMessage::setMessage("Deletion Failed! Please try again. Error: " . $e->getMessage(), 'danger');
+        }
+        
+        return $response->redirect("/admin/settings");
+    }
+
+    /**
+     * AJAX endpoint to update individual setting by ID
+     */
+    public function updateSetting(Request $request, Response $response)
+    {
+        if (!$request->isAjax() || "POST" !== $request->getMethod()) {
+            return $response->json(['success' => false, 'message' => 'Invalid request'], 400);
+        }
+
+        $id = $request->input('id');
+        $value = $request->input('value');
+        dd($id);
+        
+        if (!$id) {
+            return $response->json(['success' => false, 'message' => 'Setting ID is required'], 400);
+        }
+
+        try {
+            $setting = Setting::find($id);
+            
+            if (!$setting) {
+                return $response->json(['success' => false, 'message' => 'Setting not found'], 404);
+            }
+            
+            // Update the setting value
+            $updated = $setting->updateInstance(['value' => $value]);
+            
+            if ($updated) {
+                return $response->json([
+                    'success' => true, 
+                    'message' => 'Setting updated successfully',
+                    'data' => [
+                        'id' => $setting->id,
+                        'key' => $setting->key,
+                        'value' => $value,
+                        'type' => $setting->type
+                    ]
+                ]);
+            } else {
+                return $response->json(['success' => false, 'message' => 'Failed to update setting'], 500);
+            }
+        } catch (\Exception $e) {
+            return $response->json(['success' => false, 'message' => 'Error: ' . $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * AJAX endpoint to update individual setting by key (backward compatibility)
+     */
+    public function updateSettingByKey(Request $request, Response $response)
+    {
+        if (!$request->isAjax() || "POST" !== $request->getMethod()) {
+            return $response->json(['success' => false, 'message' => 'Invalid request'], 400);
+        }
+
+        $key = $request->input('key');
+        $value = $request->input('value');
+        
+        if (!$key) {
+            return $response->json(['success' => false, 'message' => 'Setting key is required'], 400);
+        }
+
+        try {
+            $setting = Setting::where(['key' => $key]);
+            
+            if (empty($setting)) {
+                return $response->json(['success' => false, 'message' => 'Setting not found'], 404);
+            }
+            
+            $setting = $setting[0];
+            
+            // Update the setting value
+            $updated = $setting->updateInstance(['value' => $value]);
+            
+            if ($updated) {
+                return $response->json([
+                    'success' => true, 
+                    'message' => 'Setting updated successfully',
+                    'data' => [
+                        'id' => $setting->id,
+                        'key' => $setting->key,
+                        'value' => $value,
+                        'type' => $setting->type
+                    ]
+                ]);
+            } else {
+                return $response->json(['success' => false, 'message' => 'Failed to update setting'], 500);
+            }
+        } catch (\Exception $e) {
+            return $response->json(['success' => false, 'message' => 'Error: ' . $e->getMessage()], 500);
         }
     }
 
@@ -144,96 +376,37 @@ class AdminSettingsController extends Controller
         }
 
         try {
-            $cleared = $this->clearApplicationCache();
+            // Implement your cache clearing logic here
+            // This will depend on your caching implementation
             
-            if ($cleared) {
-                return $response->json(['success' => true, 'message' => 'Cache cleared successfully!']);
-            } else {
-                return $response->json(['success' => false, 'message' => 'Failed to clear cache'], 500);
+            // Example: Clear file-based cache
+            $cachePath = ROOT_PATH . '/storage/cache/';
+            if (is_dir($cachePath)) {
+                $this->clearDirectory($cachePath);
             }
+            
+            return $response->json(['success' => true, 'message' => 'Cache cleared successfully']);
         } catch (\Exception $e) {
-            return $response->json(['success' => false, 'message' => 'Cache clearing failed: ' . $e->getMessage()], 500);
+            return $response->json(['success' => false, 'message' => 'Error: ' . $e->getMessage()], 500);
         }
     }
-
+    
     /**
-     * Clear application cache
+     * Helper method to clear a directory
      */
-    private function clearApplicationCache(): bool
-    {
-        try {
-            $cleared = true;
-            
-            // Clear file-based cache
-            if (defined('ROOT_PATH')) {
-                $cacheDir = ROOT_PATH . '/storage/cache';
-                if (is_dir($cacheDir)) {
-                    $cleared = $cleared && $this->clearDirectory($cacheDir, false);
-                }
-
-                // Clear view cache if exists
-                $viewCacheDir = ROOT_PATH . '/storage/views';
-                if (is_dir($viewCacheDir)) {
-                    $cleared = $cleared && $this->clearDirectory($viewCacheDir, false);
-                }
-            }
-
-            // Add other cache clearing logic here (Redis, Memcached, etc.)
-            
-            return $cleared;
-            
-        } catch (\Exception $e) {
-            // Log error if logger is available
-            if (class_exists('\Trees\Logger\Logger')) {
-                \Trees\Logger\Logger::exception($e);
-            }
-            return false;
-        }
-    }
-
-    /**
-     * Recursively clear directory contents
-     */
-    private function clearDirectory(string $dir, bool $removeDir = false): bool
+    private function clearDirectory($dir)
     {
         if (!is_dir($dir)) {
-            return true;
-        }
-
-        try {
-            $files = scandir($dir);
-            if ($files === false) {
-                return false;
-            }
-
-            foreach ($files as $file) {
-                if ($file === '.' || $file === '..') {
-                    continue;
-                }
-
-                $filePath = $dir . DIRECTORY_SEPARATOR . $file;
-                
-                if (is_file($filePath)) {
-                    if (!unlink($filePath)) {
-                        return false;
-                    }
-                } elseif (is_dir($filePath)) {
-                    if (!$this->clearDirectory($filePath, true)) {
-                        return false;
-                    }
-                }
-            }
-
-            // Remove the directory itself if requested
-            if ($removeDir && !rmdir($dir)) {
-                return false;
-            }
-
-            return true;
-            
-        } catch (\Exception $e) {
             return false;
         }
+        
+        $files = array_diff(scandir($dir), ['.', '..', '.gitkeep']);
+        foreach ($files as $file) {
+            $path = $dir . DIRECTORY_SEPARATOR . $file;
+            is_dir($path) ? $this->clearDirectory($path) : unlink($path);
+        }
+        
+        return true;
     }
 
     public function __destruct()

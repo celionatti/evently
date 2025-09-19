@@ -124,11 +124,13 @@ $router->group(['prefix' => '/admin/advertisements'], function ($router) {
 // Admin: Setting Routes
 $router->group(['prefix' => '/admin/settings'], function ($router) {
     $router->get('', [AdminSettingsController::class, 'manage']);
-    $router->post('', [AdminSettingsController::class, 'update']);
-    $router->post('/test-email', [AdminSettingsController::class, 'testEmail']);
-    $router->post('/test-payment', [AdminSettingsController::class, 'testPayment']);
+    $router->get('/create', [AdminSettingsController::class, 'create']);
+    $router->post('/create', [AdminSettingsController::class, 'store']);
+    $router->get('/edit/{id}', [AdminSettingsController::class, 'edit']);
+    $router->post('/edit/{id}', [AdminSettingsController::class, 'update']);
+    $router->post('/delete/{id}', [AdminSettingsController::class, 'delete']);
+    $router->post('/update', [AdminSettingsController::class, 'bulkUpdate']);
+    $router->post('/update-setting', [AdminSettingsController::class, 'updateSetting']);
     $router->post('/clear-cache', [AdminSettingsController::class, 'clearCache']);
-    $router->post('/export', [AdminSettingsController::class, 'exportSettings']);
-    $router->post('/import', [AdminSettingsController::class, 'importSettings']);
 });
 // $router->post('/admin/settings', [AdminSettingsController::class, 'index']);
