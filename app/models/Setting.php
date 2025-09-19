@@ -252,14 +252,6 @@ class Setting extends Model
             'contact_phone' => ['+1234567890', 'string', 'contact', 'Contact phone number'],
             'contact_address' => ['123 Main St, City, State', 'text', 'contact', 'Physical address'],
 
-            // Email Settings
-            'smtp_host' => ['smtp.gmail.com', 'string', 'email', 'SMTP server host'],
-            'smtp_port' => ['587', 'integer', 'email', 'SMTP server port'],
-            'smtp_username' => ['', 'email', 'email', 'SMTP username'],
-            'smtp_password' => ['', 'string', 'email', 'SMTP password'],
-            'mail_from_address' => ['noreply@eventlyy.com', 'email', 'email', 'From email address'],
-            'mail_from_name' => ['Eventlyy', 'string', 'email', 'From name'],
-
             // Social Media
             'facebook_url' => ['', 'url', 'social', 'Facebook page URL'],
             'twitter_url' => ['', 'url', 'social', 'Twitter profile URL'],

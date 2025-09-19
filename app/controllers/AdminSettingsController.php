@@ -10,7 +10,6 @@ use App\models\Setting;
 use Trees\Controller\Controller;
 use Trees\Exception\TreesException;
 use Trees\Helper\FlashMessages\FlashMessage;
-use Trees\Logger\Logger;
 
 class AdminSettingsController extends Controller
 {
@@ -310,6 +309,10 @@ class AdminSettingsController extends Controller
             // $setting->updateInstance(['value' => $formattedValue]);
 
             if ($setting->directUpdate($id, $formattedValue)) {
+                
+                // Clear any application cache if needed
+                $this->clearApplicationCache();
+
                 return $response->json([
                     'success' => true,
                     'message' => 'Setting updated successfully',
@@ -331,57 +334,103 @@ class AdminSettingsController extends Controller
         }
     }
 
+    /**
+     * Clear application cache
+     */
     public function clearCache(Request $request, Response $response)
     {
-        // Handle AJAX requests for cache clearing
-        if (!$request->isAjax()) {
-            return $response->json(['success' => false, 'message' => 'Invalid request'], 400);
+        if ("POST" !== $request->getMethod()) {
+            return $response->json(['success' => false, 'message' => 'Invalid request method'], 405);
         }
 
         try {
-            // Clear different types of cache
-            $cleared = [];
+            $cleared = $this->clearApplicationCache();
 
-            // Clear PHP OPCache if available
-            // if (function_exists('opcache_reset')) {
-            //     opcache_reset();
-            //     $cleared[] = 'OPCache';
-            // }
-
-            // Clear APCu cache if available
-            // if (function_exists('apcu_clear_cache')) {
-            //     apcu_clear_cache();
-            //     $cleared[] = 'APCu';
-            // }
-
-            // Clear custom application cache (if you have a cache directory)
-            $cacheDir = dirname(__DIR__, 2) . '/cache';
-            if (is_dir($cacheDir)) {
-                $this->clearDirectory($cacheDir);
-                $cleared[] = 'File Cache';
+            if ($cleared) {
+                return $response->json(['success' => true, 'message' => 'Cache cleared successfully!']);
+            } else {
+                return $response->json(['success' => false, 'message' => 'Failed to clear cache'], 500);
             }
-
-            // Clear session cache files if they exist
-            $sessionDir = dirname(__DIR__, 2) . '/storage/sessions';
-            if (is_dir($sessionDir)) {
-                $this->clearDirectory($sessionDir);
-                $cleared[] = 'Session Files';
-            }
-
-            $message = empty($cleared)
-                ? 'No cache types were available to clear'
-                : 'Cleared: ' . implode(', ', $cleared);
-
-            return $response->json([
-                'success' => true,
-                'message' => $message,
-                'cleared' => $cleared
-            ]);
         } catch (\Exception $e) {
-            return $response->json([
-                'success' => false,
-                'message' => 'Failed to clear cache: ' . $e->getMessage()
-            ], 500);
+            return $response->json(['success' => false, 'message' => 'Cache clearing failed: ' . $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Clear application cache
+     */
+    private function clearApplicationCache(): bool
+    {
+        try {
+            $cleared = true;
+
+            // Clear file-based cache
+            if (defined('ROOT_PATH')) {
+                $cacheDir = ROOT_PATH . '/storage/cache';
+                if (is_dir($cacheDir)) {
+                    $cleared = $cleared && $this->clearDirectory($cacheDir, false);
+                }
+
+                // Clear view cache if exists
+                $viewCacheDir = ROOT_PATH . '/storage/views';
+                if (is_dir($viewCacheDir)) {
+                    $cleared = $cleared && $this->clearDirectory($viewCacheDir, false);
+                }
+            }
+
+            // Add other cache clearing logic here (Redis, Memcached, etc.)
+
+            return $cleared;
+        } catch (\Exception $e) {
+            // Log error if logger is available
+            if (class_exists('\Trees\Logger\Logger')) {
+                \Trees\Logger\Logger::exception($e);
+            }
+            return false;
+        }
+    }
+
+    /**
+     * Recursively clear directory contents
+     */
+    private function clearDirectory(string $dir, bool $removeDir = false): bool
+    {
+        if (!is_dir($dir)) {
+            return true;
+        }
+
+        try {
+            $files = scandir($dir);
+            if ($files === false) {
+                return false;
+            }
+
+            foreach ($files as $file) {
+                if ($file === '.' || $file === '..') {
+                    continue;
+                }
+
+                $filePath = $dir . DIRECTORY_SEPARATOR . $file;
+
+                if (is_file($filePath)) {
+                    if (!unlink($filePath)) {
+                        return false;
+                    }
+                } elseif (is_dir($filePath)) {
+                    if (!$this->clearDirectory($filePath, true)) {
+                        return false;
+                    }
+                }
+            }
+
+            // Remove the directory itself if requested
+            if ($removeDir && !rmdir($dir)) {
+                return false;
+            }
+
+            return true;
+        } catch (\Exception $e) {
+            return false;
         }
     }
 
@@ -474,34 +523,6 @@ class AdminSettingsController extends Controller
         } catch (\Exception $e) {
             FlashMessage::setMessage("Import failed: " . $e->getMessage(), 'danger');
             return $response->redirect("/admin/settings/manage");
-        }
-    }
-
-    /**
-     * Recursively clear a directory
-     *
-     * @param string $dir Directory path
-     */
-    private function clearDirectory(string $dir): void
-    {
-        if (!is_dir($dir)) {
-            return;
-        }
-
-        $files = scandir($dir);
-        foreach ($files as $file) {
-            if ($file === '.' || $file === '..') {
-                continue;
-            }
-
-            $filePath = $dir . DIRECTORY_SEPARATOR . $file;
-
-            if (is_dir($filePath)) {
-                $this->clearDirectory($filePath);
-                rmdir($filePath);
-            } else {
-                unlink($filePath);
-            }
         }
     }
 }
