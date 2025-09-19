@@ -83,13 +83,13 @@ class Setting extends Model
     public static function getCategoriesWithCount(): array
     {
         $db = \Trees\Database\Database::getInstance();
-        
+
         try {
             $query = "SELECT category, COUNT(*) as count 
                      FROM settings 
                      GROUP BY category 
                      ORDER BY category ASC";
-            
+
             return $db->query($query) ?: [];
         } catch (\Exception $e) {
             return [];
@@ -108,8 +108,8 @@ class Setting extends Model
      * @return bool True if successful, false otherwise
      */
     public static function setSetting(
-        string $key, 
-        mixed $value, 
+        string $key,
+        mixed $value,
         string $type = 'string',
         string $category = 'general',
         ?string $description = null,
@@ -117,9 +117,9 @@ class Setting extends Model
     ): bool {
         // Convert value based on type
         $formattedValue = static::formatValueByType($value, $type);
-        
+
         $existing = static::findByKey($key);
-        
+
         if ($existing) {
             // Update existing setting
             return $existing->updateInstance([
@@ -139,7 +139,7 @@ class Setting extends Model
                 'description' => $description,
                 'is_editable' => $isEditable ? 1 : 0
             ]);
-            
+
             return $result !== false;
         }
     }
@@ -154,11 +154,11 @@ class Setting extends Model
     public static function getSetting(string $key, mixed $default = null): mixed
     {
         $setting = static::findByKey($key);
-        
+
         if (!$setting) {
             return $default;
         }
-        
+
         return static::parseValueByType($setting->value, $setting->type);
     }
 
@@ -246,12 +246,12 @@ class Setting extends Model
             'app_url' => ['https://eventlyy.com', 'url', 'application', 'Application URL'],
             'app_timezone' => ['UTC', 'string', 'application', 'Application timezone'],
             'app_locale' => ['en', 'string', 'application', 'Application locale'],
-            
+
             // Contact Settings
             'contact_email' => ['contact@eventlyy.com', 'email', 'contact', 'Primary contact email'],
             'contact_phone' => ['+1234567890', 'string', 'contact', 'Contact phone number'],
             'contact_address' => ['123 Main St, City, State', 'text', 'contact', 'Physical address'],
-            
+
             // Email Settings
             'smtp_host' => ['smtp.gmail.com', 'string', 'email', 'SMTP server host'],
             'smtp_port' => ['587', 'integer', 'email', 'SMTP server port'],
@@ -259,26 +259,26 @@ class Setting extends Model
             'smtp_password' => ['', 'string', 'email', 'SMTP password'],
             'mail_from_address' => ['noreply@eventlyy.com', 'email', 'email', 'From email address'],
             'mail_from_name' => ['Eventlyy', 'string', 'email', 'From name'],
-            
+
             // Social Media
             'facebook_url' => ['', 'url', 'social', 'Facebook page URL'],
             'twitter_url' => ['', 'url', 'social', 'Twitter profile URL'],
             'instagram_url' => ['', 'url', 'social', 'Instagram profile URL'],
             'linkedin_url' => ['', 'url', 'social', 'LinkedIn profile URL'],
-            
+
             // System Settings
             'maintenance_mode' => ['0', 'boolean', 'system', 'Enable maintenance mode'],
             'registration_enabled' => ['1', 'boolean', 'system', 'Allow user registration'],
             'debug_mode' => ['0', 'boolean', 'system', 'Enable debug mode'],
-            
+
             // SEO Settings
             'meta_keywords' => ['events, management, booking', 'text', 'seo', 'Meta keywords'],
             'meta_description' => ['Professional event management platform', 'text', 'seo', 'Meta description'],
-            
+
             // Security Settings
             'session_timeout' => ['1440', 'integer', 'security', 'Session timeout in minutes'],
             'max_login_attempts' => ['5', 'integer', 'security', 'Maximum login attempts'],
-            
+
             // Cache Settings
             'cache_enabled' => ['1', 'boolean', 'cache', 'Enable application cache'],
             'cache_ttl' => ['3600', 'integer', 'cache', 'Cache TTL in seconds'],
@@ -300,6 +300,25 @@ class Setting extends Model
             }
             return true;
         } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Direct update method for settings
+     */
+    public static function directUpdate($id, $value): bool
+    {
+        $db = \Trees\Database\Database::getInstance();
+        if (!$db) {
+            return false;
+        }
+
+        try {
+            $stmt = $db->prepare("UPDATE settings SET value = :value, updated_at = NOW() WHERE id = :id");
+            return $stmt->execute([':value' => $value, ':id' => $id]);
+        } catch (\Exception $e) {
+            error_log("Direct update error: " . $e->getMessage());
             return false;
         }
     }

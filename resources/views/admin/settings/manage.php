@@ -24,7 +24,7 @@ declare(strict_types=1);
     }
 
     .dashboard-card {
-        background: white;
+        /* background: white; */
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         padding: 1.5rem;
@@ -46,11 +46,11 @@ declare(strict_types=1);
         border-radius: 0.375rem;
         border: 1px solid #e9ecef;
         position: relative;
-        background: #f8f9fa;
+        background: inherit;
     }
 
     .setting-item:hover {
-        background-color: #e3f2fd;
+        background-color: inherit;
         border-color: #2196f3;
         border: 2px dashed #2196f3;
     }
@@ -74,7 +74,7 @@ declare(strict_types=1);
 
     .setting-item.edit-mode {
         border: 2px solid var(--bs-primary);
-        background-color: rgba(var(--bs-primary-rgb), 0.05);
+        background-color: inherit;
     }
 
     .setting-item.edit-mode .setting-view-mode {
@@ -97,7 +97,7 @@ declare(strict_types=1);
         min-height: 2.5rem;
         padding: 0.375rem 0.75rem;
         border-radius: 0.375rem;
-        background-color: white;
+        background-color: inherit;
         border: 1px solid #e9ecef;
         word-break: break-word;
     }
@@ -554,16 +554,23 @@ declare(strict_types=1);
         button.disabled = true;
         button.innerHTML = '<i class="bi bi-hourglass-split me-1"></i>Saving...';
 
+        // Convert boolean values properly for JSON
+        let formattedValue = value;
+        if (value === '1' || value === '0') {
+            formattedValue = value === '1';
+        }
+
+        // Create form data instead of JSON for better compatibility
+        const formData = new FormData();
+        formData.append('id', id);
+        formData.append('value', value); // Use the original value, not the boolean
+
         fetch('<?= url('/admin/settings/update-setting') ?>', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
+                    'X-Requested-With': 'XMLHttpRequest',
                 },
-                body: JSON.stringify({
-                    id: id,
-                    value: value
-                })
+                body: formData
             })
             .then(response => {
                 if (!response.ok) {
@@ -572,6 +579,8 @@ declare(strict_types=1);
                 return response.json();
             })
             .then(data => {
+                console.log('Response data:', data); // Debug log
+
                 if (data.success) {
                     // Update UI
                     const settingItem = form.closest('.setting-item');
@@ -580,14 +589,16 @@ declare(strict_types=1);
                     // Update the display value
                     const displayElement = settingItem.querySelector('.setting-value-display');
                     if (displayElement) {
-                        updateDisplayValue(displayElement, value, data.data);
+                        updateDisplayValue(displayElement, value, data.data || {});
                     }
 
                     // Show success message
-                    showToast('Success', data.message, 'success');
+                    showToast('Success', data.message || 'Setting updated successfully', 'success');
                 } else {
                     showToast('Error', data.message || 'Failed to update setting', 'danger');
                 }
+                button.disabled = false;
+                button.innerHTML = originalHtml;
             })
             .catch(error => {
                 console.error('Fetch error:', error);
@@ -601,14 +612,19 @@ declare(strict_types=1);
 
     // Update display value helper
     function updateDisplayValue(displayElement, value, settingData) {
-        if (settingData.type === 'boolean') {
-            const isEnabled = value === '1';
-            displayElement.innerHTML = `<span class="badge bg-${isEnabled ? 'success' : 'secondary'}">${isEnabled ? 'Enabled' : 'Disabled'}</span>`;
-        } else if (['smtp_password', 'paystack_secret_key', 'google_maps_api_key'].includes(settingData.key)) {
-            displayElement.textContent = '••••••••';
-        } else if (settingData.type === 'text') {
-            displayElement.innerHTML = `<div class="text-truncate" style="max-height: 3rem; overflow: hidden;">${escapeHtml(value)}</div>`;
-        } else {
+        try {
+            if (settingData && settingData.type === 'boolean') {
+                const isEnabled = value === '1' || value === 1 || value === true;
+                displayElement.innerHTML = `<span class="badge bg-${isEnabled ? 'success' : 'secondary'}">${isEnabled ? 'Enabled' : 'Disabled'}</span>`;
+            } else if (settingData && ['smtp_password', 'paystack_secret_key', 'google_maps_api_key'].includes(settingData.key)) {
+                displayElement.textContent = '••••••••';
+            } else if (settingData && settingData.type === 'text') {
+                displayElement.innerHTML = `<div class="text-truncate" style="max-height: 3rem; overflow: hidden;">${escapeHtml(value)}</div>`;
+            } else {
+                displayElement.textContent = value || 'Not set';
+            }
+        } catch (error) {
+            console.error('Error updating display:', error);
             displayElement.textContent = value || 'Not set';
         }
     }

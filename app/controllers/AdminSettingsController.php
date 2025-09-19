@@ -10,6 +10,7 @@ use App\models\Setting;
 use Trees\Controller\Controller;
 use Trees\Exception\TreesException;
 use Trees\Helper\FlashMessages\FlashMessage;
+use Trees\Logger\Logger;
 
 class AdminSettingsController extends Controller
 {
@@ -29,13 +30,13 @@ class AdminSettingsController extends Controller
     {
         // Get all settings grouped by category
         $settings = Setting::getAllGrouped();
-        
+
         // Determine active tab from query parameter or default to first category
         $activeTab = $request->query('tab', '');
         if (empty($activeTab) && !empty($settings)) {
             $activeTab = array_key_first($settings);
         }
-        
+
         // Seed default settings if none exist
         if (empty($settings)) {
             Setting::seedDefaults();
@@ -114,10 +115,10 @@ class AdminSettingsController extends Controller
 
         try {
             $data = $request->all();
-            
+
             // Convert boolean value for is_editable
             $data['is_editable'] = isset($data['is_editable']) ? 1 : 0;
-            
+
             // Format value based on type
             if ($data['type'] === 'boolean') {
                 $data['value'] = isset($data['value']) && $data['value'] ? '1' : '0';
@@ -215,10 +216,10 @@ class AdminSettingsController extends Controller
 
         try {
             $data = $request->all();
-            
+
             // Convert boolean value for is_editable
             $data['is_editable'] = isset($data['is_editable']) ? 1 : 0;
-            
+
             // Format value based on type
             if ($data['type'] === 'boolean') {
                 $data['value'] = isset($data['value']) && $data['value'] ? '1' : '0';
@@ -266,13 +267,14 @@ class AdminSettingsController extends Controller
 
     public function updateSetting(Request $request, Response $response)
     {
-        // Handle AJAX requests for individual setting updates
-        if (!$request->isAjax()) {
-            return $response->json(['success' => false, 'message' => 'Invalid request'], 400);
+        if ("POST" !== $request->getMethod()) {
+            return $response->json(['success' => false, 'message' => 'Method not allowed'], 405);
         }
 
         try {
-            $input = json_decode($request->getBody(), true);
+            // Get input data based on content type
+            $input = $request->isJson() ? $request->getJsonBody() : $request->all();
+
             $id = $input['id'] ?? null;
             $value = $input['value'] ?? '';
 
@@ -292,9 +294,9 @@ class AdminSettingsController extends Controller
             // Format value based on type
             $formattedValue = $value;
             if ($setting->type === 'boolean') {
-                $formattedValue = $value ? '1' : '0';
+                $formattedValue = ($value === true || $value === 'true' || $value === '1' || $value === 1) ? '1' : '0';
             } elseif ($setting->type === 'integer') {
-                $formattedValue = (string) intval($value);
+                $formattedValue = (string) intval($value ?? 0);
             }
 
             // Basic validation based on type
@@ -305,8 +307,9 @@ class AdminSettingsController extends Controller
             if ($setting->type === 'url' && !empty($formattedValue) && !filter_var($formattedValue, FILTER_VALIDATE_URL)) {
                 return $response->json(['success' => false, 'message' => 'Invalid URL format'], 400);
             }
+            // $setting->updateInstance(['value' => $formattedValue]);
 
-            if ($setting->updateInstance(['value' => $formattedValue])) {
+            if ($setting->directUpdate($id, $formattedValue)) {
                 return $response->json([
                     'success' => true,
                     'message' => 'Setting updated successfully',
@@ -317,10 +320,9 @@ class AdminSettingsController extends Controller
                         'type' => $setting->type
                     ]
                 ]);
-            } else {
-                return $response->json(['success' => false, 'message' => 'Failed to update setting'], 500);
             }
 
+            return $response->json(['success' => false, 'message' => 'Failed to update setting'], 500);
         } catch (\Exception $e) {
             return $response->json([
                 'success' => false,
@@ -339,7 +341,7 @@ class AdminSettingsController extends Controller
         try {
             // Clear different types of cache
             $cleared = [];
-            
+
             // Clear PHP OPCache if available
             // if (function_exists('opcache_reset')) {
             //     opcache_reset();
@@ -366,8 +368,8 @@ class AdminSettingsController extends Controller
                 $cleared[] = 'Session Files';
             }
 
-            $message = empty($cleared) 
-                ? 'No cache types were available to clear' 
+            $message = empty($cleared)
+                ? 'No cache types were available to clear'
                 : 'Cleared: ' . implode(', ', $cleared);
 
             return $response->json([
@@ -375,7 +377,6 @@ class AdminSettingsController extends Controller
                 'message' => $message,
                 'cleared' => $cleared
             ]);
-
         } catch (\Exception $e) {
             return $response->json([
                 'success' => false,
@@ -402,14 +403,13 @@ class AdminSettingsController extends Controller
             }
 
             $filename = 'settings_export_' . date('Y-m-d_H-i-s') . '.json';
-            
+
             header('Content-Type: application/json');
             header('Content-Disposition: attachment; filename="' . $filename . '"');
             header('Content-Length: ' . strlen(json_encode($exportData)));
-            
+
             echo json_encode($exportData, JSON_PRETTY_PRINT);
             exit;
-
         } catch (\Exception $e) {
             FlashMessage::setMessage("Export failed: " . $e->getMessage(), 'danger');
             return $response->redirect("/admin/settings/manage");
@@ -424,7 +424,7 @@ class AdminSettingsController extends Controller
 
         try {
             $uploadedFile = $request->file('settings_file');
-            
+
             if (!$uploadedFile || $uploadedFile['error'] !== UPLOAD_ERR_OK) {
                 throw new \RuntimeException('No file uploaded or upload error occurred');
             }
@@ -471,7 +471,6 @@ class AdminSettingsController extends Controller
 
             FlashMessage::setMessage("Settings imported successfully! Imported: {$imported}, Skipped: {$skipped}");
             return $response->redirect("/admin/settings/manage");
-
         } catch (\Exception $e) {
             FlashMessage::setMessage("Import failed: " . $e->getMessage(), 'danger');
             return $response->redirect("/admin/settings/manage");
@@ -496,7 +495,7 @@ class AdminSettingsController extends Controller
             }
 
             $filePath = $dir . DIRECTORY_SEPARATOR . $file;
-            
+
             if (is_dir($filePath)) {
                 $this->clearDirectory($filePath);
                 rmdir($filePath);

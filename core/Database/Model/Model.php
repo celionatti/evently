@@ -522,9 +522,15 @@ abstract class Model
                 $this->changes['updated_at'] = date('Y-m-d H:i:s');
             }
 
+            // Get the primary key value
+            $primaryKeyValue = $this->getAttribute($this->primaryKey);
+            if (!$primaryKeyValue) {
+                throw new \Exception("Primary key value not found for update");
+            }
+
             // Update only changed attributes
             $result = $builder->table($this->table)
-                ->where($this->primaryKey, $this->getAttribute($this->primaryKey))
+                ->where($this->primaryKey, $primaryKeyValue)
                 ->update($this->changes);
 
             // Commit transaction
@@ -550,6 +556,82 @@ abstract class Model
             return false;
         }
     }
+
+    /**
+     * FIXED: Instance update method
+     * Update the model instance in the database
+     *
+     * @param array $attributes Attributes to update (optional)
+     * @return bool True if update was successful, false otherwise
+     */
+    // public function updateInstance(array $attributes = []): bool
+    // {
+    //     // Don't update if model doesn't exist
+    //     if (!$this->exists) {
+    //         return false;
+    //     }
+
+    //     // Fill the model with new attributes if provided
+    //     if (!empty($attributes)) {
+    //         $this->fill($attributes);
+    //     }
+
+    //     // Validate the model
+    //     if (!$this->validate()) {
+    //         return false;
+    //     }
+
+    //     // Only proceed if there are changes
+    //     if (empty($this->changes)) {
+    //         return true; // Nothing to update
+    //     }
+
+    //     // Get database connection
+    //     $db = Database::getInstance();
+    //     if (!$db) {
+    //         return false;
+    //     }
+
+    //     // Create query builder
+    //     $builder = new QueryBuilder($db);
+
+    //     try {
+    //         // Begin transaction
+    //         $db->beginTransaction();
+
+    //         // Add updated_at timestamp if column exists
+    //         if ($this->hasColumn('updated_at') && !isset($this->changes['updated_at'])) {
+    //             $this->changes['updated_at'] = date('Y-m-d H:i:s');
+    //         }
+
+    //         // Update only changed attributes
+    //         $result = $builder->table($this->table)
+    //             ->where($this->primaryKey, $this->getAttribute($this->primaryKey))
+    //             ->update($this->changes);
+
+    //         // Commit transaction
+    //         $db->commit();
+
+    //         if ($result !== false) {
+    //             // Update original attributes to reflect changes
+    //             $this->original = array_merge($this->original, $this->changes);
+    //             $this->changes = [];
+    //             return true;
+    //         }
+
+    //         return false;
+    //     } catch (\Exception $e) {
+    //         // Rollback transaction
+    //         $db->rollback();
+
+    //         // Log error
+    //         if (class_exists('\Trees\Logger\Logger')) {
+    //             \Trees\Logger\Logger::exception($e);
+    //         }
+
+    //         return false;
+    //     }
+    // }
 
     /**
      * ADDED: Static create method that returns the ID
