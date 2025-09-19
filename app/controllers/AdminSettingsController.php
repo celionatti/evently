@@ -7,7 +7,6 @@ namespace App\controllers;
 use Trees\Http\Request;
 use Trees\Http\Response;
 use App\models\Setting;
-use Trees\Pagination\Paginator;
 use Trees\Controller\Controller;
 use Trees\Exception\TreesException;
 use Trees\Helper\FlashMessages\FlashMessage;
@@ -99,7 +98,7 @@ class AdminSettingsController extends Controller
         }
 
         $rules = [
-            'key' => 'required|min:2|max:100|unique:settings.key',
+            'key' => 'required|min:2|max:100|unique:settings.`key`',
             'value' => 'nullable',
             'type' => 'required|in:string,integer,boolean,json,text,email,url',
             'category' => 'required|min:2|max:50',
@@ -200,7 +199,7 @@ class AdminSettingsController extends Controller
         }
 
         $rules = [
-            'key' => "required|min:2|max:100|unique:settings.key,key!={$setting->key}",
+            'key' => "required|min:2|max:100|unique:settings.`key`,`key`!={$setting->key}",
             'value' => 'nullable',
             'type' => 'required|in:string,integer,boolean,json,text,email,url',
             'category' => 'required|min:2|max:50',

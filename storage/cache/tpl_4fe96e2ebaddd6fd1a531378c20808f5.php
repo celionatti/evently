@@ -1,6 +1,8 @@
 <?php
 
-declare(strict_types=1); ?>
+declare(strict_types=1);
+
+?>
 
 <?php $this->start('styles'); ?>
 <style>
@@ -22,7 +24,7 @@ declare(strict_types=1); ?>
     }
 
     .dashboard-card {
-        /* background: white; */
+        background: white;
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         padding: 1.5rem;
@@ -44,11 +46,11 @@ declare(strict_types=1); ?>
         border-radius: 0.375rem;
         border: 1px solid #e9ecef;
         position: relative;
-        background: inherit;
+        background: #f8f9fa;
     }
 
     .setting-item:hover {
-        background-color: inherit;
+        background-color: #e3f2fd;
         border-color: #2196f3;
         border: 2px dashed #2196f3;
     }
@@ -72,7 +74,7 @@ declare(strict_types=1); ?>
 
     .setting-item.edit-mode {
         border: 2px solid var(--bs-primary);
-        background-color: inherit;
+        background-color: rgba(var(--bs-primary-rgb), 0.05);
     }
 
     .setting-item.edit-mode .setting-view-mode {
@@ -95,7 +97,7 @@ declare(strict_types=1); ?>
         min-height: 2.5rem;
         padding: 0.375rem 0.75rem;
         border-radius: 0.375rem;
-        background-color: inherit;
+        background-color: white;
         border: 1px solid #e9ecef;
         word-break: break-word;
     }
@@ -167,9 +169,9 @@ declare(strict_types=1); ?>
 
     <?php if (empty($settings)): ?>
         <div class="dashboard-card text-center py-5">
-            <i class="bi bi-gear-wide-connected display-1 text-white mb-3"></i>
+            <i class="bi bi-gear-wide-connected display-1 text-muted mb-3"></i>
             <h3>No Settings Found</h3>
-            <p class="text-white mb-4">Get started by creating your first system setting.</p>
+            <p class="text-muted mb-4">Get started by creating your first system setting.</p>
             <a href="<?= url('/admin/settings/create') ?>" class="btn btn-primary">
                 <i class="bi bi-plus me-2"></i>Create First Setting
             </a>
@@ -271,12 +273,12 @@ declare(strict_types=1); ?>
                                     <label class="form-label fw-bold">
                                         <?= ucwords(str_replace('_', ' ', $key)) ?>
                                         <?php if ($setting['type'] === 'boolean'): ?>
-                                            <small class="text-white">(Enable/Disable)</small>
+                                            <small class="text-muted">(Enable/Disable)</small>
                                         <?php endif; ?>
                                     </label>
 
                                     <?php if ($setting['description']): ?>
-                                        <small class="text-white d-block mb-2"><?= htmlspecialchars($setting['description']) ?></small>
+                                        <small class="text-muted d-block mb-2"><?= htmlspecialchars($setting['description']) ?></small>
                                     <?php endif; ?>
 
                                     <!-- View Mode (Display only) -->
@@ -384,7 +386,7 @@ declare(strict_types=1); ?>
                                             </form>
                                         </div>
                                     <?php else: ?>
-                                        <div class="text-white small mt-1">
+                                        <div class="text-muted small mt-1">
                                             <i class="bi bi-lock"></i> This setting is read-only
                                         </div>
                                     <?php endif; ?>
@@ -563,7 +565,12 @@ declare(strict_types=1); ?>
                     value: value
                 })
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
                 if (data.success) {
                     // Update UI
@@ -579,10 +586,11 @@ declare(strict_types=1); ?>
                     // Show success message
                     showToast('Success', data.message, 'success');
                 } else {
-                    showToast('Error', data.message, 'danger');
+                    showToast('Error', data.message || 'Failed to update setting', 'danger');
                 }
             })
             .catch(error => {
+                console.error('Fetch error:', error);
                 showToast('Error', 'Network error: ' + error.message, 'danger');
             })
             .finally(() => {

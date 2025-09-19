@@ -35,7 +35,7 @@ class Setting extends Model
      * @var array Validation rules for model attributes
      */
     protected array $rules = [
-        'key' => 'required|min:2|max:100|unique:settings.key',
+        'key' => 'required|min:2|max:100|unique:settings.`key`',
         'value' => 'nullable',
         'type' => 'required|in:string,integer,boolean,json,text,email,url',
         'category' => 'required|min:2|max:50',
