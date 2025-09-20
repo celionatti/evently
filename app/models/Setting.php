@@ -23,7 +23,9 @@ class Setting extends Model
         'type',
         'category',
         'description',
-        'is_editable'
+        'is_editable',
+        'created_at',
+        'updated_at'
     ];
 
     /**

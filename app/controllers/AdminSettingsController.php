@@ -309,9 +309,9 @@ class AdminSettingsController extends Controller
             // $setting->updateInstance(['value' => $formattedValue]);
 
             if ($setting->directUpdate($id, $formattedValue)) {
-                
-                // Clear any application cache if needed
-                $this->clearApplicationCache();
+
+                // Clear any application logs if needed
+                $this->clearApplicationLogs();
 
                 return $response->json([
                     'success' => true,
@@ -379,6 +379,29 @@ class AdminSettingsController extends Controller
             }
 
             // Add other cache clearing logic here (Redis, Memcached, etc.)
+
+            return $cleared;
+        } catch (\Exception $e) {
+            // Log error if logger is available
+            if (class_exists('\Trees\Logger\Logger')) {
+                \Trees\Logger\Logger::exception($e);
+            }
+            return false;
+        }
+    }
+
+    private function clearApplicationLogs(): bool
+    {
+        try {
+            $cleared = true;
+
+            // Clear file-based cache
+            if (defined('ROOT_PATH')) {
+                $logDir = ROOT_PATH . '/storage/logs';
+                if (is_dir($logDir)) {
+                    $cleared = $cleared && $this->clearDirectory($logDir, false);
+                }
+            }
 
             return $cleared;
         } catch (\Exception $e) {

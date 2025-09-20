@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 ?>
 
-@section('styles')
+<?php $this->start('styles'); ?>
 <style>
     .nav-pills .nav-link {
         margin-bottom: 0.5rem;
@@ -133,9 +133,9 @@ declare(strict_types=1);
         }
     }
 </style>
-@endsection
+<?php $this->end(); ?>
 
-@section('content')
+<?php $this->start('content'); ?>
 <!-- Toast Container -->
 <div class="toast-container" id="toastContainer"></div>
 
@@ -447,9 +447,9 @@ declare(strict_types=1);
     </div>
 </div>
 
-@endsection
+<?php $this->end(); ?>
 
-@section('scripts')
+<?php $this->start('scripts'); ?>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Edit button functionality
@@ -693,4 +693,4 @@ declare(strict_types=1);
         }
     }
 </script>
-@endsection
+<?php $this->end(); ?>
