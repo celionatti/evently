@@ -6,13 +6,13 @@ use App\models\User;
 
 ?>
 
-@section('content')
-@include('nav')
+<?php $this->start('content'); ?>
+<?php $this->partial('nav'); ?>
 <!-- BLOG CONTENT -->
 <section class="container blog-container">
     <div class="blog-card">
         <div class="blog-header">
-            <h1 class="page-title text-start mt-3">{{{ $article->title }}}</h1>
+            <h1 class="page-title text-start mt-3"><?php echo $article->title; ?></h1>
 
             <div class="blog-meta">
                 <div class="blog-meta-item">
@@ -20,16 +20,16 @@ use App\models\User;
                     <?php
                     $user = User::find($article->id);
                     ?>
-                    <span class="text-capitalize">By {{{ $user->name . ' ' . $user->other_name }}}</span>
+                    <span class="text-capitalize">By <?php echo $user->name . ' ' . $user->other_name; ?></span>
                 </div>
                 <div class="blog-meta-item">
                     <i class="bi bi-clock"></i>
-                    <span>{{{ getReadingTime($article->content) }}} min read • {{ date('F j, Y', strtotime($article->created_at)) }}</span>
+                    <span><?php echo getReadingTime($article->content); ?> min read • <?php echo $this->escape(date('F j, Y', strtotime($article->created_at))); ?></span>
                 </div>
                 <div class="blog-meta-item">
                     <?php if($article->likes > 0): ?>
                     <i class="bi bi-hand-thumbs-up"></i>
-                    <span>{{{ $article->likes ?? 0 }}} likes</span>
+                    <span><?php echo $article->likes ?? 0; ?> likes</span>
                     <?php endif; ?>
                 </div>
             </div>
@@ -39,22 +39,22 @@ use App\models\User;
                 <div class="blog-tags">
                     <?php foreach ($tags as $tag): ?>
                         <?php $tag = trim($tag); ?>
-                        <span class="blog-tag">{{{ $tag }}}</span>
+                        <span class="blog-tag"><?php echo $tag; ?></span>
                     <?php endforeach; ?>
                 </div>
             <?php endif; ?>
         </div>
 
-        <img src="{{{ get_image($article->image, "https://images.unsplash.com/photo-1462536943532-57a629f6cc60?q=80&w=1200&auto=format&fit=crop") }}}" alt="Eco-Friendly Event" class="blog-image">
+        <img src="<?php echo get_image($article->image, "https://images.unsplash.com/photo-1462536943532-57a629f6cc60?q=80&w=1200&auto=format&fit=crop"); ?>" alt="Eco-Friendly Event" class="blog-image">
 
         <div class="blog-content">
             <?php if ($article->quote): ?>
                 <blockquote>
-                    "{{{ $article->quote }}}"
+                    "<?php echo $article->quote; ?>"
                 </blockquote>
             <?php endif; ?>
 
-            <p>{{{ $article->content }}}</p>
+            <p><?php echo $article->content; ?></p>
 
             <div class="blog-action-buttons">
                 <a href="#" class="blog-action-btn">
@@ -69,14 +69,14 @@ use App\models\User;
             </div>
 
             <div class="author-card">
-                <img src="{{{ get_image('', '/dist/img/avatar.png') }}}" alt="{{{ $user->name . ' ' . $user->other_name }}}" class="author-avatar">
+                <img src="<?php echo get_image('', '/dist/img/avatar.png'); ?>" alt="<?php echo $user->name . ' ' . $user->other_name; ?>" class="author-avatar">
                 <div class="author-info">
-                    <h4>{{{ $user->name . ' ' . $user->other_name }}}</h4>
-                    <p>{{{ $user->bio }}}</p>
+                    <h4><?php echo $user->name . ' ' . $user->other_name; ?></h4>
+                    <p><?php echo $user->bio; ?></p>
                 </div>
             </div>
         </div>
     </div>
 </section>
-@include('footer')
-@endsection
+<?php $this->partial('footer'); ?>
+<?php $this->end(); ?>

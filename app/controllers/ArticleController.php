@@ -80,5 +80,22 @@ class ArticleController extends Controller
             FlashMessage::setMessage("Article not found!", 'danger');
             return $response->redirect("/articles");
         }
+
+        // Only show active articles to the public (unless user is admin/organizer)
+        if ($article->status !== 'publish') {
+            // Check if user has permission to view inactive events
+            if (!auth() || (!isAdminOrOrganiser() && $article->user_id !== auth()->id)) {
+                FlashMessage::setMessage("Article not available!", 'danger');
+                return $response->redirect("/articles");
+            }
+        }
+
+        $this->view->setTitle($article->title . " | Eventlyy");
+
+        $view = [
+            'article' => $article
+        ];
+
+        return $this->render("article", $view);
     }
 }

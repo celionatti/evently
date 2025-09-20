@@ -6,8 +6,8 @@ use App\models\User;
 
 ?>
 
-@section('content')
-@include('nav')
+<?php $this->start('content'); ?>
+<?php $this->partial('nav'); ?>
 
 <!-- HERO SECTION -->
 <section class="page-hero">
@@ -37,10 +37,10 @@ use App\models\User;
             <?php foreach ($articles as $index => $article): ?>
                 <!-- Blog -->
                 <div class="event-card reveal">
-                    <img src="{{{ get_image($article->image, "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=500&auto=format&fit=crop") }}}" alt="{{{ getExcerpt($article->title, 10) }}}" class="event-img">
+                    <img src="<?php echo get_image($article->image, "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=500&auto=format&fit=crop"); ?>" alt="<?php echo getExcerpt($article->title, 10); ?>" class="event-img">
                     <div class="event-content">
-                        <h3 class="event-title">{{{ $article->title }}}</h3>
-                        <p class="event-description">{{{ getExcerpt($article->content, 150) }}}</p>
+                        <h3 class="event-title"><?php echo $article->title; ?></h3>
+                        <p class="event-description"><?php echo getExcerpt($article->content, 150); ?></p>
 
                         <div class="event-details">
                             <div class="event-detail">
@@ -48,11 +48,11 @@ use App\models\User;
                                 <?php 
                                     $user = User::find($article->id);
                                 ?>
-                                <span class="text-capitalize">By {{{ $user->name . ' ' . $user->other_name }}}</span>
+                                <span class="text-capitalize">By <?php echo $user->name . ' ' . $user->other_name; ?></span>
                             </div>
                             <div class="event-detail">
                                 <i class="bi bi-clock"></i>
-                                <span>{{{ getReadingTime($article->content) }}} min read • {{ date('M j, Y', strtotime($article->created_at)) }}</span>
+                                <span><?php echo getReadingTime($article->content); ?> min read • <?php echo $this->escape(date('M j, Y', strtotime($article->created_at))); ?></span>
                             </div>
                         </div>
 
@@ -60,7 +60,7 @@ use App\models\User;
                             <div class="event-price">
                                 <?php if($article->likes > 0): ?>
                                 <i class="bi bi-hand-thumbs-up"></i> 
-                                {{{ $article->likes ?? 0 }}}
+                                <?php echo $article->likes ?? 0; ?>
                                 <?php endif; ?>
                             </div>
                             <a href="<?php echo url("/articles/$article->id/$article->slug") ?>" class="btn btn-pulse btn-sm">Read More</a>
@@ -71,7 +71,7 @@ use App\models\User;
         </div>
 
         <!-- Pagination -->
-        {{{ $pagination }}}
+        <?php echo $pagination; ?>
     <?php else: ?>
         <div class="col-12">
             <div class="d-flex justify-content-center align-items-center min-vh-50">
@@ -94,7 +94,7 @@ use App\models\User;
     <?php endif; ?>
 </section>
 
-@include('advert', ['ads' => $advertisements])
+<?php $this->partial('advert', ['ads' => $advertisements]); ?>
 <!-- NEWSLETTER SECTION -->
 <!-- <section class="container">
     <div class="newsletter-section reveal">
@@ -108,9 +108,9 @@ use App\models\User;
     </div>
 </section> -->
 
-@include('footer')
-@endsection
+<?php $this->partial('footer'); ?>
+<?php $this->end(); ?>
 
-@section('scripts')
+<?php $this->start('scripts'); ?>
 <script src="/dist/js/script.js"></script>
-@endsection
+<?php $this->end(); ?>

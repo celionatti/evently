@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\models\User;
+use App\models\Setting;
 use Trees\Helper\FlashMessages\FlashMessage;
 
 /**
@@ -268,4 +269,18 @@ function getCategoryIcon(string $categoryName): string
     }
 
     return $icon;
+}
+
+if (!function_exists('setting')) {
+    /**
+     * Get a setting value by key
+     *
+     * @param string $key
+     * @param mixed $default
+     * @return mixed
+     */
+    function setting(string $key, mixed $default = null): mixed
+    {
+        return Setting::setting($key, $default);
+    }
 }

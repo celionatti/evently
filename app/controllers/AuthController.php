@@ -167,6 +167,7 @@ class AuthController extends Controller
                 'email' => strtolower(trim($request->input('email'))),
                 'password' => $hashedPassword,
                 'role' => 'organiser',
+                'bio' => 'This author’s biography is not available at the moment. More details will be shared soon.',
                 'is_blocked' => 0,
                 'login_attempts' => 0,
                 'blocked_until' => null,

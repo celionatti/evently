@@ -316,4 +316,30 @@ class Setting extends Model
             return false;
         }
     }
+
+    /**
+     * Get a setting value by key with caching
+     *
+     * @param string $key The setting key
+     * @param mixed $default Default value if setting doesn't exist
+     * @return mixed The setting value
+     */
+    public static function setting(string $key, mixed $default = null): mixed
+    {
+        static $cachedSettings = null;
+
+        // Load all settings only once per request
+        if ($cachedSettings === null) {
+            $cachedSettings = static::all();
+        }
+
+        // Find the setting with the matching key
+        foreach ($cachedSettings as $setting) {
+            if ($setting->key === $key) {
+                return static::parseValueByType($setting->value, $setting->type);
+            }
+        }
+
+        return $default;
+    }
 }
