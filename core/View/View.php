@@ -358,7 +358,7 @@ class View
      */
     public function setSEOForArticle(array $data): self
     {
-        $this->setTitle($data['title'] ?? '');
+        $this->setTitle($data['main_title'] ?? '');
         $this->setDescription($data['description'] ?? '');
         $this->setKeywords($data['keywords'] ?? '');
         

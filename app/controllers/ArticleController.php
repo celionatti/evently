@@ -10,64 +10,20 @@ use Trees\Http\Request;
 use Trees\Http\Response;
 use App\models\Advertisement;
 use Trees\Pagination\Paginator;
-use Trees\Controller\Controller;
+use App\controllers\BaseController;
 use Trees\Helper\FlashMessages\FlashMessage;
 
-class ArticleController extends Controller
+class ArticleController extends BaseController
 {
     public function onConstruct()
     {
+        parent::onConstruct();
         $this->view->setLayout('default');
 
-        // Set default site-wide meta tags
-        $this->view->setAuthor("Eventlyy Team")
-            ->setViewport("width=device-width, initial-scale=1.0")
-            ->addLink('manifest', '/site.webmanifest')
-            ->setMetaTag('theme-color', '#007bff')
-            ->setMetaTag('application-name', 'Eventlyy')
-            ->setMetaTag('msapplication-TileColor', '#007bff');
+        // Add article-specific optimizations
+        $this->addAnalytics();
+        $this->addSocialShareButtons();
     }
-
-    // public function articles(Request $request, Response $response)
-    // {
-    //     // Build query options
-    //     $queryOptions = [
-    //         'per_page' => $request->query('per_page', 12),
-    //         'page' => $request->query('page', 1),
-    //         'order_by' => ['created_at' => 'DESC']
-    //     ];
-
-    //     // Only show active articles to the public
-    //     $conditions = ['status' => 'publish'];
-
-    //     // Add search functionality
-    //     $search = $request->query('search');
-    //     if (!empty($search)) {
-    //         // Use the applySearch method from the Article model
-    //         $queryOptions['search'] = $search;
-    //     }
-
-    //     $queryOptions['conditions'] = $conditions;
-
-    //     // Get events with pagination
-    //     $articlesData = Article::paginate($queryOptions);
-
-    //     // Create pagination instance
-    //     $pagination = new Paginator($articlesData['meta']);
-    //     $paginationLinks = $pagination->render('bootstrap');
-
-    //     $advertisements = Advertisement::where(['is_active' => '1']);
-
-    //     $view = [
-    //         'articles' => $articlesData['data'],
-    //         'pagination' => $paginationLinks,
-    //         'currentSearch' => $search,
-    //         'totalArticles' => $articlesData['meta']['total'] ?? 0,
-    //         'advertisements' => $advertisements
-    //     ];
-
-    //     return $this->render('articles', $view);
-    // }
 
     public function articles(Request $request, Response $response)
     {
@@ -191,6 +147,7 @@ class ArticleController extends Controller
 
         // Set comprehensive SEO for the article
         $this->view->setSEOForArticle([
+            'main_title' => $article->title ?: $article->meta_title,
             'title' => $article->meta_title ?: $article->title,
             'description' => $article->meta_description ?: getExcerpt($article->content, 160),
             'keywords' => $article->meta_keywords ?: $article->tags,
@@ -207,8 +164,7 @@ class ArticleController extends Controller
         ]);
 
         // Add article-specific CSS
-        $this->view->addStylesheet('/dist/css/article.css')
-                   ->addStyle('
+        $this->view->addStyle('
                        .article-progress {
                            position: fixed;
                            top: 0;
@@ -221,8 +177,7 @@ class ArticleController extends Controller
                    ');
 
         // Add article-specific JavaScript
-        $this->view->addScript('/dist/js/article-interactions.js')
-                   ->addInlineScript('
+        $this->view->addInlineScript('
                        // Track article reading
                        document.addEventListener("DOMContentLoaded", function() {
                            // Reading progress bar
@@ -251,6 +206,9 @@ class ArticleController extends Controller
         $this->view->addInlineScript($this->generateArticleStructuredData($article, $author, $request), [
             'type' => 'application/ld+json'
         ]);
+
+        // Add performance optimizations for single article
+        $this->optimizeForArticle($article, $request);
 
         $view = [
             'article' => $article,
@@ -327,11 +285,15 @@ class ArticleController extends Controller
     }
 
     /**
-     * RSS feed for articles
+     * RSS Feed with proper headers
      */
     public function rss(Request $request, Response $response)
     {
         $articles = Article::getRecent(50);
+
+        // Set cache headers for RSS (cache for 1 hour)
+        $response->setHeader('Cache-Control', 'public, max-age=3600')
+            ->setHeader('ETag', md5(serialize($articles)));
 
         $rssContent = $this->generateRSSFeed($articles, $request);
 
@@ -431,7 +393,7 @@ class ArticleController extends Controller
     }
 
     /**
-     * Generate structured data for article SEO
+     * Generate comprehensive structured data
      */
     private function generateArticleStructuredData(Article $article, ?User $author, Request $request): string
     {
@@ -439,18 +401,36 @@ class ArticleController extends Controller
             "@context" => "https://schema.org",
             "@type" => "Article",
             "headline" => $article->title,
-            "description" => $article->meta_description ?: substr(strip_tags($article->content), 0, 160),
-            "image" => $this->getFullImageUrl($request, $article->image),
-            "datePublished" => $article->created_at,
-            "dateModified" => $article->updated_at,
+            "description" => $article->meta_description ?: getExcerpt($article->content, 160),
+            "image" => [
+                "@type" => "ImageObject",
+                "url" => $this->getFullImageUrl($request, $article->image),
+                "width" => 1200,
+                "height" => 630
+            ],
+            "datePublished" => date('c', strtotime($article->created_at)),
+            "dateModified" => date('c', strtotime($article->updated_at)),
             "wordCount" => str_word_count(strip_tags($article->content)),
+            "timeRequired" => "PT" . $article->getReadingTime() . "M",
             "url" => $request->fullUrl(),
+            "mainEntityOfPage" => [
+                "@type" => "WebPage",
+                "@id" => $request->fullUrl()
+            ],
             "publisher" => [
                 "@type" => "Organization",
                 "name" => "Eventlyy",
+                "url" => $request->getBaseUrl(),
                 "logo" => [
                     "@type" => "ImageObject",
-                    "url" => $this->getFullImageUrl($request, '/dist/img/logo.png')
+                    "url" => $request->getBaseUrl() . "/dist/img/logo.png",
+                    "width" => 200,
+                    "height" => 60
+                ],
+                "sameAs" => [
+                    "https://facebook.com/eventlyy",
+                    "https://twitter.com/eventlyy",
+                    "https://instagram.com/eventlyy"
                 ]
             ]
         ];
@@ -459,15 +439,47 @@ class ArticleController extends Controller
             $data["author"] = [
                 "@type" => "Person",
                 "name" => $author->name . ' ' . $author->other_name,
-                "url" => $this->getFullImageUrl($request, $author->avatar ?? '', '/dist/img/avatar.png')
+                "url" => $request->getBaseUrl() . "/authors/" . $author->id,
+                "image" => [
+                    "@type" => "ImageObject",
+                    "url" => $this->getFullImageUrl($request, $author->avatar ?? '', '/dist/img/avatar.png')
+                ]
             ];
         }
 
         if ($article->tags) {
-            $data["keywords"] = $article->tags;
+            $tags = array_map('trim', explode(',', $article->tags));
+            $data["keywords"] = implode(', ', $tags);
+            $data["articleSection"] = $tags[0] ?? 'General';
         }
 
-        return json_encode($data, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+        // Add breadcrumb structured data
+        $breadcrumbData = [
+            "@context" => "https://schema.org",
+            "@type" => "BreadcrumbList",
+            "itemListElement" => [
+                [
+                    "@type" => "ListItem",
+                    "position" => 1,
+                    "name" => "Home",
+                    "item" => $request->getBaseUrl()
+                ],
+                [
+                    "@type" => "ListItem",
+                    "position" => 2,
+                    "name" => "Articles",
+                    "item" => $request->getBaseUrl() . "/articles"
+                ],
+                [
+                    "@type" => "ListItem",
+                    "position" => 3,
+                    "name" => $article->title,
+                    "item" => $request->fullUrl()
+                ]
+            ]
+        ];
+
+        return json_encode([$data, $breadcrumbData], JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
     }
 
     /**
@@ -490,5 +502,46 @@ class ArticleController extends Controller
         // Use the enhanced Request methods
         $baseUrl = $request->getBaseUrl();
         return $baseUrl . '/' . ltrim($image, '/');
+    }
+
+    private function optimizeForArticle(Article $article, Request $request)
+    {
+        // Preload related resources
+        // $this->view->addLink('preload', '/dist/css/article.css', ['as' => 'style'])
+        //            ->addLink('preload', '/dist/js/article-interactions.js', ['as' => 'script']);
+
+        // Add lazy loading script for images
+        $this->view->addInlineScript('
+            // Lazy loading for images
+            document.addEventListener("DOMContentLoaded", function() {
+                const images = document.querySelectorAll("img[data-src]");
+                const imageObserver = new IntersectionObserver((entries, observer) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const img = entry.target;
+                            img.src = img.dataset.src;
+                            img.removeAttribute("data-src");
+                            observer.unobserve(img);
+                        }
+                    });
+                });
+                
+                images.forEach(img => imageObserver.observe(img));
+            });
+        ');
+
+        // Add service worker for caching
+        $this->view->addInlineScript('
+            // Service Worker registration
+            if ("serviceWorker" in navigator) {
+                window.addEventListener("load", function() {
+                    navigator.serviceWorker.register("/sw.js").then(function(registration) {
+                        console.log("SW registered: ", registration);
+                    }).catch(function(registrationError) {
+                        console.log("SW registration failed: ", registrationError);
+                    });
+                });
+            }
+        ');
     }
 }

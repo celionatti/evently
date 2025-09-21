@@ -117,3 +117,180 @@ Stack trace:
 #2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
 #3 {main}
 
+[2025-09-21 21:43:20] Trees\Exception\TreesException: Route not found for path: /dist/css/article.css in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-21 21:43:20] Trees\Exception\TreesException: Route not found for path: /dist/js/article-interactions.js in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-21 21:53:01] Trees\Exception\TreesException: Route not found for path: /dist/css/article.css in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-21 21:53:01] Trees\Exception\TreesException: Route not found for path: /dist/js/article-interactions.js in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-21 21:54:44] Trees\Exception\TreesException: Route not found for path: /dist/css/article.css in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-21 21:54:44] Trees\Exception\TreesException: Route not found for path: /dist/js/article-interactions.js in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-21 21:58:35] Trees\Exception\TreesException: Route not found for path: /dist/css/article.css in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-21 21:58:35] Trees\Exception\TreesException: Route not found for path: /dist/js/article-interactions.js in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-21 22:01:23] Trees\Exception\TreesException: Route not found for path: /dist/css/article.css in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-21 22:01:23] Trees\Exception\TreesException: Route not found for path: /dist/js/article-interactions.js in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-21 22:01:39] Trees\Exception\TreesException: Route not found for path: /dist/js/article-interactions.js in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-21 22:01:46] Trees\Exception\TreesException: Route not found for path: /dist/css/article.css in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-21 22:02:17] Trees\Exception\TreesException: Route not found for path: /dist/css/article.css in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-21 22:02:23] Trees\Exception\TreesException: Route not found for path: /dist/css/article.css in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-21 22:05:25] Trees\Exception\TreesException: Route not found for path: /dist/js/article-interactions.js in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-21 22:05:30] Trees\Exception\TreesException: Route not found for path: /dist/js/article-interactions.js in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-21 22:09:15] Trees\Exception\TreesException: Route not found for path: /dist/css/bootstrap.min.css.map in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-21 22:09:22] Trees\Exception\TreesException: Route not found for path: /dist/css/bootstrap.min.css.map in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-21 22:09:34] Trees\Exception\TreesException: Route not found for path: /dist/css/bootstrap.min.css.map in C:\xampp\htdocs\evently\core\Router\Router.php on line 53
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Trees.php(169): Trees\Router\Router->resolve(Object(Trees\Http\Request))
+#1 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#2 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#3 {main}
+
+[2025-09-21 23:04:13] ErrorException: Optional parameter $image declared before required parameter $request is implicitly treated as a required parameter in C:\xampp\htdocs\evently\app\controllers\EventController.php on line 557
+Stack trace:
+#0 C:\xampp\htdocs\evently\vendor\composer\ClassLoader.php(576): Trees\Exception\Handler\ExceptionHandler->handleError(8192, 'Optional parame...', 'C:\\xampp\\htdocs...', 557)
+#1 C:\xampp\htdocs\evently\vendor\composer\ClassLoader.php(576): include()
+#2 C:\xampp\htdocs\evently\vendor\composer\ClassLoader.php(427): Composer\Autoload\{closure}('C:\\xampp\\htdocs...')
+#3 [internal function]: Composer\Autoload\ClassLoader->loadClass('App\\controllers...')
+#4 C:\xampp\htdocs\evently\core\Trees.php(205): is_callable(Array)
+#5 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#6 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#7 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#8 {main}
+
+[2025-09-21 23:20:52] TypeError: App\controllers\EventController::setupEventSEO(): Argument #4 ($minPrice) must be of type ?float, string given, called in C:\xampp\htdocs\evently\app\controllers\EventController.php on line 196 in C:\xampp\htdocs\evently\app\controllers\EventController.php on line 301
+Stack trace:
+#0 C:\xampp\htdocs\evently\app\controllers\EventController.php(196): App\controllers\EventController->setupEventSEO(Object(App\models\Event), Object(Trees\Http\Request), Array, '5000', false)
+#1 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\EventController->event(Object(Trees\Http\Request), Object(Trees\Http\Response), '2', 'natti_nation_la...')
+#2 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'event', Array)
+#3 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#4 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#5 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#6 {main}
+
+[2025-09-21 23:21:54] TypeError: App\controllers\EventController::getCategoryName(): Argument #1 ($categoryId) must be of type ?int, string given, called in C:\xampp\htdocs\evently\app\controllers\EventController.php on line 310 in C:\xampp\htdocs\evently\app\controllers\EventController.php on line 575
+Stack trace:
+#0 C:\xampp\htdocs\evently\app\controllers\EventController.php(310): App\controllers\EventController->getCategoryName('4')
+#1 C:\xampp\htdocs\evently\app\controllers\EventController.php(196): App\controllers\EventController->setupEventSEO(Object(App\models\Event), Object(Trees\Http\Request), Array, 5000.0, false)
+#2 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\EventController->event(Object(Trees\Http\Request), Object(Trees\Http\Response), '2', 'natti_nation_la...')
+#3 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'event', Array)
+#4 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#5 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#6 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#7 {main}
+
+[2025-09-21 23:23:21] TypeError: App\controllers\EventController::getFullImageUrl(): Argument #2 ($image) must be of type string, null given, called in C:\xampp\htdocs\evently\app\controllers\EventController.php on line 326 in C:\xampp\htdocs\evently\app\controllers\EventController.php on line 559
+Stack trace:
+#0 C:\xampp\htdocs\evently\app\controllers\EventController.php(326): App\controllers\EventController->getFullImageUrl(Object(Trees\Http\Request), NULL)
+#1 C:\xampp\htdocs\evently\app\controllers\EventController.php(196): App\controllers\EventController->setupEventSEO(Object(App\models\Event), Object(Trees\Http\Request), Array, 5000.0, false)
+#2 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\EventController->event(Object(Trees\Http\Request), Object(Trees\Http\Response), '2', 'natti_nation_la...')
+#3 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'event', Array)
+#4 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#5 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#6 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#7 {main}
+
