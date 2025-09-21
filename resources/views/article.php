@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-use App\models\User;
-
 ?>
 
 @section('content')
@@ -17,19 +15,16 @@ use App\models\User;
             <div class="blog-meta">
                 <div class="blog-meta-item">
                     <i class="bi bi-person"></i>
-                    <?php
-                    $user = User::find($article->id);
-                    ?>
-                    <span class="text-capitalize">By {{{ $user->name . ' ' . $user->other_name }}}</span>
+                    <span class="text-capitalize">By {{{ $author->name . ' ' . $author->other_name }}}</span>
                 </div>
                 <div class="blog-meta-item">
                     <i class="bi bi-clock"></i>
                     <span>{{{ getReadingTime($article->content) }}} min read • {{ date('F j, Y', strtotime($article->created_at)) }}</span>
                 </div>
                 <div class="blog-meta-item">
-                    <?php if($article->likes > 0): ?>
-                    <i class="bi bi-hand-thumbs-up"></i>
-                    <span>{{{ $article->likes ?? 0 }}} likes</span>
+                    <?php if ($article->likes > 0): ?>
+                        <i class="bi bi-hand-thumbs-up"></i>
+                        <span>{{{ $article->likes ?? 0 }}} likes</span>
                     <?php endif; ?>
                 </div>
             </div>
@@ -54,29 +49,93 @@ use App\models\User;
                 </blockquote>
             <?php endif; ?>
 
-            <p>{{{ $article->content }}}</p>
+            <div class="article-content">
+                {{{ nl2br(htmlspecialchars($article->content)) }}}
+            </div>
 
             <div class="blog-action-buttons">
-                <a href="#" class="blog-action-btn">
+                <button class="blog-action-btn like-btn" data-article-id="{{{ $article->id }}}">
+                    <i class="bi bi-hand-thumbs-up"></i>
+                    <span class="like-text">Like this article</span>
+                    <span class="like-count">({{{ $article->likes ?? 0 }}})</span>
+                </button>
+                <!-- <a href="#" class="blog-action-btn">
                     <i class="bi bi-hand-thumbs-up"></i> Like this article
+                </a> -->
+                <a href="https://wa.me/?text={{{ urlencode($article->title . ' - ' . url('/articles/' . $article->id . '/' . $article->slug)) }}}"
+                    target="_blank"
+                    class="blog-action-btn">
+                    <i class="bi bi-whatsapp text-success"></i> Share on WhatsApp
                 </a>
-                <a href="#" class="blog-action-btn">
-                    <i class="bi bi-whatsapp text-success"></i> Share
-                </a>
+                <button class="blog-action-btn share-btn" data-title="{{{ $article->title }}}" data-url="{{{ url('/articles/' . $article->id . '/' . $article->slug) }}}">
+                    <i class="bi bi-share"></i> Share
+                </button>
                 <!-- <a href="#" class="blog-action-btn">
                     <i class="bi bi-bookmark"></i> Save for later
                 </a> -->
             </div>
 
             <div class="author-card">
-                <img src="{{{ get_image('', '/dist/img/avatar.png') }}}" alt="{{{ $user->name . ' ' . $user->other_name }}}" class="author-avatar">
+                <img src="{{{ get_image($author->image, '/dist/img/avatar.png') }}}" alt="{{{ $author->name . ' ' . $author->other_name }}}" class="author-avatar">
                 <div class="author-info">
-                    <h4>{{{ $user->name . ' ' . $user->other_name }}}</h4>
-                    <p>{{{ $user->bio }}}</p>
+                    <h4>{{{ $author->name . ' ' . $author->other_name ?? "Unknown Author" }}}</h4>
+                    <?php if ($author->bio): ?>
+                        <p>{{{ $author->bio }}}</p>
+                    <?php else: ?>
+                        <p>Writer at Eventlyy</p>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
     </div>
 </section>
 @include('footer')
+@endsection
+
+@section('scripts')
+<script>
+    // Like functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const likeBtn = document.querySelector('.like-btn');
+        if (likeBtn) {
+            likeBtn.addEventListener('click', function() {
+                const articleId = this.dataset.articleId;
+                const likeCount = this.querySelector('.like-count');
+                const likeText = this.querySelector('.like-text');
+
+                fetch(`/api/articles/${articleId}/like`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: JSON.stringify({
+                            action: 'like'
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            likeCount.textContent = `(${data.likes})`;
+                            likeText.textContent = 'Liked!';
+                            this.classList.add('liked');
+                            setTimeout(() => {
+                                likeText.textContent = 'Like this article';
+                                this.classList.remove('liked');
+                            }, 2000);
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+        }
+
+        // Share functionality
+        const shareBtn = document.querySelector('.share-btn');
+        if (shareBtn) {
+            shareBtn.addEventListener('click', function() {
+                copyToClipboard(this.dataset.url);
+            });
+        }
+    });
+</script>
 @endsection

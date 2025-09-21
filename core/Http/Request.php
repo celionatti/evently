@@ -103,6 +103,174 @@ class Request
         return json_last_error() === JSON_ERROR_NONE ? $decoded : null;
     }
 
+    /**
+     * Get the request scheme (http or https)
+     */
+    public function getScheme(): string
+    {
+        return $this->isSecure() ? 'https' : 'http';
+    }
+
+    /**
+     * Get the request host
+     */
+    public function getHost(): string
+    {
+        return $this->serverParams['HTTP_HOST'] ?? 'localhost';
+    }
+
+    /**
+     * Get the request port
+     */
+    public function getPort(): int
+    {
+        return (int) ($this->serverParams['SERVER_PORT'] ?? ($this->isSecure() ? 443 : 80));
+    }
+
+    /**
+     * Get the base URL (scheme + host + port if non-standard)
+     */
+    public function getBaseUrl(): string
+    {
+        $scheme = $this->getScheme();
+        $host = $this->getHost();
+        $port = $this->getPort();
+        
+        // Only include port if it's non-standard
+        $standardPorts = ['http' => 80, 'https' => 443];
+        if ($port !== $standardPorts[$scheme]) {
+            $host .= ':' . $port;
+        }
+        
+        return "{$scheme}://{$host}";
+    }
+
+    /**
+     * Get the request URI without query string
+     */
+    public function getPathInfo(): string
+    {
+        return $this->path;
+    }
+
+    /**
+     * Get the query string
+     */
+    public function getQueryString(): ?string
+    {
+        return $this->serverParams['QUERY_STRING'] ?? null;
+    }
+
+    /**
+     * Get the request URI (path + query string)
+     */
+    public function getRequestUri(): string
+    {
+        return $this->serverParams['REQUEST_URI'] ?? $this->path;
+    }
+
+    /**
+     * Get user agent
+     */
+    public function getUserAgent(): string
+    {
+        return $this->serverParams['HTTP_USER_AGENT'] ?? '';
+    }
+
+    /**
+     * Get referer
+     */
+    public function getReferer(): ?string
+    {
+        return $this->serverParams['HTTP_REFERER'] ?? null;
+    }
+
+    /**
+     * Check if request matches a pattern
+     */
+    public function routeIs(string $pattern): bool
+    {
+        return preg_match('#^' . preg_quote($pattern, '#') . '$#', $this->path) === 1;
+    }
+
+    /**
+     * Get all server parameters
+     */
+    public function getServerParams(): array
+    {
+        return $this->serverParams;
+    }
+
+    /**
+     * Get a specific server parameter
+     */
+    public function getServerParam(string $key, $default = null)
+    {
+        return $this->serverParams[$key] ?? $default;
+    }
+
+    /**
+     * Check if request is POST
+     */
+    public function isPost(): bool
+    {
+        return $this->isMethod('POST');
+    }
+
+    /**
+     * Check if request is GET
+     */
+    public function isGet(): bool
+    {
+        return $this->isMethod('GET');
+    }
+
+    /**
+     * Check if request is PUT
+     */
+    public function isPut(): bool
+    {
+        return $this->isMethod('PUT');
+    }
+
+    /**
+     * Check if request is DELETE
+     */
+    public function isDelete(): bool
+    {
+        return $this->isMethod('DELETE');
+    }
+
+    /**
+     * Check if request is PATCH
+     */
+    public function isPatch(): bool
+    {
+        return $this->isMethod('PATCH');
+    }
+
+    /**
+     * Get request data (alias for input)
+     */
+    public function post(?string $key = null, $default = null)
+    {
+        if ($key === null) {
+            return $this->bodyParams;
+        }
+        return $this->bodyParams[$key] ?? $default;
+    }
+
+    /**
+     * Get request data (alias for input)
+     */
+    public function get(?string $key = null, $default = null)
+    {
+        if ($key === null) {
+            return $this->queryParams;
+        }
+        return $this->queryParams[$key] ?? $default;
+    }
+
     public function validate(array $rules, bool $throw = true): bool
     {
         $validator = new Validator($this->all(), $rules);
@@ -213,11 +381,7 @@ class Request
 
     public function url(): string
     {
-        $scheme = $this->isSecure() ? 'https' : 'http';
-        $host = $this->serverParams['HTTP_HOST'] ?? '';
-        $path = $this->getPath();
-
-        return "{$scheme}://{$host}{$path}";
+        return $this->getBaseUrl() . $this->getPath();
     }
 
     public function fullUrl(): string

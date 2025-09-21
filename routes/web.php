@@ -34,6 +34,13 @@ $router->get('/events/{id}/{slug}', [EventController::class, 'event']);
 $router->get('/articles', [ArticleController::class, 'articles']);
 $router->get('/articles/{id}/{slug}', [ArticleController::class, 'article']);
 
+// API Routes for AJAX functionality
+$router->post('/api/articles/{id}/like', [ArticleController::class, 'likeArticle']);
+
+// SEO and Feed routes
+$router->get('/articles/rss', [ArticleController::class, 'rss']);
+$router->get('/articles/sitemap.xml', [ArticleController::class, 'sitemap']);
+
 $router->get('/terms-and-conditions', [SiteController::class, 'terms']);
 $router->get('/privacy-policy', [SiteController::class, 'policy']);
 

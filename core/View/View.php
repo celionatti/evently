@@ -19,6 +19,8 @@ use Closure;
  * - Compiled templates with caching
  * - Context-aware escaping
  * - CSRF protection
+ * - Meta tag management
+ * - SEO support
  */
 class View
 {
@@ -45,6 +47,20 @@ class View
     private bool $debug = true;
     private bool $cacheEnabled = true;
 
+    // Meta tag properties
+    private array $metaTags = [];
+    private array $openGraphTags = [];
+    private array $twitterTags = [];
+    private array $linkTags = [];
+    private array $scripts = [];
+    private array $styles = [];
+    private string $description = '';
+    private string $keywords = '';
+    private string $author = '';
+    private string $viewport = 'width=device-width, initial-scale=1.0';
+    private string $charset = 'UTF-8';
+    private ?string $favicon = null;
+
     public function __construct(?string $templatesPath = null, ?string $cachePath = null)
     {
         $this->baseTemplatePath = $templatesPath ?? ROOT_PATH . '/resources';
@@ -54,7 +70,334 @@ class View
         $this->ensureDirectoryExists($this->baseCachePath);
         
         $this->registerDirectives();
+        $this->setDefaultMetaTags();
     }
+
+    /**
+     * Set default meta tags
+     */
+    private function setDefaultMetaTags(): void
+    {
+        $this->metaTags = [
+            'charset' => $this->charset,
+            'viewport' => $this->viewport,
+            'robots' => 'index, follow',
+            'language' => 'en',
+            'revisit-after' => '7 days'
+        ];
+    }
+
+    // Meta tag management methods
+    
+    /**
+     * Set page description
+     */
+    public function setDescription(string $description): self
+    {
+        $this->description = $description;
+        $this->metaTags['description'] = $description;
+        return $this;
+    }
+
+    /**
+     * Set page keywords
+     */
+    public function setKeywords(string $keywords): self
+    {
+        $this->keywords = $keywords;
+        $this->metaTags['keywords'] = $keywords;
+        return $this;
+    }
+
+    /**
+     * Set page author
+     */
+    public function setAuthor(string $author): self
+    {
+        $this->author = $author;
+        $this->metaTags['author'] = $author;
+        return $this;
+    }
+
+    /**
+     * Set viewport meta tag
+     */
+    public function setViewport(string $viewport): self
+    {
+        $this->viewport = $viewport;
+        $this->metaTags['viewport'] = $viewport;
+        return $this;
+    }
+
+    /**
+     * Set favicon
+     */
+    public function setFavicon(string $favicon): self
+    {
+        $this->favicon = $favicon;
+        return $this;
+    }
+
+    /**
+     * Set multiple meta tags at once
+     */
+    public function setMeta(array $meta): self
+    {
+        foreach ($meta as $name => $content) {
+            $this->setMetaTag($name, $content);
+        }
+        return $this;
+    }
+
+    /**
+     * Set a single meta tag
+     */
+    public function setMetaTag(string $name, string $content): self
+    {
+        // Handle different types of meta tags
+        if (str_starts_with($name, 'og:')) {
+            $this->openGraphTags[$name] = $content;
+        } elseif (str_starts_with($name, 'twitter:')) {
+            $this->twitterTags[$name] = $content;
+        } else {
+            $this->metaTags[$name] = $content;
+        }
+        return $this;
+    }
+
+    /**
+     * Set Open Graph meta tags
+     */
+    public function setOpenGraph(array $tags): self
+    {
+        foreach ($tags as $property => $content) {
+            $property = str_starts_with($property, 'og:') ? $property : 'og:' . $property;
+            $this->openGraphTags[$property] = $content;
+        }
+        return $this;
+    }
+
+    /**
+     * Set Twitter Card meta tags
+     */
+    public function setTwitterCard(array $tags): self
+    {
+        foreach ($tags as $name => $content) {
+            $name = str_starts_with($name, 'twitter:') ? $name : 'twitter:' . $name;
+            $this->twitterTags[$name] = $content;
+        }
+        return $this;
+    }
+
+    /**
+     * Add a link tag (for stylesheets, canonical URLs, etc.)
+     */
+    public function addLink(string $rel, string $href, array $attributes = []): self
+    {
+        $this->linkTags[] = array_merge(['rel' => $rel, 'href' => $href], $attributes);
+        return $this;
+    }
+
+    /**
+     * Add canonical URL
+     */
+    public function setCanonical(string $url): self
+    {
+        return $this->addLink('canonical', $url);
+    }
+
+    /**
+     * Add stylesheet
+     */
+    public function addStylesheet(string $href, array $attributes = []): self
+    {
+        $attributes = array_merge(['type' => 'text/css'], $attributes);
+        return $this->addLink('stylesheet', $href, $attributes);
+    }
+
+    /**
+     * Add inline CSS
+     */
+    public function addStyle(string $css, array $attributes = []): self
+    {
+        $this->styles[] = ['content' => $css, 'attributes' => $attributes];
+        return $this;
+    }
+
+    /**
+     * Add external JavaScript
+     */
+    public function addScript(string $src, array $attributes = []): self
+    {
+        $this->scripts[] = ['src' => $src, 'content' => null, 'attributes' => $attributes];
+        return $this;
+    }
+
+    /**
+     * Add inline JavaScript
+     */
+    public function addInlineScript(string $script, array $attributes = []): self
+    {
+        $this->scripts[] = ['src' => null, 'content' => $script, 'attributes' => $attributes];
+        return $this;
+    }
+
+    /**
+     * Generate meta tags HTML
+     */
+    public function renderMeta(): string
+    {
+        $html = '';
+
+        // Basic meta tags
+        foreach ($this->metaTags as $name => $content) {
+            if ($name === 'charset') {
+                $html .= "<meta charset=\"{$this->escape($content)}\">\n";
+            } else {
+                $html .= "<meta name=\"{$this->escape($name)}\" content=\"{$this->escape($content)}\">\n";
+            }
+        }
+
+        // Open Graph tags
+        foreach ($this->openGraphTags as $property => $content) {
+            $html .= "<meta property=\"{$this->escape($property)}\" content=\"{$this->escape($content)}\">\n";
+        }
+
+        // Twitter Card tags
+        foreach ($this->twitterTags as $name => $content) {
+            $html .= "<meta name=\"{$this->escape($name)}\" content=\"{$this->escape($content)}\">\n";
+        }
+
+        // Favicon
+        if ($this->favicon) {
+            $html .= "<link rel=\"icon\" href=\"{$this->escape($this->favicon)}\">\n";
+        }
+
+        // Link tags
+        foreach ($this->linkTags as $link) {
+            $html .= '<link';
+            foreach ($link as $attr => $value) {
+                $html .= " {$attr}=\"{$this->escape($value)}\"";
+            }
+            $html .= ">\n";
+        }
+
+        return $html;
+    }
+
+    /**
+     * Generate styles HTML
+     */
+    public function renderStyles(): string
+    {
+        $html = '';
+
+        foreach ($this->styles as $style) {
+            $html .= '<style';
+            foreach ($style['attributes'] as $attr => $value) {
+                $html .= " {$attr}=\"{$this->escape($value)}\"";
+            }
+            $html .= ">\n{$style['content']}\n</style>\n";
+        }
+
+        return $html;
+    }
+
+    /**
+     * Generate scripts HTML
+     */
+    public function renderScripts(): string
+    {
+        $html = '';
+
+        foreach ($this->scripts as $script) {
+            $html .= '<script';
+            
+            if ($script['src']) {
+                $html .= " src=\"{$this->escape($script['src'])}\"";
+            }
+            
+            foreach ($script['attributes'] as $attr => $value) {
+                $html .= " {$attr}=\"{$this->escape($value)}\"";
+            }
+            
+            $html .= '>';
+            
+            if ($script['content']) {
+                $html .= "\n{$script['content']}\n";
+            }
+            
+            $html .= "</script>\n";
+        }
+
+        return $html;
+    }
+
+    /**
+     * Get all meta data as array
+     */
+    public function getMetaData(): array
+    {
+        return [
+            'title' => $this->title,
+            'description' => $this->description,
+            'keywords' => $this->keywords,
+            'author' => $this->author,
+            'meta' => $this->metaTags,
+            'openGraph' => $this->openGraphTags,
+            'twitter' => $this->twitterTags,
+            'links' => $this->linkTags,
+            'favicon' => $this->favicon
+        ];
+    }
+
+    // SEO helper methods
+
+    /**
+     * Set SEO meta tags for a blog post/article
+     */
+    public function setSEOForArticle(array $data): self
+    {
+        $this->setTitle($data['title'] ?? '');
+        $this->setDescription($data['description'] ?? '');
+        $this->setKeywords($data['keywords'] ?? '');
+        
+        if (isset($data['author'])) {
+            $this->setAuthor($data['author']);
+        }
+
+        // Open Graph for articles
+        $this->setOpenGraph([
+            'title' => $data['title'] ?? '',
+            'description' => $data['description'] ?? '',
+            'type' => 'article',
+            'url' => $data['url'] ?? '',
+            'image' => $data['image'] ?? '',
+            'site_name' => $data['site_name'] ?? '',
+            'article:author' => $data['author'] ?? '',
+            'article:published_time' => $data['published_time'] ?? '',
+            'article:modified_time' => $data['modified_time'] ?? '',
+            'article:section' => $data['section'] ?? '',
+            'article:tag' => $data['tags'] ?? ''
+        ]);
+
+        // Twitter Card
+        $this->setTwitterCard([
+            'card' => 'summary_large_image',
+            'title' => $data['title'] ?? '',
+            'description' => $data['description'] ?? '',
+            'image' => $data['image'] ?? '',
+            'creator' => $data['twitter_creator'] ?? ''
+        ]);
+
+        if (isset($data['canonical'])) {
+            $this->setCanonical($data['canonical']);
+        }
+
+        return $this;
+    }
+
+    // Existing methods with meta support integration
 
     private function registerDirectives(): void
     {
@@ -86,6 +429,12 @@ class View
             '@endsection' => fn() => '<?php $this->end(); ?>',
             '@yield' => fn($expr) => '<?php $this->content(' . $expr . '); ?>',
             '@parent' => fn() => '<?php echo $this->getParentSection(); ?>',
+
+            // Meta and SEO directives
+            '@meta' => fn() => '<?php echo $this->renderMeta(); ?>',
+            '@styles' => fn() => '<?php echo $this->renderStyles(); ?>',
+            '@scripts' => fn() => '<?php echo $this->renderScripts(); ?>',
+            '@title' => fn() => '<?php echo $this->escape($this->getTitle()); ?>',
 
             // Authentication
             '@auth' => fn() => '<?php if(function_exists("auth") && auth()->check()): ?>',

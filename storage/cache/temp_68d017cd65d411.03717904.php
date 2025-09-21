@@ -54,14 +54,9 @@ declare(strict_types=1);
             </div>
 
             <div class="blog-action-buttons">
-                <button class="blog-action-btn like-btn" data-article-id="<?php echo $article->id; ?>">
-                    <i class="bi bi-hand-thumbs-up"></i>
-                    <span class="like-text">Like this article</span>
-                    <span class="like-count">(<?php echo $article->likes ?? 0; ?>)</span>
-                </button>
-                <!-- <a href="#" class="blog-action-btn">
+                <a href="#" class="blog-action-btn">
                     <i class="bi bi-hand-thumbs-up"></i> Like this article
-                </a> -->
+                </a>
                 <a href="https://wa.me/?text=<?php echo urlencode($article->title . ' - ' . url('/articles/' . $article->id . '/' . $article->slug)); ?>"
                     target="_blank"
                     class="blog-action-btn">
@@ -79,8 +74,8 @@ declare(strict_types=1);
                 <img src="<?php echo get_image($author->image, '/dist/img/avatar.png'); ?>" alt="<?php echo $author->name . ' ' . $author->other_name; ?>" class="author-avatar">
                 <div class="author-info">
                     <h4><?php echo $author->name . ' ' . $author->other_name ?? "Unknown Author"; ?></h4>
-                    <?php if ($author->bio): ?>
-                        <p><?php echo $author->bio; ?></p>
+                    <?php if ($user->bio): ?>
+                        <p><?php echo $user->bio; ?></p>
                     <?php else: ?>
                         <p>Writer at Eventlyy</p>
                     <?php endif; ?>
@@ -90,52 +85,4 @@ declare(strict_types=1);
     </div>
 </section>
 <?php $this->partial('footer'); ?>
-<?php $this->end(); ?>
-
-<?php $this->start('scripts'); ?>
-<script>
-    // Like functionality
-    document.addEventListener('DOMContentLoaded', function() {
-        const likeBtn = document.querySelector('.like-btn');
-        if (likeBtn) {
-            likeBtn.addEventListener('click', function() {
-                const articleId = this.dataset.articleId;
-                const likeCount = this.querySelector('.like-count');
-                const likeText = this.querySelector('.like-text');
-
-                fetch(`/api/articles/${articleId}/like`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-Requested-With': 'XMLHttpRequest'
-                        },
-                        body: JSON.stringify({
-                            action: 'like'
-                        })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            likeCount.textContent = `(${data.likes})`;
-                            likeText.textContent = 'Liked!';
-                            this.classList.add('liked');
-                            setTimeout(() => {
-                                likeText.textContent = 'Like this article';
-                                this.classList.remove('liked');
-                            }, 2000);
-                        }
-                    })
-                    .catch(error => console.error('Error:', error));
-            });
-        }
-
-        // Share functionality
-        const shareBtn = document.querySelector('.share-btn');
-        if (shareBtn) {
-            shareBtn.addEventListener('click', function() {
-                copyToClipboard(this.dataset.url);
-            });
-        }
-    });
-</script>
 <?php $this->end(); ?>

@@ -16,7 +16,8 @@ use Trees\Dumper\Dumper;
  * - Production-friendly (won't break your app)
  */
 if (!function_exists('dd')) {
-    function dd(...$vars): void {
+    function dd(...$vars): void
+    {
         Dumper::dump(...$vars);
         // dump_modern(...$vars);
         die();
@@ -24,7 +25,8 @@ if (!function_exists('dd')) {
 }
 
 if (!function_exists('dump_modern')) {
-    function dump_modern(...$vars): void {
+    function dump_modern(...$vars): void
+    {
         $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1);
         $file = $backtrace[0]['file'] ?? 'unknown';
         $line = $backtrace[0]['line'] ?? 'unknown';
@@ -33,380 +35,444 @@ if (!function_exists('dump_modern')) {
     }
 }
 
-function generateDumpHTML(array $vars, string $file, int|string $line): string {
+if (!function_exists('dnd')) {
+    /**
+     * Dump and die (for debugging)
+     */
+    function dnd(...$vars): void
+    {
+        echo '<pre style="background: #f4f4f4; padding: 20px; border: 1px solid #ddd; border-radius: 5px; margin: 20px; font-family: monospace;">';
+        foreach ($vars as $var) {
+            var_dump($var);
+            echo "\n" . str_repeat('-', 50) . "\n";
+        }
+        echo '</pre>';
+        die();
+    }
+}
+
+function generateDumpHTML(array $vars, string $file, int|string $line): string
+{
     $timestamp = date('Y-m-d H:i:s');
     $varCount = count($vars);
     $memUsage = formatBytes(memory_get_usage());
     $peakMem = formatBytes(memory_get_peak_usage());
 
     ob_start(); ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PHP Debug Dump</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    <!DOCTYPE html>
+    <html lang="en">
 
-        body {
-            font-family: 'SF Mono', 'Monaco', 'Cascadia Code', 'Roboto Mono', monospace;
-            background: #f8fafc;
-            min-height: 100vh;
-            padding: 20px;
-            color: #1e293b;
-            line-height: 1.5;
-        }
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>PHP Debug Dump</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
 
-        .dump-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            border: 1px solid #e2e8f0;
-            overflow: hidden;
-            animation: fadeIn 0.3s ease-out;
-        }
+            body {
+                font-family: 'SF Mono', 'Monaco', 'Cascadia Code', 'Roboto Mono', monospace;
+                background: #f8fafc;
+                min-height: 100vh;
+                padding: 20px;
+                color: #1e293b;
+                line-height: 1.5;
+            }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
+            .dump-container {
+                max-width: 1200px;
+                margin: 0 auto;
+                background: white;
+                border-radius: 12px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+                border: 1px solid #e2e8f0;
+                overflow: hidden;
+                animation: fadeIn 0.3s ease-out;
+            }
 
-        .header {
-            background: #4f46e5;
-            color: white;
-            padding: 20px 25px;
-            position: relative;
-        }
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                }
 
-        .header h1 {
-            font-size: 22px;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
+                to {
+                    opacity: 1;
+                }
+            }
 
-        .header-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 12px;
-            font-size: 13px;
-        }
+            .header {
+                background: #4f46e5;
+                color: white;
+                padding: 20px 25px;
+                position: relative;
+            }
 
-        .file-info {
-            opacity: 0.9;
-            font-family: monospace;
-        }
+            .header h1 {
+                font-size: 22px;
+                font-weight: 600;
+                margin-bottom: 8px;
+            }
 
-        .timestamp {
-            opacity: 0.9;
-            background: rgba(255, 255, 255, 0.15);
-            padding: 4px 8px;
-            border-radius: 12px;
-        }
+            .header-info {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 12px;
+                font-size: 13px;
+            }
 
-        .controls {
-            padding: 15px 20px;
-            background: #f1f5f9;
-            border-bottom: 1px solid #e2e8f0;
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
+            .file-info {
+                opacity: 0.9;
+                font-family: monospace;
+            }
 
-        .search-box {
-            flex: 1;
-            min-width: 200px;
-            padding: 8px 15px;
-            border: 1px solid #cbd5e1;
-            border-radius: 20px;
-            font-size: 14px;
-            background: white;
-            color: #1e293b;
-            transition: all 0.2s ease;
-        }
+            .timestamp {
+                opacity: 0.9;
+                background: rgba(255, 255, 255, 0.15);
+                padding: 4px 8px;
+                border-radius: 12px;
+            }
 
-        .search-box:focus {
-            outline: none;
-            border-color: #818cf8;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-        }
+            .controls {
+                padding: 15px 20px;
+                background: #f1f5f9;
+                border-bottom: 1px solid #e2e8f0;
+                display: flex;
+                gap: 12px;
+                align-items: center;
+                flex-wrap: wrap;
+            }
 
-        .search-box::placeholder {
-            color: #94a3b8;
-        }
+            .search-box {
+                flex: 1;
+                min-width: 200px;
+                padding: 8px 15px;
+                border: 1px solid #cbd5e1;
+                border-radius: 20px;
+                font-size: 14px;
+                background: white;
+                color: #1e293b;
+                transition: all 0.2s ease;
+            }
 
-        .btn {
-            padding: 6px 12px;
-            border: none;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
+            .search-box:focus {
+                outline: none;
+                border-color: #818cf8;
+                box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            }
 
-        .btn-expand {
-            background: #10b981;
-            color: white;
-        }
+            .search-box::placeholder {
+                color: #94a3b8;
+            }
 
-        .btn-collapse {
-            background: #3b82f6;
-            color: white;
-        }
+            .btn {
+                padding: 6px 12px;
+                border: none;
+                border-radius: 20px;
+                font-size: 12px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.2s ease;
+            }
 
-        .btn:hover {
-            opacity: 0.9;
-        }
+            .btn-expand {
+                background: #10b981;
+                color: white;
+            }
 
-        .content {
-            padding: 20px;
-            max-height: 70vh;
-            overflow-y: auto;
-        }
+            .btn-collapse {
+                background: #3b82f6;
+                color: white;
+            }
 
-        .content::-webkit-scrollbar {
-            width: 6px;
-        }
+            .btn:hover {
+                opacity: 0.9;
+            }
 
-        .content::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
+            .content {
+                padding: 20px;
+                max-height: 70vh;
+                overflow-y: auto;
+            }
 
-        .content::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 3px;
-        }
+            .content::-webkit-scrollbar {
+                width: 6px;
+            }
 
-        .content::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
+            .content::-webkit-scrollbar-track {
+                background: #f1f5f9;
+            }
 
-        .var-section {
-            margin-bottom: 20px;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            overflow: hidden;
-            background: white;
-        }
+            .content::-webkit-scrollbar-thumb {
+                background: #cbd5e1;
+                border-radius: 3px;
+            }
 
-        .var-header {
-            background: #f1f5f9;
-            color: #1e293b;
-            padding: 12px 16px;
-            font-weight: 500;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: all 0.2s ease;
-            border-bottom: 1px solid #e2e8f0;
-        }
+            .content::-webkit-scrollbar-thumb:hover {
+                background: #94a3b8;
+            }
 
-        .var-header:hover {
-            background: #e2e8f0;
-        }
+            .var-section {
+                margin-bottom: 20px;
+                border: 1px solid #e2e8f0;
+                border-radius: 8px;
+                overflow: hidden;
+                background: white;
+            }
 
-        .var-body {
-            padding: 16px;
-            background: white;
-        }
+            .var-header {
+                background: #f1f5f9;
+                color: #1e293b;
+                padding: 12px 16px;
+                font-weight: 500;
+                cursor: pointer;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                transition: all 0.2s ease;
+                border-bottom: 1px solid #e2e8f0;
+            }
 
-        .toggle-icon {
-            transition: transform 0.2s ease;
-            font-size: 14px;
-            color: #64748b;
-        }
+            .var-header:hover {
+                background: #e2e8f0;
+            }
 
-        .var-section.collapsed .toggle-icon {
-            transform: rotate(-90deg);
-        }
+            .var-body {
+                padding: 16px;
+                background: white;
+            }
 
-        .var-section.collapsed .var-body {
-            display: none;
-        }
+            .toggle-icon {
+                transition: transform 0.2s ease;
+                font-size: 14px;
+                color: #64748b;
+            }
 
-        .dump-output {
-            background: #f8fafc;
-            color: #1e293b;
-            padding: 16px;
-            border-radius: 6px;
-            font-size: 13px;
-            line-height: 1.6;
-            overflow-x: auto;
-            position: relative;
-            border: 1px solid #e2e8f0;
-            font-family: monospace;
-            white-space: pre;
-        }
+            .var-section.collapsed .toggle-icon {
+                transform: rotate(-90deg);
+            }
 
-        .dump-output::before {
-            content: 'PHP';
-            position: absolute;
-            top: 8px;
-            right: 12px;
-            font-size: 10px;
-            color: #64748b;
-            background: #e2e8f0;
-            padding: 2px 6px;
-            border-radius: 3px;
-        }
+            .var-section.collapsed .var-body {
+                display: none;
+            }
 
-        .string { color: #059669; }
-        .number { color: #d97706; }
-        .boolean { color: #7c3aed; }
-        .null { color: #64748b; }
-        .key { color: #2563eb; }
-        .type { color: #0e7490; }
-        .bracket { color: #9f1239; }
-        .arrow { color: #c026d3; }
-        .comment { color: #64748b; font-style: italic; }
+            .dump-output {
+                background: #f8fafc;
+                color: #1e293b;
+                padding: 16px;
+                border-radius: 6px;
+                font-size: 13px;
+                line-height: 1.6;
+                overflow-x: auto;
+                position: relative;
+                border: 1px solid #e2e8f0;
+                font-family: monospace;
+                white-space: pre;
+            }
 
-        .highlight {
-            background: #fde047;
-            color: #1e293b;
-            padding: 1px 3px;
-            border-radius: 2px;
-        }
+            .dump-output::before {
+                content: 'PHP';
+                position: absolute;
+                top: 8px;
+                right: 12px;
+                font-size: 10px;
+                color: #64748b;
+                background: #e2e8f0;
+                padding: 2px 6px;
+                border-radius: 3px;
+            }
 
-        .stats {
-            background: #f1f5f9;
-            color: #475569;
-            padding: 12px 20px;
-            text-align: center;
-            font-size: 13px;
-            border-top: 1px solid #e2e8f0;
-        }
+            .string {
+                color: #059669;
+            }
 
-        @media (max-width: 768px) {
-            body { padding: 12px; }
-            .header { padding: 16px; }
-            .content { padding: 16px; }
-            .controls { padding: 12px; }
-        }
-    </style>
-</head>
-<body>
-    <div class="dump-container">
-        <div class="header">
-            <h1>🔍 PHP Debug Dump</h1>
-            <div class="header-info">
-                <div class="file-info">📁 <?= htmlspecialchars($file) ?>:<?= $line ?></div>
-                <div class="timestamp">⏰ <?= $timestamp ?></div>
+            .number {
+                color: #d97706;
+            }
+
+            .boolean {
+                color: #7c3aed;
+            }
+
+            .null {
+                color: #64748b;
+            }
+
+            .key {
+                color: #2563eb;
+            }
+
+            .type {
+                color: #0e7490;
+            }
+
+            .bracket {
+                color: #9f1239;
+            }
+
+            .arrow {
+                color: #c026d3;
+            }
+
+            .comment {
+                color: #64748b;
+                font-style: italic;
+            }
+
+            .highlight {
+                background: #fde047;
+                color: #1e293b;
+                padding: 1px 3px;
+                border-radius: 2px;
+            }
+
+            .stats {
+                background: #f1f5f9;
+                color: #475569;
+                padding: 12px 20px;
+                text-align: center;
+                font-size: 13px;
+                border-top: 1px solid #e2e8f0;
+            }
+
+            @media (max-width: 768px) {
+                body {
+                    padding: 12px;
+                }
+
+                .header {
+                    padding: 16px;
+                }
+
+                .content {
+                    padding: 16px;
+                }
+
+                .controls {
+                    padding: 12px;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="dump-container">
+            <div class="header">
+                <h1>🔍 PHP Debug Dump</h1>
+                <div class="header-info">
+                    <div class="file-info">📁 <?= htmlspecialchars($file) ?>:<?= $line ?></div>
+                    <div class="timestamp">⏰ <?= $timestamp ?></div>
+                </div>
             </div>
-        </div>
 
-        <div class="controls">
-            <input type="text" class="search-box" placeholder="🔍 Search in dump..." id="searchBox">
-            <button class="btn btn-expand" onclick="expandAll()">Expand All</button>
-            <button class="btn btn-collapse" onclick="collapseAll()">Collapse All</button>
-        </div>
+            <div class="controls">
+                <input type="text" class="search-box" placeholder="🔍 Search in dump..." id="searchBox">
+                <button class="btn btn-expand" onclick="expandAll()">Expand All</button>
+                <button class="btn btn-collapse" onclick="collapseAll()">Collapse All</button>
+            </div>
 
-        <div class="content" id="content">
-            <?php foreach ($vars as $index => $var): ?>
-                <?php
+            <div class="content" id="content">
+                <?php foreach ($vars as $index => $var): ?>
+                    <?php
                     $varNum = $index + 1;
                     $type = gettype($var);
                     $size = getVariableSize($var);
-                ?>
-                <div class="var-section" data-index="<?= $index ?>">
-                    <div class="var-header" onclick="toggleSection(<?= $index ?>)">
-                        <span>Variable #<?= $varNum ?> (<?= $type ?>) - <?= $size ?></span>
-                        <span class="toggle-icon">▼</span>
+                    ?>
+                    <div class="var-section" data-index="<?= $index ?>">
+                        <div class="var-header" onclick="toggleSection(<?= $index ?>)">
+                            <span>Variable #<?= $varNum ?> (<?= $type ?>) - <?= $size ?></span>
+                            <span class="toggle-icon">▼</span>
+                        </div>
+                        <div class="var-body">
+                            <div class="dump-output"><?= formatVariable($var) ?></div>
+                        </div>
                     </div>
-                    <div class="var-body">
-                        <div class="dump-output"><?= formatVariable($var) ?></div>
-                    </div>
-                </div>
-            <?php endforeach; ?>
+                <?php endforeach; ?>
+            </div>
+
+            <div class="stats">
+                📊 Variables: <?= $varCount ?> | 💾 Memory: <?= $memUsage ?> | 📈 Peak: <?= $peakMem ?>
+            </div>
         </div>
 
-        <div class="stats">
-            📊 Variables: <?= $varCount ?> | 💾 Memory: <?= $memUsage ?> | 📈 Peak: <?= $peakMem ?>
-        </div>
-    </div>
+        <script>
+            function toggleSection(index) {
+                const section = document.querySelector(`[data-index="${index}"]`);
+                section.classList.toggle("collapsed");
+            }
 
-    <script>
-        function toggleSection(index) {
-            const section = document.querySelector(`[data-index="${index}"]`);
-            section.classList.toggle("collapsed");
-        }
+            function expandAll() {
+                document.querySelectorAll(".var-section").forEach(section => {
+                    section.classList.remove("collapsed");
+                });
+            }
 
-        function expandAll() {
-            document.querySelectorAll(".var-section").forEach(section => {
-                section.classList.remove("collapsed");
-            });
-        }
+            function collapseAll() {
+                document.querySelectorAll(".var-section").forEach(section => {
+                    section.classList.add("collapsed");
+                });
+            }
 
-        function collapseAll() {
-            document.querySelectorAll(".var-section").forEach(section => {
-                section.classList.add("collapsed");
-            });
-        }
+            document.getElementById("searchBox").addEventListener("input", function(e) {
+                const searchTerm = e.target.value.toLowerCase();
+                const sections = document.querySelectorAll(".var-section");
 
-        document.getElementById("searchBox").addEventListener("input", function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            const sections = document.querySelectorAll(".var-section");
-
-            sections.forEach(section => {
-                const content = section.textContent.toLowerCase();
-                if (searchTerm === "" || content.includes(searchTerm)) {
-                    section.style.display = "block";
-                    if (searchTerm !== "") {
-                        highlightText(section, searchTerm);
+                sections.forEach(section => {
+                    const content = section.textContent.toLowerCase();
+                    if (searchTerm === "" || content.includes(searchTerm)) {
+                        section.style.display = "block";
+                        if (searchTerm !== "") {
+                            highlightText(section, searchTerm);
+                        } else {
+                            removeHighlight(section);
+                        }
                     } else {
-                        removeHighlight(section);
+                        section.style.display = "none";
                     }
-                } else {
-                    section.style.display = "none";
+                });
+            });
+
+            function highlightText(element, searchTerm) {
+                const dumpOutput = element.querySelector(".dump-output");
+                let content = dumpOutput.innerHTML;
+                content = content.replace(/<span class="highlight">(.*?)<\/span>/g, "$1");
+                const regex = new RegExp(`(${escapeRegExp(searchTerm)})`, "gi");
+                content = content.replace(regex, '<span class="highlight">$1</span>');
+                dumpOutput.innerHTML = content;
+            }
+
+            function removeHighlight(element) {
+                const dumpOutput = element.querySelector(".dump-output");
+                let content = dumpOutput.innerHTML;
+                content = content.replace(/<span class="highlight">(.*?)<\/span>/g, "$1");
+                dumpOutput.innerHTML = content;
+            }
+
+            function escapeRegExp(string) {
+                return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+            }
+
+            // Expand first section by default
+            document.addEventListener("DOMContentLoaded", function() {
+                const firstSection = document.querySelector(".var-section");
+                if (firstSection) {
+                    firstSection.classList.remove("collapsed");
                 }
             });
-        });
+        </script>
+    </body>
 
-        function highlightText(element, searchTerm) {
-            const dumpOutput = element.querySelector(".dump-output");
-            let content = dumpOutput.innerHTML;
-            content = content.replace(/<span class="highlight">(.*?)<\/span>/g, "$1");
-            const regex = new RegExp(`(${escapeRegExp(searchTerm)})`, "gi");
-            content = content.replace(regex, '<span class="highlight">$1</span>');
-            dumpOutput.innerHTML = content;
-        }
-
-        function removeHighlight(element) {
-            const dumpOutput = element.querySelector(".dump-output");
-            let content = dumpOutput.innerHTML;
-            content = content.replace(/<span class="highlight">(.*?)<\/span>/g, "$1");
-            dumpOutput.innerHTML = content;
-        }
-
-        function escapeRegExp(string) {
-            return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-        }
-
-        // Expand first section by default
-        document.addEventListener("DOMContentLoaded", function() {
-            const firstSection = document.querySelector(".var-section");
-            if (firstSection) {
-                firstSection.classList.remove("collapsed");
-            }
-        });
-    </script>
-</body>
-</html>
+    </html>
 <?php
     return ob_get_clean();
 }
 
-function formatVariable($var, $depth = 0, $maxDepth = 10): string {
+function formatVariable($var, $depth = 0, $maxDepth = 10): string
+{
     if ($depth > $maxDepth) {
         return '<span class="comment">// Max depth reached</span>';
     }
@@ -417,68 +483,70 @@ function formatVariable($var, $depth = 0, $maxDepth = 10): string {
     switch ($type) {
         case 'string':
             $escaped = htmlspecialchars($var);
-            return '<span class="type">string</span>(<span class="number">'.strlen($var).'</span>) <span class="string">"'.$escaped.'"</span>';
+            return '<span class="type">string</span>(<span class="number">' . strlen($var) . '</span>) <span class="string">"' . $escaped . '"</span>';
 
         case 'integer':
-            return '<span class="type">int</span>(<span class="number">'.$var.'</span>)';
+            return '<span class="type">int</span>(<span class="number">' . $var . '</span>)';
 
         case 'double':
-            return '<span class="type">float</span>(<span class="number">'.$var.'</span>)';
+            return '<span class="type">float</span>(<span class="number">' . $var . '</span>)';
 
         case 'boolean':
-            return '<span class="type">bool</span>(<span class="boolean">'.($var ? 'true' : 'false').'</span>)';
+            return '<span class="type">bool</span>(<span class="boolean">' . ($var ? 'true' : 'false') . '</span>)';
 
         case 'NULL':
             return '<span class="null">NULL</span>';
 
         case 'array':
             $count = count($var);
-            $output = '<span class="type">array</span>(<span class="number">'.$count.'</span>) <span class="bracket">{</span>'."\n";
+            $output = '<span class="type">array</span>(<span class="number">' . $count . '</span>) <span class="bracket">{</span>' . "\n";
 
             foreach ($var as $key => $value) {
                 $keyStr = is_string($key)
-                    ? '<span class="string">"'.htmlspecialchars($key).'"</span>'
-                    : '<span class="number">'.$key.'</span>';
+                    ? '<span class="string">"' . htmlspecialchars($key) . '"</span>'
+                    : '<span class="number">' . $key . '</span>';
 
-                $output .= $indent.'  <span class="bracket">[</span>'.$keyStr.'<span class="bracket">]</span> <span class="arrow">=></span>'."\n";
-                $output .= $indent.'  '.formatVariable($value, $depth + 1, $maxDepth)."\n";
+                $output .= $indent . '  <span class="bracket">[</span>' . $keyStr . '<span class="bracket">]</span> <span class="arrow">=></span>' . "\n";
+                $output .= $indent . '  ' . formatVariable($value, $depth + 1, $maxDepth) . "\n";
             }
 
-            return $output.$indent.'<span class="bracket">}</span>';
+            return $output . $indent . '<span class="bracket">}</span>';
 
         case 'object':
             $className = get_class($var);
             $reflection = new ReflectionClass($var);
-            $output = '<span class="type">object</span>(<span class="key">'.$className.'</span>) <span class="bracket">{</span>'."\n";
+            $output = '<span class="type">object</span>(<span class="key">' . $className . '</span>) <span class="bracket">{</span>' . "\n";
 
             foreach ($reflection->getProperties() as $property) {
                 $property->setAccessible(true);
                 $visibility = $property->isPublic() ? 'public' : ($property->isProtected() ? 'protected' : 'private');
 
-                $output .= $indent.'  <span class="comment">// '.$visibility.'</span>'."\n";
-                $output .= $indent.'  <span class="key">'.$property->getName().'</span> <span class="arrow">=></span>'."\n";
-                $output .= $indent.'  '.formatVariable($property->getValue($var), $depth + 1, $maxDepth)."\n";
+                $output .= $indent . '  <span class="comment">// ' . $visibility . '</span>' . "\n";
+                $output .= $indent . '  <span class="key">' . $property->getName() . '</span> <span class="arrow">=></span>' . "\n";
+                $output .= $indent . '  ' . formatVariable($property->getValue($var), $depth + 1, $maxDepth) . "\n";
             }
 
-            return $output.$indent.'<span class="bracket">}</span>';
+            return $output . $indent . '<span class="bracket">}</span>';
 
         case 'resource':
-            return '<span class="type">resource</span>(<span class="key">'.get_resource_type($var).'</span>)';
+            return '<span class="type">resource</span>(<span class="key">' . get_resource_type($var) . '</span>)';
 
         default:
-            return '<span class="type">'.$type.'</span>';
+            return '<span class="type">' . $type . '</span>';
     }
 }
 
-function getVariableSize($var): string {
+function getVariableSize($var): string
+{
     return formatBytes(strlen(serialize($var)));
 }
 
-function formatBytes(int $bytes, int $precision = 2): string {
+function formatBytes(int $bytes, int $precision = 2): string
+{
     $units = ['B', 'KB', 'MB', 'GB', 'TB'];
     $bytes = max($bytes, 0);
     $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
     $pow = min($pow, count($units) - 1);
     $bytes /= (1 << (10 * $pow));
-    return round($bytes, $precision).' '.$units[$pow];
+    return round($bytes, $precision) . ' ' . $units[$pow];
 }
