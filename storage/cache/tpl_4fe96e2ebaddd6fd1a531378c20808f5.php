@@ -4,165 +4,22 @@ declare(strict_types=1);
 
 ?>
 
-<?php $this->start('styles'); ?>
-<style>
-    .nav-pills .nav-link {
-        margin-bottom: 0.5rem;
-        margin-right: 0.5rem;
-        border: 1px solid #dee2e6;
-        color: #6c757d;
-    }
-
-    .nav-pills .nav-link.active {
-        background-color: var(--bs-primary);
-        border-color: var(--bs-primary);
-    }
-
-    .form-switch .form-check-input:checked {
-        background-color: var(--bs-success);
-        border-color: var(--bs-success);
-    }
-
-    .dashboard-card {
-        background: inherit;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        padding: 1.5rem;
-        margin-bottom: 1rem;
-    }
-
-    .dashboard-card .border-top {
-        border-top: 1px solid #dee2e6 !important;
-    }
-
-    .btn-group .btn {
-        font-size: 0.875rem;
-    }
-
-    .setting-item {
-        transition: all 0.3s ease;
-        margin-bottom: 1.5rem;
-        padding: 1rem;
-        border-radius: 0.375rem;
-        border: 1px solid #e9ecef;
-        position: relative;
-        background: inherit;
-    }
-
-    .setting-item:hover {
-        background-color: inherit;
-        border-color: var(--blue-1);
-        border: 2px dashed var(--blue-2);
-    }
-
-    .setting-actions {
-        position: absolute;
-        top: 0.5rem;
-        right: 0.5rem;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
-
-    .setting-item:hover .setting-actions {
-        opacity: 1;
-    }
-
-    .setting-edit-btn {
-        padding: 0.25rem 0.5rem;
-        font-size: 0.75rem;
-    }
-
-    .setting-item.edit-mode {
-        border: 2px solid var(--bs-primary);
-        background-color: inherit;
-    }
-
-    .setting-item.edit-mode .setting-view-mode {
-        display: none;
-    }
-
-    .setting-item.edit-mode .setting-edit-mode {
-        display: block;
-    }
-
-    .setting-view-mode {
-        display: block;
-    }
-
-    .setting-edit-mode {
-        display: none;
-    }
-
-    .setting-value-display {
-        min-height: 2.5rem;
-        padding: 0.375rem 0.75rem;
-        border-radius: 0.375rem;
-        background-color: inherit;
-        border: 1px solid var(--blue-3);
-        word-break: break-word;
-    }
-
-    .toast-container {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        z-index: 9999;
-    }
-
-    .toast {
-        min-width: 350px;
-    }
-
-    @media (max-width: 768px) {
-        .nav-pills {
-            flex-direction: column;
-        }
-
-        .nav-pills .nav-link {
-            margin-right: 0;
-            margin-bottom: 0.25rem;
-        }
-
-        .setting-actions {
-            position: relative;
-            top: 0;
-            right: 0;
-            opacity: 1;
-            margin-bottom: 0.5rem;
-            text-align: right;
-        }
-    }
-</style>
-<?php $this->end(); ?>
-
 <?php $this->start('content'); ?>
 <!-- Toast Container -->
 <div class="toast-container" id="toastContainer"></div>
 
 <div id="settings-section" class="content-section">
+    <!-- Page Header -->
     <div class="mb-4">
-        <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex justify-content-between align-items-center page-header">
             <div>
                 <h1 class="h2 mb-1">System Settings</h1>
                 <p class="text-secondary">Configure application settings and system preferences.</p>
             </div>
-            <div class="d-flex gap-2">
+            <div class="d-flex flex-wrap gap-2">
                 <a href="<?= url('/admin/settings/create') ?>" class="btn btn-primary">
                     <i class="bi bi-plus"></i> Add Setting
                 </a>
-                <!-- <div class="dropdown">
-                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                        <i class="bi bi-three-dots-vertical"></i>
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="<?= url('/admin/settings/export') ?>">
-                                <i class="bi bi-download me-2"></i>Export Settings
-                            </a></li>
-                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#importModal">
-                                <i class="bi bi-upload me-2"></i>Import Settings
-                            </a></li>
-                    </ul>
-                </div> -->
             </div>
         </div>
     </div>
@@ -179,7 +36,7 @@ declare(strict_types=1);
     <?php else: ?>
         <!-- Settings Navigation -->
         <div class="dashboard-card mb-4">
-            <ul class="nav nav-pills flex-wrap" id="settingsTabs" role="tablist">
+            <ul class="nav nav-pills" id="settingsTabs" role="tablist">
                 <?php
                 $tabLabels = [
                     'application' => ['Application', 'bi-app'],
@@ -223,7 +80,7 @@ declare(strict_types=1);
                     aria-labelledby="<?= $category ?>-tab">
 
                     <div class="dashboard-card">
-                        <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
                             <h4 class="mb-0">
                                 <i class="<?= $tabLabels[$category][1] ?> me-2"></i>
                                 <?= $tabLabels[$category][0] ?> Settings
@@ -238,9 +95,9 @@ declare(strict_types=1);
                             </div>
                         </div>
 
-                        <div class="row g-3">
+                        <div class="settings-grid">
                             <?php foreach ($categorySettings as $key => $setting): ?>
-                                <div class="col-md-6 setting-item" id="setting-<?= $setting['id'] ?>">
+                                <div class="setting-item fade-in" id="setting-<?= $setting['id'] ?>">
                                     <div class="setting-actions">
                                         <?php if ($setting['is_editable']): ?>
                                             <button type="button" class="btn btn-sm btn-outline-primary setting-edit-btn"
@@ -278,7 +135,7 @@ declare(strict_types=1);
                                     </label>
 
                                     <?php if ($setting['description']): ?>
-                                        <small class="text-white d-block mb-2"><?= htmlspecialchars($setting['description']) ?></small>
+                                        <small class="text-secondary d-block mb-2"><?= htmlspecialchars($setting['description']) ?></small>
                                     <?php endif; ?>
 
                                     <!-- View Mode (Display only) -->
@@ -304,7 +161,7 @@ declare(strict_types=1);
                                     <?php if ($setting['is_editable']): ?>
                                         <div class="setting-edit-mode">
                                             <form class="setting-form" data-id="<?= $setting['id'] ?>" data-key="<?= $key ?>">
-                                                <input type="hidden" name="type" value="<?= $setting['type'] ?>">
+                                                <input type="hidden" name="type" value="<?= $setting['type'] ?>" class="form-control setting-input">
 
                                                 <?php if ($setting['type'] === 'boolean'): ?>
                                                     <div class="form-check form-switch">
@@ -386,7 +243,7 @@ declare(strict_types=1);
                                             </form>
                                         </div>
                                     <?php else: ?>
-                                        <div class="text-white small mt-1">
+                                        <div class="text-secondary small mt-1">
                                             <i class="bi bi-lock"></i> This setting is read-only
                                         </div>
                                     <?php endif; ?>
