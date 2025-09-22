@@ -201,6 +201,8 @@ class AdminArticleController extends BaseController
             return $response->redirect("/admin/articles/manage");
         }
 
+        $this->view->setTitle("Eventlyy Dashboard | Update Article - {$article->title}");
+
         $view = [
             'article' => $article
         ];

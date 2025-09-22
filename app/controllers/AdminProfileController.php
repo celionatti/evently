@@ -7,26 +7,31 @@ namespace App\controllers;
 use App\models\User;
 use Trees\Http\Request;
 use Trees\Http\Response;
-use Trees\Controller\Controller;
+use App\controllers\BaseController;
+use Trees\Exception\TreesException;
 use Trees\Helper\Countries\Countries;
 use Trees\Helper\FlashMessages\FlashMessage;
-use Trees\Exception\TreesException;
 
-class AdminProfileController extends Controller
+class AdminProfileController extends BaseController
 {
     protected ?User $userModel;
 
     public function onConstruct()
     {
+        parent::onConstruct();
+
+        $this->view->setLayout('admin');
+
+        // Set meta tags for articles listing
+        $this->view->setAuthor("Eventlyy Team | Eventlyy")
+            ->setKeywords("events, tickets, event management, conferences, workshops, meetups, event planning");
+
         requireAuth();
         if (!isAdminOrOrganiser()) {
             FlashMessage::setMessage("Access denied. Admin or Organiser privileges required.", 'danger');
             return redirect("/");
         }
-        $this->view->setLayout('admin');
         $this->userModel = new User();
-        $name = "Eventlyy";
-        $this->view->setTitle("{$name} Admin | Profile");
     }
 
     public function profile(Request $request, Response $response)
@@ -51,6 +56,8 @@ class AdminProfileController extends Controller
 
         // Sort countries alphabetically
         sort($countriesOptions);
+
+        $this->view->setTitle("Eventlyy | Profile - {$user->name} {$user->other_name}");
 
         $view = [
             'user' => $user,

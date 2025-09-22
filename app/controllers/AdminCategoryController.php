@@ -8,26 +8,33 @@ use Trees\Http\Request;
 use Trees\Http\Response;
 use App\models\Categories;
 use Trees\Pagination\Paginator;
-use Trees\Controller\Controller;
+use App\controllers\BaseController;
 use Trees\Exception\TreesException;
 use Trees\Helper\FlashMessages\FlashMessage;
 
-class AdminCategoryController extends Controller
+class AdminCategoryController extends BaseController
 {
     public function onConstruct()
     {
+        parent::onConstruct();
+
+        $this->view->setLayout('admin');
+
+        // Set meta tags for articles listing
+        $this->view->setAuthor("Eventlyy Team | Eventlyy")
+            ->setKeywords("events, tickets, event management, conferences, workshops, meetups, event planning");
+
         requireAuth();
         if (!isAdmin()) {
             FlashMessage::setMessage("Access denied. Admin privileges required.", 'danger');
             return redirect("/admin");
         }
-        $this->view->setLayout('admin');
-        $name = "Eventlyy";
-        $this->view->setTitle("{$name} Admin Category | Dashboard");
     }
 
     public function manage(Request $request, Response $response)
     {
+        $this->view->setTitle("Eventlyy | Manage Categories");
+
         $categories = Categories::paginate([
             'per_page' => $request->query('per_page', 5),
             'page' => $request->query('page', 1),
@@ -47,6 +54,8 @@ class AdminCategoryController extends Controller
 
     public function create()
     {
+        $this->view->setTitle("Eventlyy | Create New Categories");
+
         $view = [];
 
         return $this->render('admin/categories/create', $view);
@@ -76,13 +85,13 @@ class AdminCategoryController extends Controller
 
             $category = Categories::create($data);
 
-            if(!$category) {
+            if (!$category) {
                 throw new \RuntimeException('Category creation failed');
             }
             FlashMessage::setMessage("New Category Created!");
             return $response->redirect("/admin/categories/manage");
         } catch (TreesException $e) {
-        set_form_data($request->all());
+            set_form_data($request->all());
             FlashMessage::setMessage("Creation Failed! Please try again. Error: " . $e->getMessage(), 'danger');
             return $response->redirect("/admin/categories/create");
         }
@@ -96,6 +105,9 @@ class AdminCategoryController extends Controller
             FlashMessage::setMessage("Category Not Found!", 'danger');
             return $response->redirect("/admin/categories/manage");
         }
+
+        $this->view->setTitle("Eventlyy | Update Category - {$category->name}")
+            ->setDescription($category->description);
 
         $view = [
             'category' => $category

@@ -11,13 +11,13 @@ use Trees\Database\Database;
 use App\models\Advertisement;
 use Trees\Helper\Support\Image;
 use Trees\Pagination\Paginator;
-use Trees\Controller\Controller;
+use App\controllers\BaseController;
 use Trees\Exception\TreesException;
 use Trees\Helper\Support\FileUploader;
 use Trees\Helper\FlashMessages\FlashMessage;
 use Trees\Database\QueryBuilder\QueryBuilder;
 
-class AdminAdvertisementController extends Controller
+class AdminAdvertisementController extends BaseController
 {
     protected $uploader;
     protected ?Advertisement $advertisementModel;
@@ -26,16 +26,21 @@ class AdminAdvertisementController extends Controller
 
     public function onConstruct()
     {
+        parent::onConstruct();
+
+        $this->view->setLayout('admin');
+
+        // Set meta tags for articles listing
+        $this->view->setAuthor("Eventlyy Team | Eventlyy")
+            ->setKeywords("events, tickets, event management, conferences, workshops, meetups, event planning");
+
         requireAuth();
         if (!isAdminOrOrganiser()) {
             FlashMessage::setMessage("Access denied. Admin or Organiser privileges required.", 'danger');
             return redirect("/");
         }
-        $this->view->setLayout('admin');
         $imageProcessor = new Image();
         $this->advertisementModel = new Advertisement();
-        $name = "Eventlyy";
-        $this->view->setTitle("{$name} Admin | Advertisements");
         $this->uploader = new FileUploader(
             uploadDir: self::UPLOAD_DIR,
             maxFileSize: 5 * 1024 * 1024,
@@ -57,6 +62,8 @@ class AdminAdvertisementController extends Controller
 
     public function manage(Request $request, Response $response)
     {
+        $this->view->setTitle("Eventlyy | Manage Advertisement");
+
         $queryOptions = [
             'per_page' => $request->query('per_page', 10),
             'page' => $request->query('page', 1),
@@ -119,6 +126,8 @@ class AdminAdvertisementController extends Controller
         $daysRemaining = $now <= $endDate ?
             $now->diff($endDate)->days : 0;
 
+        $this->view->setTitle("Eventlyy | Advertisement - {$advertisement->title}");
+
         $view = [
             'advertisement' => $advertisement,
             'performance' => [
@@ -135,6 +144,8 @@ class AdminAdvertisementController extends Controller
 
     public function create()
     {
+        $this->view->setTitle("Eventlyy | Create New Advertisement");
+
         return $this->render('admin/advertisements/create');
     }
 
@@ -244,6 +255,8 @@ class AdminAdvertisementController extends Controller
             FlashMessage::setMessage("Access denied. You can only edit your own advertisements.", 'danger');
             return $response->redirect("/admin/advertisements/manage");
         }
+
+        $this->view->setTitle("Eventlyy | Update Advertisement - {$advertisement->title}");
 
         $view = [
             'advertisement' => $advertisement

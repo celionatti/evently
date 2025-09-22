@@ -4,29 +4,36 @@ declare(strict_types=1);
 
 namespace App\controllers;
 
+use App\models\Setting;
 use Trees\Http\Request;
 use Trees\Http\Response;
-use App\models\Setting;
-use Trees\Controller\Controller;
+use App\controllers\BaseController;
 use Trees\Exception\TreesException;
 use Trees\Helper\FlashMessages\FlashMessage;
 
-class AdminSettingsController extends Controller
+class AdminSettingsController extends BaseController
 {
     public function onConstruct()
     {
+        parent::onConstruct();
+
+        $this->view->setLayout('admin');
+
+        // Set meta tags for articles listing
+        $this->view->setAuthor("Eventlyy Team | Eventlyy")
+            ->setKeywords("events, tickets, event management, conferences, workshops, meetups, event planning");
+
         requireAuth();
         if (!isAdmin()) {
             FlashMessage::setMessage("Access denied. Admin privileges required.", 'danger');
             return redirect("/admin");
         }
-        $this->view->setLayout('admin');
-        $name = "Eventlyy";
-        $this->view->setTitle("{$name} Admin Settings | Dashboard");
     }
 
     public function manage(Request $request, Response $response)
     {
+        $this->view->setTitle("Eventlyy Dashboard | Settings");
+
         // Get all settings grouped by category
         $settings = Setting::getAllGrouped();
 
@@ -82,6 +89,8 @@ class AdminSettingsController extends Controller
             'email' => 'Email',
             'url' => 'URL'
         ];
+
+        $this->view->setTitle("Eventlyy Dashboard | Create New Setting");
 
         $view = [
             'categories' => $categories,
@@ -175,6 +184,8 @@ class AdminSettingsController extends Controller
             'email' => 'Email',
             'url' => 'URL'
         ];
+
+        $this->view->setTitle("Eventlyy Dashboard | Update {$setting->key} Setting");
 
         $view = [
             'setting' => $setting,

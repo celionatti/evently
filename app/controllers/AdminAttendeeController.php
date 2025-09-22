@@ -8,10 +8,10 @@ use App\models\Event;
 use Trees\Http\Request;
 use App\models\Attendee;
 use Trees\Http\Response;
-use Trees\Controller\Controller;
+use App\controllers\BaseController;
 use Trees\Helper\FlashMessages\FlashMessage;
 
-class AdminAttendeeController extends Controller
+class AdminAttendeeController extends BaseController
 {
     public function checkInAttendee(Request $request, Response $response, $id, $event_slug)
     {
