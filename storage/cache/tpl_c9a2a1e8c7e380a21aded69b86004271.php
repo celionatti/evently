@@ -53,7 +53,7 @@
     <?php $this->partial('admin-nav'); ?>
     <?php echo display_flash_message(); ?>
 
-    <div class="d-flex">
+    <div class="d-flexs">
         <?php $this->partial('admin-sidebar'); ?>
         <main id="main-content" class="main-content">
             <?php $this->content('content'); ?>

@@ -22,7 +22,7 @@
 
                 <?php if (isAuthenticated()): ?>
                     <li class="nav-item"><a class="nav-link" href="<?= url("/admin") ?>">Dashboard</a></li>
-                    <li class="nav-item"><a class="btn btn-ghost ms-lg-2" href="<?= url("/profile") ?>">
+                    <li class="nav-item"><a class="btn btn-ghost ms-lg-2" href="<?php echo url('/admin/profile') ?>">
                             <i class="bi bi-person-circle"></i>
                             <?= htmlspecialchars(auth()->name) ?>
                         </a></li>

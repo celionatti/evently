@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
     <!-- Meta tags (includes charset, viewport, and SEO meta) -->
-    @meta
+    <?php echo $this->renderMeta(); ?>
     
     <!-- Page title -->
-    <title>@title</title>
+    <title><?php echo $this->escape($this->getTitle()); ?></title>
     
     <!-- Favicon and app icons -->
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -17,7 +17,7 @@
     <link rel="manifest" href="/site.webmanifest">
     
     <!-- Additional head content from pages -->
-    @yield('head')
+    <?php $this->content('head'); ?>
     
     <!-- Core CSS -->
     <link rel="stylesheet" href="/dist/css/bootstrap-icons.css">
@@ -33,12 +33,12 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/css/glide.theme.min.css">
     
     <!-- Custom CSS -->
-    <link href="/dist/css/admin.css" rel="stylesheet">
+    <link href="/dist/css/style.css" rel="stylesheet">
     
     <!-- Page-specific styles -->
-    @styles
-    @yield('styles')
-
+    <?php echo $this->renderStyles(); ?>
+    <?php $this->content('styles'); ?>
+    
     <!-- Critical CSS for above-the-fold content (inline for performance) -->
     <style>
         /* Critical CSS - Add your most important styles here for faster loading */
@@ -49,31 +49,30 @@
 <body>
     <!-- Skip to main content link for accessibility -->
     <a class="visually-hidden-focusable" href="#main-content">Skip to main content</a>
-
-    @include('admin-nav')
-    {{{ display_flash_message() }}}
-
-    <div class="d-flexs">
-        @include('admin-sidebar')
-        <main id="main-content" class="main-content">
-            @yield('content')
-        </main>
+    
+    <!-- Flash messages -->
+    <?php echo display_flash_message(); ?>
+    
+    <!-- Main content wrapper -->
+    <div id="main-content">
+        <?php $this->content('content'); ?>
     </div>
-
+    
     <!-- Core JavaScript -->
     <script src="/dist/js/jquery-3.7.1.min.js"></script>
     <script src="/dist/js/bootstrap.bundle.min.js"></script>
-
+    
+    <!-- Glide.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/glide.min.js"></script>
+    
     <!-- Custom JavaScript -->
     <script src="/dist/js/trees.js"></script>
-    <script src="/dist/js/admin.js"></script>
     
     <!-- Page-specific scripts -->
-    @scripts
-    @yield('scripts')
+    <?php echo $this->renderScripts(); ?>
+    <?php $this->content('scripts'); ?>
     
     <!-- Analytics or tracking scripts (place at end for performance) -->
-    @yield('analytics')
+    <?php $this->content('analytics'); ?>
 </body>
-
 </html>
