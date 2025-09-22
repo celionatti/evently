@@ -227,7 +227,13 @@ class EventController extends BaseController
      */
     public function rss(Request $request, Response $response)
     {
-        $events = Event::where([
+        // $events = Event::where([
+        //     'conditions' => ['status' => 'active'],
+        //     'where_raw' => ['event_date >= CURDATE()'],
+        //     'order_by' => ['created_at' => 'DESC'],
+        //     'limit' => 50
+        // ]);
+        $events = Event::paginate([
             'conditions' => ['status' => 'active'],
             'where_raw' => ['event_date >= CURDATE()'],
             'order_by' => ['created_at' => 'DESC'],
@@ -511,7 +517,7 @@ class EventController extends BaseController
         $rss .= '<description>Latest events from Eventlyy</description>' . "\n";
         $rss .= '<language>en-us</language>' . "\n";
 
-        foreach ($events as $event) {
+        foreach ($events['data'] as $event) {
             $eventUrl = $baseUrl . '/events/' . $event->id . '/' . $event->slug;
 
             $rss .= '<item>' . "\n";

@@ -10,7 +10,7 @@ declare(strict_types=1);
 <!-- HERO SECTION -->
 <section class="page-hero">
     <div class="container">
-        <h1 class="page-title reveal">Our Story <?= setting('maintenance_mode') ?></h1>
+        <h1 class="page-title reveal">Our Story</h1>
         <p class="page-subtitle reveal delay-1">Connecting people through unforgettable experiences, one event at a time.</p>
     </div>
 </section>

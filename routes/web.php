@@ -31,6 +31,11 @@ $router->get('/', [SiteController::class, 'index']);
 $router->get('/about-us', [SiteController::class, 'about']);
 $router->get('/events', [EventController::class, 'events']);
 $router->get('/events/{id}/{slug}', [EventController::class, 'event']);
+
+// SEO and Feed routes
+$router->get('/events/rss', [EventController::class, 'rss']);
+$router->get('/events/sitemap.xml', [EventController::class, 'sitemap']);
+
 $router->get('/articles', [ArticleController::class, 'articles']);
 $router->get('/articles/{id}/{slug}', [ArticleController::class, 'article']);
 

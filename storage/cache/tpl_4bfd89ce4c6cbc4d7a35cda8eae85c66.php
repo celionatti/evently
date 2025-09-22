@@ -43,7 +43,7 @@
     <style>
         /* Critical CSS - Add your most important styles here for faster loading */
         .flash-message { position: relative; z-index: 1050; }
-        body { font-family: 'Montserrat', sans-serif; }
+        /* body { font-family: 'Montserrat', sans-serif; } */
     </style>
 </head>
 <body>
