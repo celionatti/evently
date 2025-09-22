@@ -82,7 +82,6 @@ class EventController extends BaseController
 
         // Get categories and cities for filters
         $categories = Categories::all();
-        $cities = Cities::getAll('NG');
 
         // Get featured events for sidebar or hero section
         $featuredEvents = Event::where([
@@ -98,13 +97,12 @@ class EventController extends BaseController
         $advertisements = Advertisement::where(['is_active' => '1']);
 
         // Set SEO meta tags for events listing
-        $this->setupEventsListingSEO($request, $search, $category, $city, $eventsData['meta']['total'] ?? 0);
+        $this->setupEventsListingSEO($request, $search, (int)$category, $city, $eventsData['meta']['total'] ?? 0);
 
         $view = [
             'events' => $eventsData['data'],
             'pagination' => $paginationLinks,
             'categories' => $categories,
-            'cities' => $cities,
             'featuredEvents' => $featuredEvents ?? [],
             'currentSearch' => $search,
             'currentCategory' => $category,

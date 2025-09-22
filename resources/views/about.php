@@ -20,7 +20,7 @@ declare(strict_types=1);
     <div class="container">
         <div class="row align-items-center g-4">
             <div class="col-lg-6 reveal">
-                <img src="https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?q=80&w=870&auto=format&fit=crop" alt="Team collaboration" class="w-100 rounded-4" style="box-shadow:var(--shadow-1);">
+                <img src="<?php echo get_image('dist/img/about-2.jpg') ?>" alt="Team collaboration" class="w-100 rounded-4" style="box-shadow:var(--shadow-1); height: 500px; object-fit: cover;">
             </div>
             <div class="col-lg-6 reveal delay-1">
                 <h2 class="section-title">Our Mission</h2>
@@ -86,7 +86,7 @@ declare(strict_types=1);
 </section>
 
 <!-- TEAM SECTION -->
-<section class="py-5">
+<!-- <section class="py-5">
     <div class="container">
         <div class="row text-center mb-5">
             <h2 class="section-title reveal">Meet Our Team</h2>
@@ -127,7 +127,7 @@ declare(strict_types=1);
             </div>
         </div>
     </div>
-</section>
+</section> -->
 
 <!-- STATS SECTION -->
 <section class="py-5">
@@ -135,15 +135,15 @@ declare(strict_types=1);
         <div class="category-card">
             <div class="row text-center">
                 <div class="col-6 col-md-3 reveal">
-                    <h2 class="display-4 fw-bold">50K+</h2>
+                    <h2 class="display-4 fw-bold">20K+</h2>
                     <p class="text-primary">Events Hosted</p>
                 </div>
                 <div class="col-6 col-md-3 reveal delay-1">
-                    <h2 class="display-4 fw-bold">2M+</h2>
+                    <h2 class="display-4 fw-bold">200K+</h2>
                     <p class="text-primary">Tickets Sold</p>
                 </div>
                 <div class="col-6 col-md-3 reveal delay-2">
-                    <h2 class="display-4 fw-bold">200+</h2>
+                    <h2 class="display-4 fw-bold">20+</h2>
                     <p class="text-primary">Cities</p>
                 </div>
                 <div class="col-6 col-md-3 reveal delay-3">
@@ -162,7 +162,7 @@ declare(strict_types=1);
             <h2 class="section-title reveal">Join Our Community</h2>
             <p class="section-sub reveal delay-1">Be part of the event revolution</p>
             <div class="d-flex gap-2 mt-3 justify-content-center reveal delay-2">
-                <a href="index.html#events" class="btn btn-pulse"><i class="bi bi-ticket-perforated me-1"></i> Find Events</a>
+                <a href="{{{ url('/events') }}}" class="btn btn-pulse"><i class="bi bi-ticket-perforated me-1"></i> Find Events</a>
                 <a href="#" class="btn btn-ghost"><i class="bi bi-question-circle me-1"></i> Contact Us</a>
             </div>
         </div>

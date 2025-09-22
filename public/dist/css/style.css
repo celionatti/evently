@@ -87,7 +87,13 @@ body {
 }
 .navbar .nav-link:hover,
 .navbar .nav-link:focus {
-  color: var(--blue-1);
+  color: var(--blue-1) !important;
+  transform: translateY(-1px);
+}
+
+.nav-link.active {
+  color: var(--blue-1) !important;
+  border-bottom: 2px solid var(--blue-2) !important;
 }
 
 .brand-mark {
@@ -954,11 +960,16 @@ footer {
 }
 .form-control,
 .form-select {
-  color: var(--bg-0) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: var(--text-1) !important;
 }
 .form-control::placeholder {
   color: var(--text-2) !important;
   opacity: 0.7;
+}
+
+.form-select:focus {
+  color: #000 !important;
 }
 
 /* Animations (on-scroll) */
@@ -1059,9 +1070,9 @@ footer {
 }
 
 .form-control {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.1) !important;
   border: 1px solid rgba(255, 255, 255, 0.2);
-  color: var(--text-1) !important;
+  /* color: var(--text-1) !important; */
   padding: 0.75rem 1rem;
   border-radius: var(--radius-md);
   transition: all 0.3s ease;
@@ -1071,7 +1082,7 @@ footer {
   background: rgba(255, 255, 255, 0.15);
   border-color: var(--blue-1);
   box-shadow: var(--shadow-focus);
-  color: var(--text-1) !important;
+  /* color: var(--text-1) !important; */
 }
 
 .checkbox-group {
@@ -1121,16 +1132,6 @@ footer {
 }
 
 /* Additional custom styles */
-.nav-link {
-  color: rgba(255, 255, 255, 0.85) !important;
-  transition: all 0.3s ease;
-}
-
-.nav-link:hover {
-  color: white !important;
-  transform: translateY(-1px);
-}
-
 .toast {
   position: fixed;
   bottom: 20px;

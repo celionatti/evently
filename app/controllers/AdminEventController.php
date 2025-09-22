@@ -14,7 +14,6 @@ use App\models\Categories;
 use App\models\Transaction;
 use Trees\Database\Database;
 use App\services\PDFGenerator;
-use Trees\Helper\Cities\Cities;
 use Trees\Helper\Support\Image;
 use Trees\Pagination\Paginator;
 use App\models\TransactionTicket;
@@ -197,7 +196,6 @@ class AdminEventController extends BaseController
 
         $view = [
             'categories' => Categories::all(),
-            'cities' => Cities::getAll('NG')
         ];
 
         return $this->render('admin/events/create', $view);
@@ -332,7 +330,6 @@ class AdminEventController extends BaseController
         $view = [
             'event' => $event,
             'categories' => Categories::all(),
-            'cities' => Cities::getAll('NG')
         ];
 
         return $this->render('admin/events/edit', $view);

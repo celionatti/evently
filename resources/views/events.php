@@ -50,7 +50,7 @@ use App\models\Categories;
                 <div class="col-md-4">
                     <div class="filter-group">
                         <div class="filter-label">Category</div>
-                        <select name="category" class="form-select" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white;">
+                        <select name="category" class="form-select form-control" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white;">
                             <option value="">All Categories</option>
                             <?php foreach ($categories as $category): ?>
                                 <option value="<?= $category->id ?>" <?= $currentCategory == $category->id ? 'selected' : '' ?>>
@@ -64,14 +64,7 @@ use App\models\Categories;
                 <div class="col-md-5">
                     <div class="filter-group">
                         <div class="filter-label">City</div>
-                        <select name="city" class="form-select" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white;">
-                            <option value="">All Cities</option>
-                            <?php foreach ($cities ?? [] as $city): ?>
-                                <option value="<?= $city['name'] ?>" <?= ($currentCity ?? '') === $city['name'] ? 'selected' : '' ?>>
-                                    <?= $city['name'] ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
+                        <input name="city" class="form-control" value="<?= $currentCity ?? '' ?>" placeholder="City: Ikeja, Lagos, FCT" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white;">
                     </div>
                 </div>
 

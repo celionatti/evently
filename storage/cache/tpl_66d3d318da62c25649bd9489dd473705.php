@@ -19,7 +19,7 @@ use App\models\Categories;
                 <p class="lead mt-3 reveal delay-1">From live concerts to tech conferences, grab verified tickets fast with a silky-smooth checkout and instant mobile passes.</p>
                 <div class="d-flex gap-2 mt-3 reveal delay-2">
                     <a href="<?php echo url("/events"); ?>" class="btn btn-pulse"><i class="bi bi-lightning-charge-fill me-1"></i> Explore Events</a>
-                    <a href="#how" class="btn btn-ghost"><i class="bi bi-play-circle me-1"></i> How it works</a>
+                    <!-- <a href="#how" class="btn btn-ghost"><i class="bi bi-play-circle me-1"></i> How it works</a> -->
                 </div>
                 <div class="spin-bubble" aria-hidden="true"></div>
             </div>
@@ -30,19 +30,15 @@ use App\models\Categories;
                     <div class="glide__track" data-glide-el="track">
                         <ul class="glide__slides">
                             <li class="glide__slide">
-                                <img class="w-100 rounded-4" src="<?= get_image("dist/img/eventlyy.png") ?>" alt="Eventlyy" style="box-shadow:var(--shadow-1);">
+                                <img class="w-100 rounded-4" src="<?= get_image("dist/img/default.jpg") ?>" alt="Eventlyy" style="box-shadow:var(--shadow-1); height: 400px; object-fit: cover;" loading="lazy">
                             </li>
                             <li class="glide__slide">
-                                <img class="w-100 rounded-4" src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?q=80&w=1400&auto=format&fit=crop" alt="Tech stage lights" style="box-shadow:var(--shadow-1);">
+                                <img class="w-100 rounded-4" src="<?= get_image("dist/img/about-1.jpg") ?>" alt="About Eventlyy" style="box-shadow:var(--shadow-1);" loading="lazy">
                             </li>
                             <li class="glide__slide">
-                                <img class="w-100 rounded-4" src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=1400&auto=format&fit=crop" alt="DJ performing at festival" style="box-shadow:var(--shadow-1);">
+                                <img class="w-100 rounded-4" src="<?= get_image("dist/img/about-3.jpg") ?>" alt="DJ performing at festival" style="box-shadow:var(--shadow-1);" loading="lazy">
                             </li>
                         </ul>
-                    </div>
-                    <div class="glide__arrows" data-glide-el="controls">
-                        <button class="glide__arrow glide__arrow--left btn btn-ghost px-2 py-1" data-glide-dir="<" aria-label="Previous"><i class="bi bi-chevron-left"></i></button>
-                        <button class="glide__arrow glide__arrow--right btn btn-ghost px-2 py-1" data-glide-dir=">" aria-label="Next"><i class="bi bi-chevron-right"></i></button>
                     </div>
                 </div>
             </div>
@@ -196,7 +192,7 @@ use App\models\Categories;
     <div class="container">
         <div class="row align-items-center g-4">
             <div class="col-lg-6 reveal">
-                <img src="https://images.unsplash.com/photo-1523580494863-6f3031224c94?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="People scanning tickets at the gate" class="w-100 rounded-4" style="box-shadow:var(--shadow-1);">
+                <img src="<?php echo get_image("dist/img/about-1.jpg") ?>" alt="Eventlyy event" class="w-100 rounded-4" style="box-shadow:var(--shadow-1);">
             </div>
             <div class="col-lg-6 reveal delay-1">
                 <h2 class="section-title">Built for speed, designed for trust</h2>
@@ -215,14 +211,14 @@ use App\models\Categories;
                         </div>
                     </div>
                 </div>
-                <a href="#get-tickets" class="btn btn-ghost mt-3">Start now</a>
+                <a href="<?php echo url('/events'); ?>" class="btn btn-ghost mt-3">Start now</a>
             </div>
         </div>
     </div>
 </section>
 
 <!-- TESTIMONIALS (Glide) -->
-<section id="testimonials" class="py-5">
+<!-- <section id="testimonials" class="py-5">
     <div class="container">
         <h2 class="section-title text-center reveal">What fans say</h2>
         <p class="section-sub text-center reveal delay-1 mb-4">Real people. Real experiences.</p>
@@ -275,7 +271,7 @@ use App\models\Categories;
             </div>
         </div>
     </div>
-</section>
+</section> -->
 
 <?php $this->partial('footer'); ?>
 <?php $this->end(); ?>

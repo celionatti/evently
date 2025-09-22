@@ -1,0 +1,10 @@
+[2025-09-22 22:39:23] TypeError: App\controllers\EventController::setupEventsListingSEO(): Argument #3 ($category) must be of type ?int, string given, called in C:\xampp\htdocs\evently\app\controllers\EventController.php on line 101 in C:\xampp\htdocs\evently\app\controllers\EventController.php on line 252
+Stack trace:
+#0 C:\xampp\htdocs\evently\app\controllers\EventController.php(101): App\controllers\EventController->setupEventsListingSEO(Object(Trees\Http\Request), '', '4', '', 1)
+#1 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\EventController->events(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#2 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'events', Array)
+#3 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#4 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#5 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#6 {main}
+

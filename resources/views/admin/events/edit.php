@@ -153,15 +153,8 @@
                 </div>
                 <div class="col-md-6">
                     <label for="city" class="form-label">City *</label>
-                    <select name="city" id="city" class="form-select <?= has_error('city') ? 'is-invalid' : '' ?>">
-                        <option value="">Select City</option>
-                        <option value="other" <?= old('city', $event->city) === 'other' ? 'selected' : '' ?>>Other</option>
-                        <?php foreach ($cities as $city): ?>
-                            <option value="<?= strtolower(str_replace(" ", "_", $city['name'])) ?>" <?= old('city', $event->city) == strtolower(str_replace(" ", "_", $city['name'])) ? 'selected' : '' ?>>
-                                <?= $city['name'] . ' - ' . $city['state'] ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
+                    <input type="text" name="city" id="city" class="form-control <?= has_error('city') ? 'is-invalid' : '' ?>"
+                        placeholder="City: ikeja, Lagos, Lekki" value="<?= old('city', $event->city) ?>">
                     <?php if (has_error('city')): ?>
                         <div class="invalid-feedback"><?= get_error('city') ?></div>
                     <?php endif; ?>

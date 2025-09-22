@@ -392,8 +392,11 @@ body {
   background: rgba(255, 255, 255, 0.12) !important;
   border-color: var(--blue-1);
   box-shadow: var(--shadow-focus);
-  color: var(--text-3) !important;
   transform: translateY(-1px);
+}
+
+.form-select:focus {
+  color: var(--text-3) !important;
 }
 
 .form-label {
