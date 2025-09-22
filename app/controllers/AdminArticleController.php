@@ -8,16 +8,16 @@ use App\models\Article;
 use Trees\Http\Request;
 use Trees\Http\Response;
 use Trees\Logger\Logger;
+use Trees\Database\Database;
 use Trees\Helper\Support\Image;
 use Trees\Pagination\Paginator;
-use Trees\Controller\Controller;
+use App\controllers\BaseController;
 use Trees\Exception\TreesException;
 use Trees\Helper\Support\FileUploader;
 use Trees\Helper\FlashMessages\FlashMessage;
 use Trees\Database\QueryBuilder\QueryBuilder;
-use Trees\Database\Database;
 
-class AdminArticleController extends Controller
+class AdminArticleController extends BaseController
 {
     protected $uploader;
     protected ?Article $articleModel;
@@ -26,16 +26,21 @@ class AdminArticleController extends Controller
 
     public function onConstruct()
     {
+        parent::onConstruct();
+
+        $this->view->setLayout('admin');
+
+        // Set meta tags for articles listing
+        $this->view->setAuthor("Eventlyy Team | Eventlyy")
+            ->setKeywords("events, tickets, event management, conferences, workshops, meetups, event planning");
+
         requireAuth();
         if (!isAdminOrOrganiser()) {
             FlashMessage::setMessage("Access denied. Admin or Organiser privileges required.", 'danger');
             return redirect("/");
         }
-        $this->view->setLayout('admin');
         $imageProcessor = new Image();
         $this->articleModel = new Article();
-        $name = "Eventlyy";
-        $this->view->setTitle("{$name} Admin | Articles");
         $this->uploader = new FileUploader(
             uploadDir: self::UPLOAD_DIR,
             maxFileSize: 5 * 1024 * 1024,
@@ -57,6 +62,8 @@ class AdminArticleController extends Controller
 
     public function manage(Request $request, Response $response)
     {
+        $this->view->setTitle("Eventlyy Dashboard | Manage Articles");
+
         // For organiser, only show their own articles
         // For admin, show all articles
         $queryOptions = [
@@ -99,6 +106,8 @@ class AdminArticleController extends Controller
             return $response->redirect("/admin/articles/manage");
         }
 
+        $this->view->setTitle("Eventlyy Dashboard | Articles - {$article->title}");
+
         $view = [
             'article' => $article
         ];
@@ -108,6 +117,8 @@ class AdminArticleController extends Controller
 
     public function create()
     {
+        $this->view->setTitle("Eventlyy Dashboard | Create New Article");
+
         return $this->render('admin/articles/create');
     }
 

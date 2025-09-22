@@ -17,14 +17,14 @@ use App\services\PDFGenerator;
 use Trees\Helper\Cities\Cities;
 use Trees\Helper\Support\Image;
 use Trees\Pagination\Paginator;
-use Trees\Controller\Controller;
 use App\models\TransactionTicket;
+use App\controllers\BaseController;
 use Trees\Exception\TreesException;
 use Trees\Helper\Support\FileUploader;
 use Trees\Helper\FlashMessages\FlashMessage;
 use Trees\Database\QueryBuilder\QueryBuilder;
 
-class AdminEventController extends Controller
+class AdminEventController extends BaseController
 {
     protected $uploader;
     protected ?Event $eventModel;
@@ -35,18 +35,23 @@ class AdminEventController extends Controller
 
     public function onConstruct()
     {
+        parent::onConstruct();
+
+        $this->view->setLayout('admin');
+
+        // Set meta tags for articles listing
+        $this->view->setAuthor("Eventlyy Team | Eventlyy")
+            ->setKeywords("events, tickets, event management, conferences, workshops, meetups, event planning");
+
         requireAuth();
         if (!isAdminOrOrganiser()) {
             FlashMessage::setMessage("Access denied. Admin or Organiser privileges required.", 'danger');
             return redirect("/");
         }
-        $this->view->setLayout('admin');
         $imageProcessor = new Image();
         $this->eventModel = new Event();
         $this->ticketModel = new Ticket();
         $this->attendeesModel = new Attendee();
-        $name = "Eventlyy";
-        $this->view->setTitle("{$name} Admin | Dashboard");
         $this->uploader = new FileUploader(
             uploadDir: self::UPLOAD_DIR,
             maxFileSize: 5 * 1024 * 1024,
@@ -68,6 +73,7 @@ class AdminEventController extends Controller
 
     public function manage(Request $request, Response $response)
     {
+        $this->view->setTitle("Eventlyy Dashboard | Manage Events");
         // For organiser, only show their own events
         // For admin, show all events
         $queryOptions = [
@@ -167,6 +173,8 @@ class AdminEventController extends Controller
             $attendeesWithTickets[] = $attendee;
         }
 
+        $this->view->setTitle("Eventlyy Dashboard | Events - {$event->event_title}");
+
         $view = [
             'event' => $event,
             'recentAttendees' => $attendeesWithTickets,
@@ -185,6 +193,8 @@ class AdminEventController extends Controller
 
     public function create()
     {
+        $this->view->setTitle("Eventlyy Dashboard | Create New Event");
+
         $view = [
             'categories' => Categories::all(),
             'cities' => Cities::getAll('NG')
@@ -316,6 +326,8 @@ class AdminEventController extends Controller
 
         // Ensure tickets is always an array
         $event->tickets = is_array($tickets) ? $tickets : [];
+
+        $this->view->setTitle("Eventlyy Dashboard | Update Event - {$event->event_title}");
 
         $view = [
             'event' => $event,
