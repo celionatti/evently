@@ -48,7 +48,7 @@
         <a class="nav-link <?= active_nav(1, 'about-us') ? 'active' : '' ?> py-2" href="<?= url("/about-us") ?>">About Us</a>
         <?php if (isAuthenticated()): ?>
             <a class="nav-link py-2" href="<?= url("/admin") ?>">Dashboard</a>
-            <a class="btn btn-ghost w-100 mt-3" href="<?= url("/profile") ?>">
+            <a class="btn btn-ghost w-100 mt-3" href="<?= url("/admin/profile") ?>">
                 <i class="bi bi-person-circle"></i>
                 <?= htmlspecialchars(auth()->name) ?>
             </a>

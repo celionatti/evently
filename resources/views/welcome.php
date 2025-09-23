@@ -93,7 +93,7 @@ use App\models\Categories;
                             </div>
                             <h5 class="mb-1">{{{ $event->event_title }}}</h5>
                             <p class="mb-3">{{{ getExcerpt($event->description, 150) }}}</p>
-                            <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center justify-content-between gap-2">
                                 <?php
                                 // Get minimum price from tickets
                                 $minPrice = null;

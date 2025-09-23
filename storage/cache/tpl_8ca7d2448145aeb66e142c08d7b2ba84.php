@@ -121,7 +121,7 @@ use App\models\Categories;
                                         <div class="h5 mb-0" id="charges-total">₦0</div>
                                     </div>
                                 </div>
-                                <div class="d-flex justify-content-between mt-3 pt-3 border-top border-secondary">
+                                <div class="d-flex justify-content-between mt-3 pt-3 border-top border-secondary gap-2">
                                     <div>
                                         <div class="text-white">Total</div>
                                         <div class="h4 mb-0" id="total-price">₦0</div>
