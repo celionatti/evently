@@ -7,7 +7,7 @@ use App\controllers\SiteController;
 use App\controllers\AdminController;
 use App\controllers\EventController;
 use App\controllers\ArticleController;
-use App\Controllers\CheckoutController;
+use App\controllers\CheckoutController;
 use App\controllers\AdminUserController;
 use App\controllers\AdminEventController;
 use App\controllers\AdminArticleController;
@@ -31,6 +31,7 @@ $router->get('/', [SiteController::class, 'index']);
 $router->get('/about-us', [SiteController::class, 'about']);
 $router->get('/events', [EventController::class, 'events']);
 $router->get('/events/{id}/{slug}', [EventController::class, 'event']);
+$router->get('/events/{slug}', [EventController::class, 'custom_event']);
 
 // SEO and Feed routes
 $router->get('/events/rss', [EventController::class, 'rss']);

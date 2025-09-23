@@ -335,28 +335,25 @@ use App\models\Categories;
 <?php $this->start('scripts'); ?>
 <script src="/dist/js/script.js"></script>
 <script>
-    // Convert PHP ticket data to JavaScript object - CHANGED TO USE ID INSTEAD OF SLUG
-    const ticketData = {
-        <?php foreach ($tickets as $ticket): ?> '<?= $ticket['id'] ?>': {
-                price: <?= $ticket['price'] ?>,
-                charge: <?= $ticket['service_charge'] ?>,
-                available: <?= $ticket['available'] ?>,
-                name: "<?= addslashes($ticket['name']) ?>",
-                maxPerPerson: <?= $ticket['max_per_person'] ?? 10 ?>,
-                slug: "<?= $ticket['slug'] ?>" // Keep slug for display purposes if needed
-            },
-        <?php endforeach; ?>
-    };
+    // Convert PHP ticket data to JavaScript object - PROPERLY ESCAPED
+    const ticketData = <?= json_encode(array_reduce($tickets, function ($carry, $ticket) {
+                            $carry[$ticket['id']] = [
+                                'price' => (float)$ticket['price'],
+                                'charge' => (float)$ticket['service_charge'],
+                                'available' => (int)$ticket['available'],
+                                'name' => $ticket['name'],
+                                'maxPerPerson' => $ticket['max_per_person'] ?? 10,
+                                'slug' => $ticket['slug']
+                            ];
+                            return $carry;
+                        }, [])) ?>;
 
-    let selectedTickets = {
-        <?php foreach ($tickets as $ticket): ?> '<?= $ticket['id'] ?>': 0,
-        <?php endforeach; ?>
-    };
+    let selectedTickets = <?= json_encode(array_fill_keys(array_column($tickets, 'id'), 0)) ?>;
 
     // Set up quantity buttons
     document.querySelectorAll('.quantity-btn').forEach(btn => {
         btn.addEventListener('click', () => {
-            const tierId = btn.dataset.tier; // Now contains ID, not slug
+            const tierId = btn.dataset.tier;
             const isIncrease = btn.classList.contains('increase');
             const input = document.getElementById(`${tierId}-qty`);
             const maxAvailable = ticketData[tierId].available;
@@ -500,7 +497,6 @@ use App\models\Categories;
                                     name="attendees[${attendeeCount}][name]" 
                                     data-tier="${tierId}" data-index="${i}" required>
                                 <input type="hidden" name="attendees[${attendeeCount}][tier]" value="${tierId}">
-                                <!-- ADDED: Hidden field for ticket_id -->
                                 <input type="hidden" name="attendees[${attendeeCount}][ticket_id]" value="${tierId}">
                             </div>
                             <div class="col-md-6 mb-3">
@@ -557,7 +553,7 @@ use App\models\Categories;
 
     // Countdown timer using the actual event date
     function updateCountdown() {
-        const eventDate = new Date(<?= strtotime($event->event_date) * 1000 ?>); // Convert PHP timestamp to JS timestamp
+        const eventDate = new Date(<?= strtotime($event->event_date) * 1000 ?>);
         const now = new Date().getTime();
         const distance = eventDate - now;
 
@@ -576,12 +572,12 @@ use App\models\Categories;
     }
 
     function addToCalendar() {
-        const eventTitle = encodeURIComponent("<?php echo $event->event_title; ?>");
+        const eventTitle = <?= json_encode($event->event_title) ?>;
         const eventDate = "<?php echo $this->escape(date('Ymd\\THis', strtotime($event->event_date . ' ' . ($event->start_time ?? '00:00:00')))); ?>";
-        const eventLocation = encodeURIComponent("<?php echo $event->venue; ?>, <?php echo $event->city; ?>");
-        const eventDescription = encodeURIComponent("<?php echo substr($event->description, 0, 200); ?>...");
+        const eventLocation = <?= json_encode($event->venue . ', ' . $event->city) ?>;
+        const eventDescription = <?= json_encode(substr($event->description, 0, 200) . '...') ?>;
 
-        const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${eventTitle}&dates=${eventDate}/${eventDate}&location=${eventLocation}&details=${eventDescription}`;
+        const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(eventTitle)}&dates=${eventDate}/${eventDate}&location=${encodeURIComponent(eventLocation)}&details=${encodeURIComponent(eventDescription)}`;
 
         window.open(googleCalendarUrl, '_blank');
     }
@@ -591,8 +587,8 @@ use App\models\Categories;
     }
 
     function getDirections() {
-        const address = encodeURIComponent("<?php echo $event->venue; ?>, <?php echo $event->city; ?>");
-        const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${address}`;
+        const address = <?= json_encode($event->venue . ', ' . $event->city) ?>;
+        const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
         window.open(mapsUrl, '_blank');
     }
 

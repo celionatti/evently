@@ -31,7 +31,7 @@ class UploadedFile
         int $error,
         int $size
     ) {
-        if ($error !== UPLOAD_ERR_NO_FILE && !is_uploaded_file($path)) {
+        if ($error === UPLOAD_ERR_OK && !is_uploaded_file($path)) {
             throw new InvalidArgumentException('The file was not uploaded via HTTP POST');
         }
 

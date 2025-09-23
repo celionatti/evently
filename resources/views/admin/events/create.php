@@ -74,8 +74,8 @@
                 </div>
                 <div class="col-md-8">
                     <label for="event_link" class="form-label">Event Link</label>
-                    <input type="url" name="event_link" id="event_link" class="form-control <?= has_error('event_link') ? 'is-invalid' : '' ?>"
-                        placeholder="Enter your event link" value="<?= old('event_link') ?>">
+                    <input type="text" name="event_link" id="event_link" class="form-control <?= has_error('event_link') ? 'is-invalid' : '' ?>"
+                        placeholder="Custom Link" value="<?= old('event_link') ?>">
                     <?php if (has_error('event_link')): ?>
                         <div class="invalid-feedback"><?= get_error('event_link') ?></div>
                     <?php endif; ?>

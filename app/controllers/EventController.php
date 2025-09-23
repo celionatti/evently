@@ -97,7 +97,7 @@ class EventController extends BaseController
         $advertisements = Advertisement::where(['is_active' => '1']);
 
         // Set SEO meta tags for events listing
-        $this->setupEventsListingSEO($request, $search, (int)$category, $city, $eventsData['meta']['total'] ?? 0);
+        $this->setupEventsListingSEO($request, $search, (int)$category, $city, (int)$eventsData['meta']['total'] ?? 0);
 
         $view = [
             'events' => $eventsData['data'],
@@ -205,6 +205,11 @@ class EventController extends BaseController
         ];
 
         return $this->render('event', $view);
+    }
+
+    public function custom_event(Request $request, Response $response, $slug)
+    {
+        dd($slug);
     }
 
     /**

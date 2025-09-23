@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\controllers;
 
 use App\models\User;
-use App\Models\Article;
+use App\models\Article;
 use Trees\Http\Request;
 use Trees\Http\Response;
 use App\models\Advertisement;
