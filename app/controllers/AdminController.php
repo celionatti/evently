@@ -72,13 +72,13 @@ class AdminController extends BaseController
         $userId = auth()->id;
 
         // Total Events
-        $totalEvents = $isOrganiser 
-            ? Event::count(['user_id' => $userId]) 
+        $totalEvents = $isOrganiser
+            ? Event::count(['user_id' => $userId])
             : Event::count();
 
         // Active Events
-        $activeEvents = $isOrganiser 
-            ? Event::count(['user_id' => $userId, 'status' => 'active']) 
+        $activeEvents = $isOrganiser
+            ? Event::count(['user_id' => $userId, 'status' => 'active'])
             : Event::count(['status' => 'active']);
 
         // Total Attendees
@@ -87,7 +87,7 @@ class AdminController extends BaseController
             $eventIds = array_map(fn($event) => $event->id, $organizerEvents);
             $totalAttendees = 0;
             $confirmedAttendees = 0;
-            
+
             if (!empty($eventIds)) {
                 foreach ($eventIds as $eventId) {
                     $totalAttendees += Attendee::count(['event_id' => $eventId]);
@@ -107,9 +107,9 @@ class AdminController extends BaseController
         $currentMonth = date('Y-m');
         $monthlyTicketsSold = $this->getMonthlyTicketsSold($currentMonth, $isOrganiser ? $userId : null);
         $lastMonthTicketsSold = $this->getMonthlyTicketsSold(date('Y-m', strtotime('-1 month')), $isOrganiser ? $userId : null);
-        
+
         // Calculate growth percentage
-        $ticketGrowth = $lastMonthTicketsSold > 0 
+        $ticketGrowth = $lastMonthTicketsSold > 0
             ? round((($monthlyTicketsSold - $lastMonthTicketsSold) / $lastMonthTicketsSold) * 100, 1)
             : ($monthlyTicketsSold > 0 ? 100 : 0);
 
@@ -137,45 +137,36 @@ class AdminController extends BaseController
         $userId = auth()->id;
 
         if ($isOrganiser) {
-            $events = Event::where(['user_id' => $userId]);
-            // Sort by created_at DESC manually since we can't use ORDER BY with where()
-            usort($events, fn($a, $b) => strtotime($b->created_at) - strtotime($a->created_at));
-            $events = array_slice($events, 0, $limit);
+            $sql = "SELECT * FROM events WHERE user_id = ? ORDER BY created_at DESC LIMIT ?";
+            $eventData = $this->db->query($sql, [$userId, $limit]);
         } else {
-            // For admin, we need to use raw query for ordering
             $sql = "SELECT * FROM events ORDER BY created_at DESC LIMIT ?";
             $eventData = $this->db->query($sql, [$limit]);
-            
-            // Check if query returned false (error) or empty array
-            if ($eventData === false) {
-                return [];
-            }
-            
-            $events = [];
-            foreach ($eventData as $data) {
-                $event = new Event();
-                $event->fill($data);
-                $event->exists = true;
-                $event->original = $data;
-                $events[] = $event;
-            }
         }
 
-        // Add attendee counts and revenue to each event
-        foreach ($events as $event) {
-            $attendeeCount = Attendee::count(['event_id' => $event->id, 'status' => 'confirmed']);
-            $event->attendee_count = $attendeeCount;
-            
+        // Check if query returned false (error) or empty array
+        if ($eventData === false) {
+            return [];
+        }
+
+        $events = [];
+        foreach ($eventData as $data) {
+            // Convert to array format for consistent template usage
+            $attendeeCount = Attendee::count(['event_id' => $data['id'], 'status' => 'confirmed']);
+            $data['attendee_count'] = $attendeeCount;
+
             // Calculate revenue for this event
             $eventRevenue = 0;
-            $attendees = Attendee::where(['event_id' => $event->id, 'status' => 'confirmed']);
+            $attendees = Attendee::where(['event_id' => $data['id'], 'status' => 'confirmed']);
             foreach ($attendees as $attendee) {
                 $ticket = Ticket::find($attendee->ticket_id);
                 if ($ticket) {
                     $eventRevenue += (float)$ticket->price;
                 }
             }
-            $event->revenue = $eventRevenue;
+            $data['revenue'] = $eventRevenue;
+
+            $events[] = $data;
         }
 
         return $events;
@@ -202,26 +193,20 @@ class AdminController extends BaseController
 
         $events = [];
         foreach ($eventData as $data) {
-            $event = new Event();
-            $event->fill($data);
-            $event->exists = true;
-            $event->original = $data;
-            $events[] = $event;
-        }
-
-        // Add days until event and ticket sales info
-        foreach ($events as $event) {
-            $eventDate = new \DateTime($event->event_date);
+            // Add days until event and ticket sales info
+            $eventDate = new \DateTime($data['event_date']);
             $currentDate = new \DateTime($today);
             $interval = $currentDate->diff($eventDate);
-            $event->days_until = $interval->days;
-            
+            $data['days_until'] = $interval->days;
+
             // Add ticket sales info
-            $attendeeCount = Attendee::count(['event_id' => $event->id, 'status' => 'confirmed']);
-            $totalTickets = $this->getTotalTicketsForEvent($event->id);
-            $event->tickets_sold = $attendeeCount;
-            $event->total_tickets = $totalTickets;
-            $event->sales_percentage = $totalTickets > 0 ? round(($attendeeCount / $totalTickets) * 100, 1) : 0;
+            $attendeeCount = Attendee::count(['event_id' => $data['id'], 'status' => 'confirmed']);
+            $totalTickets = $this->getTotalTicketsForEvent($data['id']);
+            $data['tickets_sold'] = $attendeeCount;
+            $data['total_tickets'] = $totalTickets;
+            $data['sales_percentage'] = $totalTickets > 0 ? round(($attendeeCount / $totalTickets) * 100, 1) : 0;
+
+            $events[] = $data;
         }
 
         return $events;
@@ -262,16 +247,7 @@ class AdminController extends BaseController
             return [];
         }
 
-        $events = [];
-        foreach ($eventData as $data) {
-            $event = new Event();
-            $event->fill($data);
-            $event->exists = true;
-            $event->original = $data;
-            $events[] = $event;
-        }
-
-        return $events;
+        return $eventData; // Return as arrays directly from DB
     }
 
     private function getMonthlyStats(): array
@@ -373,7 +349,7 @@ class AdminController extends BaseController
     private function getTicketSalesChartData(): array
     {
         $monthlyStats = $this->getMonthlyStats();
-        
+
         return [
             'labels' => array_column($monthlyStats, 'month'),
             'data' => array_column($monthlyStats, 'tickets_sold')
@@ -383,7 +359,7 @@ class AdminController extends BaseController
     private function getRevenueChartData(): array
     {
         $monthlyStats = $this->getMonthlyStats();
-        
+
         return [
             'labels' => array_column($monthlyStats, 'month'),
             'data' => array_column($monthlyStats, 'revenue')
@@ -423,7 +399,7 @@ class AdminController extends BaseController
     private function calculateMonthlyRevenue(int|string|null $userId = null): float
     {
         $currentMonth = date('Y-m');
-        
+
         if ($userId) {
             $sql = "SELECT COALESCE(SUM(t.price), 0) as revenue
                     FROM events e 
@@ -466,7 +442,7 @@ class AdminController extends BaseController
     private function getRecentActivityCount(int|string|null $userId = null): int
     {
         $thirtyDaysAgo = date('Y-m-d', strtotime('-30 days'));
-        
+
         if ($userId) {
             $sql = "SELECT COUNT(*) as count FROM events WHERE user_id = ? AND created_at >= ?";
             $result = $this->db->query($sql, [$userId, $thirtyDaysAgo]);
@@ -481,7 +457,7 @@ class AdminController extends BaseController
     private function getCompletedEventsCount(int|string|null $userId = null): int
     {
         $today = date('Y-m-d');
-        
+
         if ($userId) {
             $sql = "SELECT COUNT(*) as count FROM events WHERE user_id = ? AND event_date < ?";
             $result = $this->db->query($sql, [$userId, $today]);

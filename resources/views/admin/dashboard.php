@@ -600,27 +600,116 @@ declare(strict_types=1);
 
     // Export dashboard data function
     function exportDashboardData() {
+        // Prepare the data arrays for easier access
+        const recentEvents = <?= json_encode($recentEvents) ?>;
+        const upcomingEvents = <?= json_encode($upcomingEvents) ?>;
+        const topSellingEvents = <?= json_encode($topSellingEvents) ?>;
+        const monthlyStats = <?= json_encode($monthlyStats) ?>;
+        const categoryStats = <?= json_encode($categoryStats) ?>;
+
         // Create CSV content
         let csvContent = "data:text/csv;charset=utf-8,";
 
         // Add analytics summary
         csvContent += "Dashboard Analytics Summary\n";
+        csvContent += "Metric,Value\n";
         csvContent += "Total Events,<?= $analytics['total_events'] ?>\n";
         csvContent += "Active Events,<?= $analytics['active_events'] ?>\n";
         csvContent += "Monthly Tickets Sold,<?= $analytics['monthly_tickets_sold'] ?>\n";
         csvContent += "Monthly Revenue,<?= $analytics['monthly_revenue'] ?>\n";
         csvContent += "Total Revenue,<?= $analytics['total_revenue'] ?>\n";
         csvContent += "Total Attendees,<?= $analytics['confirmed_attendees'] ?>\n";
+        csvContent += "Average Attendees Per Event,<?= $analytics['average_attendees_per_event'] ?>\n";
+        csvContent += "Event Completion Rate,<?= $analytics['event_completion_rate'] ?>%\n";
         csvContent += "\n";
 
         // Add recent events
         csvContent += "Recent Events\n";
-        csvContent += "Event Title,Date,Attendees,Revenue,Status\n";
-        <?php if (!empty($recentEvents)): ?>
-            <?php foreach ($recentEvents as $event): ?>
-                csvContent += "<?= addslashes($event['event_title']) ?>,<?= $event['event_date'] ?>,<?= $event['attendee_count'] ?>,<?= $event['revenue'] ?>,<?= $event['status'] ?>\n";
-            <?php endforeach; ?>
-        <?php endif; ?>
+        csvContent += "Event Title,Date,Venue,Attendees,Revenue,Status\n";
+        if (recentEvents && recentEvents.length > 0) {
+            recentEvents.forEach(function(event) {
+                const title = (event.event_title || '').replace(/"/g, '""');
+                const venue = (event.venue || 'TBA').replace(/"/g, '""');
+                const date = event.event_date || '';
+                const attendees = event.attendee_count || 0;
+                const revenue = event.revenue || 0;
+                const status = event.status || 'unknown';
+
+                csvContent += `"${title}","${date}","${venue}",${attendees},${revenue},"${status}"\n`;
+            });
+        } else {
+            csvContent += "No recent events found\n";
+        }
+        csvContent += "\n";
+
+        // Add upcoming events
+        csvContent += "Upcoming Events\n";
+        csvContent += "Event Title,Date,Days Until,Tickets Sold,Total Tickets,Sales Percentage\n";
+        if (upcomingEvents && upcomingEvents.length > 0) {
+            upcomingEvents.forEach(function(event) {
+                const title = (event.event_title || '').replace(/"/g, '""');
+                const date = event.event_date || '';
+                const daysUntil = event.days_until || 0;
+                const ticketsSold = event.tickets_sold || 0;
+                const totalTickets = event.total_tickets || 0;
+                const salesPercentage = event.sales_percentage || 0;
+
+                csvContent += `"${title}","${date}",${daysUntil},${ticketsSold},${totalTickets},${salesPercentage}%\n`;
+            });
+        } else {
+            csvContent += "No upcoming events found\n";
+        }
+        csvContent += "\n";
+
+        // Add top selling events
+        csvContent += "Top Selling Events\n";
+        csvContent += "Rank,Event Title,Tickets Sold,Revenue\n";
+        if (topSellingEvents && topSellingEvents.length > 0) {
+            topSellingEvents.forEach(function(event, index) {
+                const rank = index + 1;
+                const title = (event.event_title || '').replace(/"/g, '""');
+                const ticketsSold = event.tickets_sold || 0;
+                const revenue = event.revenue || 0;
+
+                csvContent += `${rank},"${title}",${ticketsSold},${revenue}\n`;
+            });
+        } else {
+            csvContent += "No sales data available\n";
+        }
+        csvContent += "\n";
+
+        // Add monthly statistics
+        csvContent += "Monthly Statistics (Last 6 Months)\n";
+        csvContent += "Month,Events Created,Tickets Sold,Revenue\n";
+        if (monthlyStats && monthlyStats.length > 0) {
+            monthlyStats.forEach(function(stat) {
+                const month = (stat.month || '').replace(/"/g, '""');
+                const eventsCreated = stat.events_created || 0;
+                const ticketsSold = stat.tickets_sold || 0;
+                const revenue = stat.revenue || 0;
+
+                csvContent += `"${month}",${eventsCreated},${ticketsSold},${revenue}\n`;
+            });
+        } else {
+            csvContent += "No monthly statistics available\n";
+        }
+        csvContent += "\n";
+
+        // Add category statistics
+        csvContent += "Category Statistics\n";
+        csvContent += "Category,Event Count,Tickets Sold,Revenue\n";
+        if (categoryStats && categoryStats.length > 0) {
+            categoryStats.forEach(function(category) {
+                const categoryName = (category.category_name || 'Unknown').replace(/"/g, '""');
+                const eventCount = category.event_count || 0;
+                const ticketsSold = category.tickets_sold || 0;
+                const revenue = category.revenue || 0;
+
+                csvContent += `"${categoryName}",${eventCount},${ticketsSold},${revenue}\n`;
+            });
+        } else {
+            csvContent += "No category statistics available\n";
+        }
 
         // Create download link
         const encodedUri = encodeURI(csvContent);

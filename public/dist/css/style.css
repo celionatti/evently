@@ -1124,7 +1124,7 @@ footer {
 }
 
 .event-hero-img {
-  height: 400px;
+  /* height: 400px; */
   object-fit: cover;
   width: 100%;
   border-radius: var(--radius-lg);
