@@ -73,6 +73,10 @@ class AdminEventController extends BaseController
     public function manage(Request $request, Response $response)
     {
         $this->view->setTitle("Eventlyy Dashboard | Manage Events");
+
+        clear_old_data();
+        clear_errors();
+
         // For organiser, only show their own events
         // For admin, show all events
         $queryOptions = [
@@ -211,7 +215,7 @@ class AdminEventController extends BaseController
             'event_title' => 'required|min:3',
             'category' => 'required',
             'description' => 'required|min:10',
-            'event_link' => 'unique:events.event_link',
+            'event_link' => 'unique:events.event_link|regex:/^[a-zA-Z0-9\-_]+$/|min:3|max:50',
             'event_image' => 'file|mimes:image/jpg,image/jpeg,image/png|maxSize:5120|min:1|max:' . self::MAX_UPLOAD_FILES,
             'venue' => 'required',
             'city' => 'required',
@@ -239,6 +243,15 @@ class AdminEventController extends BaseController
             $eventSlug = str_slug($data['event_title'], "_");
             $data['slug'] = $eventSlug;
             $data['user_id'] = auth()->id;
+
+            // Handle custom event link
+            if (empty($data['event_link'])) {
+                // If no custom link provided, generate one from title
+                $data['event_link'] = $this->generateEventLink($data['event_title']);
+            } else {
+                // Clean and validate the custom link
+                $data['event_link'] = $this->cleanEventLink($data['event_link']);
+            }
 
             // Handle file upload
             if ($request->hasFile('event_image') && $request->file('event_image')->isValid()) {
@@ -288,12 +301,13 @@ class AdminEventController extends BaseController
             });
 
             FlashMessage::setMessage("New Event Created!");
-            // After successful form processing
-            clear_old_data(); // Clear the old data
-            clear_errors();   // Clear any errors
+            // Clear form data after successful processing
+            clear_old_data();
+            clear_errors();
             return $response->redirect("/admin/events/manage");
         } catch (TreesException $e) {
             set_form_data($request->all());
+            set_form_error($request->getErrors()); // Use request errors if available
             FlashMessage::setMessage("Creation Failed! Please try again. Error: " . $e->getMessage(), 'danger');
             return $response->redirect("/admin/events/create");
         } catch (\RuntimeException $e) {
@@ -360,7 +374,8 @@ class AdminEventController extends BaseController
             'event_title' => 'required|min:3',
             'category' => 'required',
             'description' => 'required|min:10',
-            'event_link' => "unique:events.event_link,event_link!={$event->event_link}",
+            // 'event_link' => "unique:events.event_link,event_link!={$event->event_link}",
+            'event_link' => "unique:events.event_link,id!={$event->id}|regex:/^[a-zA-Z0-9\-_]+$/|min:3|max:50",
             'event_image' => 'file|mimes:image/jpg,image/jpeg,image/png|maxSize:5120|max:' . self::MAX_UPLOAD_FILES,
             'venue' => 'required',
             'city' => 'required',
@@ -461,10 +476,22 @@ class AdminEventController extends BaseController
             });
 
             FlashMessage::setMessage("Event Updated Successfully!");
+            // Clear form data after successful processing
+            clear_old_data();
+            clear_errors();
             return $response->redirect("/admin/events/manage");
         } catch (TreesException $e) {
             set_form_data($request->all());
+            set_form_error($request->getErrors());
             FlashMessage::setMessage("Update Failed! Please try again. Error: " . $e->getMessage(), 'danger');
+            return $response->redirect("/admin/events/edit/{$slug}");
+        } catch (\RuntimeException $e) {
+            set_form_data($request->all());
+            FlashMessage::setMessage("Update Failed! Please try again. Error: " . $e->getMessage(), 'danger');
+            return $response->redirect("/admin/events/edit/{$slug}");
+        } catch (\Exception $e) {
+            set_form_data($request->all());
+            FlashMessage::setMessage("Update Failed! Please try again. Unexpected error occurred.", 'danger');
             return $response->redirect("/admin/events/edit/{$slug}");
         }
     }
@@ -1021,6 +1048,46 @@ class AdminEventController extends BaseController
             ->get();
 
         return $results ?: [];
+    }
+
+    /**
+     * Generate a unique event link from title
+     */
+    private function generateEventLink(string $title): string
+    {
+        $baseLink = str_slug($title, '-');
+        $baseLink = substr($baseLink, 0, 45); // Limit length
+
+        $eventLink = $baseLink;
+        $counter = 1;
+
+        // Check for uniqueness and append counter if needed
+        while (Event::where(['event_link' => $eventLink])) {
+            $eventLink = $baseLink . '-' . $counter;
+            $counter++;
+
+            // Prevent infinite loop
+            if ($counter > 100) {
+                $eventLink = $baseLink . '-' . time();
+                break;
+            }
+        }
+
+        return $eventLink;
+    }
+
+    /**
+     * Clean and format custom event link
+     */
+    private function cleanEventLink(string $link): string
+    {
+        // Remove any invalid characters and convert to lowercase
+        $link = strtolower(trim($link));
+        $link = preg_replace('/[^a-z0-9\-_]/', '', $link);
+        $link = preg_replace('/[-_]+/', '-', $link); // Replace multiple dashes/underscores with single dash
+        $link = trim($link, '-_'); // Remove leading/trailing dashes/underscores
+
+        return $link;
     }
 
     public function __destruct()

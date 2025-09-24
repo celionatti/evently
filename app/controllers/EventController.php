@@ -207,9 +207,23 @@ class EventController extends BaseController
         return $this->render('event', $view);
     }
 
-    public function custom_event(Request $request, Response $response, $slug)
+    public function showByCustomLink(Request $request, Response $response, $eventLink)
     {
-        dd($slug);
+        $event = Event::findByEventLink($eventLink);
+
+        if(!$event) {
+            FlashMessage::setMessage("Event not found!", 'danger');
+            return $response->redirect("/events");
+        }
+        
+        // Check if event is active
+        if ($event->status !== 'active') {
+            FlashMessage::setMessage("This event is not available.", 'info');
+            return $response->redirect("/events");
+        }
+
+        // Redirect to main event page or show directly
+        return $response->redirect("/events/{$event->id}/{$event->slug}");
     }
 
     /**

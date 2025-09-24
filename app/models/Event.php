@@ -96,6 +96,13 @@ class Event extends Model implements ModelInterface
         return $results ? $results[0] : null;
     }
 
+    public static function findByEventLink(string $eventLink)
+    {
+        $conditions = ['event_link' => $eventLink];
+        $results = static::where($conditions);
+        return !empty($results) ? $results[0] : null;
+    }
+
     /**
      * Define the relationship with tickets
      */

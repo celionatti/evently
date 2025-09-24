@@ -31,7 +31,7 @@ $router->get('/', [SiteController::class, 'index']);
 $router->get('/about-us', [SiteController::class, 'about']);
 $router->get('/events', [EventController::class, 'events']);
 $router->get('/events/{id}/{slug}', [EventController::class, 'event']);
-$router->get('/events/{slug}', [EventController::class, 'custom_event']);
+$router->get('/e/{eventLink}', [EventController::class, 'showByCustomLink']);
 
 // SEO and Feed routes
 $router->get('/events/rss', [EventController::class, 'rss']);

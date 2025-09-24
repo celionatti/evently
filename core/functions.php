@@ -516,6 +516,24 @@ if (!function_exists('form_value')) {
     }
 }
 
+// For handling nested array values in forms
+if (!function_exists('form_array_value')) {
+    function form_array_value(string $path, $default = '')
+    {
+        $keys = explode('.', $path);
+        $data = old($keys[0], []);
+
+        for ($i = 1; $i < count($keys); $i++) {
+            if (!isset($data[$keys[$i]])) {
+                return $default;
+            }
+            $data = $data[$keys[$i]];
+        }
+
+        return $data;
+    }
+}
+
 if (!function_exists('selected')) {
     /**
      * Helper for select options - returns 'selected' if value matches

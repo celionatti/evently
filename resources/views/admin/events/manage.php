@@ -70,7 +70,8 @@ use Trees\Helper\Utils\TimeDateUtils;
                                                     {{{ getExcerpt($event->event_link, 22) }}}
                                                 </span>
                                                 <?php if ($event->event_link): ?>
-                                                    <button class="btn btn-ghost action-btn" onclick="copyToClipboard('{{{ $event->event_link }}}')" title="Copy link">
+                                                    <?php $shtlink = env("APP_URL") . "e/$event->event_link" ?>
+                                                    <button class="btn btn-ghost action-btn" onclick="copyToClipboard('{{{ $shtlink }}}')" title="Copy link">
                                                         <i class="bi bi-clipboard"></i>
                                                     </button>
                                                 <?php endif; ?>

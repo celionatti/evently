@@ -153,3 +153,34 @@
 [2025-09-24 05:09:56] [ERROR] SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''5'' at line 1 {"query":"","params":[],"error_code":""}
 [2025-09-24 05:09:56] [ERROR] SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''5'' at line 1 {"query":"","params":[],"error_code":""}
 [2025-09-24 05:09:56] [ERROR] SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''5'' at line 8 {"query":"","params":[],"error_code":""}
+[2025-09-24 11:45:27] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 11:45:28] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 11:45:34] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 11:45:34] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 11:51:38] [ERROR] Image processing failed: Unsupported image format: C:\xampp\tmp\phpB408.tmp_processed
+[2025-09-24 11:51:38] [INFO] File uploaded successfully: uploads/events/68d3cd39d4f7c_a679d6fc.jpg
+[2025-09-24 11:51:38] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 11:51:39] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 20:43:41] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 20:43:41] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 20:43:51] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 20:43:51] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 21:19:15] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 21:19:15] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 21:19:19] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 21:19:20] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 21:19:25] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 21:19:25] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 21:23:21] [ERROR] Image processing failed: Unsupported image format: C:\xampp\tmp\php1EE8.tmp_processed
+[2025-09-24 21:23:21] [INFO] File uploaded successfully: uploads/events/68d453388e865_418b2af8.png
+[2025-09-24 21:23:21] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 21:23:21] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 21:30:01] [ERROR] Image processing failed: Unsupported image format: C:\xampp\tmp\php3C09.tmp_processed
+[2025-09-24 21:30:01] [INFO] File uploaded successfully: uploads/events/68d454c9401d2_feec046a.jpg
+[2025-09-24 21:30:01] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 21:30:02] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 21:31:21] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 21:31:21] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 21:54:39] [ERROR] SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''5'' at line 1 {"query":"","params":[],"error_code":""}
+[2025-09-24 21:54:39] [ERROR] SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''5'' at line 1 {"query":"","params":[],"error_code":""}
+[2025-09-24 21:54:39] [ERROR] SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''5'' at line 8 {"query":"","params":[],"error_code":""}
