@@ -219,7 +219,7 @@ class AdminEventController extends BaseController
             'start_time' => 'required',
             'phone' => 'required',
             'mail' => 'required|email',
-            'social' => 'required|url',
+            'social' => 'url',
             'ticket_sales' => 'required',
             'status' => 'required'
         ];
@@ -365,7 +365,7 @@ class AdminEventController extends BaseController
             'start_time' => 'required',
             'phone' => 'required',
             'mail' => 'required|email',
-            'social' => 'required|url',
+            'social' => 'url',
             'ticket_sales' => 'required',
             'status' => 'required'
         ];

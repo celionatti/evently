@@ -1,0 +1,129 @@
+[2025-09-24 00:26:14] ErrorException: foreach() argument must be of type array|object, bool given in C:\xampp\htdocs\evently\app\controllers\AdminController.php on line 273
+Stack trace:
+#0 C:\xampp\htdocs\evently\app\controllers\AdminController.php(273): Trees\Exception\Handler\ExceptionHandler->handleError(2, 'foreach() argum...', 'C:\\xampp\\htdocs...', 273)
+#1 C:\xampp\htdocs\evently\app\controllers\AdminController.php(53): App\controllers\AdminController->getRecentEvents(5)
+#2 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminController->dashboard(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#3 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'dashboard', Array)
+#4 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#5 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#6 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#7 {main}
+
+[2025-09-24 00:27:44] ErrorException: foreach() argument must be of type array|object, bool given in C:\xampp\htdocs\evently\app\controllers\AdminController.php on line 273
+Stack trace:
+#0 C:\xampp\htdocs\evently\app\controllers\AdminController.php(273): Trees\Exception\Handler\ExceptionHandler->handleError(2, 'foreach() argum...', 'C:\\xampp\\htdocs...', 273)
+#1 C:\xampp\htdocs\evently\app\controllers\AdminController.php(53): App\controllers\AdminController->getRecentEvents(5)
+#2 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminController->dashboard(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#3 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'dashboard', Array)
+#4 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#5 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#6 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#7 {main}
+
+[2025-09-24 00:39:30] Error: Cannot use object of type App\models\Event as array in C:\xampp\htdocs\evently\app\controllers\AdminController.php on line 276
+Stack trace:
+#0 C:\xampp\htdocs\evently\app\controllers\AdminController.php(53): App\controllers\AdminController->getRecentEvents(5)
+#1 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminController->dashboard(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#2 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'dashboard', Array)
+#3 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#4 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#5 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#6 {main}
+
+[2025-09-24 00:40:08] Error: Cannot use object of type App\models\Event as array in C:\xampp\htdocs\evently\app\controllers\AdminController.php on line 277
+Stack trace:
+#0 C:\xampp\htdocs\evently\app\controllers\AdminController.php(53): App\controllers\AdminController->getRecentEvents(5)
+#1 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminController->dashboard(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#2 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'dashboard', Array)
+#3 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#4 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#5 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#6 {main}
+
+[2025-09-24 00:41:07] Error: Cannot use object of type App\models\Event as array in C:\xampp\htdocs\evently\app\controllers\AdminController.php on line 281
+Stack trace:
+#0 C:\xampp\htdocs\evently\app\controllers\AdminController.php(53): App\controllers\AdminController->getRecentEvents(5)
+#1 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminController->dashboard(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#2 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'dashboard', Array)
+#3 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#4 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#5 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#6 {main}
+
+[2025-09-24 00:41:23] Error: Cannot use object of type App\models\Event as array in C:\xampp\htdocs\evently\app\controllers\AdminController.php on line 288
+Stack trace:
+#0 C:\xampp\htdocs\evently\app\controllers\AdminController.php(53): App\controllers\AdminController->getRecentEvents(5)
+#1 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminController->dashboard(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#2 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'dashboard', Array)
+#3 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#4 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#5 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#6 {main}
+
+[2025-09-24 00:41:40] ErrorException: foreach() argument must be of type array|object, bool given in C:\xampp\htdocs\evently\app\controllers\AdminController.php on line 309
+Stack trace:
+#0 C:\xampp\htdocs\evently\app\controllers\AdminController.php(309): Trees\Exception\Handler\ExceptionHandler->handleError(2, 'foreach() argum...', 'C:\\xampp\\htdocs...', 309)
+#1 C:\xampp\htdocs\evently\app\controllers\AdminController.php(54): App\controllers\AdminController->getUpcomingEvents(5)
+#2 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminController->dashboard(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#3 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'dashboard', Array)
+#4 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#5 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#6 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#7 {main}
+
+[2025-09-24 00:51:26] ErrorException: Undefined array key "total_events" in C:\xampp\htdocs\evently\storage\cache\temp_68d3327e43cb52.56285963.php on line 32
+Stack trace:
+#0 C:\xampp\htdocs\evently\storage\cache\temp_68d3327e43cb52.56285963.php(32): Trees\Exception\Handler\ExceptionHandler->handleError(2, 'Undefined array...', 'C:\\xampp\\htdocs...', 32)
+#1 C:\xampp\htdocs\evently\core\View\View.php(908): include('C:\\xampp\\htdocs...')
+#2 C:\xampp\htdocs\evently\core\View\View.php(647): Trees\View\View->evaluateTemplate('<?php\r\n?>\r\n\r\n<?...', Array, 'C:\\xampp\\htdocs...')
+#3 C:\xampp\htdocs\evently\core\View\View.php(496): Trees\View\View->renderTemplate('admin/dashboard', Array)
+#4 C:\xampp\htdocs\evently\core\Controller\Controller.php(34): Trees\View\View->render('admin/dashboard', Array)
+#5 C:\xampp\htdocs\evently\app\controllers\AdminController.php(53): Trees\Controller\Controller->render('admin/dashboard', Array)
+#6 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminController->dashboard(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#7 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'dashboard', Array)
+#8 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#9 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#10 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#11 {main}
+
+[2025-09-24 01:15:49] ErrorException: Undefined array key "total_events" in C:\xampp\htdocs\evently\storage\cache\temp_68d338356877f4.38006558.php on line 32
+Stack trace:
+#0 C:\xampp\htdocs\evently\storage\cache\temp_68d338356877f4.38006558.php(32): Trees\Exception\Handler\ExceptionHandler->handleError(2, 'Undefined array...', 'C:\\xampp\\htdocs...', 32)
+#1 C:\xampp\htdocs\evently\core\View\View.php(908): include('C:\\xampp\\htdocs...')
+#2 C:\xampp\htdocs\evently\core\View\View.php(647): Trees\View\View->evaluateTemplate('<?php\r\n?>\r\n\r\n<?...', Array, 'C:\\xampp\\htdocs...')
+#3 C:\xampp\htdocs\evently\core\View\View.php(496): Trees\View\View->renderTemplate('admin/dashboard', Array)
+#4 C:\xampp\htdocs\evently\core\Controller\Controller.php(34): Trees\View\View->render('admin/dashboard', Array)
+#5 C:\xampp\htdocs\evently\app\controllers\AdminController.php(62): Trees\Controller\Controller->render('admin/dashboard', Array)
+#6 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminController->dashboard(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#7 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'dashboard', Array)
+#8 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#9 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#10 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#11 {main}
+
+[2025-09-24 01:30:52] ErrorException: Undefined array key "total_events" in C:\xampp\htdocs\evently\storage\cache\temp_68d33bbc7651b8.00082035.php on line 32
+Stack trace:
+#0 C:\xampp\htdocs\evently\storage\cache\temp_68d33bbc7651b8.00082035.php(32): Trees\Exception\Handler\ExceptionHandler->handleError(2, 'Undefined array...', 'C:\\xampp\\htdocs...', 32)
+#1 C:\xampp\htdocs\evently\core\View\View.php(908): include('C:\\xampp\\htdocs...')
+#2 C:\xampp\htdocs\evently\core\View\View.php(647): Trees\View\View->evaluateTemplate('<?php\r\n?>\r\n\r\n<?...', Array, 'C:\\xampp\\htdocs...')
+#3 C:\xampp\htdocs\evently\core\View\View.php(496): Trees\View\View->renderTemplate('admin/dashboard', Array)
+#4 C:\xampp\htdocs\evently\core\Controller\Controller.php(34): Trees\View\View->render('admin/dashboard', Array)
+#5 C:\xampp\htdocs\evently\app\controllers\AdminController.php(62): Trees\Controller\Controller->render('admin/dashboard', Array)
+#6 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminController->dashboard(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#7 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'dashboard', Array)
+#8 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#9 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#10 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#11 {main}
+
+[2025-09-24 01:50:10] ErrorException: foreach() argument must be of type array|object, bool given in C:\xampp\htdocs\evently\app\controllers\AdminController.php on line 149
+Stack trace:
+#0 C:\xampp\htdocs\evently\app\controllers\AdminController.php(149): Trees\Exception\Handler\ExceptionHandler->handleError(2, 'foreach() argum...', 'C:\\xampp\\htdocs...', 149)
+#1 C:\xampp\htdocs\evently\app\controllers\AdminController.php(57): App\controllers\AdminController->getRecentEvents(5)
+#2 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminController->dashboard(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#3 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'dashboard', Array)
+#4 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#5 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#6 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#7 {main}
+

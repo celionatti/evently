@@ -1,161 +1,14 @@
 <?php
-
-declare(strict_types=1);
-
 ?>
 
-@section('styles')
-<style>
-    .stat-card {
-        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 12px;
-        padding: 1.5rem;
-        position: relative;
-        overflow: hidden;
-        transition: all 0.3s ease;
-    }
-
-    .stat-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        border-color: rgba(255, 255, 255, 0.2);
-    }
-
-    .stat-card .stat-icon {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        font-size: 2rem;
-        opacity: 0.3;
-    }
-
-    .stat-content {
-        position: relative;
-        z-index: 1;
-    }
-
-    .stat-number {
-        font-size: 2.5rem;
-        font-weight: 700;
-        color: #fff;
-        line-height: 1;
-        margin-bottom: 0.5rem;
-    }
-
-    .dashboard-card {
-        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 12px;
-        padding: 1.5rem;
-        transition: all 0.3s ease;
-    }
-
-    .dashboard-card:hover {
-        border-color: rgba(255, 255, 255, 0.2);
-    }
-
-    .upcoming-event-item {
-        padding: 1rem 0;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .upcoming-event-item:last-child {
-        border-bottom: none;
-    }
-
-    .top-event-item {
-        padding: 1rem 0;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .top-event-item:last-child {
-        border-bottom: none;
-    }
-
-    .rank-badge {
-        width: 40px;
-        height: 40px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        color: white;
-        font-size: 0.9rem;
-    }
-
-    .insight-item {
-        text-align: center;
-        padding: 1rem;
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 8px;
-    }
-
-    .insight-value {
-        font-size: 2rem;
-        font-weight: 700;
-        color: #fff;
-        margin-bottom: 0.5rem;
-    }
-
-    .insight-label {
-        font-size: 0.875rem;
-        color: #a0a0a0;
-    }
-
-    .progress {
-        background-color: rgba(255, 255, 255, 0.1);
-    }
-
-    .progress-bar {
-        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-    }
-
-    .btn-pulse {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border: none;
-        animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-        0% {
-            box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.7);
-        }
-
-        70% {
-            box-shadow: 0 0 0 10px rgba(102, 126, 234, 0);
-        }
-
-        100% {
-            box-shadow: 0 0 0 0 rgba(102, 126, 234, 0);
-        }
-    }
-
-    .btn-ghost {
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        color: #fff;
-        transition: all 0.3s ease;
-    }
-
-    .btn-ghost:hover {
-        background: rgba(255, 255, 255, 0.2);
-        border-color: rgba(255, 255, 255, 0.3);
-        color: #fff;
-    }
-</style>
-@endsection
-
-@section('content')
+<?php $this->start('content'); ?>
 <!-- Dashboard Section -->
 <div id="dashboard-section" class="content-section">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h1 class="h2 mb-1">Dashboard</h1>
             <p class="text-secondary">
-                Welcome back {{ $user->name . ' ' . ($user->other_name ?? '') }}!
+                Welcome back <?php echo $this->escape($user->name . ' ' . ($user->other_name ?? '')); ?>! 
                 <?php if (isOrganiser()): ?>
                     Here's an overview of your events and performance.
                 <?php else: ?>
@@ -184,7 +37,7 @@ declare(strict_types=1);
                 </div>
             </div>
         </div>
-
+        
         <div class="col-lg-3 col-md-6">
             <div class="stat-card">
                 <div class="stat-icon">
@@ -200,7 +53,7 @@ declare(strict_types=1);
                 </div>
             </div>
         </div>
-
+        
         <div class="col-lg-3 col-md-6">
             <div class="stat-card">
                 <div class="stat-icon">
@@ -215,7 +68,7 @@ declare(strict_types=1);
                 </div>
             </div>
         </div>
-
+        
         <div class="col-lg-3 col-md-6">
             <div class="stat-card">
                 <div class="stat-icon">
@@ -246,7 +99,7 @@ declare(strict_types=1);
                 <canvas id="ticketSalesChart" width="400" height="120"></canvas>
             </div>
         </div>
-
+        
         <div class="col-lg-4">
             <div class="dashboard-card">
                 <h5 class="mb-3">Category Performance</h5>
@@ -275,7 +128,7 @@ declare(strict_types=1);
                         View All <i class="bi bi-arrow-right ms-1"></i>
                     </a>
                 </div>
-
+                
                 <div class="table-responsive">
                     <table class="table table-dark table-hover">
                         <thead>
@@ -290,24 +143,24 @@ declare(strict_types=1);
                         <tbody>
                             <?php if (!empty($recentEvents)): ?>
                                 <?php foreach ($recentEvents as $event): ?>
-                                    <tr>
-                                        <td>
-                                            <div class="fw-semibold"><?= htmlspecialchars($event['event_title']) ?></div>
-                                            <small class="text-secondary"><?= htmlspecialchars($event['venue'] ?? 'TBA') ?></small>
-                                        </td>
-                                        <td><?= date('M j, Y', strtotime($event['event_date'])) ?></td>
-                                        <td><?= $event['attendee_count'] ?></td>
-                                        <td>₦<?= number_format($event['revenue']) ?></td>
-                                        <td>
-                                            <span class="badge bg-<?= $event['status'] === 'active' ? 'success' : 'secondary' ?>">
-                                                <?= ucfirst($event['status']) ?>
-                                            </span>
-                                        </td>
-                                    </tr>
+                                <tr>
+                                    <td>
+                                        <div class="fw-semibold"><?= htmlspecialchars($event['event_title']) ?></div>
+                                        <small class="text-secondary"><?= htmlspecialchars($event['venue'] ?? 'TBA') ?></small>
+                                    </td>
+                                    <td><?= date('M j, Y', strtotime($event['event_date'])) ?></td>
+                                    <td><?= $event['attendee_count'] ?></td>
+                                    <td>₦<?= number_format($event['revenue']) ?></td>
+                                    <td>
+                                        <span class="badge bg-<?= $event['status'] === 'active' ? 'success' : 'secondary' ?>">
+                                            <?= ucfirst($event['status']) ?>
+                                        </span>
+                                    </td>
+                                </tr>
                                 <?php endforeach; ?>
                             <?php else: ?>
                                 <tr>
-                                    <td colspan="5" class="text-center text-white py-3">
+                                    <td colspan="5" class="text-center text-muted py-3">
                                         No events found
                                     </td>
                                 </tr>
@@ -317,36 +170,36 @@ declare(strict_types=1);
                 </div>
             </div>
         </div>
-
+        
         <div class="col-lg-4">
             <div class="dashboard-card mb-4">
                 <h5 class="mb-3">Upcoming Events</h5>
                 <?php if (!empty($upcomingEvents)): ?>
                     <?php foreach ($upcomingEvents as $event): ?>
-                        <div class="upcoming-event-item">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-1"><?= htmlspecialchars($event['event_title']) ?></h6>
-                                    <small class="text-secondary">
-                                        <i class="bi bi-calendar-event me-1"></i>
-                                        <?= date('M j, Y', strtotime($event['event_date'])) ?>
-                                    </small>
-                                </div>
-                                <small class="badge bg-info"><?= $event['days_until'] ?> days</small>
+                    <div class="upcoming-event-item">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1"><?= htmlspecialchars($event['event_title']) ?></h6>
+                                <small class="text-secondary">
+                                    <i class="bi bi-calendar-event me-1"></i>
+                                    <?= date('M j, Y', strtotime($event['event_date'])) ?>
+                                </small>
                             </div>
-                            <div class="progress mb-2" style="height: 4px;">
-                                <div class="progress-bar" role="progressbar"
-                                    style="width: <?= $event['sales_percentage'] ?>%"
-                                    aria-valuenow="<?= $event['sales_percentage'] ?>"
-                                    aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                            <small class="text-secondary">
-                                <?= $event['tickets_sold'] ?>/<?= $event['total_tickets'] ?> tickets sold (<?= $event['sales_percentage'] ?>%)
-                            </small>
+                            <small class="badge bg-info"><?= $event['days_until'] ?> days</small>
                         </div>
+                        <div class="progress mb-2" style="height: 4px;">
+                            <div class="progress-bar" role="progressbar" 
+                                 style="width: <?= $event['sales_percentage'] ?>%"
+                                 aria-valuenow="<?= $event['sales_percentage'] ?>" 
+                                 aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <small class="text-secondary">
+                            <?= $event['tickets_sold'] ?>/<?= $event['total_tickets'] ?> tickets sold (<?= $event['sales_percentage'] ?>%)
+                        </small>
+                    </div>
                     <?php endforeach; ?>
                 <?php else: ?>
-                    <div class="text-center text-white py-3">
+                    <div class="text-center text-muted py-3">
                         <i class="bi bi-calendar-x mb-2" style="font-size: 2rem;"></i>
                         <p class="mb-0">No upcoming events</p>
                     </div>
@@ -357,28 +210,28 @@ declare(strict_types=1);
                 <h5 class="mb-3">Top Selling Events</h5>
                 <?php if (!empty($topSellingEvents)): ?>
                     <?php foreach ($topSellingEvents as $index => $event): ?>
-                        <div class="top-event-item">
-                            <div class="d-flex align-items-center">
-                                <div class="rank-badge me-3">
-                                    #<?= $index + 1 ?>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <h6 class="mb-1"><?= htmlspecialchars($event['event_title']) ?></h6>
-                                    <div class="d-flex justify-content-between">
-                                        <small class="text-success">
-                                            <i class="bi bi-ticket-perforated me-1"></i>
-                                            <?= $event['tickets_sold'] ?> tickets
-                                        </small>
-                                        <small class="text-warning">
-                                            ₦<?= number_format($event['revenue'] ?? 0) ?>
-                                        </small>
-                                    </div>
+                    <div class="top-event-item">
+                        <div class="d-flex align-items-center">
+                            <div class="rank-badge me-3">
+                                #<?= $index + 1 ?>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1"><?= htmlspecialchars($event['event_title']) ?></h6>
+                                <div class="d-flex justify-content-between">
+                                    <small class="text-success">
+                                        <i class="bi bi-ticket-perforated me-1"></i>
+                                        <?= $event['tickets_sold'] ?> tickets
+                                    </small>
+                                    <small class="text-warning">
+                                        ₦<?= number_format($event['revenue'] ?? 0) ?>
+                                    </small>
                                 </div>
                             </div>
                         </div>
+                    </div>
                     <?php endforeach; ?>
                 <?php else: ?>
-                    <div class="text-center text-white py-3">
+                    <div class="text-center text-muted py-3">
                         <i class="bi bi-graph-up mb-2" style="font-size: 2rem;"></i>
                         <p class="mb-0">No sales data yet</p>
                     </div>
@@ -409,11 +262,11 @@ declare(strict_types=1);
                         </button>
                     </div>
                     <?php if (isAdmin()): ?>
-                        <div class="col-lg-3 col-md-6">
-                            <a href="<?= url('/admin/events/cleanup') ?>" class="btn btn-ghost w-100">
-                                <i class="bi bi-trash3 me-2"></i>Cleanup Tools
-                            </a>
-                        </div>
+                    <div class="col-lg-3 col-md-6">
+                        <a href="<?= url('/admin/events/cleanup') ?>" class="btn btn-ghost w-100">
+                            <i class="bi bi-trash3 me-2"></i>Cleanup Tools
+                        </a>
+                    </div>
                     <?php endif; ?>
                 </div>
             </div>
@@ -447,8 +300,8 @@ declare(strict_types=1);
                     <div class="col-md-3">
                         <div class="insight-item">
                             <div class="insight-value">
-                                <?php
-                                $conversionRate = $analytics['total_events'] > 0 ?
+                                <?php 
+                                $conversionRate = $analytics['total_events'] > 0 ? 
                                     round(($analytics['confirmed_attendees'] / $analytics['total_events']) * 100, 1) : 0;
                                 echo $conversionRate;
                                 ?>%
@@ -461,9 +314,145 @@ declare(strict_types=1);
         </div>
     </div>
 </div>
-@endsection
+<?php $this->end(); ?>
 
-@section('scripts')
+<?php $this->start('styles'); ?>
+<style>
+.stat-card {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.stat-card .stat-icon {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 2rem;
+    opacity: 0.3;
+}
+
+.stat-content {
+    position: relative;
+    z-index: 1;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+}
+
+.dashboard-card {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.dashboard-card:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.upcoming-event-item {
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.upcoming-event-item:last-child {
+    border-bottom: none;
+}
+
+.top-event-item {
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.top-event-item:last-child {
+    border-bottom: none;
+}
+
+.rank-badge {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: white;
+    font-size: 0.9rem;
+}
+
+.insight-item {
+    text-align: center;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+}
+
+.insight-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 0.5rem;
+}
+
+.insight-label {
+    font-size: 0.875rem;
+    color: #a0a0a0;
+}
+
+.progress {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.progress-bar {
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+}
+
+.btn-pulse {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(102, 126, 234, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(102, 126, 234, 0); }
+}
+
+.btn-ghost {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    transition: all 0.3s ease;
+}
+
+.btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #fff;
+}
+</style>
+<?php $this->end(); ?>
+
+<?php $this->start('scripts'); ?>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 <script>
     // Chart.js configuration
@@ -489,7 +478,7 @@ declare(strict_types=1);
         },
         options: {
             responsive: true,
-            maintainAspectRatio: true,
+            maintainAspectRatio: false,
             plugins: {
                 legend: {
                     display: false
@@ -535,7 +524,7 @@ declare(strict_types=1);
         },
         options: {
             responsive: true,
-            maintainAspectRatio: true,
+            maintainAspectRatio: false,
             plugins: {
                 legend: {
                     display: false
@@ -585,7 +574,7 @@ declare(strict_types=1);
         },
         options: {
             responsive: true,
-            maintainAspectRatio: true,
+            maintainAspectRatio: false,
             plugins: {
                 legend: {
                     position: 'bottom',
@@ -602,7 +591,7 @@ declare(strict_types=1);
     function exportDashboardData() {
         // Create CSV content
         let csvContent = "data:text/csv;charset=utf-8,";
-
+        
         // Add analytics summary
         csvContent += "Dashboard Analytics Summary\n";
         csvContent += "Total Events,<?= $analytics['total_events'] ?>\n";
@@ -612,7 +601,7 @@ declare(strict_types=1);
         csvContent += "Total Revenue,<?= $analytics['total_revenue'] ?>\n";
         csvContent += "Total Attendees,<?= $analytics['confirmed_attendees'] ?>\n";
         csvContent += "\n";
-
+        
         // Add recent events
         csvContent += "Recent Events\n";
         csvContent += "Event Title,Date,Attendees,Revenue,Status\n";
@@ -621,7 +610,7 @@ declare(strict_types=1);
                 csvContent += "<?= addslashes($event['event_title']) ?>,<?= $event['event_date'] ?>,<?= $event['attendee_count'] ?>,<?= $event['revenue'] ?>,<?= $event['status'] ?>\n";
             <?php endforeach; ?>
         <?php endif; ?>
-
+        
         // Create download link
         const encodedUri = encodeURI(csvContent);
         const link = document.createElement("a");
@@ -637,4 +626,4 @@ declare(strict_types=1);
         location.reload();
     }, 300000);
 </script>
-@endsection
+<?php $this->end(); ?>
