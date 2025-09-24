@@ -20,6 +20,7 @@ class Request
 {
     private array $queryParams;
     private array $bodyParams;
+    private array $rawBodyParams = []; // Store unsanitized body params
     private array $serverParams;
     private array $cookies;
     private array $files;
@@ -30,6 +31,50 @@ class Request
     private array $errors = [];
     private array $validated = [];
 
+    private array $htmlAllowedFields = [
+        'content',
+        'body',
+        'description',
+        'html_content',
+        'post_content',
+        'article_content',
+        'bio',
+        'about'
+    ];
+
+    private array $allowedHtmlTags = [
+        'p',
+        'br',
+        'strong',
+        'em',
+        'b',
+        'i',
+        'u',
+        'ul',
+        'ol',
+        'li',
+        'h1',
+        'h2',
+        'h3',
+        'h4',
+        'h5',
+        'h6',
+        'blockquote',
+        'code',
+        'pre',
+        'a',
+        'img',
+        'div',
+        'span',
+        'table',
+        'tr',
+        'td',
+        'th',
+        'thead',
+        'tbody',
+        'tfoot'
+    ];
+
     public function __construct(
         array $query = [],
         array $body = [],
@@ -38,10 +83,11 @@ class Request
         array $files = [],
         string $content = ''
     ) {
-        $this->queryParams = $this->sanitizeArray($query);
-        $this->bodyParams = $this->sanitizeArray($body);
+        $this->rawBodyParams = $body; // Store raw body params before sanitization
+        $this->queryParams = $this->sanitizeArray($query, 'query');
+        $this->bodyParams = $this->sanitizeArray($body, 'body');
         $this->serverParams = $server;
-        $this->cookies = $this->sanitizeArray($cookies);
+        $this->cookies = $this->sanitizeArray($cookies, 'query');
         $this->files = $this->processFiles($files);
         $this->content = $content;
         $this->method = $this->determineMethod();
@@ -135,13 +181,13 @@ class Request
         $scheme = $this->getScheme();
         $host = $this->getHost();
         $port = $this->getPort();
-        
+
         // Only include port if it's non-standard
         $standardPorts = ['http' => 80, 'https' => 443];
         if ($port !== $standardPorts[$scheme]) {
             $host .= ':' . $port;
         }
-        
+
         return "{$scheme}://{$host}";
     }
 
@@ -363,6 +409,52 @@ class Request
         return (string) $this->input($key, $default);
     }
 
+    /**
+     * Get HTML content safely with basic sanitization
+     */
+    public function htmlContent(string $key, string $default = ''): string
+    {
+        $value = $this->rawInput($key, $default);
+
+        if (empty($value)) {
+            return $default;
+        }
+
+        // Basic security sanitization for HTML
+        $allowedTags = '<' . implode('><', $this->allowedHtmlTags) . '>';
+        $value = strip_tags((string)$value, $allowedTags);
+
+        // Remove potentially dangerous attributes (more comprehensive)
+        $value = preg_replace('/<([a-z][a-z0-9]*)[^>]*?(on\w+\s*=|javascript:|data:\s*text\/html|vbscript:|mocha:|livescript:)[^>]*?>/i', '<$1>', $value);
+
+        // Remove style attributes that could contain dangerous CSS
+        $value = preg_replace('/<([a-z][a-z0-9]*)[^>]*?\s+style\s*=[^>]*?>/i', '<$1>', $value);
+
+        // Clean up any empty tags
+        $value = preg_replace('/<([a-z]+)[^>]*?>\s*<\/\1>/i', '', $value);
+
+        return trim($value);
+    }
+
+    /**
+     * Get raw body parameter without sanitization
+     */
+    public function rawBody(?string $key = null, $default = null)
+    {
+        if ($key === null) {
+            return $this->rawBodyParams;
+        }
+        return $this->rawBodyParams[$key] ?? $default;
+    }
+
+    /**
+     * Get specific input without sanitization
+     */
+    public function rawInput(string $key, mixed $default = null): mixed
+    {
+        return $this->rawBodyParams[$key] ?? $this->queryParams[$key] ?? $default;
+    }
+
     public function isMethod(string $method): bool
     {
         return strtoupper($method) === $this->method;
@@ -477,6 +569,39 @@ class Request
         return preg_match('/Bearer\s+(\S+)/', $header, $matches) ? $matches[1] : null;
     }
 
+    /**
+     * Add fields that should allow HTML
+     */
+    public function allowHtmlFor(array $fields): void
+    {
+        $this->htmlAllowedFields = array_merge($this->htmlAllowedFields, $fields);
+        $this->htmlAllowedFields = array_unique($this->htmlAllowedFields);
+    }
+
+    /**
+     * Set allowed HTML tags for htmlContent method
+     */
+    public function setAllowedHtmlTags(array $tags): void
+    {
+        $this->allowedHtmlTags = $tags;
+    }
+
+    /**
+     * Get current allowed HTML tags
+     */
+    public function getAllowedHtmlTags(): array
+    {
+        return $this->allowedHtmlTags;
+    }
+
+    /**
+     * Get current HTML allowed fields
+     */
+    public function getHtmlAllowedFields(): array
+    {
+        return $this->htmlAllowedFields;
+    }
+
     private function determineMethod(): string
     {
         $method = strtoupper($this->serverParams['REQUEST_METHOD'] ?? 'GET');
@@ -506,22 +631,46 @@ class Request
         return $headers;
     }
 
-    private function sanitizeArray(array $data): array
+    private function sanitizeArray(array $data, string $type = 'body'): array
     {
-        return array_map(fn($value) => $this->sanitize($value), $data);
+        $sanitized = [];
+        foreach ($data as $key => $value) {
+            $allowHtml = $type === 'body' && in_array($key, $this->htmlAllowedFields);
+            $sanitized[$key] = $this->sanitize($value, $allowHtml);
+        }
+        return $sanitized;
     }
 
-    private function sanitize(mixed $value): mixed
+    private function sanitize(mixed $value, bool $allowHtml = false): mixed
     {
         if (is_array($value)) {
-            return array_map([$this, 'sanitize'], $value);
+            return array_map(fn($item) => $this->sanitize($item, $allowHtml), $value);
         }
 
         if (is_numeric($value)) {
             return filter_var($value, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
         }
 
-        $value = strip_tags((string)$value);
+        // Convert to string
+        $value = (string)$value;
+
+        // Allow HTML for specific fields
+        if ($allowHtml) {
+            // Basic sanitization for HTML content - remove potentially dangerous tags but keep allowed ones
+            $allowedTags = '<' . implode('><', $this->allowedHtmlTags) . '>';
+            $value = strip_tags($value, $allowedTags);
+
+            // Remove dangerous attributes (more comprehensive)
+            $value = preg_replace('/<([a-z][a-z0-9]*)[^>]*?(on\w+\s*=|javascript:|data:\s*text\/html|vbscript:|mocha:|livescript:)[^>]*?>/i', '<$1>', $value);
+
+            // Remove style attributes that could contain dangerous CSS
+            $value = preg_replace('/<([a-z][a-z0-9]*)[^>]*?\s+style\s*=[^>]*?>/i', '<$1>', $value);
+
+            return $value;
+        }
+
+        // Default sanitization for regular text
+        $value = strip_tags($value);
         return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     }
 
@@ -574,7 +723,9 @@ class Request
                     return array_map(fn($f) => $this->fileToArray($f), $file);
                 }
                 return $this->fileToArray($file);
-            }, $this->files)
+            }, $this->files),
+            'html_allowed_fields' => $this->htmlAllowedFields,
+            'allowed_html_tags' => $this->allowedHtmlTags
         ];
     }
 

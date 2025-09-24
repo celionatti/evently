@@ -120,3 +120,33 @@
 [2025-09-24 03:29:10] [ERROR] SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''5'' at line 1 {"query":"","params":[],"error_code":""}
 [2025-09-24 03:29:10] [ERROR] SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''5'' at line 1 {"query":"","params":[],"error_code":""}
 [2025-09-24 03:29:10] [ERROR] SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''5'' at line 9 {"query":"","params":[],"error_code":""}
+[2025-09-24 04:11:37] [ERROR] SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''5'' at line 1 {"query":"","params":[],"error_code":""}
+[2025-09-24 04:11:37] [ERROR] SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''5'' at line 1 {"query":"","params":[],"error_code":""}
+[2025-09-24 04:11:37] [ERROR] SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''5'' at line 9 {"query":"","params":[],"error_code":""}
+[2025-09-24 04:23:52] [ERROR] SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''5'' at line 1 {"query":"","params":[],"error_code":""}
+[2025-09-24 04:23:52] [ERROR] SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''5'' at line 1 {"query":"","params":[],"error_code":""}
+[2025-09-24 04:23:52] [ERROR] SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''5'' at line 8 {"query":"","params":[],"error_code":""}
+[2025-09-24 04:24:12] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 04:24:12] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 04:25:10] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 04:25:10] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 04:28:17] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 04:28:17] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 04:28:54] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 04:28:54] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 04:33:34] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 04:33:34] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 04:34:24] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 04:34:24] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 04:36:20] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 04:36:20] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 04:37:23] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 04:37:23] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 04:39:14] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 04:39:14] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 04:43:52] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 04:43:52] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 04:45:18] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 04:45:18] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 04:46:29] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 04:46:29] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
