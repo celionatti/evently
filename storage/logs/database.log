@@ -150,3 +150,6 @@
 [2025-09-24 04:45:18] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
 [2025-09-24 04:46:29] [ERROR] There is already an active transaction {"query":"","params":[],"error_code":""}
 [2025-09-24 04:46:29] [ERROR] There is no active transaction {"query":"","params":[],"error_code":""}
+[2025-09-24 05:09:56] [ERROR] SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''5'' at line 1 {"query":"","params":[],"error_code":""}
+[2025-09-24 05:09:56] [ERROR] SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''5'' at line 1 {"query":"","params":[],"error_code":""}
+[2025-09-24 05:09:56] [ERROR] SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''5'' at line 8 {"query":"","params":[],"error_code":""}

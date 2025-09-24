@@ -333,9 +333,6 @@ if (!function_exists('get_form_data')) {
             return $default;
         }
 
-        // Mark that we've shown this data (so it won't show again)
-        $_SESSION['__tre_form_data_show'] = false;
-
         if ($key === null) {
             return $_SESSION['__tre_form_data'] ?? $default;
         }
@@ -356,7 +353,7 @@ if (!function_exists('remove_form_data')) {
 
 if (!function_exists('old')) {
     /**
-     * Retrieve old form input (flash data - cleared after first access)
+     * Retrieve old form input (flash data - available for entire request cycle)
      *
      * @param string $key The input field name
      * @param mixed $default Default value if not found
@@ -376,11 +373,45 @@ if (!function_exists('old')) {
         // Get the value if it exists
         $value = $_SESSION['__tre_form_data'][$key] ?? $default;
 
-        // Mark that we've accessed this data (so it won't show again)
-        $_SESSION['__tre_form_data_show'] = false;
-
         // Return the value, properly escaped for HTML output
-        return $value;
+        return is_array($value) ? $value : htmlspecialchars((string)$value);
+    }
+}
+
+if (!function_exists('clear_old_data')) {
+    /**
+     * Clear old form data after successful form processing
+     * Call this after successfully processing a form to clear the old data
+     */
+    function clear_old_data(): void
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        $_SESSION['__tre_form_data_show'] = false;
+        unset($_SESSION['__tre_form_data']);
+    }
+}
+
+if (!function_exists('has_old_data')) {
+    /**
+     * Check if old form data is available
+     */
+    function has_old_data(?string $key = null): bool
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if (!isset($_SESSION['__tre_form_data_show']) || !$_SESSION['__tre_form_data_show']) {
+            return false;
+        }
+
+        if ($key === null) {
+            return !empty($_SESSION['__tre_form_data']);
+        }
+
+        return isset($_SESSION['__tre_form_data'][$key]);
     }
 }
 
@@ -390,16 +421,20 @@ if (!function_exists('has_error')) {
      */
     function has_error(string $key): bool
     {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
         return isset($_SESSION['__tre_form_error'][$key]);
     }
 }
 
 if (!function_exists('get_error')) {
     /**
-     * Get and clear validation error messages (handles both string and array errors)
+     * Get validation error messages without clearing them
+     * Use clear_errors() to manually clear errors after form processing
      *
      * @param string $key The error key to retrieve
-     * @return string HTML formatted error message (cleared after retrieval)
+     * @return string HTML formatted error message
      */
     function get_error(string $key): string
     {
@@ -413,25 +448,20 @@ if (!function_exists('get_error')) {
 
         $errors = $_SESSION['__tre_form_error'][$key];
 
-        // Clear the error after retrieval
-        unset($_SESSION['__tre_form_error'][$key]);
-
-        // If all errors are cleared, clean up the parent array
-        if (empty($_SESSION['__tre_form_error'])) {
-            unset($_SESSION['__tre_form_error']);
-        }
-
         // Handle array of errors
         if (is_array($errors)) {
             return '<ul class="mb-0"><li>' . implode('</li><li>', array_map('htmlspecialchars', $errors)) . '</li></ul>';
         }
 
         // Handle single string error (with HTML escaping)
-        return htmlspecialchars($errors);
+        return htmlspecialchars((string)$errors);
     }
 }
 
 if (!function_exists('get_first_error')) {
+    /**
+     * Get the first error for a field without clearing
+     */
     function get_first_error(string $key): string
     {
         if (session_status() === PHP_SESSION_NONE) {
@@ -443,27 +473,69 @@ if (!function_exists('get_first_error')) {
         }
 
         $errors = $_SESSION['__tre_form_error'][$key];
-        $firstError = '';
 
         if (is_array($errors)) {
-            $firstError = array_shift($errors);
-            $_SESSION['__tre_form_error'][$key] = $errors;
-
-            // Remove key if no errors left
-            if (empty($errors)) {
-                unset($_SESSION['__tre_form_error'][$key]);
-            }
-        } else {
-            $firstError = $errors;
-            unset($_SESSION['__tre_form_error'][$key]);
+            return htmlspecialchars((string)reset($errors));
         }
 
-        // Clean up parent array if empty
-        if (empty($_SESSION['__tre_form_error'])) {
+        return htmlspecialchars((string)$errors);
+    }
+}
+
+if (!function_exists('clear_errors')) {
+    /**
+     * Clear all validation errors or specific error
+     */
+    function clear_errors(?string $key = null): void
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if ($key === null) {
             unset($_SESSION['__tre_form_error']);
-        }
+        } else {
+            unset($_SESSION['__tre_form_error'][$key]);
 
-        return htmlspecialchars($firstError);
+            // Clean up parent array if empty
+            if (empty($_SESSION['__tre_form_error'])) {
+                unset($_SESSION['__tre_form_error']);
+            }
+        }
+    }
+}
+
+if (!function_exists('form_value')) {
+    /**
+     * Get form value with priority: old data > default
+     * This is the recommended way to populate form fields
+     */
+    function form_value(string $key, $default = '')
+    {
+        return old($key, $default);
+    }
+}
+
+if (!function_exists('selected')) {
+    /**
+     * Helper for select options - returns 'selected' if value matches
+     */
+    function selected($value, $current, string $default = 'selected'): string
+    {
+        return $value == $current ? $default : '';
+    }
+}
+
+if (!function_exists('checked')) {
+    /**
+     * Helper for checkboxes/radios - returns 'checked' if value matches
+     */
+    function checked($value, $current, string $default = 'checked'): string
+    {
+        if (is_array($current)) {
+            return in_array($value, $current) ? $default : '';
+        }
+        return $value == $current ? $default : '';
     }
 }
 

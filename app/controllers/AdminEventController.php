@@ -288,6 +288,9 @@ class AdminEventController extends BaseController
             });
 
             FlashMessage::setMessage("New Event Created!");
+            // After successful form processing
+            clear_old_data(); // Clear the old data
+            clear_errors();   // Clear any errors
             return $response->redirect("/admin/events/manage");
         } catch (TreesException $e) {
             set_form_data($request->all());
