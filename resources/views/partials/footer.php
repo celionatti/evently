@@ -3,7 +3,7 @@
     <div class="container">
         <div class="row align-items-center gy-3">
             <div class="col-md-6">
-                <div class="d-flex align-items-center gap-1">
+                <div class="d-flex justify-content-center align-items-center gap-1">
                     <!-- <span class="brand-mark">E</span> -->
                      <img src="<?= get_image("dist/img/logo.png") ?>" class="img-fluid" width="45px">
                     <div>

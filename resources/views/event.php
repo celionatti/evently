@@ -39,7 +39,43 @@ use App\models\Categories;
 
                 <div class="countdown mt-4 reveal delay-1">
                     <i class="bi bi-clock me-2"></i>
-                    <span id="countdown-timer">5 days 12:45:32</span> until event
+                    <span id="countdown-timer">0 days 00:00:00</span> until event
+                </div>
+
+                <div class="mt-3">
+                    <?php
+                    $eventTitle = htmlspecialchars($event->event_title, ENT_QUOTES);
+                    $eventUrl = env("APP_URL") . "e/$event->event_link";
+                    $eventDate = date('l, F j, Y', strtotime($event->event_date));
+                    $eventTime = date('g:i A', strtotime($event->start_time ?? '00:00:00'));
+                    $eventVenue = htmlspecialchars($event->venue . ', ' . $event->city, ENT_QUOTES);
+                    $eventDescription = htmlspecialchars(substr($event->description, 0, 150) . '...', ENT_QUOTES);
+
+                    // Prepare share text
+                    $shareText = "$eventTitle - $eventDate at $eventTime. Join us at $eventVenue!";
+                    $shareTextEncoded = urlencode($shareText);
+                    $shareUrlEncoded = urlencode($eventUrl);
+                    $shareTextWithUrl = urlencode($shareText . " " . $eventUrl);
+                    ?>
+
+                    <!-- Whatsapp -->
+                    <a href="https://wa.me/?text={{{ $shareTextWithUrl }}}"
+                        target="_blank"
+                        class="btn btn-ghost action-btn">
+                        <i class="bi bi-whatsapp text-success"></i> Share on WhatsApp
+                    </a>
+                    <!-- Twitter -->
+                    <a href="https://twitter.com/intent/tweet?text={{ $shareTextEncoded }}&url={{ $shareUrlEncoded }}"
+                        target="_blank"
+                        class="btn btn-ghost action-btn">
+                        <i class="bi bi-twitter-x bg-black text-white p-1 rounded"></i> Share on X (Twitter)
+                    </a>
+                    <!-- Facebook -->
+                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ $shareUrlEncoded }}&quote={{ $shareTextEncoded }}"
+                        target="_blank"
+                        class="btn btn-ghost action-btn">
+                        <i class="bi bi-facebook text-primary"></i> Share on Facebook
+                    </a>
                 </div>
             </div>
         </div>

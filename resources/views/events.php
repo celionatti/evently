@@ -26,7 +26,7 @@ use App\models\Categories;
 
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <form method="GET" action="/events" class="input-group mb-4 reveal delay-2">
+                <form method="GET" action="/events" class="input-group mb-4 reveal delay-2 gap-2">
                     <input type="text" name="search" class="form-control" placeholder="Search events, artists, or categories..."
                         value="<?= old('search', $currentSearch ?? '') ?>"
                         style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: var(--radius-md);">

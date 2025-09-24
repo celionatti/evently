@@ -57,24 +57,10 @@ use App\models\Categories;
                     $shareUrlEncoded = urlencode($eventUrl);
                     $shareTextWithUrl = urlencode($shareText . " " . $eventUrl);
                     ?>
-
-                    <!-- Whatsapp -->
-                    <a href="https://wa.me/?text=<?php echo $shareTextWithUrl; ?>"
+                    <a href="https://wa.me/?text=<?php echo urlencode($event->event_title . ' - ' . $shtlink); ?>"
                         target="_blank"
                         class="btn btn-ghost action-btn">
                         <i class="bi bi-whatsapp text-success"></i> Share on WhatsApp
-                    </a>
-                    <!-- Twitter -->
-                    <a href="https://twitter.com/intent/tweet?text=<?php echo $this->escape($shareTextEncoded); ?>&url=<?php echo $this->escape($shareUrlEncoded); ?>"
-                        target="_blank"
-                        class="btn btn-ghost action-btn">
-                        <i class="bi bi-twitter-x bg-black text-white p-1 rounded"></i> Share on X (Twitter)
-                    </a>
-                    <!-- Facebook -->
-                    <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo $this->escape($shareUrlEncoded); ?>&quote=<?php echo $this->escape($shareTextEncoded); ?>"
-                        target="_blank"
-                        class="btn btn-ghost action-btn">
-                        <i class="bi bi-facebook text-primary"></i> Share on Facebook
                     </a>
                 </div>
             </div>
