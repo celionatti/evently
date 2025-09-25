@@ -34,10 +34,8 @@ trait EventMaintenanceTrait
             // Find events that are still active/open but have passed their event date
             $expiredEvents = $builder->table('events')
                 ->where('event_date', $today, '<')
-                ->where(function($query) {
-                    $query->where('status', 'active')
-                          ->orWhere('ticket_sales', 'open');
-                })
+                ->where('status', 'active')
+                ->where('ticket_sales', 'open')
                 ->get();
             
             if (empty($expiredEvents)) {

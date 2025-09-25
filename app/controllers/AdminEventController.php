@@ -6,6 +6,7 @@ namespace App\controllers;
 
 use App\models\Event;
 use App\models\Ticket;
+use App\traits\EventMaintenanceTrait;
 use Trees\Http\Request;
 use App\models\Attendee;
 use Trees\Http\Response;
@@ -25,6 +26,8 @@ use Trees\Database\QueryBuilder\QueryBuilder;
 
 class AdminEventController extends BaseController
 {
+    use EventMaintenanceTrait;
+
     protected $uploader;
     protected ?Event $eventModel;
     protected ?Ticket $ticketModel;

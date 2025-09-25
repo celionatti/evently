@@ -414,6 +414,11 @@ declare(strict_types=1);
                                 <i class="bi bi-trash3 me-2"></i>Cleanup Tools
                             </a>
                         </div>
+                        <div class="col-lg-3 col-md-6">
+                            <form action="<?= url('/admin/events/maintenance/run') ?>" method="post">
+                                <button type="submit" class="btn btn-ghost w-100"><i class="bi bi-sliders2-vertical me-2"></i>Events Maintenance</button>
+                            </form>
+                        </div>
                     <?php endif; ?>
                 </div>
             </div>
