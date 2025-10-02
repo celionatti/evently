@@ -55,6 +55,7 @@ $router->post('/checkout/tickets', [CheckoutController::class, 'processCheckout'
 $router->get('/checkout/payment/{reference}', [CheckoutController::class, 'paymentPage']);
 $router->post('/checkout/process-payment', [CheckoutController::class, 'processPayment']);
 $router->get('/checkout/verify-payment', [CheckoutController::class, 'verifyPayment']);
+$router->get('/checkout/cancel-payment', [CheckoutController::class, 'cancelPayment']);
 $router->get('/checkout/success/{reference}', [CheckoutController::class, 'successPage']);
 $router->get('/checkout/download-ticket/{attendeeId}/{reference}', [CheckoutController::class, 'downloadTicket']);
 $router->get('/checkout/download-all-tickets/{reference}', [CheckoutController::class, 'downloadAllTickets']);

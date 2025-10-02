@@ -1,0 +1,46 @@
+[2025-10-02 02:12:28] ErrorException: Undefined variable $transaction in C:\xampp\htdocs\evently\storage\cache\temp_68ddd17c0932e3.75121362.php on line 256
+Stack trace:
+#0 C:\xampp\htdocs\evently\storage\cache\temp_68ddd17c0932e3.75121362.php(256): Trees\Exception\Handler\ExceptionHandler->handleError(2, 'Undefined varia...', 'C:\\xampp\\htdocs...', 256)
+#1 C:\xampp\htdocs\evently\core\View\View.php(908): include('C:\\xampp\\htdocs...')
+#2 C:\xampp\htdocs\evently\core\View\View.php(647): Trees\View\View->evaluateTemplate('<?php\r\n\r\n?>\r\n\r\n...', Array, 'C:\\xampp\\htdocs...')
+#3 C:\xampp\htdocs\evently\core\View\View.php(496): Trees\View\View->renderTemplate('checkout/paymen...', Array)
+#4 C:\xampp\htdocs\evently\core\Controller\Controller.php(34): Trees\View\View->render('checkout/paymen...', Array)
+#5 C:\xampp\htdocs\evently\app\controllers\CheckoutController.php(187): Trees\Controller\Controller->render('checkout/paymen...', Array)
+#6 C:\xampp\htdocs\evently\core\Trees.php(234): App\Controllers\CheckoutController->paymentPage(Object(Trees\Http\Request), Object(Trees\Http\Response), 'EVT_1759367547_...')
+#7 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'paymentPage', Array)
+#8 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#9 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#10 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#11 {main}
+
+[2025-10-02 02:14:26] TypeError: Trees\Helper\Utils\CodeGenerator::generate(): Argument #1 ($id1) must be of type ?int, string given, called in C:\xampp\htdocs\evently\app\controllers\CheckoutController.php on line 395 in C:\xampp\htdocs\evently\core\Helper\Utils\CodeGenerator.php on line 60
+Stack trace:
+#0 C:\xampp\htdocs\evently\app\controllers\CheckoutController.php(395): Trees\Helper\Utils\CodeGenerator->generate('8', 0, 'standard', Array)
+#1 C:\xampp\htdocs\evently\core\Trees.php(234): App\Controllers\CheckoutController->verifyPayment(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#2 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'verifyPayment', Array)
+#3 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#4 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#5 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#6 {main}
+
+[2025-10-02 02:38:08] TypeError: Trees\Helper\Utils\CodeGenerator::generate(): Argument #1 ($id1) must be of type ?int, string given, called in C:\xampp\htdocs\evently\app\controllers\CheckoutController.php on line 411 in C:\xampp\htdocs\evently\core\Helper\Utils\CodeGenerator.php on line 60
+Stack trace:
+#0 C:\xampp\htdocs\evently\app\controllers\CheckoutController.php(411): Trees\Helper\Utils\CodeGenerator->generate('1', 1, 'standard', Array)
+#1 C:\xampp\htdocs\evently\core\Trees.php(234): App\Controllers\CheckoutController->verifyPayment(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#2 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'verifyPayment', Array)
+#3 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#4 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#5 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#6 {main}
+
+[2025-10-02 02:39:19] TypeError: Trees\Helper\Utils\CodeGenerator::validateParameters(): Argument #1 ($id1) must be of type ?int, string given, called in C:\xampp\htdocs\evently\core\Helper\Utils\CodeGenerator.php on line 66 in C:\xampp\htdocs\evently\core\Helper\Utils\CodeGenerator.php on line 215
+Stack trace:
+#0 C:\xampp\htdocs\evently\core\Helper\Utils\CodeGenerator.php(66): Trees\Helper\Utils\CodeGenerator->validateParameters('1', 1, 'standard')
+#1 C:\xampp\htdocs\evently\app\controllers\CheckoutController.php(411): Trees\Helper\Utils\CodeGenerator->generate('1', 1, 'standard', Array)
+#2 C:\xampp\htdocs\evently\core\Trees.php(234): App\Controllers\CheckoutController->verifyPayment(Object(Trees\Http\Request), Object(Trees\Http\Response))
+#3 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'verifyPayment', Array)
+#4 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#5 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#6 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#7 {main}
+

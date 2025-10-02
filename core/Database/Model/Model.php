@@ -287,6 +287,11 @@ abstract class Model
         return Database::getInstance()->rollBack();
     }
 
+    public function inTransaction(): bool
+    {
+        return Database::getInstance()->inTransaction();
+    }
+
     public function transaction(callable $callback): mixed
     {
         $db = Database::getInstance();

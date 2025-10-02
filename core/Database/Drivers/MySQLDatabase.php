@@ -220,6 +220,16 @@ class MySQLDatabase extends AbstractDatabase
     }
 
     /**
+     * Check if a transaction is currently active
+     *
+     * @return bool True if transaction is active, false otherwise
+     */
+    public function inTransaction(): bool
+    {
+        return $this->connection->inTransaction();
+    }
+
+    /**
      * Get the last inserted ID
      *
      * @return int|string The last inserted ID

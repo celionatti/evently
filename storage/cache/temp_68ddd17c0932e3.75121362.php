@@ -2,7 +2,7 @@
 
 ?>
 
-@section('styles')
+<?php $this->start('styles'); ?>
 <style>
     /* Payment container */
     .payment-container {
@@ -214,18 +214,18 @@
         }
     }
 </style>
-@endsection
+<?php $this->end(); ?>
 
-@section('content')
-@include('nav')
+<?php $this->start('content'); ?>
+<?php $this->partial('nav'); ?>
 
 <div class="payment-container">
     <div class="payment-card">
         <div class="event-info">
-            <h2 class="event-title">{{{ $event->event_title }}}</h2>
+            <h2 class="event-title"><?php echo $event->event_title; ?></h2>
             <div class="event-date">
                 <i class="bi bi-calendar-event"></i>
-                <span>{{{ date('l, F j, Y', strtotime($event->event_date)) }}}</span>
+                <span><?php echo date('l, F j, Y', strtotime($event->event_date)); ?></span>
             </div>
         </div>
 
@@ -233,13 +233,13 @@
             <h5 class="mb-3">Order Summary</h5>
             <?php foreach ($selected_tickets as $selectedTicket): ?>
                 <div class="order-item">
-                    <span>{{{ $selectedTicket['quantity'] }}}x {{{ htmlspecialchars($selectedTicket['ticket']->ticket_name) }}}</span>
-                    <span>₦{{{ number_format($selectedTicket['amount']) }}}</span>
+                    <span><?php echo $selectedTicket['quantity']; ?>x <?php echo htmlspecialchars($selectedTicket['ticket']->ticket_name); ?></span>
+                    <span>₦<?php echo number_format($selectedTicket['amount']); ?></span>
                 </div>
             <?php endforeach; ?>
             <div class="order-item">
                 <span>Total Amount</span>
-                <span>₦{{{ number_format($total_amount) }}}</span>
+                <span>₦<?php echo number_format($total_amount); ?></span>
             </div>
         </div>
 
@@ -253,6 +253,7 @@
             <input type="hidden" name="email" value="<?= htmlspecialchars($contact['email']) ?>">
             <input type="hidden" name="amount" value="<?= $total_amount * 100 ?>">
             <input type="hidden" name="event_id" value="<?= $event->id ?>">
+            <input type="hidden" name="transaction_id" value="<?= $transaction->id ?>">
 
             <button type="submit" class="pay-button" id="payButton">
                 <i class="bi bi-credit-card me-2"></i>
@@ -287,10 +288,10 @@
     </div>
 </div>
 
-@include('footer')
-@endsection
+<?php $this->partial('footer'); ?>
+<?php $this->end(); ?>
 
-@section('scripts')
+<?php $this->start('scripts'); ?>
 <script>
     const paymentForm = document.getElementById('paymentForm');
     const payButton = document.getElementById('payButton');
@@ -305,4 +306,4 @@
         payButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
     });
 </script>
-@endsection
+<?php $this->end(); ?>

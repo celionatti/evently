@@ -62,6 +62,13 @@ interface DatabaseInterface
     public function rollback(): bool;
 
     /**
+     * inTransaction a transaction
+     *
+     * @return bool True on success, false on failure
+     */
+    public function inTransaction(): bool;
+
+    /**
      * Get the last inserted ID
      *
      * @return int|string The last inserted ID

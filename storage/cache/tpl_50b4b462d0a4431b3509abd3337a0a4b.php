@@ -253,7 +253,6 @@
             <input type="hidden" name="email" value="<?= htmlspecialchars($contact['email']) ?>">
             <input type="hidden" name="amount" value="<?= $total_amount * 100 ?>">
             <input type="hidden" name="event_id" value="<?= $event->id ?>">
-            <input type="hidden" name="transaction_id" value="<?= $transaction->id ?>">
 
             <button type="submit" class="pay-button" id="payButton">
                 <i class="bi bi-credit-card me-2"></i>
