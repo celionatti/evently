@@ -44,3 +44,19 @@ Stack trace:
 #6 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
 #7 {main}
 
+[2025-10-02 10:49:28] ErrorException: number_format(): Passing null to parameter #1 ($num) of type float is deprecated in C:\xampp\htdocs\evently\storage\cache\temp_68de4aa7a79914.44583010.php on line 536
+Stack trace:
+#0 [internal function]: Trees\Exception\Handler\ExceptionHandler->handleError(8192, 'number_format()...', 'C:\\xampp\\htdocs...', 536)
+#1 C:\xampp\htdocs\evently\storage\cache\temp_68de4aa7a79914.44583010.php(536): number_format(NULL)
+#2 C:\xampp\htdocs\evently\core\View\View.php(908): include('C:\\xampp\\htdocs...')
+#3 C:\xampp\htdocs\evently\core\View\View.php(647): Trees\View\View->evaluateTemplate('<?php\r\n\r\nuse Tr...', Array, 'C:\\xampp\\htdocs...')
+#4 C:\xampp\htdocs\evently\core\View\View.php(496): Trees\View\View->renderTemplate('admin/events/vi...', Array)
+#5 C:\xampp\htdocs\evently\core\Controller\Controller.php(34): Trees\View\View->render('admin/events/vi...', Array)
+#6 C:\xampp\htdocs\evently\app\controllers\AdminEventController.php(199): Trees\Controller\Controller->render('admin/events/vi...', Array)
+#7 C:\xampp\htdocs\evently\core\Trees.php(234): App\controllers\AdminEventController->view(Object(Trees\Http\Request), Object(Trees\Http\Response), 'natti_beach_par...')
+#8 C:\xampp\htdocs\evently\core\Trees.php(212): Trees\Trees->invokeController('App\\controllers...', 'view', Array)
+#9 C:\xampp\htdocs\evently\core\Trees.php(171): Trees\Trees->executeHandler(Object(Trees\Router\Route))
+#10 C:\xampp\htdocs\evently\core\Trees.php(139): Trees\Trees->dispatch()
+#11 C:\xampp\htdocs\evently\public\index.php(8): Trees\Trees->run()
+#12 {main}
+

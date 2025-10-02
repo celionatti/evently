@@ -158,8 +158,8 @@ class AdminEventController extends BaseController
         ];
 
         // Get confirmed attendees for this event
-        // $conditions = ['status' => 'confirmed', 'event_id' => $event->id];
-        $conditions = ['event_id' => $event->id];
+        $conditions = ['status' => 'confirmed', 'event_id' => $event->id];
+        // $conditions = ['event_id' => $event->id];
         $queryOptions['conditions'] = $conditions;
 
         $attendees = $this->attendeesModel::paginate($queryOptions);
@@ -170,12 +170,14 @@ class AdminEventController extends BaseController
 
         // Get attendee details with ticket information
         $attendeesWithTickets = [];
+
         foreach ($attendees['data'] as $attendee) {
             // Get ticket details for this attendee
             $ticket = Ticket::find($attendee->ticket_id);
             $attendee->ticket_name = $ticket ? $ticket->ticket_name : 'Unknown';
             $attendee->ticket_price = $ticket ? $ticket->price : 0;
-            $attendee->amount = $attendee->ticket_price; // Set amount based on ticket price
+            $attendee->amount = $attendee->ticket_price;
+            // $attendee->amount = $attendee->ticket_price;
             $attendeesWithTickets[] = $attendee;
         }
 

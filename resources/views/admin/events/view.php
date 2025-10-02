@@ -533,7 +533,7 @@ use Trees\Helper\Utils\TimeDateUtils;
                                         </td>
                                         <td data-label="Amount">
                                             <div class="text-center">
-                                                <div class="fw-semibold text-white">₦{{{ number_format($attendee->amount ?? 0) }}}</div>
+                                                <div class="fw-semibold text-white">₦{{{ number_format($attendee->amount) }}}</div>
                                             </div>
                                         </td>
                                         <td data-label="Actions">
