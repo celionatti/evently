@@ -821,6 +821,21 @@ button, input, select{font:inherit}
 .form-group input:focus{outline:0;border-color:rgb(var(--brand));box-shadow:0 0 0 3px rgba(var(--brand),0.1)}
 .form-hint{display:block;font-size:.85rem;color:rgb(var(--muted));margin-top:.25rem}
 
+.input-action-group{
+  display:flex;
+  gap:.5rem;
+  align-items:stretch;
+  width:100%;
+}
+.input-action-group input{
+  flex:1;
+  margin-bottom:0 !important; /* override any default margin-bottom */
+}
+.input-action-group button{
+  white-space:nowrap;
+  padding:.75rem 1.5rem;
+}
+
 /* Scanner Styling */
 .scanner-toggle{display:flex;gap:.75rem;margin-bottom:1.5rem;flex-wrap:wrap}
 .scanner-container{border:2px solid rgba(var(--brand),0.3);border-radius:var(--radius);overflow:hidden;background:rgb(var(--bg));padding:0}

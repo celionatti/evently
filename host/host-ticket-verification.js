@@ -2,6 +2,7 @@
 (function(){
   const eventSelect = document.getElementById('event-select');
   const ticketCodeInput = document.getElementById('ticket-code-input');
+  const verifyTicketBtn = document.getElementById('verify-ticket-btn');
   const verificationSection = document.getElementById('verification-section');
   const ticketsLogSection = document.getElementById('tickets-log-section');
   const eventStats = document.getElementById('event-stats');
@@ -246,6 +247,14 @@
   // Handle ticket code verification
   ticketCodeInput.addEventListener('keypress', (e) => {
     if(e.key !== 'Enter' || !currentEvent) return;
+    e.preventDefault();
+    
+    const code = ticketCodeInput.value.trim().toUpperCase();
+    processTicketCode(code);
+  });
+
+  verifyTicketBtn.addEventListener('click', (e) => {
+    if(!currentEvent) return;
     e.preventDefault();
     
     const code = ticketCodeInput.value.trim().toUpperCase();

@@ -87,13 +87,16 @@
         <!-- Manual Input View -->
         <div id="manual-input-view" class="form-group">
           <label for="ticket-code-input">Scan or enter ticket code:</label>
-          <input 
-            id="ticket-code-input" 
-            type="text" 
-            placeholder="Scan ticket barcode or enter code..." 
-            autocomplete="off"
-            aria-label="Ticket code input"
-          />
+          <div class="input-action-group">
+            <input 
+              id="ticket-code-input" 
+              type="text" 
+              placeholder="Scan ticket barcode or enter code..." 
+              autocomplete="off"
+              aria-label="Ticket code input"
+            />
+            <button id="verify-ticket-btn" class="btn-primary">Verify</button>
+          </div>
           <small class="form-hint">Use a barcode scanner or manually enter the ticket code</small>
         </div>
         
