@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Create Event — Eventlyy</title>
+  <meta name="description" content="Host a new event on Eventlyy. Create listings, set ticket tiers, and publish in minutes." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="top-nav" role="banner">
+    <a href="../index.html" class="brand" aria-label="Eventlyy home">Event<span class="brand-tail">lyy</span></a>
+    <button id="host-mobile-menu" class="mobile-menu-btn" aria-label="Open menu" aria-expanded="false">☰</button>
+    <nav class="nav-desktop" role="navigation" aria-label="Top navigation">
+      <a href="host-dashboard.html" class="nav-link">Overview</a>
+      <a href="host-dashboard.html" class="nav-link">Events</a>
+      <a href="host-ticket-verification.html" class="nav-link">Verify Tickets</a>
+      <a href="create-event.html" class="nav-link">Create Event</a>
+      <a href="host-settings.html" class="nav-link">Settings</a>
+      <a href="../profile.html" class="nav-link">Profile</a>
+      <button id="theme-toggle" data-theme-toggle="true" aria-label="Toggle theme" aria-pressed="false">🌓</button>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="page-hero">
+      <div>
+        <span class="panel-badge">Host dashboard</span>
+        <h1>Create your event and start selling tickets</h1>
+        <p class="lede">Set up event details, add ticket packages, and launch an experience that feels polished and ready for attendees.</p>
+      </div>
+    </section>
+
+    <section class="create-event-page">
+      <div class="form-card">
+        <h2>Create event</h2>
+        <div class="auth-message" aria-live="polite"></div>
+        <form id="create-event-form">
+          <label>Event name
+            <input type="text" id="event-name" required placeholder="Summer Beats Festival">
+          </label>
+          <label>Custom URL (optional)
+            <div style="display:flex;gap:.5rem;align-items:center;">
+              <span style="white-space:nowrap;color:rgb(var(--muted));">/events/</span>
+              <input type="text" id="custom-url" placeholder="summer-beats-festival" aria-label="Custom URL slug">
+            </div>
+            <small class="muted">Starts with the event title; left empty to auto-generate.</small>
+          </label>
+          <div class="field-grid">
+            <label>Event date
+              <input type="date" id="event-date" required>
+            </label>
+            <label>Start time
+              <input type="time" id="event-time" required>
+            </label>
+          </div>
+          <div class="field-grid">
+            <label>Venue
+              <input type="text" id="event-venue" required placeholder="Central Park">
+            </label>
+            <label>City
+              <input type="text" id="event-city" required placeholder="New York">
+            </label>
+          </div>
+          <div class="contact-row">
+            <label>Organizer phone
+              <input type="tel" id="organizer-phone" placeholder="+1 555 555 5555">
+            </label>
+            <label>Organizer website / social
+              <input type="url" id="organizer-social" placeholder="https://... or @handle">
+            </label>
+          </div>
+
+          <label>Description
+            <textarea id="event-description" rows="4" required placeholder="Share what makes this event special."></textarea>
+          </label>
+
+          <div class="guest-section">
+            <div class="ticket-header">
+              <h3>Special guests</h3>
+              <button type="button" id="add-guest-btn" class="checkout-btn secondary">Add guest</button>
+            </div>
+            <div id="guest-list" class="guest-list scrollable-list"></div>
+          </div>
+          <div class="ticket-section">
+            <div class="ticket-header">
+              <h3>Ticket types</h3>
+              <button type="button" id="add-ticket-btn" class="checkout-btn secondary">Add ticket</button>
+            </div>
+            <div id="ticket-list" class="ticket-list scrollable-list"></div>
+          </div>
+          <button type="submit" class="checkout-btn">Publish event</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h4 class="brand-footer">Event<span class="brand-tail">lyy</span></h4>
+        <nav>
+          <a href="../index.html">Home</a>
+          <a href="../privacy.html">Privacy</a>
+          <a href="../terms.html">Terms</a>
+        </nav>
+      </div>
+      <div class="footer-section">
+        <h4>For Attendees</h4>
+        <nav>
+          <a href="../auth-pages/register.html">Create Account</a>
+          <a href="../auth-pages/login.html">Login</a>
+        </nav>
+      </div>
+      <div class="footer-section">
+        <h4>For Hosts</h4>
+        <nav>
+          <a href="../auth-pages/register.html">Become a Host</a>
+          <a href="create-event.html">Create Event</a>
+        </nav>
+      </div>
+      <div class="footer-section">
+        <h4>Support</h4>
+        <nav>
+          <a href="../privacy.html">Privacy Policy</a>
+          <a href="../terms.html">Terms of Service</a>
+          <a href="mailto:support@eventlyy.com">Contact Support</a>
+        </nav>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Eventlyy. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <nav class="bottom-nav host-bottom" aria-label="Mobile navigation" role="navigation">
+    <a href="host-dashboard.html" class="nav-item nav-link" data-nav-index="0">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" fill="currentColor"/></svg>
+      <span>Overview</span>
+    </a>
+    <a href="create-event.html" class="nav-item nav-link active" data-nav-index="1" aria-current="true">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" fill="currentColor"/></svg>
+      <span>Create</span>
+    </a>
+    <a href="host-ticket-verification.html" class="nav-item nav-link" data-nav-index="2">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor"/></svg>
+      <span>Verify</span>
+    </a>
+    <a href="host-settings.html" class="nav-item nav-link" data-nav-index="3">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" fill="currentColor"/></svg>
+      <span>Settings</span>
+    </a>
+  </nav>
+
+  <script src="../app.js" defer></script>
+  <script src="create-event.js" defer></script>
+  <div id="theme-announcer" class="visually-hidden" aria-live="polite"></div>
+</body>
+</html>

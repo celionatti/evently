@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Profile — Eventlyy</title>
+  <meta name="description" content="Manage your organizer profile, update contact details, and review your hosted events on Eventlyy." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="top-nav" role="banner">
+    <a href="index.html" class="brand" aria-label="Eventlyy home">Event<span class="brand-tail">lyy</span></a>
+    <nav class="nav-desktop" role="navigation" aria-label="Top navigation">
+      <a href="index.html" class="nav-link" data-nav-index="0">Browse</a>
+      <a href="#" class="nav-link" data-nav-index="1">Venues</a>
+      <a href="#" class="nav-link" data-nav-index="2">Pricing</a>
+      <a href="#" class="nav-link" data-nav-index="3">Support</a>
+      <button id="theme-toggle" data-theme-toggle="true" aria-label="Toggle theme" aria-pressed="false">🌓</button>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="page-hero">
+      <div>
+        <span class="panel-badge">Your profile</span>
+        <h1>Manage your organizer profile</h1>
+        <p class="lede">Update your public contact details and review events you created.</p>
+      </div>
+    </section>
+
+    <section class="create-event-page">
+      <div class="form-card">
+        <h2>Profile</h2>
+        <div class="auth-message" aria-live="polite"></div>
+        <form id="profile-form">
+          <label>Full name
+            <input type="text" id="profile-name" placeholder="Your name">
+          </label>
+          <label>Email (account)
+            <input type="email" id="profile-email" placeholder="you@example.com">
+          </label>
+          <div class="contact-row">
+            <label>Phone
+              <input type="tel" id="profile-phone" placeholder="+1 555 555 5555">
+            </label>
+            <label>Website / Social
+              <input type="url" id="profile-social" placeholder="https://... or @handle">
+            </label>
+          </div>
+          <div class="bank-row">
+            <label>Bank name
+              <input type="text" id="profile-bank-name" placeholder="First National Bank">
+            </label>
+            <label>Account number
+              <input type="text" id="profile-bank-account" placeholder="1234567890">
+            </label>
+          </div>
+          <div class="bank-row">
+            <label>Routing / Sort code
+              <input type="text" id="profile-bank-routing" placeholder="012345678">
+            </label>
+            <label>Account holder
+              <input type="text" id="profile-bank-holder" placeholder="Jane Doe">
+            </label>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="checkout-btn">Save profile</button>
+            <a href="host/create-event.html" class="checkout-btn secondary">Create event</a>
+          </div>
+        </form>
+      </div>
+
+      <div style="margin-top:1.25rem">
+        <h3>Your events</h3>
+        <div id="host-events" class="event-list"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h4 class="brand-footer">Event<span class="brand-tail">lyy</span></h4>
+        <nav>
+          <a href="index.html">Home</a>
+          <a href="privacy.html">Privacy</a>
+          <a href="terms.html">Terms</a>
+        </nav>
+      </div>
+      <div class="footer-section">
+        <h4>For Attendees</h4>
+        <nav>
+          <a href="auth-pages/register.html">Create Account</a>
+          <a href="auth-pages/login.html">Login</a>
+        </nav>
+      </div>
+      <div class="footer-section">
+        <h4>For Hosts</h4>
+        <nav>
+          <a href="auth-pages/register.html">Become a Host</a>
+          <a href="host/create-event.html">Create Event</a>
+        </nav>
+      </div>
+      <div class="footer-section">
+        <h4>Support</h4>
+        <nav>
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="terms.html">Terms of Service</a>
+          <a href="mailto:support@eventlyy.com">Contact Support</a>
+        </nav>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Eventlyy. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <nav class="bottom-nav" aria-label="Mobile navigation" role="navigation">
+    <a href="index.html" class="nav-item nav-link" data-nav-index="0">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zM13 21h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+      <span>Browse</span>
+    </a>
+    <a href="checkout.html" class="nav-item nav-link" data-nav-index="1">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden><path d="M12 7a5 5 0 100 10 5 5 0 000-10zM2 20l4-4h12l4 4H2z"/></svg>
+      <span>Tickets</span>
+    </a>
+    <a href="profile.html" class="nav-item nav-link active" data-nav-index="2" aria-current="true">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4S8 5.79 8 8s1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+      <span>Profile</span>
+    </a>
+    <button class="nav-item theme-toggle-btn" data-theme-toggle="true" aria-label="Toggle theme">
+      <span aria-hidden="true">🌓</span>
+      <span>Theme</span>
+    </button>
+  </nav>
+
+  <script src="app.js" defer></script>
+  <script src="profile.js" defer></script>
+  <div id="theme-announcer" class="visually-hidden" aria-live="polite"></div>
+</body>
+</html>

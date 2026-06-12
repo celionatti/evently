@@ -1,0 +1,10 @@
+[
+  {"title":"Summer Beats Festival","date":"Aug 21","venue":"Central Park","city":"New York","image":"https://images.unsplash.com/photo-1506157786151-b8491531f063?w=1200&q=80&auto=format&fit=crop&ixlib=rb-4.0.3&s=1"},
+  {"title":"Broadway Nights","date":"Sep 12","venue":"Downtown Theater","city":"New York","image":"https://images.unsplash.com/photo-1518972559570-6c07c1c4f9f7?w=1200&q=80&auto=format&fit=crop&ixlib=rb-4.0.3&s=2"},
+  {"title":"Championship Game","date":"Oct 3","venue":"City Stadium","city":"Los Angeles","image":"https://images.unsplash.com/photo-1517649763962-0c623066013b?w=1200&q=80&auto=format&fit=crop&ixlib=rb-4.0.3&s=3"},
+  {"title":"Indie Rock Night","date":"Jul 7","venue":"The Garden Stage","city":"Chicago","image":"https://images.unsplash.com/photo-1507878866276-a947ef722fee?w=1200&q=80&auto=format&fit=crop&ixlib=rb-4.0.3&s=4"},
+  {"title":"Comedy Gala","date":"Nov 5","venue":"Laugh House","city":"Los Angeles","image":"https://images.unsplash.com/photo-1546456073-6712f79251bb?w=1200&q=80&auto=format&fit=crop&ixlib=rb-4.0.3&s=5"},
+  {"title":"Street Food Fest","date":"Jun 30","venue":"Riverside","city":"Chicago","image":"https://images.unsplash.com/photo-1506354666786-959d6d497f1a?w=1200&q=80&auto=format&fit=crop&ixlib=rb-4.0.3&s=6"},
+  {"title":"Summer Jazz Series","date":"Aug 5","venue":"Harbor Stage","city":"New York","image":"https://images.unsplash.com/photo-1505576391880-67f7da0f8f0a?w=1200&q=80&auto=format&fit=crop&ixlib=rb-4.0.3&s=7"},
+  {"title":"Outdoor Cinema","date":"Jul 21","venue":"Lawn Park","city":"Los Angeles","image":"https://images.unsplash.com/photo-1505685296765-3a2736de412f?w=1200&q=80&auto=format&fit=crop&ixlib=rb-4.0.3&s=8"}
+]

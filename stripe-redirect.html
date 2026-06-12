@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Stripe — Mock Payment</title>
+  <meta name="description" content="Simulated Stripe payment gateway for Eventlyy." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .redirect-page{display:grid;place-items:center;min-height:80vh;padding:2rem 1rem;text-align:center}
+    .redirect-card{max-width:480px;width:100%;padding:2.5rem 2rem;border-radius:28px;background:rgb(var(--card));box-shadow:0 24px 64px rgba(0,0,0,0.10);border:1px solid rgba(var(--muted),0.08);animation:fade-up var(--duration-slow) var(--ease-out) both}
+    .provider-icon{width:72px;height:72px;border-radius:20px;display:grid;place-items:center;margin:0 auto 1.5rem;background:linear-gradient(135deg, rgba(99,91,255,0.15), rgba(99,91,255,0.05));border:1px solid rgba(99,91,255,0.2);animation:fade-up var(--duration-slow) var(--ease-out) 80ms both}
+    .provider-icon svg{width:36px;height:36px;color:rgb(99,91,255)}
+    .redirect-card h1{font-size:clamp(1.5rem,3vw,2rem);margin:0 0 .5rem;letter-spacing:-0.02em;animation:fade-up var(--duration-slow) var(--ease-out) 140ms both}
+    .redirect-card .lede{color:rgb(var(--muted));margin:0 0 1.5rem;font-size:1rem;animation:fade-up var(--duration-slow) var(--ease-out) 200ms both}
+    .order-badge{display:inline-flex;align-items:center;gap:.5rem;padding:.55rem 1.15rem;border-radius:999px;background:rgba(var(--muted),0.06);border:1px solid rgba(var(--muted),0.1);font-size:.95rem;font-weight:600;color:rgb(var(--text));margin-bottom:1.75rem;animation:fade-up var(--duration-slow) var(--ease-out) 260ms both}
+    .order-badge span{color:rgb(var(--muted));font-weight:400}
+    .redirect-card .checkout-btn{animation:fade-up var(--duration-slow) var(--ease-out) 320ms both}
+    .redirect-hint{color:rgb(var(--muted));font-size:.9rem;margin:1rem 0 0;animation:fade-up var(--duration-slow) var(--ease-out) 380ms both}
+    .redirect-card .checkout-btn{background:linear-gradient(135deg, rgb(99,91,255), rgb(130,120,255));box-shadow:0 12px 36px rgba(99,91,255,0.28)}
+    .redirect-card .checkout-btn:hover{filter:brightness(1.06);transform:translateY(-2px);box-shadow:0 16px 40px rgba(99,91,255,0.35)}
+    .provider-label{display:inline-flex;align-items:center;gap:.4rem;padding:.35rem .75rem;border-radius:999px;background:rgba(99,91,255,0.08);color:rgb(99,91,255);font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:1rem;animation:fade-up var(--duration-slow) var(--ease-out) 60ms both}
+    .security-note{display:flex;align-items:center;gap:.5rem;justify-content:center;margin-top:1.25rem;padding:.65rem 1rem;border-radius:12px;background:rgba(var(--muted),0.04);border:1px solid rgba(var(--muted),0.08);font-size:.85rem;color:rgb(var(--muted));animation:fade-up var(--duration-slow) var(--ease-out) 440ms both}
+    .security-note svg{flex-shrink:0;width:16px;height:16px;color:rgb(var(--success))}
+
+    /* Pulse animation on icon */
+    @keyframes pulse-ring{0%{box-shadow:0 0 0 0 rgba(99,91,255,0.25)}70%{box-shadow:0 0 0 14px rgba(99,91,255,0)}100%{box-shadow:0 0 0 0 rgba(99,91,255,0)}}
+    .provider-icon{animation:fade-up var(--duration-slow) var(--ease-out) 80ms both, pulse-ring 2.5s ease infinite 1s}
+  </style>
+</head>
+<body>
+  <header class="top-nav" role="banner">
+    <a href="index.html" class="brand" aria-label="Eventlyy home">Event<span class="brand-tail">lyy</span></a>
+    <nav class="nav-desktop" role="navigation" aria-label="Top navigation">
+      <a href="index.html" class="nav-link" data-nav-index="0">Browse</a>
+      <a href="#" class="nav-link" data-nav-index="1">Venues</a>
+      <a href="#" class="nav-link" data-nav-index="2">Pricing</a>
+      <a href="#" class="nav-link" data-nav-index="3">Support</a>
+      <button id="theme-toggle" data-theme-toggle="true" aria-label="Toggle theme" aria-pressed="false">🌓</button>
+    </nav>
+  </header>
+
+  <main class="redirect-page">
+    <div class="redirect-card">
+      <div class="provider-label">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><rect x="2" y="6" width="20" height="12" rx="2" fill="currentColor"/></svg>
+        Stripe Gateway
+      </div>
+      <div class="provider-icon">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="1" y="5" width="22" height="14" rx="3" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <path d="M1 9h22" stroke="currentColor" stroke-width="1.5"/>
+          <rect x="4" y="13" width="5" height="2" rx="1" fill="currentColor"/>
+        </svg>
+      </div>
+      <h1>Complete your payment</h1>
+      <p class="lede">You're being securely redirected to Stripe to process your payment.</p>
+      <div class="order-badge"><span>Order</span> <strong id="order-id">#12345</strong></div>
+      <button id="complete" class="checkout-btn">Simulate successful payment</button>
+      <p class="redirect-hint">This is a mock payment page for demo purposes.</p>
+      <div class="security-note">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" fill="currentColor"/></svg>
+        256-bit SSL encrypted · Secure checkout
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h4 class="brand-footer">Event<span class="brand-tail">lyy</span></h4>
+        <nav>
+          <a href="index.html">Home</a>
+          <a href="privacy.html">Privacy</a>
+          <a href="terms.html">Terms</a>
+        </nav>
+      </div>
+      <div class="footer-section">
+        <h4>For Attendees</h4>
+        <nav>
+          <a href="auth-pages/register.html">Create Account</a>
+          <a href="auth-pages/login.html">Login</a>
+        </nav>
+      </div>
+      <div class="footer-section">
+        <h4>For Hosts</h4>
+        <nav>
+          <a href="auth-pages/register.html">Become a Host</a>
+          <a href="host/create-event.html">Create Event</a>
+        </nav>
+      </div>
+      <div class="footer-section">
+        <h4>Support</h4>
+        <nav>
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="terms.html">Terms of Service</a>
+          <a href="mailto:support@eventlyy.com">Contact Support</a>
+        </nav>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Eventlyy. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <nav class="bottom-nav" aria-label="Mobile navigation" role="navigation">
+    <a href="index.html" class="nav-item nav-link" data-nav-index="0">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zM13 21h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+      <span>Browse</span>
+    </a>
+    <a href="checkout.html" class="nav-item nav-link active" data-nav-index="1" aria-current="true">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden><path d="M12 7a5 5 0 100 10 5 5 0 000-10zM2 20l4-4h12l4 4H2z"/></svg>
+      <span>Tickets</span>
+    </a>
+    <a href="profile.html" class="nav-item nav-link" data-nav-index="2">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4S8 5.79 8 8s1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+      <span>Profile</span>
+    </a>
+    <button class="nav-item theme-toggle-btn" data-theme-toggle="true" aria-label="Toggle theme">
+      <span aria-hidden="true">🌓</span>
+      <span>Theme</span>
+    </button>
+  </nav>
+
+  <script src="app.js" defer></script>
+  <script>
+    document.getElementById('complete').addEventListener('click', () => {
+      const btn = document.getElementById('complete');
+      btn.textContent = 'Processing…';
+      btn.style.pointerEvents = 'none';
+      btn.style.opacity = '0.7';
+      setTimeout(() => {
+        window.location.href = 'success.html?provider=stripe&order=12345';
+      }, 1200);
+    });
+  </script>
+  <div id="theme-announcer" class="visually-hidden" aria-live="polite"></div>
+</body>
+</html>

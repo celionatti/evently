@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Event Management — Eventlyy</title>
+  <meta name="description" content="Manage your event tickets, occupancy, and exports." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="top-nav" role="banner">
+    <a href="../index.html" class="brand" aria-label="Eventlyy home">Event<span class="brand-tail">lyy</span></a>
+    <button id="host-mobile-menu" class="mobile-menu-btn" aria-label="Open menu" aria-expanded="false">☰</button>
+    <nav class="nav-desktop" role="navigation" aria-label="Top navigation">
+      <a href="host-dashboard.html" class="nav-link">Overview</a>
+      <a href="host-dashboard.html" class="nav-link">Events</a>
+      <a href="host-ticket-verification.html" class="nav-link">Verify Tickets</a>
+      <a href="create-event.html" class="nav-link">Create Event</a>
+      <a href="host-settings.html" class="nav-link">Settings</a>
+      <a href="../profile.html" class="nav-link">Profile</a>
+      <button id="theme-toggle" data-theme-toggle="true" aria-label="Toggle theme" aria-pressed="false">🌓</button>
+    </nav>
+  </header>
+
+  <main class="page-container">
+    <div class="event-mgmt-header">
+      <a href="host-dashboard.html" class="back-link">← Back to Dashboard</a>
+      <div class="page-hero">
+        <h1 id="event-title">Event Management</h1>
+        <p id="event-details-summary" class="lede"></p>
+      </div>
+    </div>
+
+    <!-- Event Summary Cards -->
+    <section class="event-stats-grid">
+      <article class="stat-card">
+        <span class="stat-card-label">Total Revenue</span>
+        <h2 id="total-revenue-display" class="stat-card-value">$0.00</h2>
+        <p class="stat-card-meta">From ticket sales</p>
+      </article>
+      <article class="stat-card">
+        <span class="stat-card-label">Tickets Sold</span>
+        <h2 id="tickets-sold-display" class="stat-card-value">0</h2>
+        <p class="stat-card-meta">Out of capacity</p>
+      </article>
+      <article class="stat-card">
+        <span class="stat-card-label">Occupancy</span>
+        <h2 id="occupancy-display" class="stat-card-value">0%</h2>
+        <p class="stat-card-meta">Seats filled</p>
+      </article>
+      <article class="stat-card">
+        <span class="stat-card-label">Avg Ticket Price</span>
+        <h2 id="avg-price-display" class="stat-card-value">$0.00</h2>
+        <p class="stat-card-meta">Per ticket</p>
+      </article>
+    </section>
+
+    <!-- Occupancy Chart -->
+    <section class="form-card">
+      <h2>Ticket Occupancy</h2>
+      <div class="occupancy-chart">
+        <div class="chart-bar">
+          <div class="chart-fill" id="occupancy-bar"></div>
+        </div>
+        <div class="chart-labels">
+          <span>0</span>
+          <span id="occupancy-percentage">0%</span>
+          <span id="capacity-label">0 total</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tickets Breakdown -->
+    <section class="form-card">
+      <h2>Ticket Types</h2>
+      <div id="ticket-types-grid" class="ticket-types-grid"></div>
+    </section>
+
+    <!-- Actions -->
+    <section class="form-card">
+      <h2>Actions</h2>
+      <div class="action-buttons">
+        <a href="host-ticket-verification.html" class="btn-primary">Verify Attendees</a>
+        <button id="export-report-btn" class="btn-secondary">📊 Export Report</button>
+        <button id="send-reminder-btn" class="btn-secondary">📧 Send Reminder</button>
+      </div>
+    </section>
+
+    <!-- Tickets Sold List -->
+    <section class="form-card">
+      <div class="card-header">
+        <h2>Tickets Sold</h2>
+        <div class="search-box">
+          <input 
+            id="search-tickets" 
+            type="text" 
+            placeholder="Search by attendee name or email..." 
+            aria-label="Search tickets"
+          />
+        </div>
+        
+      </div>
+
+      <div class="tickets-table-container scrollable-list">
+        <table id="tickets-table" class="tickets-table" role="grid" aria-label="Sold tickets">
+          <thead>
+            <tr>
+              <th>Attendee</th>
+              <th>Email</th>
+              <th>Ticket Type</th>
+              <th>Price</th>
+              <th>Purchase Date</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tickets-tbody">
+          </tbody>
+        </table>
+      </div>
+
+      <div id="tickets-pagination" class="pagination" aria-label="Tickets pagination"></div>
+      <div id="no-tickets" class="empty-state" style="display:none;">
+        <p>No tickets sold yet</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h4 class="brand-footer">Event<span class="brand-tail">lyy</span></h4>
+        <nav>
+          <a href="../index.html">Home</a>
+          <a href="../privacy.html">Privacy</a>
+          <a href="../terms.html">Terms</a>
+        </nav>
+      </div>
+      <div class="footer-section">
+        <h4>For Attendees</h4>
+        <nav>
+          <a href="../auth-pages/register.html">Create Account</a>
+          <a href="../auth-pages/login.html">Login</a>
+        </nav>
+      </div>
+      <div class="footer-section">
+        <h4>For Hosts</h4>
+        <nav>
+          <a href="../auth-pages/register.html">Become a Host</a>
+          <a href="create-event.html">Create Event</a>
+        </nav>
+      </div>
+      <div class="footer-section">
+        <h4>Support</h4>
+        <nav>
+          <a href="../privacy.html">Privacy Policy</a>
+          <a href="../terms.html">Terms of Service</a>
+          <a href="mailto:support@eventlyy.com">Contact Support</a>
+        </nav>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Eventlyy. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <nav class="bottom-nav host-bottom" aria-label="Mobile navigation" role="navigation">
+    <a href="host-dashboard.html" class="nav-item nav-link active" data-nav-index="0" aria-current="true">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" fill="currentColor"/></svg>
+      <span>Overview</span>
+    </a>
+    <a href="create-event.html" class="nav-item nav-link" data-nav-index="1">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" fill="currentColor"/></svg>
+      <span>Create</span>
+    </a>
+    <a href="host-ticket-verification.html" class="nav-item nav-link" data-nav-index="2">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor"/></svg>
+      <span>Verify</span>
+    </a>
+    <a href="host-settings.html" class="nav-item nav-link" data-nav-index="3">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" fill="currentColor"/></svg>
+      <span>Settings</span>
+    </a>
+  </nav>
+
+  <script src="../app.js" defer></script>
+  <script src="host-event-management.js" defer></script>
+  <div id="theme-announcer" class="visually-hidden" aria-live="polite"></div>
+
+  <!-- Toast container -->
+  <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Modal backdrop -->
+  <div id="modal-backdrop" class="modal-backdrop" role="dialog" aria-hidden="true">
+    <div class="modal" role="document" aria-modal="true">
+      <div class="modal-header">
+        <div class="modal-title" id="modal-title">Modal</div>
+        <button id="modal-close" class="btn" aria-label="Close modal">✕</button>
+      </div>
+      <div id="modal-body" class="modal-body"></div>
+      <div id="modal-actions" class="modal-actions"></div>
+    </div>
+  </div>
+</body>
+</html>

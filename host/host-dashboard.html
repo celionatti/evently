@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Host Dashboard — Eventlyy</title>
+  <meta name="description" content="Manage your hosted events and track ticket sales." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="top-nav" role="banner">
+    <a href="../index.html" class="brand" aria-label="Eventlyy home">Event<span class="brand-tail">lyy</span></a>
+    <button id="host-mobile-menu" class="mobile-menu-btn" aria-label="Open menu" aria-expanded="false">☰</button>
+    <nav class="nav-desktop" role="navigation" aria-label="Top navigation">
+      <a href="host-dashboard.html" class="nav-link" aria-current="true">Overview</a>
+      <a href="host-dashboard.html" class="nav-link">Events</a>
+      <a href="host-ticket-verification.html" class="nav-link">Verify Tickets</a>
+      <a href="create-event.html" class="nav-link">Create Event</a>
+      <a href="host-settings.html" class="nav-link">Settings</a>
+      <a href="../profile.html" class="nav-link">Profile</a>
+      <button id="theme-toggle" data-theme-toggle="true" aria-label="Toggle theme" aria-pressed="false">🌓</button>
+    </nav>
+  </header>
+
+  <main class="page-container">
+    <section class="page-hero">
+      <div>
+        <span class="panel-badge">Host Dashboard</span>
+        <h1>Your Hosted Events</h1>
+        <p class="lede">Manage your events, track sales, and engage with attendees.</p>
+      </div>
+    </section>
+
+    <!-- Host Summary Cards -->
+    <section class="host-summary-grid">
+      <article class="summary-card">
+        <span class="card-label">Total Events</span>
+        <h3 id="total-events-count" class="card-value">0</h3>
+        <p class="card-meta">Events you've hosted</p>
+      </article>
+      <article class="summary-card">
+        <span class="card-label">Total Revenue</span>
+        <h3 id="total-revenue" class="card-value">$0.00</h3>
+        <p class="card-meta">From ticket sales</p>
+      </article>
+      <article class="summary-card">
+        <span class="card-label">Tickets Sold</span>
+        <h3 id="total-tickets-sold" class="card-value">0</h3>
+        <p class="card-meta">Across all events</p>
+      </article>
+      <article class="summary-card">
+        <span class="card-label">Active Events</span>
+        <h3 id="active-events-count" class="card-value">0</h3>
+        <p class="card-meta">Upcoming events</p>
+      </article>
+    </section>
+
+    <!-- Events List -->
+    <section class="form-card">
+      <div class="card-header">
+        <h2>Your Events</h2>
+        <div class="filter-controls">
+          <select id="event-status-filter" aria-label="Filter by status">
+            <option value="">All Events</option>
+            <option value="upcoming">Upcoming</option>
+            <option value="live">Live</option>
+            <option value="past">Past</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="events-grid" class="host-events-grid scrollable-list"></div>
+      <div id="empty-events" class="empty-state" style="display:none;">
+        <p>You haven't hosted any events yet.</p>
+        <a href="create-event.html" class="btn-primary">Create Your First Event</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h4 class="brand-footer">Event<span class="brand-tail">lyy</span></h4>
+        <nav>
+          <a href="../index.html">Home</a>
+          <a href="../privacy.html">Privacy</a>
+          <a href="../terms.html">Terms</a>
+        </nav>
+      </div>
+      <div class="footer-section">
+        <h4>For Attendees</h4>
+        <nav>
+          <a href="../auth-pages/register.html">Create Account</a>
+          <a href="../auth-pages/login.html">Login</a>
+        </nav>
+      </div>
+      <div class="footer-section">
+        <h4>For Hosts</h4>
+        <nav>
+          <a href="../auth-pages/register.html">Become a Host</a>
+          <a href="create-event.html">Create Event</a>
+        </nav>
+      </div>
+      <div class="footer-section">
+        <h4>Support</h4>
+        <nav>
+          <a href="../privacy.html">Privacy Policy</a>
+          <a href="../terms.html">Terms of Service</a>
+          <a href="mailto:support@eventlyy.com">Contact Support</a>
+        </nav>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Eventlyy. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <nav class="bottom-nav host-bottom" aria-label="Mobile navigation" role="navigation">
+    <a href="host-dashboard.html" class="nav-item nav-link active" data-nav-index="0" aria-current="true">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" fill="currentColor"/></svg>
+      <span>Overview</span>
+    </a>
+    <a href="create-event.html" class="nav-item nav-link" data-nav-index="1">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" fill="currentColor"/></svg>
+      <span>Create</span>
+    </a>
+    <a href="host-ticket-verification.html" class="nav-item nav-link" data-nav-index="2">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor"/></svg>
+      <span>Verify</span>
+    </a>
+    <a href="host-settings.html" class="nav-item nav-link" data-nav-index="3">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" fill="currentColor"/></svg>
+      <span>Settings</span>
+    </a>
+  </nav>
+
+  <script src="../app.js" defer></script>
+  <script src="host-dashboard.js" defer></script>
+  <div id="theme-announcer" class="visually-hidden" aria-live="polite"></div>
+</body>
+</html>

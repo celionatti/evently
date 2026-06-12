@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Eventlyy — Event Details</title>
+  <meta name="description" content="View event details, select tickets, and check out securely on Eventlyy." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="top-nav" role="banner">
+    <a href="index.html" class="brand" aria-label="Eventlyy home">Event<span class="brand-tail">lyy</span></a>
+    <nav class="nav-desktop" role="navigation" aria-label="Top navigation">
+      <a href="index.html" class="nav-link" data-nav-index="0">Browse</a>
+      <a href="#" class="nav-link" data-nav-index="1">Venues</a>
+      <a href="#" class="nav-link" data-nav-index="2">Pricing</a>
+      <a href="#" class="nav-link" data-nav-index="3">Support</a>
+      <button id="theme-toggle" data-theme-toggle="true" aria-label="Toggle theme" aria-pressed="false">🌓</button>
+    </nav>
+  </header>
+
+  <main class="container event-detail-page">
+    <section class="detail-hero">
+      <div class="detail-hero-copy">
+        <span class="eyebrow">Event details</span>
+        <h1>Summer Beats Festival</h1>
+        <p class="lede">Experience a full day of live music, food vendors, and sunset performances at Central Park.</p>
+        <div class="detail-hero-meta">
+          <div><strong>Date</strong><span>Aug 21, 2026</span></div>
+          <div><strong>Time</strong><span>5:00 PM</span></div>
+          <div><strong>Location</strong><span>Central Park, New York</span></div>
+        </div>
+      </div>
+      <aside class="detail-card">
+        <div class="detail-image" style="background-image:url('https://images.unsplash.com/photo-1506157786151-b8491531f063?w=1200&q=80&auto=format&fit=crop&ixlib=rb-4.0.3&s=1')"></div>
+        <div class="detail-card-content">
+          <p class="meta">Outdoor festival with headline artists, food stalls, and after-party access.</p>
+          <div class="detail-tags">
+            <span>Concert</span>
+            <span>Festival</span>
+            <span>Live Music</span>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="tickets-section">
+      <div class="tickets-main">
+        <div class="section-header">
+          <div>
+            <h2>Tickets</h2>
+            <p class="section-note">Select tickets and preview your order before checkout.</p>
+          </div>
+        </div>
+
+        <div class="ticket-card">
+          <div class="ticket-row" data-price="45" data-label="General Admission">
+            <div>
+              <h3>General Admission</h3>
+              <p class="meta">Entry to festival grounds and daytime performances.</p>
+            </div>
+            <div class="ticket-controls">
+              <button type="button" class="qty-btn" data-action="decrease" aria-label="Decrease General Admission quantity">−</button>
+              <span class="qty-value" aria-live="polite">1</span>
+              <button type="button" class="qty-btn" data-action="increase" aria-label="Increase General Admission quantity">+</button>
+            </div>
+            <div class="ticket-price">$45</div>
+          </div>
+
+          <div class="ticket-row" data-price="95" data-label="VIP Access">
+            <div>
+              <h3>VIP Access</h3>
+              <p class="meta">Front-stage views, premium lounge, and express entry.</p>
+            </div>
+            <div class="ticket-controls">
+              <button type="button" class="qty-btn" data-action="decrease" aria-label="Decrease VIP Access quantity">−</button>
+              <span class="qty-value" aria-live="polite">0</span>
+              <button type="button" class="qty-btn" data-action="increase" aria-label="Increase VIP Access quantity">+</button>
+            </div>
+            <div class="ticket-price">$95</div>
+          </div>
+
+          <div class="ticket-row" data-price="160" data-label="Premium Lounge">
+            <div>
+              <h3>Premium Lounge</h3>
+              <p class="meta">Exclusive lounge seating, complimentary drinks, and private restrooms.</p>
+            </div>
+            <div class="ticket-controls">
+              <button type="button" class="qty-btn" data-action="decrease" aria-label="Decrease Premium Lounge quantity">−</button>
+              <span class="qty-value" aria-live="polite">0</span>
+              <button type="button" class="qty-btn" data-action="increase" aria-label="Increase Premium Lounge quantity">+</button>
+            </div>
+            <div class="ticket-price">$160</div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="summary-card">
+        <div class="summary-head">
+          <h3>Your order</h3>
+          <p class="meta">Review ticket quantities and total cost.</p>
+        </div>
+        <div class="summary-items" id="summary-items"></div>
+        <div class="summary-total">
+          <span>Total</span>
+          <strong id="order-total">$45</strong>
+        </div>
+        <a href="checkout.html" class="checkout-btn">Continue to checkout</a>
+      </aside>
+    </section>
+
+    <section class="detail-copy">
+      <div>
+        <h2>About this event</h2>
+        <p>Join the most exciting open-air music festival of the season. Enjoy a curated line-up of headline artists across multiple stages, street food vendors, and immersive experiences designed for music lovers.</p>
+        <ul class="detail-list">
+          <li>Live sets from international and local performers</li>
+          <li>Fast entry and express lanes for VIP visitors</li>
+          <li>Family-friendly zone and accessible seating</li>
+          <li>Merchandise stalls, art installations, and late-night parties</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="guests-section">
+      <div>
+        <h2>Special Guests</h2>
+        <p class="section-note">Meet the artists, speakers, and special guests appearing at this event.</p>
+        <div id="guests-list" class="guest-cards"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h4 class="brand-footer">Event<span class="brand-tail">lyy</span></h4>
+        <nav>
+          <a href="index.html">Home</a>
+          <a href="privacy.html">Privacy</a>
+          <a href="terms.html">Terms</a>
+        </nav>
+      </div>
+      <div class="footer-section">
+        <h4>For Attendees</h4>
+        <nav>
+          <a href="auth-pages/register.html">Create Account</a>
+          <a href="auth-pages/login.html">Login</a>
+        </nav>
+      </div>
+      <div class="footer-section">
+        <h4>For Hosts</h4>
+        <nav>
+          <a href="auth-pages/register.html">Become a Host</a>
+          <a href="host/create-event.html">Create Event</a>
+        </nav>
+      </div>
+      <div class="footer-section">
+        <h4>Support</h4>
+        <nav>
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="terms.html">Terms of Service</a>
+          <a href="mailto:support@eventlyy.com">Contact Support</a>
+        </nav>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Eventlyy. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <nav class="bottom-nav" aria-label="Mobile navigation" role="navigation">
+    <a href="index.html" class="nav-item nav-link" data-nav-index="0">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zM13 21h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+      <span>Browse</span>
+    </a>
+    <a href="checkout.html" class="nav-item nav-link" data-nav-index="1">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden><path d="M12 7a5 5 0 100 10 5 5 0 000-10zM2 20l4-4h12l4 4H2z"/></svg>
+      <span>Tickets</span>
+    </a>
+    <a href="profile.html" class="nav-item nav-link" data-nav-index="2">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4S8 5.79 8 8s1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+      <span>Profile</span>
+    </a>
+    <button class="nav-item theme-toggle-btn" data-theme-toggle="true" aria-label="Toggle theme">
+      <span aria-hidden="true">🌓</span>
+      <span>Theme</span>
+    </button>
+  </nav>
+
+  <script src="details.js" defer></script>
+  <script src="app.js" defer></script>
+  <div id="theme-announcer" class="visually-hidden" aria-live="polite"></div>
+</body>
+</html>

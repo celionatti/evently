@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Forgot password — Eventlyy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <main class="container auth-container">
+    <a href="../index.html" class="brand-link">← Back</a>
+    <div class="auth-split">
+      <section class="auth-panel">
+        <span class="panel-badge">Forgot password</span>
+        <h2>Reset your password easily</h2>
+        <p>We’ll send a reset link to your email so you can continue without interruptions.</p>
+        <ul>
+          <li>Secure recovery flow for event access</li>
+          <li>Clear guidance every step of the way</li>
+          <li>Fast mobile-friendly experience</li>
+        </ul>
+      </section>
+      <div class="auth-card">
+        <h1>Reset password</h1>
+        <div class="auth-message" aria-live="polite"></div>
+        <p class="lede">Enter your email and we'll send a password reset link.</p>
+        <form id="forgot-form">
+          <label>Email
+            <input type="email" id="forgot-email" required placeholder="you@example.com">
+          </label>
+          <button type="submit" class="checkout-btn">Send reset link</button>
+        </form>
+        <div class="auth-foot">
+          <a href="login.html">Back to sign in</a>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script src="auth.js" defer></script>
+  <script src="../app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Eventlyy — Discover Events Near You</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="top-nav" role="banner">
+    <a href="index.html" class="brand" aria-label="Eventlyy home">Event<span class="brand-tail">lyy</span></a>
+    <nav class="nav-desktop" role="navigation" aria-label="Top navigation">
+      <a href="#" class="nav-link" data-nav-index="0">Browse</a>
+      <a href="#" class="nav-link" data-nav-index="1">Venues</a>
+      <a href="#" class="nav-link" data-nav-index="2">Pricing</a>
+      <a href="#" class="nav-link" data-nav-index="3">Support</a>
+      <button id="theme-toggle" data-theme-toggle="true" aria-label="Toggle theme" aria-pressed="false">🌓</button>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="hero-inner">
+        <p class="hero-eyebrow">Your next night out starts here</p>
+        <h1>Find live events, concerts &amp; experiences</h1>
+        <p class="lede">Search, compare and buy tickets — fast and secure.</p>
+        <form id="search-form" class="search" role="search" aria-label="Search events">
+          <input id="search-input" type="search" placeholder="Search events, artists, venues" aria-label="Search" />
+          <select aria-label="Location">
+            <option>Nearby</option>
+            <option>New York</option>
+            <option>Los Angeles</option>
+            <option>Chicago</option>
+          </select>
+          <button type="submit">Search</button>
+        </form>
+      </div>
+      <div class="hero-media" aria-hidden>
+        <div class="card featured">Featured Event</div>
+      </div>
+    </section>
+
+    <section class="categories">
+      <h2>Popular categories</h2>
+      <div class="chips">
+        <button>Concerts</button>
+        <button>Sports</button>
+        <button>Comedy</button>
+        <button>Theater</button>
+        <button>Family</button>
+      </div>
+    </section>
+
+    <section class="featured-events">
+      <h2>Featured</h2>
+      <div class="carousel" id="carousel">
+        <div class="carousel-controls-top">
+          <button class="carousel-prev" aria-label="Previous">◀</button>
+          <div class="carousel-actions">
+            <button id="autoplay-toggle" aria-pressed="true" title="Toggle autoplay">⏯️ Autoplay</button>
+          </div>
+          <button class="carousel-next" aria-label="Next">▶</button>
+        </div>
+        <div class="slides" id="slides" aria-live="polite"></div>
+        <div class="carousel-bottom">
+          <div class="indicators" id="carousel-indicators" role="tablist" aria-label="Carousel indicators"></div>
+          <button id="play-pause" aria-pressed="false" title="Pause autoplay">⏸</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="event-listing">
+      <div class="section-header">
+        <div>
+          <h2>All events</h2>
+          <p class="section-note">Browse all available events with search and pagination.</p>
+        </div>
+        <div class="list-meta" id="list-meta"></div>
+      </div>
+      <div id="event-list" class="event-list"></div>
+      <div class="pagination" id="pagination"></div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h4 class="brand-footer">Event<span class="brand-tail">lyy</span></h4>
+        <nav>
+          <a href="index.html">Home</a>
+          <a href="privacy.html">Privacy</a>
+          <a href="terms.html">Terms</a>
+        </nav>
+      </div>
+      <div class="footer-section">
+        <h4>For Attendees</h4>
+        <nav>
+          <a href="auth-pages/register.html">Create Account</a>
+          <a href="auth-pages/login.html">Login</a>
+        </nav>
+      </div>
+      <div class="footer-section">
+        <h4>For Hosts</h4>
+        <nav>
+          <a href="auth-pages/register.html">Become a Host</a>
+          <a href="host/create-event.html">Create Event</a>
+        </nav>
+      </div>
+      <div class="footer-section">
+        <h4>Support</h4>
+        <nav>
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="terms.html">Terms of Service</a>
+          <a href="mailto:support@eventlyy.com">Contact Support</a>
+        </nav>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Eventlyy. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <nav class="bottom-nav" aria-label="Mobile navigation" role="navigation">
+    <a href="index.html" class="nav-item nav-link active" data-nav-index="0" aria-current="true">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zM13 21h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+      <span>Browse</span>
+    </a>
+    <a href="checkout.html" class="nav-item nav-link" data-nav-index="1">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden><path d="M12 7a5 5 0 100 10 5 5 0 000-10zM2 20l4-4h12l4 4H2z"/></svg>
+      <span>Tickets</span>
+    </a>
+    <a href="profile.html" class="nav-item nav-link" data-nav-index="2">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4S8 5.79 8 8s1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+      <span>Profile</span>
+    </a>
+    <button class="nav-item theme-toggle-btn" data-theme-toggle="true" aria-label="Toggle theme">
+      <span aria-hidden="true">🌓</span>
+      <span>Theme</span>
+    </button>
+  </nav>
+
+  <script src="app.js" defer></script>
+  <div id="theme-announcer" class="visually-hidden" aria-live="polite"></div>
+</body>
+</html>

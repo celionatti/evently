@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Login — Eventlyy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <main class="container auth-container">
+    <a href="../index.html" class="brand-link">← Back</a>
+    <div class="auth-split">
+      <section class="auth-panel">
+        <span class="panel-badge">Welcome back</span>
+        <h2>Sign in and manage your tickets</h2>
+        <p>Access your events, review orders, and keep your ticketing experience smooth and secure.</p>
+        <ul>
+          <li>Modern login flow with instant feedback</li>
+          <li>Keep track of your events and bookings</li>
+          <li>Optimized for mobile, tablet, and desktop</li>
+        </ul>
+      </section>
+      <div class="auth-card">
+        <h1>Sign in</h1>
+        <div class="auth-message" aria-live="polite"></div>
+        <form id="login-form">
+          <label>Email
+            <input type="email" id="login-email" required placeholder="you@example.com">
+          </label>
+          <label>Password
+            <input type="password" id="login-password" required placeholder="••••••••">
+          </label>
+          <button type="submit" class="checkout-btn">Sign in</button>
+        </form>
+        <div class="auth-foot">
+          <a href="forgot.html">Forgot password?</a>
+          <a href="register.html">Create an account</a>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script src="auth.js" defer></script>
+  <script src="../app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Eventlyy — Payment Success</title>
+  <meta name="description" content="Your payment was successful! View your ticket details on Eventlyy." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .success-page{display:grid;place-items:center;min-height:80vh;padding:2rem 1rem;text-align:center}
+    .success-card{max-width:520px;width:100%;padding:2.5rem 2rem;border-radius:28px;background:rgb(var(--card));box-shadow:0 24px 64px rgba(0,0,0,0.10);border:1px solid rgba(var(--muted),0.08);animation:fade-up var(--duration-slow) var(--ease-out) both}
+
+    /* Animated checkmark */
+    .success-icon{width:88px;height:88px;border-radius:50%;display:grid;place-items:center;margin:0 auto 1.75rem;background:linear-gradient(135deg, rgba(58,178,116,0.15), rgba(58,178,116,0.05));border:2px solid rgba(58,178,116,0.25);animation:fade-up var(--duration-slow) var(--ease-out) 80ms both, success-pop 0.5s var(--ease-spring) 0.4s both}
+    .success-icon svg{width:42px;height:42px;color:rgb(58,178,116)}
+    .success-icon .check-path{stroke-dasharray:48;stroke-dashoffset:48;animation:draw-check 0.6s ease 0.7s forwards}
+
+    @keyframes success-pop{from{transform:scale(0.5);opacity:0}to{transform:scale(1);opacity:1}}
+    @keyframes draw-check{to{stroke-dashoffset:0}}
+
+    .success-card h1{font-size:clamp(1.6rem,3.5vw,2.2rem);margin:0 0 .5rem;letter-spacing:-0.02em;animation:fade-up var(--duration-slow) var(--ease-out) 200ms both}
+    .success-card .lede{color:rgb(var(--muted));margin:0 0 1.75rem;font-size:1.05rem;animation:fade-up var(--duration-slow) var(--ease-out) 280ms both}
+
+    .receipt-details{display:grid;gap:.65rem;padding:1.25rem;border-radius:16px;background:rgba(var(--muted),0.04);border:1px solid rgba(var(--muted),0.08);margin-bottom:1.75rem;animation:fade-up var(--duration-slow) var(--ease-out) 360ms both}
+    .receipt-row{display:flex;justify-content:space-between;align-items:center;gap:1rem;font-size:.95rem}
+    .receipt-row .receipt-label{color:rgb(var(--muted));font-weight:500}
+    .receipt-row .receipt-value{font-weight:600;color:rgb(var(--text))}
+    .receipt-row .receipt-value.provider-badge{display:inline-flex;align-items:center;gap:.4rem;padding:.3rem .7rem;border-radius:999px;font-size:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+    .receipt-value.provider-badge.stripe{background:rgba(99,91,255,0.1);color:rgb(99,91,255)}
+    .receipt-value.provider-badge.paystack{background:rgba(35,182,107,0.1);color:rgb(35,182,107)}
+    .receipt-value.provider-badge.flutterwave{background:rgba(0,163,255,0.1);color:rgb(0,163,255)}
+    .receipt-value.provider-badge.provider{background:rgba(var(--muted),0.08);color:rgb(var(--muted))}
+
+    .success-actions{display:grid;gap:.75rem;animation:fade-up var(--duration-slow) var(--ease-out) 440ms both}
+    .success-actions .checkout-btn{margin-top:0}
+    .success-actions .checkout-btn.secondary{background:transparent;color:rgb(var(--text));border:1px solid rgba(var(--muted),0.15)}
+    .success-actions .checkout-btn.secondary:hover{border-color:rgba(var(--brand),0.3);color:rgb(var(--brand))}
+
+    /* Confetti burst (CSS only) */
+    .confetti{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:hidden;z-index:50}
+    .confetti span{position:absolute;display:block;width:8px;height:8px;border-radius:2px;top:-20px;animation:confetti-fall 3s ease forwards}
+    .confetti span:nth-child(1){left:10%;background:rgb(var(--brand));animation-delay:0s;animation-duration:2.8s}
+    .confetti span:nth-child(2){left:25%;background:rgb(var(--accent));animation-delay:0.15s;animation-duration:3.2s;width:6px;height:10px}
+    .confetti span:nth-child(3){left:40%;background:rgb(var(--success));animation-delay:0.3s;animation-duration:2.6s;border-radius:50%}
+    .confetti span:nth-child(4){left:55%;background:rgb(var(--brand));animation-delay:0.1s;animation-duration:3s;width:10px;height:6px}
+    .confetti span:nth-child(5){left:70%;background:rgb(var(--accent));animation-delay:0.25s;animation-duration:2.9s}
+    .confetti span:nth-child(6){left:85%;background:rgb(var(--success));animation-delay:0.05s;animation-duration:3.1s;width:7px;height:7px;border-radius:50%}
+    .confetti span:nth-child(7){left:15%;background:rgb(var(--info));animation-delay:0.35s;animation-duration:2.7s}
+    .confetti span:nth-child(8){left:60%;background:rgb(var(--info));animation-delay:0.2s;animation-duration:3.3s;width:5px;height:12px}
+    .confetti span:nth-child(9){left:35%;background:rgb(var(--brand));animation-delay:0.4s;animation-duration:2.5s;border-radius:50%}
+    .confetti span:nth-child(10){left:80%;background:rgb(var(--accent));animation-delay:0.12s;animation-duration:3.4s}
+
+    @keyframes confetti-fall{
+      0%{transform:translateY(-20px) rotate(0deg) scale(1);opacity:1}
+      50%{opacity:1}
+      100%{transform:translateY(100vh) rotate(720deg) scale(0.4);opacity:0}
+    }
+  </style>
+</head>
+<body>
+  <header class="top-nav" role="banner">
+    <a href="index.html" class="brand" aria-label="Eventlyy home">Event<span class="brand-tail">lyy</span></a>
+    <nav class="nav-desktop" role="navigation" aria-label="Top navigation">
+      <a href="index.html" class="nav-link" data-nav-index="0">Browse</a>
+      <a href="#" class="nav-link" data-nav-index="1">Venues</a>
+      <a href="#" class="nav-link" data-nav-index="2">Pricing</a>
+      <a href="#" class="nav-link" data-nav-index="3">Support</a>
+      <button id="theme-toggle" data-theme-toggle="true" aria-label="Toggle theme" aria-pressed="false">🌓</button>
+    </nav>
+  </header>
+
+  <!-- Confetti celebration -->
+  <div class="confetti" aria-hidden="true">
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <main class="success-page">
+    <div class="success-card">
+      <div class="success-icon">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path class="check-path" d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+      </div>
+      <h1>Payment successful!</h1>
+      <p class="lede">Your tickets are confirmed. Get ready for an amazing experience!</p>
+
+      <div class="receipt-details">
+        <div class="receipt-row">
+          <span class="receipt-label">Provider</span>
+          <span class="receipt-value provider-badge" id="provider-badge">—</span>
+        </div>
+        <div class="receipt-row">
+          <span class="receipt-label">Order ID</span>
+          <span class="receipt-value" id="order-id">—</span>
+        </div>
+        <div class="receipt-row">
+          <span class="receipt-label">Status</span>
+          <span class="receipt-value" style="color:rgb(var(--success));font-weight:700">✓ Confirmed</span>
+        </div>
+      </div>
+
+      <div class="success-actions">
+        <a href="index.html" class="checkout-btn">Browse more events</a>
+        <a href="profile.html" class="checkout-btn secondary">View my tickets</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h4 class="brand-footer">Event<span class="brand-tail">lyy</span></h4>
+        <nav>
+          <a href="index.html">Home</a>
+          <a href="privacy.html">Privacy</a>
+          <a href="terms.html">Terms</a>
+        </nav>
+      </div>
+      <div class="footer-section">
+        <h4>For Attendees</h4>
+        <nav>
+          <a href="auth-pages/register.html">Create Account</a>
+          <a href="auth-pages/login.html">Login</a>
+        </nav>
+      </div>
+      <div class="footer-section">
+        <h4>For Hosts</h4>
+        <nav>
+          <a href="auth-pages/register.html">Become a Host</a>
+          <a href="host/create-event.html">Create Event</a>
+        </nav>
+      </div>
+      <div class="footer-section">
+        <h4>Support</h4>
+        <nav>
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="terms.html">Terms of Service</a>
+          <a href="mailto:support@eventlyy.com">Contact Support</a>
+        </nav>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Eventlyy. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <nav class="bottom-nav" aria-label="Mobile navigation" role="navigation">
+    <a href="index.html" class="nav-item nav-link" data-nav-index="0">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zM13 21h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+      <span>Browse</span>
+    </a>
+    <a href="checkout.html" class="nav-item nav-link" data-nav-index="1">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden><path d="M12 7a5 5 0 100 10 5 5 0 000-10zM2 20l4-4h12l4 4H2z"/></svg>
+      <span>Tickets</span>
+    </a>
+    <a href="profile.html" class="nav-item nav-link" data-nav-index="2">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4S8 5.79 8 8s1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+      <span>Profile</span>
+    </a>
+    <button class="nav-item theme-toggle-btn" data-theme-toggle="true" aria-label="Toggle theme">
+      <span aria-hidden="true">🌓</span>
+      <span>Theme</span>
+    </button>
+  </nav>
+
+  <script src="app.js" defer></script>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const provider = params.get('provider') || 'provider';
+    const order = params.get('order') || 'N/A';
+
+    const badge = document.getElementById('provider-badge');
+    badge.textContent = provider.toUpperCase();
+    badge.classList.add(provider.toLowerCase());
+
+    document.getElementById('order-id').textContent = '#' + order;
+  </script>
+  <div id="theme-announcer" class="visually-hidden" aria-live="polite"></div>
+</body>
+</html>

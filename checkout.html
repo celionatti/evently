@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Eventlyy — Checkout</title>
+  <meta name="description" content="Complete your ticket purchase securely on Eventlyy. Multiple payment methods supported." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="top-nav" role="banner">
+    <a href="index.html" class="brand" aria-label="Eventlyy home">Event<span class="brand-tail">lyy</span></a>
+    <nav class="nav-desktop" role="navigation" aria-label="Top navigation">
+      <a href="index.html" class="nav-link" data-nav-index="0">Browse</a>
+      <a href="#" class="nav-link" data-nav-index="1">Venues</a>
+      <a href="#" class="nav-link" data-nav-index="2">Pricing</a>
+      <a href="#" class="nav-link" data-nav-index="3">Support</a>
+      <button id="theme-toggle" data-theme-toggle="true" aria-label="Toggle theme" aria-pressed="false">🌓</button>
+    </nav>
+  </header>
+
+  <main class="container checkout-page">
+    <section class="checkout-intro">
+      <span class="eyebrow">Checkout</span>
+      <h1>Confirm your tickets</h1>
+      <p class="lede">Finish your purchase securely and get ready for an unforgettable experience.</p>
+    </section>
+
+    <div class="checkout-grid">
+      <section class="checkout-form">
+        <div class="section-header">
+          <div>
+            <h2>Payment details</h2>
+            <p class="section-note">Enter your billing information to complete the order.</p>
+          </div>
+        </div>
+
+        <div class="form-card">
+          <div class="checkout-message" aria-live="polite"></div>
+          <label>
+            Full name
+            <input type="text" placeholder="Jane Doe" aria-label="Full name" />
+          </label>
+          <label>
+            Email address
+            <input type="email" placeholder="jane@example.com" aria-label="Email address" />
+          </label>
+          <div class="payment-methods" role="tablist" aria-label="Payment methods">
+            <button type="button" class="pm-btn" data-method="stripe" aria-pressed="true">
+              <span class="logo" aria-hidden>
+                <!-- simple Stripe-like mark -->
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="6" width="20" height="12" rx="2" fill="currentColor"/></svg>
+              </span>
+              <span>Stripe</span>
+            </button>
+            <button type="button" class="pm-btn" data-method="paystack">
+              <span class="logo" aria-hidden>
+                <!-- simple Paystack-like mark -->
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" fill="currentColor"/></svg>
+              </span>
+              <span>Paystack</span>
+            </button>
+            <button type="button" class="pm-btn" data-method="flutterwave">
+              <span class="logo" aria-hidden>
+                <!-- simple Flutterwave-like mark -->
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 12h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </span>
+              <span>Flutterwave</span>
+            </button>
+          </div>
+          <div class="card-fields" aria-hidden="false">
+            <label class="card-number">
+              Card number
+              <input type="text" placeholder="1234 5678 9012 3456" aria-label="Card number" />
+            </label>
+            <div class="form-row">
+              <label>
+                Expiry
+                <input type="text" placeholder="MM/YY" aria-label="Expiry date" />
+              </label>
+              <label>
+                CVC
+                <input type="text" placeholder="123" aria-label="CVC" />
+              </label>
+            </div>
+            <label>
+              Billing zip
+              <input type="text" placeholder="10001" aria-label="Billing zip code" />
+            </label>
+          </div>
+        </div>
+
+        <div class="checkout-actions">
+          <button class="checkout-btn">Complete purchase</button>
+          <p class="checkout-note">You will be redirected to your tickets after payment.</p>
+        </div>
+      </section>
+
+      <aside class="order-summary">
+        <div class="summary-head">
+          <h3>Order summary</h3>
+          <p class="meta">Review selected tickets before purchase.</p>
+        </div>
+        <div class="summary-card">
+          <div class="summary-row"><span>Summer Beats Festival</span><span>Aug 21</span></div>
+          <div class="summary-row"><span>General Admission × 1</span><span>$45</span></div>
+          <div class="summary-row"><span>VIP Access × 0</span><span>$0</span></div>
+          <div class="summary-row"><span>Premium Lounge × 0</span><span>$0</span></div>
+          <div class="summary-divider"></div>
+          <div class="summary-total">
+            <span>Total</span>
+            <strong>$45</strong>
+          </div>
+        </div>
+
+        <div class="summary-info">
+          <h4>Secure checkout</h4>
+          <p class="meta">Your details are protected with industry-standard encryption.</p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h4 class="brand-footer">Event<span class="brand-tail">lyy</span></h4>
+        <nav>
+          <a href="index.html">Home</a>
+          <a href="privacy.html">Privacy</a>
+          <a href="terms.html">Terms</a>
+        </nav>
+      </div>
+      <div class="footer-section">
+        <h4>For Attendees</h4>
+        <nav>
+          <a href="auth-pages/register.html">Create Account</a>
+          <a href="auth-pages/login.html">Login</a>
+        </nav>
+      </div>
+      <div class="footer-section">
+        <h4>For Hosts</h4>
+        <nav>
+          <a href="auth-pages/register.html">Become a Host</a>
+          <a href="host/create-event.html">Create Event</a>
+        </nav>
+      </div>
+      <div class="footer-section">
+        <h4>Support</h4>
+        <nav>
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="terms.html">Terms of Service</a>
+          <a href="mailto:support@eventlyy.com">Contact Support</a>
+        </nav>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Eventlyy. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <nav class="bottom-nav" aria-label="Mobile navigation" role="navigation">
+    <a href="index.html" class="nav-item nav-link" data-nav-index="0">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zM13 21h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+      <span>Browse</span>
+    </a>
+    <a href="checkout.html" class="nav-item nav-link active" data-nav-index="1" aria-current="true">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden><path d="M12 7a5 5 0 100 10 5 5 0 000-10zM2 20l4-4h12l4 4H2z"/></svg>
+      <span>Tickets</span>
+    </a>
+    <a href="profile.html" class="nav-item nav-link" data-nav-index="2">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4S8 5.79 8 8s1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+      <span>Profile</span>
+    </a>
+    <button class="nav-item theme-toggle-btn" data-theme-toggle="true" aria-label="Toggle theme">
+      <span aria-hidden="true">🌓</span>
+      <span>Theme</span>
+    </button>
+  </nav>
+
+  <script src="app.js" defer></script>
+  <script src="checkout.js" defer></script>
+  <div id="theme-announcer" class="visually-hidden" aria-live="polite"></div>
+</body>
+</html>
