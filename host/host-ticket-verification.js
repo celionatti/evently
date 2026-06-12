@@ -6,7 +6,8 @@
   const ticketsLogSection = document.getElementById('tickets-log-section');
   const eventStats = document.getElementById('event-stats');
   const verificationResult = document.getElementById('verification-result');
-  const resultContent = document.getElementById('result-content');
+  const ticketSuccessCard = document.getElementById('ticket-success-card');
+  const ticketErrorCard = document.getElementById('ticket-error-card');
   const clearResultBtn = document.getElementById('clear-result-btn');
   const noEventMessage = document.getElementById('no-event-message');
   const verifiedTicketsList = document.getElementById('verified-tickets-list');
@@ -166,7 +167,8 @@
 
     // Check if already verified
     if(verifiedTickets.some(t => t.code === code)){
-      showResult(`❌ Ticket ${code} already verified at ${verifiedTickets.find(t => t.code === code).verifiedAt}`, 'error');
+      const prev = verifiedTickets.find(t => t.code === code);
+      showResult(`Ticket ${code} was already verified at ${prev.verifiedAt}`, 'error');
       if(isScannerActive) ticketCodeInput.value = '';
       return;
     }
@@ -174,7 +176,7 @@
     // Find ticket in current event
     const ticket = currentEvent.tickets.find(t => t.code === code);
     if(!ticket){
-      showResult(`❌ Ticket code "${code}" not found`, 'error');
+      showResult(`Ticket code "${code}" was not found for this event`, 'error');
       if(isScannerActive) ticketCodeInput.value = '';
       return;
     }
@@ -190,7 +192,7 @@
     verifiedTickets.push(verifiedTicket);
     localStorage.setItem(`verified-tickets-${currentEvent.id}`, JSON.stringify(verifiedTickets));
 
-    showResult(`✅ Welcome ${ticket.attendee}! Ticket ${code} verified. (${ticket.type})`, 'success');
+    showResult(`Welcome ${ticket.attendee}!`, 'success', ticket);
     updateEventStats();
     updateVerifiedTicketsList();
     ticketCodeInput.value = '';
@@ -250,16 +252,93 @@
     processTicketCode(code);
   });
 
-  // Show verification result
-  function showResult(message, type){
-    resultContent.innerHTML = `<div class="result-${type}">${message}</div>`;
-    verificationResult.style.display = 'block';
-    verificationResult.className = 'verification-result result-' + type;
+  // Generate a decorative barcode visual from a code string
+  function generateBarcodeHTML(code){
+    const bars = [];
+    // Create a deterministic barcode pattern from the ticket code
+    for(let i = 0; i < code.length; i++){
+      const charCode = code.charCodeAt(i);
+      for(let j = 0; j < 3; j++){
+        const height = 20 + ((charCode * (j + 1)) % 20);
+        const width = (charCode + j) % 2 === 0 ? 2 : 3;
+        bars.push(`<span style="height:${height}px;width:${width}px"></span>`);
+      }
+      // Gap between character groups
+      bars.push(`<span style="height:0;width:2px"></span>`);
+    }
+    return bars.join('');
+  }
+
+  // Get initials from a name
+  function getInitials(name){
+    return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+  }
+
+  // Show verification result with a rich ticket card
+  function showResult(message, type, ticketData){
+    if(type === 'success' && ticketData){
+      const event = currentEvent;
+      const now = new Date();
+      const verifyTime = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      const verifyDate = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+
+      // Populate Success Card Fields
+      document.getElementById('ticket-success-event-title').textContent = event.title;
+      document.getElementById('ticket-success-event-location').textContent = `${event.venue} · ${event.city}`;
+      document.getElementById('ticket-success-avatar').textContent = getInitials(ticketData.attendee);
+      document.getElementById('ticket-success-attendee-name').textContent = ticketData.attendee;
+      document.getElementById('ticket-success-ticket-type').textContent = `${ticketData.type} Ticket`;
+      document.getElementById('ticket-success-code').textContent = ticketData.code;
+      document.getElementById('ticket-success-date').textContent = event.date;
+      document.getElementById('ticket-success-time').textContent = verifyTime;
+      document.getElementById('ticket-success-checkin-date').textContent = verifyDate;
+      document.getElementById('ticket-success-barcode').innerHTML = generateBarcodeHTML(ticketData.code);
+      document.getElementById('ticket-success-barcode-code').textContent = ticketData.code;
+
+      ticketSuccessCard.style.display = 'block';
+      ticketErrorCard.style.display = 'none';
+    } else if(type === 'error'){
+      // Determine the error subtype
+      let icon = '❌';
+      let title = 'Invalid Ticket';
+      let subtitle = message;
+      let badgeClass = 'badge-invalid';
+      let badgeText = 'Invalid';
+
+      if(message.includes('already verified')){
+        icon = '⚠️';
+        title = 'Duplicate Scan';
+        badgeClass = 'badge-duplicate';
+        badgeText = 'Already Used';
+      } else if(message.includes('not found')){
+        icon = '🔍';
+        title = 'Ticket Not Found';
+      }
+
+      // Populate Error Card Fields
+      document.getElementById('ticket-error-event-title').textContent = currentEvent ? currentEvent.title : 'Verification Error';
+      document.getElementById('ticket-error-event-location').textContent = currentEvent ? `${currentEvent.venue} · ${currentEvent.city}` : '';
+      
+      const badge = document.getElementById('ticket-error-badge');
+      badge.textContent = badgeText;
+      badge.className = `ticket-status-badge ${badgeClass}`;
+
+      document.getElementById('ticket-error-icon').textContent = icon;
+      document.getElementById('ticket-error-title').textContent = title;
+      document.getElementById('ticket-error-message').textContent = subtitle;
+
+      ticketSuccessCard.style.display = 'none';
+      ticketErrorCard.style.display = 'block';
+    }
+
+    verificationResult.style.display = 'flex';
   }
 
   // Clear result
   clearResultBtn.addEventListener('click', () => {
     verificationResult.style.display = 'none';
+    ticketSuccessCard.style.display = 'none';
+    ticketErrorCard.style.display = 'none';
     ticketCodeInput.focus();
   });
 
