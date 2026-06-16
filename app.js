@@ -244,4 +244,37 @@
   }
   window.addEventListener('scroll', onScroll, {passive:true});
   onScroll();
+
+  // ─── Scroll Reveal: IntersectionObserver ───────────────────
+  if('IntersectionObserver' in window){
+    // Reveal sections marked with .reveal
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting){
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    // Stagger event list items on scroll
+    const itemObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if(entry.isIntersecting){
+          const delay = (Array.from(document.querySelectorAll('.event-item')).indexOf(entry.target) % 6) * 80;
+          setTimeout(() => {
+            entry.target.classList.add('visible');
+          }, delay);
+          itemObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -20px 0px' });
+
+    document.querySelectorAll('.event-item').forEach(el => {
+      el.classList.add('reveal');
+      itemObserver.observe(el);
+    });
+  }
 })();

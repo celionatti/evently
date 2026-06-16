@@ -200,6 +200,83 @@ a:hover,a:focus{color:inherit;text-decoration:none}
   .search button{width:100%;flex:none}
 }
 
+/* ─── Hero: floating orbs ─────────────────────────────── */
+.hero{position:relative;overflow:visible}
+.hero-orb{position:absolute;border-radius:50%;pointer-events:none;z-index:0;filter:blur(60px);opacity:0.35}
+.hero-orb-1{width:320px;height:320px;background:radial-gradient(circle, rgba(var(--brand),0.6), transparent 70%);top:-80px;right:-60px;animation:orb-drift-1 9s var(--ease-out) infinite}
+.hero-orb-2{width:240px;height:240px;background:radial-gradient(circle, rgba(var(--accent),0.5), transparent 70%);bottom:-40px;left:-40px;animation:orb-drift-2 12s var(--ease-out) infinite}
+.hero-orb-3{width:160px;height:160px;background:radial-gradient(circle, rgba(var(--info),0.4), transparent 70%);top:50%;right:30%;animation:orb-drift-3 7s var(--ease-out) infinite}
+.hero-inner,.hero-media{position:relative;z-index:1}
+
+/* ─── Hero h1: animated text shine ────────────────────── */
+.hero-inner h1{
+  background:linear-gradient(120deg, rgb(var(--text)) 0%, rgb(var(--text)) 30%, rgb(var(--brand)) 48%, rgb(var(--accent)) 55%, rgb(var(--text)) 70%, rgb(var(--text)) 100%);
+  background-size:300% auto;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  animation:fade-up var(--duration-slow) var(--ease-out) 140ms both, text-shine 6s linear 1s infinite;
+}
+
+/* ─── Hero eyebrow: pulse badge ────────────────────────── */
+.hero-eyebrow{animation:fade-up var(--duration-slow) var(--ease-out) 80ms both, badge-pulse 2.8s ease-in-out 1.2s infinite}
+
+/* ─── Hero image: floating ─────────────────────────────── */
+.hero-image-wrapper{animation:float 7s var(--ease-out) infinite}
+@media(prefers-reduced-motion:reduce){.hero-image-wrapper{animation:none}}
+
+/* ─── Scroll reveal system ──────────────────────────────── */
+.reveal{opacity:0;transform:translateY(32px);transition:opacity 0.65s var(--ease-out), transform 0.65s var(--ease-out)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-child{opacity:0;transform:translateY(14px) scale(0.94);transition:opacity 0.45s var(--ease-out), transform 0.45s var(--ease-spring)}
+.reveal.visible .reveal-child:nth-child(1){opacity:1;transform:none;transition-delay:80ms}
+.reveal.visible .reveal-child:nth-child(2){opacity:1;transform:none;transition-delay:160ms}
+.reveal.visible .reveal-child:nth-child(3){opacity:1;transform:none;transition-delay:240ms}
+.reveal.visible .reveal-child:nth-child(4){opacity:1;transform:none;transition-delay:320ms}
+.reveal.visible .reveal-child:nth-child(5){opacity:1;transform:none;transition-delay:400ms}
+.reveal.visible .reveal-child:nth-child(6){opacity:1;transform:none;transition-delay:480ms}
+@media(prefers-reduced-motion:reduce){.reveal,.reveal-child{opacity:1;transform:none;transition:none}}
+
+/* ─── Footer: animated gradient top border + glow ─────── */
+.footer{position:relative}
+.footer::before{
+  content:'';
+  position:absolute;
+  top:0;left:0;right:0;
+  height:3px;
+  background:linear-gradient(90deg, rgb(var(--brand)), rgb(var(--accent)), rgb(var(--info)), rgb(var(--brand)));
+  background-size:300% 100%;
+  animation:footer-glow 4s ease-in-out infinite;
+  border-radius:0 0 2px 2px;
+}
+
+/* Footer links: sliding underline on hover */
+.footer-section a{position:relative}
+.footer-section a::after{content:'';position:absolute;bottom:-2px;left:0;width:0;height:1.5px;background:rgb(var(--brand));border-radius:99px;transition:width var(--duration-fast) var(--ease-out)}
+.footer-section a:hover::after,.footer-section a:focus::after{width:100%}
+
+/* ─── Event items: reveal on scroll ─────────────────────── */
+.event-item.reveal{opacity:0;transform:translateY(20px);transition:opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out)}
+.event-item.visible{opacity:1;transform:translateY(0)}
+
+/* ─── Section headings: reveal underline grows in ─────── */
+.categories h2::after,.featured-events h2::after,.event-listing h2::after{transition:width 0.5s var(--ease-out) 0.2s}
+
+/* ─── Brand logo: subtle gradient shimmer ────────────────── */
+.brand{
+  background:linear-gradient(120deg, rgb(var(--text)) 30%, rgb(var(--brand)) 50%, rgb(var(--text)) 70%);
+  background-size:250% auto;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  transition:background-position 0.4s var(--ease-out);
+}
+.brand:hover{background-position:right center}
+
+/* ─── Page body: smooth entrance ────────────────────────── */
+body{animation:fade-up 0.4s var(--ease-out) both}
+
+/* ─── Legal page */
 .legal-page{padding:2rem 0 3rem}
 .legal-hero{display:grid;gap:.75rem;padding:1.5rem 0;border-bottom:1px solid rgba(var(--muted),0.12)}
 .legal-hero h1{font-size:clamp(2rem,4vw,3rem);margin:0}
@@ -211,7 +288,7 @@ a:hover,a:focus{color:inherit;text-decoration:none}
 .legal-section li{color:rgb(var(--text));line-height:1.8}
 .legal-section ul{margin:.85rem 0 0;padding-left:1.25rem;list-style:disc}
 .legal-section li{margin:.45rem 0}
-.footer{margin-top:3rem;padding-top:2rem;border-top:1px solid rgba(var(--muted),0.08)}
+.footer{margin-top:3rem;padding-top:2rem;border-top:none}
 .footer-content{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1.5rem}
 .footer-section h4{margin:0 0 .75rem;font-size:1rem;text-transform:uppercase;letter-spacing:.08em;color:rgb(var(--text))}
 .footer-section h4.brand-footer{text-transform:none;letter-spacing:-0.03em;font-weight:700}
@@ -252,6 +329,19 @@ a:hover,a:focus{color:inherit;text-decoration:none}
 .hero-brand-img{width:100%;height:100%;object-fit:cover;display:block}
 @keyframes fade-up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 @keyframes shimmer{0%,100%{transform:translateX(-100%)}50%{transform:translateX(100%)}}
+@keyframes float{0%,100%{transform:translateY(0) scale(1)}40%{transform:translateY(-22px) scale(1.04)}70%{transform:translateY(-10px) scale(0.98)}}
+@keyframes float-delayed{0%,100%{transform:translateY(0) scale(1)}30%{transform:translateY(-14px) scale(1.03)}65%{transform:translateY(-28px) scale(0.97)}}
+@keyframes float-slow{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-18px) rotate(6deg)}}
+@keyframes pulse-glow{0%,100%{box-shadow:0 0 0 0 rgba(var(--brand),0.4), var(--shadow-brand)}50%{box-shadow:0 0 0 10px rgba(var(--brand),0), 0 20px 60px rgba(var(--brand),0.25)}}
+@keyframes text-shine{0%{background-position:200% center}100%{background-position:-200% center}}
+@keyframes orb-drift-1{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(18px,-24px) scale(1.08)}66%{transform:translate(-12px,14px) scale(0.94)}}
+@keyframes orb-drift-2{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(-20px,16px) scale(1.06)}60%{transform:translate(14px,-18px) scale(0.92)}}
+@keyframes orb-drift-3{0%,100%{transform:translate(0,0)}50%{transform:translate(-10px,-20px)}}
+@keyframes reveal-in{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+@keyframes stagger-pop{from{opacity:0;transform:translateY(12px) scale(0.92)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes footer-glow{0%,100%{opacity:0.5;background-position:0% 50%}50%{opacity:1;background-position:100% 50%}}
+@keyframes spin-slow{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes badge-pulse{0%,100%{box-shadow:0 0 0 0 rgba(var(--brand),0.3)}60%{box-shadow:0 0 0 7px rgba(var(--brand),0)}}
 
 .page-hero{padding:clamp(24px,3vw,42px) 0}
 .page-hero .panel-badge{display:inline-flex;align-items:center;gap:.5rem;padding:.55rem 1rem;border-radius:999px;background:rgba(var(--brand),0.1);color:rgb(var(--brand));font-size:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:1rem}
