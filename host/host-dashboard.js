@@ -121,7 +121,6 @@
 
     emptyEvents.style.display = 'none';
     eventsGrid.style.display = 'grid';
-
     hostedEvents.forEach(event => {
       const occupancyPercent = (event.ticketsSold / event.ticketsTotal * 100).toFixed(0);
       const statusBadge = {
@@ -132,6 +131,9 @@
 
       const card = document.createElement('article');
       card.className = 'host-event-card';
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('role', 'button');
+      card.setAttribute('aria-label', `Manage event: ${event.title}`);
       card.innerHTML = `
         <div class="event-card-image">
           <img src="${event.image}" alt="${event.title}" loading="lazy" />
@@ -140,8 +142,8 @@
         <div class="event-card-content">
           <h3>${event.title}</h3>
           <p class="event-card-meta">
-            <span>${event.date} • ${event.time}</span>
-            <span>${event.venue}, ${event.city}</span>
+            <span>📅 ${event.date} • ${event.time}</span>
+            <span>📍 ${event.venue}, ${event.city}</span>
           </p>
           
           <div class="event-stats-mini">
@@ -166,6 +168,22 @@
           </div>
         </div>
       `;
+
+      const navigate = (e) => {
+        if (e.target.closest('a') || e.target.closest('button')) {
+          return;
+        }
+        window.location.href = `host-event-management.html?id=${event.id}`;
+      };
+
+      card.addEventListener('click', navigate);
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          navigate(e);
+        }
+      });
+
       eventsGrid.appendChild(card);
     });
   }
