@@ -1,0 +1,268 @@
+# PHP Integration & Conversion Guide — Eventlyy
+
+This guide outlines how to convert the static Eventlyy front-end template into a dynamic PHP/MySQL application. Since all the navigation elements are clean and the HTML templates (like the ticket display cards) are defined directly in the markup, converting this code is straightforward.
+
+---
+
+## 1. Suggested PHP Directory Structure
+
+To keep layout elements reusable, we recommend organizing your files by extracting common fragments (header, footer, nav) into an `includes/` folder.
+
+```mermaid
+graph TD
+  App[Eventlyy PHP App]
+  App --> includes[includes/]
+  App --> host[host/]
+  App --> admin[admin/]
+  App --> assets[assets/]
+
+  includes --> header[header.php]
+  includes --> footer[footer.php]
+  includes --> db[db.php]
+
+  host --> host_verify[host-ticket-verification.php]
+  host --> verify_api[verify-ticket-api.php]
+  
+  assets --> css[styles.css]
+  assets --> js[app.js]
+```
+
+---
+
+## 2. Step 1: Extract Layout Partials (Includes)
+
+Instead of duplicating the header and footer on every page, extract them into shared files.
+
+### A. Creating `includes/header.php`
+Create a header file that receives the active page name to set the navigation highlights dynamically.
+
+```php
+<?php
+// includes/header.php
+if (!isset($page_title)) {
+    $page_title = "Eventlyy";
+}
+?>
+<!doctype html>
+<html lang="en" data-theme="<?php echo isset($_COOKIE['theme']) ? htmlspecialchars($_COOKIE['theme']) : 'light'; ?>">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title><?php echo htmlspecialchars($page_title); ?></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+  <?php if (isset($extra_head)) echo $extra_head; ?>
+</head>
+<body>
+  <header class="top-nav" role="banner">
+    <a href="/index.php" class="brand">Event<span class="brand-tail">lyy</span></a>
+    <button id="host-mobile-menu" class="mobile-menu-btn" aria-label="Open menu">☰</button>
+    <nav class="nav-desktop" role="navigation">
+      <a href="/host/host-dashboard.php" class="nav-link" <?php echo ($active_tab == 'overview') ? 'aria-current="true"' : ''; ?>>Overview</a>
+      <a href="/host/host-ticket-verification.php" class="nav-link" <?php echo ($active_tab == 'verify') ? 'aria-current="true"' : ''; ?>>Verify Tickets</a>
+      <a href="/host/create-event.php" class="nav-link" <?php echo ($active_tab == 'create') ? 'aria-current="true"' : ''; ?>>Create Event</a>
+      <a href="/host/host-settings.php" class="nav-link" <?php echo ($active_tab == 'settings') ? 'aria-current="true"' : ''; ?>>Settings</a>
+      <button id="theme-toggle" data-theme-toggle="true">🌓</button>
+    </nav>
+  </header>
+```
+
+### B. Creating `includes/footer.php`
+```php
+<?php
+// includes/footer.php
+?>
+  <footer class="footer">
+    <div class="footer-content">
+      <!-- Footer Sections... -->
+    </div>
+    <div class="footer-bottom">
+      <p>© <?php echo date('Y'); ?> Eventlyy. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Mobile Bottom Navigation -->
+  <nav class="bottom-nav host-bottom" aria-label="Mobile navigation">
+    <a href="/host/host-dashboard.php" class="nav-item nav-link <?php echo ($active_tab == 'overview') ? 'active' : ''; ?>">
+      <span>Overview</span>
+    </a>
+    <a href="/host/create-event.php" class="nav-item nav-link <?php echo ($active_tab == 'create') ? 'active' : ''; ?>">
+      <span>Create</span>
+    </a>
+    <a href="/host/host-ticket-verification.php" class="nav-item nav-link <?php echo ($active_tab == 'verify') ? 'active' : ''; ?>">
+      <span>Verify</span>
+    </a>
+    <a href="/host/host-settings.php" class="nav-item nav-link <?php echo ($active_tab == 'settings') ? 'active' : ''; ?>">
+      <span>Settings</span>
+    </a>
+  </nav>
+
+  <script src="/app.js" defer></script>
+  <?php if (isset($extra_js)) echo $extra_js; ?>
+</body>
+</html>
+```
+
+---
+
+## 3. Step 2: Database Integration (`db.php`)
+
+Connect your application to a MySQL database to replace static JS array lists.
+
+```php
+<?php
+// includes/db.php
+$host = 'localhost';
+$db   = 'eventlyy_db';
+$user = 'root';
+$pass = '';
+$charset = 'utf8mb4';
+
+$dsn = "mysql:host=$host;dbname=$db;charset=$charset";
+$options = [
+    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    PDO::ATTR_EMULATE_PREPARES   => false,
+];
+
+try {
+     $pdo = new PDO($dsn, $user, $pass, $options);
+} catch (\PDOException $e) {
+     throw new \PDOException($e->getMessage(), (int)$e->getCode());
+}
+?>
+```
+
+---
+
+## 4. Step 3: Integrating the Ticket Verification Logic
+
+We can replace the mock array search inside JavaScript with an AJAX call to a PHP endpoint (`verify-ticket-api.php`).
+
+### A. Frontend Verification Page (`host-ticket-verification.php`)
+```php
+<?php
+require_once '../includes/db.php';
+
+$page_title = "Ticket Verification — Eventlyy";
+$active_tab = "verify";
+$extra_head = '<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>';
+
+// Fetch events list from database
+$stmt = $pdo->query("SELECT id, title, event_date FROM events ORDER BY event_date DESC");
+$events = $stmt->fetchAll();
+
+include '../includes/header.php';
+?>
+<main class="page-container">
+    <section class="form-card">
+        <h2>Select Your Event</h2>
+        <select id="event-select">
+            <option value="">-- Select Event --</option>
+            <?php foreach ($events as $event): ?>
+                <option value="<?php echo $event['id']; ?>">
+                    <?php echo htmlspecialchars($event['title'] . " (" . $event['event_date'] . ")"); ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+    </section>
+
+    <!-- Verification templates and form container (Copy paste directly from HTML template) -->
+    <!-- ... -->
+</main>
+<?php 
+$extra_js = '<script src="host-ticket-verification.js" defer></script>';
+include '../includes/footer.php'; 
+?>
+```
+
+### B. The JS Verification Hook (`host-ticket-verification.js`)
+Instead of searching in local storage, perform an AJAX post request:
+
+```javascript
+// Inside host-ticket-verification.js
+function processTicketCode(code) {
+  const eventId = eventSelect.value;
+  if(!code || !eventId) return;
+
+  fetch('verify-ticket-api.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ event_id: eventId, code: code })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if(data.success){
+      showResult(data.message, 'success', data.ticket);
+    } else {
+      showResult(data.message, 'error');
+    }
+  })
+  .catch(err => {
+    showResult('Network connection error', 'error');
+  });
+}
+```
+
+### C. The PHP Verification Endpoint (`verify-ticket-api.php`)
+This handles the database check, marks the ticket as verified, and returns a JSON response.
+
+```php
+<?php
+// host/verify-ticket-api.php
+header('Content-Type: application/json');
+require_once '../includes/db.php';
+
+$input = json_decode(file_get_contents('php://input'), true);
+$event_id = $input['event_id'] ?? null;
+$code = trim($input['code'] ?? '');
+
+if (!$event_id || !$code) {
+    echo json_encode(['success' => false, 'message' => 'Invalid parameters']);
+    exit;
+}
+
+// 1. Check if ticket exists
+$stmt = $pdo->prepare("SELECT * FROM tickets WHERE event_id = ? AND ticket_code = ?");
+$stmt->execute([$event_id, $code]);
+$ticket = $stmt->fetch();
+
+if (!$ticket) {
+    echo json_encode(['success' => false, 'message' => 'Ticket code not found for this event']);
+    exit;
+}
+
+// 2. Check if already checked in
+if ($ticket['is_verified']) {
+    echo json_encode([
+        'success' => false, 
+        'message' => 'Ticket already verified at ' . date('h:i A', strtotime($ticket['verified_at']))
+    ]);
+    exit;
+}
+
+// 3. Mark as checked in
+$now = date('Y-m-d H:i:s');
+$updateStmt = $pdo->prepare("UPDATE tickets SET is_verified = 1, verified_at = ? WHERE id = ?");
+$updateStmt->execute([$now, $ticket['id']]);
+
+echo json_encode([
+    'success' => true,
+    'message' => 'Ticket verified successfully',
+    'ticket' => [
+        'attendee' => $ticket['attendee_name'],
+        'code' => $ticket['ticket_code'],
+        'type' => $ticket['ticket_type']
+    ]
+]);
+?>
+```
+
+---
+
+## Summary of Integration Advantages
+
+- **Clean HTML Markup**: Because structural templates for ticket cards are defined natively in the `.html` file, your backend PHP developers can directly customize, translate, or inject custom template variables inside the HTML block using standard `echo` tags or server-side loops without writing JS strings.
+- **Dynamic Active Headers**: By moving the layouts to `header.php` and `footer.php`, routing active states works via native PHP `$active_tab` variables rather than pathname regex lookups.

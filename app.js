@@ -120,14 +120,8 @@
   setupMobileMenu('host-mobile-menu', '.host-bottom');
   setupMobileMenu('admin-mobile-menu', '.admin-bottom');
 
-  // Dynamic carousel: render featured events, indicators, autoplay, and interaction handling
+  // Carousel interaction bindings (slides are static HTML)
   const carousel = document.getElementById('carousel');
-  const eventListContainer = document.getElementById('event-list');
-  const paginationContainer = document.getElementById('pagination');
-  const listMeta = document.getElementById('list-meta');
-  const searchForm = document.getElementById('search-form');
-  const searchInput = document.getElementById('search-input');
-  const locationSelect = document.querySelector('.search select');
 
   if (carousel) {
     const slides = document.getElementById('slides');
@@ -136,22 +130,6 @@
     const indicators = document.getElementById('carousel-indicators');
     const playPause = document.getElementById('play-pause');
 
-    // Events data: try to load from external `events.json`, fallback to default list
-    let fullEvents = [];
-    let filteredEvents = [];
-    let featuredEvents = [];
-    let currentPage = 1;
-    const pageSize = 6;
-    const defaultEvents = [
-      {title:'Summer Beats Festival', date:'Aug 21', venue:'Central Park', city:'New York', image:'https://images.unsplash.com/photo-1506157786151-b8491531f063?w=1200&q=80&auto=format&fit=crop&ixlib=rb-4.0.3&s=1'},
-      {title:'Broadway Nights', date:'Sep 12', venue:'Downtown Theater', city:'New York', image:'https://images.unsplash.com/photo-1518972559570-6c07c1c4f9f7?w=1200&q=80&auto=format&fit=crop&ixlib=rb-4.0.3&s=2'},
-      {title:'Championship Game', date:'Oct 3', venue:'City Stadium', city:'Los Angeles', image:'https://images.unsplash.com/photo-1517649763962-0c623066013b?w=1200&q=80&auto=format&fit=crop&ixlib=rb-4.0.3&s=3'},
-      {title:'Indie Rock Night', date:'Jul 7', venue:'The Garden Stage', city:'Chicago', image:'https://images.unsplash.com/photo-1507878866276-a947ef722fee?w=1200&q=80&auto=format&fit=crop&ixlib=rb-4.0.3&s=4'},
-      {title:'Comedy Gala', date:'Nov 5', venue:'Laugh House', city:'Los Angeles', image:'https://images.unsplash.com/photo-1546456073-6712f79251bb?w=1200&q=80&auto=format&fit=crop&ixlib=rb-4.0.3&s=5'},
-      {title:'Street Food Fest', date:'Jun 30', venue:'Riverside', city:'Chicago', image:'https://images.unsplash.com/photo-1506354666786-959d6d497f1a?w=1200&q=80&auto=format&fit=crop&ixlib=rb-4.0.3&s=6'},
-      {title:'Summer Jazz Series', date:'Aug 5', venue:'Harbor Stage', city:'New York', image:'https://images.unsplash.com/photo-1505576391880-67f7da0f8f0a?w=1200&q=80&auto=format&fit=crop&ixlib=rb-4.0.3&s=7'},
-      {title:'Outdoor Cinema', date:'Jul 21', venue:'Lawn Park', city:'Los Angeles', image:'https://images.unsplash.com/photo-1505685296765-3a2736de412f?w=1200&q=80&auto=format&fit=crop&ixlib=rb-4.0.3&s=8'}
-    ];
     let currentIndex = 0;
     let autoplayId = null;
     let autoplayEnabled = true;
@@ -159,102 +137,13 @@
     const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const AUTOPLAY_MS = 4000;
 
-    async function loadEvents(){
-      try{
-        const resp = await fetch('events.json');
-        if(resp.ok){
-          const data = await resp.json();
-          if(Array.isArray(data) && data.length) { fullEvents = data; return; }
-        }
-      }catch(e){/* ignore and fallback */}
-      fullEvents = defaultEvents;
-    }
-
-    function renderSlides(){
-      slides.innerHTML = '';
-      featuredEvents.forEach(ev => {
-        const link = document.createElement('a');
-        link.href = 'details.html';
-        link.className = 'event-card-link';
-        const art = document.createElement('article');
-        art.className = 'event-card';
-        art.innerHTML = `<div class="image" style="background-image:linear-gradient(0deg,rgba(0,0,0,.35),rgba(0,0,0,.08)), url('${ev.image}')"></div><div class="meta"><h3>${ev.title}</h3><p>${ev.date} • ${ev.venue}</p></div>`;
-        link.appendChild(art);
-        slides.appendChild(link);
-      });
-    }
-
-    function renderIndicators(){
-      indicators.innerHTML = '';
-      featuredEvents.forEach((_, i) => {
-        const btn = document.createElement('button');
-        btn.className = 'indicator';
-        btn.setAttribute('role','tab');
-        btn.setAttribute('aria-selected', i===0 ? 'true' : 'false');
-        btn.addEventListener('click', ()=> scrollToIndex(i));
-        btn.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' ') { e.preventDefault(); btn.click(); } });
-        indicators.appendChild(btn);
-      });
-    }
-
-    function renderEventList(){
-      if(!eventListContainer) return;
-      eventListContainer.innerHTML = '';
-      const start = (currentPage - 1) * pageSize;
-      const pageEvents = filteredEvents.slice(start, start + pageSize);
-      if(pageEvents.length === 0){
-        eventListContainer.innerHTML = '<p class="empty-state">No events match your search.</p>';
-        paginationContainer.innerHTML = '';
-        if(listMeta) listMeta.textContent = `Showing 0 of ${filteredEvents.length} events`;
-        return;
-      }
-      pageEvents.forEach(ev => {
-        const item = document.createElement('article');
-        item.className = 'event-item';
-        item.innerHTML = `<div class="image" style="background-image:url('${ev.image}')"></div><div class="details"><div><h3>${ev.title}</h3><p class="meta">${ev.date} • ${ev.venue} • ${ev.city || 'Unknown'}</p></div><a href="details.html" class="action">View Tickets</a></div>`;
-        eventListContainer.appendChild(item);
-      });
-      renderPagination();
-      if(listMeta) listMeta.textContent = `Showing ${start + 1}-${Math.min(start + pageSize, filteredEvents.length)} of ${filteredEvents.length} events`;
-    }
-
-    function renderPagination(){
-      if(!paginationContainer) return;
-      const totalPages = Math.max(1, Math.ceil(filteredEvents.length / pageSize));
-      paginationContainer.innerHTML = '';
-      const prevButton = document.createElement('button');
-      prevButton.className = 'page-button';
-      prevButton.textContent = 'Prev';
-      prevButton.disabled = currentPage === 1;
-      prevButton.addEventListener('click', ()=> changePage(currentPage - 1));
-      paginationContainer.appendChild(prevButton);
-      for(let i = 1; i <= totalPages; i++){
-        const pageButton = document.createElement('button');
-        pageButton.className = 'page-button';
-        pageButton.textContent = String(i);
-        pageButton.setAttribute('aria-current', String(currentPage === i));
-        pageButton.addEventListener('click', ()=> changePage(i));
-        paginationContainer.appendChild(pageButton);
-      }
-      const nextButton = document.createElement('button');
-      nextButton.className = 'page-button';
-      nextButton.textContent = 'Next';
-      nextButton.disabled = currentPage === totalPages;
-      nextButton.addEventListener('click', ()=> changePage(currentPage + 1));
-      paginationContainer.appendChild(nextButton);
-    }
-
-    function changePage(page){
-      const totalPages = Math.max(1, Math.ceil(filteredEvents.length / pageSize));
-      currentPage = Math.min(Math.max(page, 1), totalPages);
-      renderEventList();
-    }
+    function slideCount(){ return slides ? slides.children.length : 0; }
 
     function scrollToIndex(i){
       const item = slides.children[i];
       if(!item) return;
       const left = item.offsetLeft - (parseFloat(getComputedStyle(slides).paddingLeft) || 0);
-      const behavior = (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) ? 'auto' : 'smooth';
+      const behavior = prefersReduced ? 'auto' : 'smooth';
       slides.scrollTo({left, behavior});
       updateIndicators(i);
       updateButtons();
@@ -262,10 +151,12 @@
     }
 
     function updateIndicators(active){
+      if(!indicators) return;
       Array.from(indicators.children).forEach((b, idx)=> b.setAttribute('aria-selected', String(idx===active)));
     }
 
     function getCurrentIndex(){
+      if(!slides || slideCount() === 0) return 0;
       const center = slides.scrollLeft + slides.clientWidth / 2;
       let nearest = 0; let min = Infinity;
       Array.from(slides.children).forEach((child, idx)=>{
@@ -276,76 +167,73 @@
       return nearest;
     }
 
-    let raf = null;
-    slides.addEventListener('scroll', ()=>{
-      if(raf) cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(()=>{
-        const idx = getCurrentIndex();
-        updateIndicators(idx);
-        updateButtons();
-        currentIndex = idx;
+    // Bind indicator clicks (static buttons)
+    if(indicators){
+      Array.from(indicators.children).forEach((btn, i)=>{
+        btn.addEventListener('click', ()=> scrollToIndex(i));
+        btn.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' ') { e.preventDefault(); btn.click(); } });
       });
-    }, {passive:true});
+    }
+
+    // Sync indicators on scroll
+    let raf = null;
+    if(slides){
+      slides.addEventListener('scroll', ()=>{
+        if(raf) cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(()=>{
+          const idx = getCurrentIndex();
+          updateIndicators(idx);
+          updateButtons();
+          currentIndex = idx;
+        });
+      }, {passive:true});
+    }
 
     function updateButtons(){
-      const maxIndex = slides.children.length - 1;
+      const max = slideCount() - 1;
       if(prev) prev.disabled = currentIndex <= 0;
-      if(next) next.disabled = currentIndex >= maxIndex;
+      if(next) next.disabled = currentIndex >= max;
     }
 
     prev?.addEventListener('click', ()=> scrollToIndex(Math.max(0, currentIndex - 1)));
-    next?.addEventListener('click', ()=> scrollToIndex(Math.min(featuredEvents.length - 1, currentIndex + 1)));
+    next?.addEventListener('click', ()=> scrollToIndex(Math.min(slideCount() - 1, currentIndex + 1)));
 
+    // Autoplay
     function updateAutoplayUI(){
       if(playPause) playPause.setAttribute('aria-pressed', String(playing));
       if(playPause) playPause.textContent = playing ? '⏸' : '▶';
     }
 
     function startAutoplay(){
-      if(prefersReduced || !autoplayEnabled) return;
+      if(prefersReduced || !autoplayEnabled || slideCount() === 0) return;
       stopAutoplay();
       playing = true;
       updateAutoplayUI();
       autoplayId = setInterval(()=>{
-        if(featuredEvents.length === 0) return;
-        const nextIndex = (currentIndex + 1) % featuredEvents.length;
+        const nextIndex = (currentIndex + 1) % slideCount();
         scrollToIndex(nextIndex);
       }, AUTOPLAY_MS);
     }
-    function stopAutoplay(){ if(autoplayId) { clearInterval(autoplayId); autoplayId = null; } playing = false; updateAutoplayUI(); }
+
+    function stopAutoplay(){
+      if(autoplayId) { clearInterval(autoplayId); autoplayId = null; }
+      playing = false;
+      updateAutoplayUI();
+    }
 
     playPause?.addEventListener('click', ()=>{
       if(playing) stopAutoplay(); else startAutoplay();
     });
 
-    ['mouseenter','touchstart','focusin'].forEach(evt => slides.addEventListener(evt, ()=>{ if(playing) stopAutoplay(); }, {passive:true}));
-    ['mouseleave','touchend','focusout'].forEach(evt => slides.addEventListener(evt, ()=>{ if(autoplayEnabled && !prefersReduced) startAutoplay(); }, {passive:true}));
+    // Pause autoplay on user interaction, resume on leave
+    if(slides){
+      ['mouseenter','touchstart','focusin'].forEach(evt => slides.addEventListener(evt, ()=>{ if(playing) stopAutoplay(); }, {passive:true}));
+      ['mouseleave','touchend','focusout'].forEach(evt => slides.addEventListener(evt, ()=>{ if(autoplayEnabled && !prefersReduced) startAutoplay(); }, {passive:true}));
+    }
     document.addEventListener('visibilitychange', ()=>{ if(document.hidden) stopAutoplay(); else startAutoplay(); });
 
-    function applyFilter(){
-      const query = searchInput?.value.trim().toLowerCase() || '';
-      const locationValue = locationSelect?.value || 'Nearby';
-      filteredEvents = fullEvents.filter(ev => {
-        const matchesQuery = query.length === 0 || ev.title.toLowerCase().includes(query) || ev.venue.toLowerCase().includes(query) || (ev.city||'').toLowerCase().includes(query);
-        const matchesLocation = locationValue === 'Nearby' || (ev.city || '').toLowerCase().includes(locationValue.toLowerCase());
-        return matchesQuery && matchesLocation;
-      });
-      currentPage = 1;
-      renderEventList();
-    }
-
-    searchForm?.addEventListener('submit', (ev)=>{ ev.preventDefault(); applyFilter(); });
-    searchInput?.addEventListener('input', ()=> applyFilter());
-    locationSelect?.addEventListener('change', ()=> applyFilter());
-
-    loadEvents().then(()=>{
-      filteredEvents = fullEvents.slice();
-      featuredEvents = fullEvents.slice(0, 5);
-      renderSlides();
-      renderIndicators();
-      renderEventList();
-      setTimeout(()=>{ updateButtons(); startAutoplay(); }, 80);
-    });
+    // Initialize carousel state
+    setTimeout(()=>{ updateButtons(); startAutoplay(); }, 80);
   }
 
   // Header background on scroll to avoid content showing through

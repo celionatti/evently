@@ -64,9 +64,46 @@
           </div>
           <button class="carousel-next" aria-label="Next">▶</button>
         </div>
-        <div class="slides" id="slides" aria-live="polite"></div>
+        <div class="slides" id="slides" aria-live="polite">
+          <!-- Slide 1 -->
+          <a href="details.html" class="event-card-link">
+            <article class="event-card">
+              <div class="image" style="background-image:linear-gradient(0deg,rgba(0,0,0,.35),rgba(0,0,0,.08)), url('https://images.unsplash.com/photo-1506157786151-b8491531f063?w=1200&q=80&auto=format&fit=crop&ixlib=rb-4.0.3&s=1')"></div>
+              <div class="meta">
+                <h3>Summer Beats Festival</h3>
+                <p>Aug 21 • Central Park</p>
+              </div>
+            </article>
+          </a>
+
+          <!-- Slide 2 -->
+          <a href="details.html" class="event-card-link">
+            <article class="event-card">
+              <div class="image" style="background-image:linear-gradient(0deg,rgba(0,0,0,.35),rgba(0,0,0,.08)), url('https://images.unsplash.com/photo-1518972559570-6c07c1c4f9f7?w=1200&q=80&auto=format&fit=crop&ixlib=rb-4.0.3&s=2')"></div>
+              <div class="meta">
+                <h3>Broadway Nights</h3>
+                <p>Sep 12 • Downtown Theater</p>
+              </div>
+            </article>
+          </a>
+
+          <!-- Slide 3 -->
+          <a href="details.html" class="event-card-link">
+            <article class="event-card">
+              <div class="image" style="background-image:linear-gradient(0deg,rgba(0,0,0,.35),rgba(0,0,0,.08)), url('https://images.unsplash.com/photo-1517649763962-0c623066013b?w=1200&q=80&auto=format&fit=crop&ixlib=rb-4.0.3&s=3')"></div>
+              <div class="meta">
+                <h3>Championship Game</h3>
+                <p>Oct 3 • City Stadium</p>
+              </div>
+            </article>
+          </a>
+        </div>
         <div class="carousel-bottom">
-          <div class="indicators" id="carousel-indicators" role="tablist" aria-label="Carousel indicators"></div>
+          <div class="indicators" id="carousel-indicators" role="tablist" aria-label="Carousel indicators">
+            <button class="indicator" role="tab" aria-selected="true" aria-label="Slide 1"></button>
+            <button class="indicator" role="tab" aria-selected="false" aria-label="Slide 2"></button>
+            <button class="indicator" role="tab" aria-selected="false" aria-label="Slide 3"></button>
+          </div>
           <button id="play-pause" aria-pressed="false" title="Pause autoplay">⏸</button>
         </div>
       </div>
@@ -80,8 +117,63 @@
         </div>
         <div class="list-meta" id="list-meta"></div>
       </div>
-      <div id="event-list" class="event-list"></div>
-      <div class="pagination" id="pagination"></div>
+      <div id="event-list" class="event-list">
+        <!-- Event Card Template 1 -->
+        <article class="event-item">
+          <div class="image" style="background-image:url('https://images.unsplash.com/photo-1506157786151-b8491531f063?w=1200&q=80&auto=format&fit=crop&ixlib=rb-4.0.3&s=1')"></div>
+          <div class="details">
+            <div>
+              <h3>Summer Beats Festival</h3>
+              <p class="meta">Aug 21 • Central Park • New York</p>
+            </div>
+            <a href="details.html" class="action">View Tickets</a>
+          </div>
+        </article>
+
+        <!-- Event Card Template 2 -->
+        <article class="event-item">
+          <div class="image" style="background-image:url('https://images.unsplash.com/photo-1518972559570-6c07c1c4f9f7?w=1200&q=80&auto=format&fit=crop&ixlib=rb-4.0.3&s=2')"></div>
+          <div class="details">
+            <div>
+              <h3>Broadway Nights</h3>
+              <p class="meta">Sep 12 • Downtown Theater • New York</p>
+            </div>
+            <a href="details.html" class="action">View Tickets</a>
+          </div>
+        </article>
+
+        <!-- Event Card Template 3 -->
+        <article class="event-item">
+          <div class="image" style="background-image:url('https://images.unsplash.com/photo-1517649763962-0c623066013b?w=1200&q=80&auto=format&fit=crop&ixlib=rb-4.0.3&s=3')"></div>
+          <div class="details">
+            <div>
+              <h3>Championship Game</h3>
+              <p class="meta">Oct 3 • City Stadium • Los Angeles</p>
+            </div>
+            <a href="details.html" class="action">View Tickets</a>
+          </div>
+        </article>
+
+        <!-- Event Card Template 4 -->
+        <article class="event-item">
+          <div class="image" style="background-image:url('https://images.unsplash.com/photo-1507878866276-a947ef722fee?w=1200&q=80&auto=format&fit=crop&ixlib=rb-4.0.3&s=4')"></div>
+          <div class="details">
+            <div>
+              <h3>Indie Rock Night</h3>
+              <p class="meta">Jul 7 • The Garden Stage • Chicago</p>
+            </div>
+            <a href="details.html" class="action">View Tickets</a>
+          </div>
+        </article>
+      </div>
+
+      <!-- Pagination Template -->
+      <div class="pagination" id="pagination">
+        <button class="page-button" disabled>Prev</button>
+        <button class="page-button" aria-current="true">1</button>
+        <button class="page-button">2</button>
+        <button class="page-button">Next</button>
+      </div>
     </section>
 
   </main>
