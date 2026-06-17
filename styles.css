@@ -735,6 +735,7 @@ body{animation:fade-up 0.4s var(--ease-out) backwards}
 .checkout-grid{display:grid;gap:1.5rem}
 .checkout-form{display:grid;gap:1rem}
 .form-card{display:grid;gap:1rem;padding:1.25rem;border-radius:22px;background:rgb(var(--card));box-shadow:0 10px 30px rgba(0,0,0,0.06)}
+.form-card + .form-card{margin-top:1.5rem}
 .form-card label{display:grid;gap:.5rem;color:rgb(var(--text));font-size:.95rem}
 .form-card input{width:100%;padding:.85rem 1rem;border-radius:14px;border:1px solid rgba(var(--muted),0.18);background:rgb(var(--card));color:rgb(var(--text));}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
@@ -1274,9 +1275,9 @@ button, input, select{font:inherit}
 
 /* Host Dashboard */
 .host-summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(200px,100%),1fr));gap:1.5rem;margin-bottom:2rem}
-.summary-card{background:rgb(var(--card));padding:1.5rem;border-radius:var(--radius);border:1px solid rgba(var(--muted),0.1);display:flex;flex-direction:column;gap:.5rem}
+.summary-card{background:rgb(var(--card));padding:1.5rem;border-radius:var(--radius);border:1px solid rgba(var(--muted),0.1);display:flex;flex-direction:column;gap:.5rem;min-height:140px}
 .card-label{font-size:.9rem;font-weight:500;color:rgb(var(--muted))}
-.card-value{margin:0;font-size:clamp(28px,4vw,40px);font-weight:700;color:rgb(var(--brand))}
+.card-value{margin:0;font-size:clamp(24px,3vw,34px);font-weight:700;color:rgb(var(--brand));line-height:1.05;overflow-wrap:anywhere;word-break:break-word;max-width:100%}
 .card-meta{margin:0;font-size:.9rem;color:rgb(var(--muted))}
 
 .card-header{display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap}
@@ -1314,8 +1315,11 @@ button, input, select{font:inherit}
 .progress-label{font-size:.8rem;color:rgb(var(--muted))}
 
 .card-actions{display:flex;gap:.5rem;margin-top:.5rem;flex-wrap:wrap}
-.btn-link{display:inline-block;padding:.5rem .75rem;background:rgba(var(--brand),0.1);color:rgb(var(--brand));text-decoration:none;border-radius:6px;font-size:.85rem;cursor:pointer;border:1px solid rgba(var(--brand),0.2);transition:all 180ms ease;text-align:center;flex:1 1 120px}
+.table-actions{display:flex;gap:.35rem;flex-wrap:wrap;align-items:center;justify-content:flex-start}
+.table-actions .btn-link{flex:0 0 auto}
+.btn-link{display:inline-flex;align-items:center;justify-content:center;padding:.5rem .75rem;background:rgba(var(--brand),0.1);color:rgb(var(--brand));text-decoration:none;border-radius:6px;font-size:.85rem;cursor:pointer;border:1px solid rgba(var(--brand),0.2);transition:all 180ms ease;text-align:center;flex:1 1 120px}
 .btn-link:hover{background:rgba(var(--brand),0.15)}
+.btn-link-sm{padding:.45rem .8rem;font-size:.78rem;min-width:110px;white-space:normal;line-height:1.2}
 
 .btn-primary{display:inline-block;padding:.75rem 1.5rem;background:rgb(var(--brand));color:white;text-decoration:none;border-radius:var(--radius);cursor:pointer;border:0;font-weight:500;transition:all 180ms ease}
 .btn-primary:hover{opacity:0.9}
@@ -1375,6 +1379,23 @@ button, input, select{font:inherit}
   .summary-card{padding:1rem;gap:.25rem}
   .card-value{font-size:clamp(22px,6vw,32px)}
   .event-card-content{padding:.75rem}
+}
+
+@media (max-width:900px){
+  .host-summary-grid{grid-template-columns:1fr;gap:1rem;margin-bottom:1.5rem}
+  .summary-card{padding:1rem;gap:.5rem}
+  .card-value{font-size:clamp(22px,4vw,30px)}
+  .tickets-table{width:100%;border:0;border-spacing:0}
+  .tickets-table thead{display:none}
+  .tickets-table tr{display:block;margin-bottom:1rem;border:1px solid rgba(var(--muted),0.12);border-radius:var(--radius);box-shadow:var(--shadow-sm);background:rgb(var(--card));overflow:hidden}
+  .tickets-table td{display:flex;flex-direction:column;align-items:flex-start;padding:.85rem;gap:.35rem;border-bottom:1px solid rgba(var(--muted),0.1);font-size:.9rem}
+  .tickets-table td:last-child{border-bottom:0}
+  .tickets-table td::before{content:attr(data-label);font-size:.78rem;font-weight:600;color:rgb(var(--muted));text-transform:uppercase;letter-spacing:.05em}
+  .tickets-table td[data-label="Actions"]{display:flex;flex-direction:column;align-items:stretch;gap:.55rem}
+  .tickets-table td[data-label="Revenue"]{color:rgb(var(--brand));font-weight:700}
+  .table-actions{flex-direction:column;align-items:stretch}
+  .btn-link{width:100%}
+  .btn-link.btn-link-sm{min-width:0}
 }
 
 @media (max-width:700px){

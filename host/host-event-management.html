@@ -29,8 +29,8 @@
     <div class="event-mgmt-header">
       <a href="host-dashboard.html" class="back-link">← Back to Dashboard</a>
       <div class="page-hero">
-        <h1 id="event-title">Event Management</h1>
-        <p id="event-details-summary" class="lede"></p>
+        <h1>Summer Beats Festival</h1>
+        <p class="lede">Aug 21, 2026 at 6:00 PM • Central Park, New York</p>
       </div>
     </div>
 
@@ -38,22 +38,22 @@
     <section class="event-stats-grid">
       <article class="stat-card">
         <span class="stat-card-label">Total Revenue</span>
-        <h2 id="total-revenue-display" class="stat-card-value">$0.00</h2>
+        <h2 class="stat-card-value">$17,100.00</h2>
         <p class="stat-card-meta">From ticket sales</p>
       </article>
       <article class="stat-card">
         <span class="stat-card-label">Tickets Sold</span>
-        <h2 id="tickets-sold-display" class="stat-card-value">0</h2>
+        <h2 class="stat-card-value">342 / 500</h2>
         <p class="stat-card-meta">Out of capacity</p>
       </article>
       <article class="stat-card">
         <span class="stat-card-label">Occupancy</span>
-        <h2 id="occupancy-display" class="stat-card-value">0%</h2>
+        <h2 class="stat-card-value">68.4%</h2>
         <p class="stat-card-meta">Seats filled</p>
       </article>
       <article class="stat-card">
         <span class="stat-card-label">Avg Ticket Price</span>
-        <h2 id="avg-price-display" class="stat-card-value">$0.00</h2>
+        <h2 class="stat-card-value">$50.00</h2>
         <p class="stat-card-meta">Per ticket</p>
       </article>
     </section>
@@ -63,12 +63,12 @@
       <h2>Ticket Occupancy</h2>
       <div class="occupancy-chart">
         <div class="chart-bar">
-          <div class="chart-fill" id="occupancy-bar"></div>
+          <div class="chart-fill" style="width:68.4%"></div>
         </div>
         <div class="chart-labels">
           <span>0</span>
-          <span id="occupancy-percentage">0%</span>
-          <span id="capacity-label">0 total</span>
+          <span>68.4%</span>
+          <span>342 / 500</span>
         </div>
       </div>
     </section>
@@ -76,7 +76,24 @@
     <!-- Tickets Breakdown -->
     <section class="form-card">
       <h2>Ticket Types</h2>
-      <div id="ticket-types-grid" class="ticket-types-grid"></div>
+      <div id="ticket-types-grid" class="ticket-types-grid">
+        <article class="ticket-type-card">
+          <h3>General</h3>
+          <p class="type-price">$50</p>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width:50%"></div>
+          </div>
+          <p class="type-stats">250 tickets (50%)</p>
+        </article>
+        <article class="ticket-type-card">
+          <h3>VIP</h3>
+          <p class="type-price">$75</p>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width:18%"></div>
+          </div>
+          <p class="type-stats">92 tickets (18%)</p>
+        </article>
+      </div>
     </section>
 
     <!-- Actions -->
@@ -117,12 +134,111 @@
               <th>Actions</th>
             </tr>
           </thead>
-          <tbody id="tickets-tbody">
+          <tbody>
+            <tr>
+              <td>John Smith</td>
+              <td>john@example.com</td>
+              <td>General</td>
+              <td>$50.00</td>
+              <td>2026-06-01</td>
+              <td>
+                <div class="status-cell">
+                  <span class="status-badge confirmed">✓ Confirmed</span>
+                  <div class="status-detail">Payment received</div>
+                </div>
+              </td>
+              <td>
+                <div class="table-actions">
+                  <a href="#" class="btn-link btn-link-sm">View</a>
+                  <a href="#" class="btn-link btn-link-sm">Resend</a>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>Emma Johnson</td>
+              <td>emma@example.com</td>
+              <td>VIP</td>
+              <td>$75.00</td>
+              <td>2026-06-02</td>
+              <td>
+                <div class="status-cell">
+                  <span class="status-badge confirmed">✓ Confirmed</span>
+                  <div class="status-detail">Payment received</div>
+                </div>
+              </td>
+              <td>
+                <div class="table-actions">
+                  <a href="#" class="btn-link btn-link-sm">View</a>
+                  <a href="#" class="btn-link btn-link-sm">Resend</a>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>Michael Brown</td>
+              <td>michael@example.com</td>
+              <td>General</td>
+              <td>$50.00</td>
+              <td>2026-06-03</td>
+              <td>
+                <div class="status-cell">
+                  <span class="status-badge confirmed">✓ Confirmed</span>
+                  <div class="status-detail">Payment received</div>
+                </div>
+              </td>
+              <td>
+                <div class="table-actions">
+                  <a href="#" class="btn-link btn-link-sm">View</a>
+                  <a href="#" class="btn-link btn-link-sm">Resend</a>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>Sarah Davis</td>
+              <td>sarah@example.com</td>
+              <td>General</td>
+              <td>$50.00</td>
+              <td>2026-06-04</td>
+              <td>
+                <div class="status-cell">
+                  <span class="status-badge pending">⏳ Pending</span>
+                  <div class="status-detail">Awaiting confirmation</div>
+                </div>
+              </td>
+              <td>
+                <div class="table-actions">
+                  <a href="#" class="btn-link btn-link-sm">View</a>
+                  <a href="#" class="btn-link btn-link-sm">Resend</a>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>James Wilson</td>
+              <td>james@example.com</td>
+              <td>VIP</td>
+              <td>$75.00</td>
+              <td>2026-06-05</td>
+              <td>
+                <div class="status-cell">
+                  <span class="status-badge confirmed">✓ Confirmed</span>
+                  <div class="status-detail">Payment received</div>
+                </div>
+              </td>
+              <td>
+                <div class="table-actions">
+                  <a href="#" class="btn-link btn-link-sm">View</a>
+                  <a href="#" class="btn-link btn-link-sm">Resend</a>
+                </div>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
 
-      <div id="tickets-pagination" class="pagination" aria-label="Tickets pagination"></div>
+      <div class="pagination" aria-label="Tickets pagination">
+        <button class="page-button" disabled>Prev</button>
+        <button class="page-button" aria-current="true">1</button>
+        <button class="page-button" disabled>Next</button>
+      </div>
       <div id="no-tickets" class="empty-state" style="display:none;">
         <p>No tickets sold yet</p>
       </div>
@@ -187,7 +303,6 @@
   </nav>
 
   <script src="../app.js" defer></script>
-  <script src="host-event-management.js" defer></script>
   <div id="theme-announcer" class="visually-hidden" aria-live="polite"></div>
 
   <!-- Toast container -->
