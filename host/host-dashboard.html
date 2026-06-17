@@ -38,22 +38,22 @@
     <section class="host-summary-grid">
       <article class="summary-card">
         <span class="card-label">Total Events</span>
-        <h3 id="total-events-count" class="card-value">0</h3>
+        <h3 id="total-events-count" class="card-value">8</h3>
         <p class="card-meta">Events you've hosted</p>
       </article>
       <article class="summary-card">
         <span class="card-label">Total Revenue</span>
-        <h3 id="total-revenue" class="card-value">$0.00</h3>
+        <h3 id="total-revenue" class="card-value">$489,675.00</h3>
         <p class="card-meta">From ticket sales</p>
       </article>
       <article class="summary-card">
         <span class="card-label">Tickets Sold</span>
-        <h3 id="total-tickets-sold" class="card-value">0</h3>
+        <h3 id="total-tickets-sold" class="card-value">8,218</h3>
         <p class="card-meta">Across all events</p>
       </article>
       <article class="summary-card">
         <span class="card-label">Active Events</span>
-        <h3 id="active-events-count" class="card-value">0</h3>
+        <h3 id="active-events-count" class="card-value">6</h3>
         <p class="card-meta">Upcoming events</p>
       </article>
     </section>
@@ -72,7 +72,137 @@
         </div>
       </div>
 
-      <div id="events-grid" class="host-events-grid scrollable-list"></div>
+      <div id="events-table-container" class="tickets-table-container scrollable-list">
+        <table id="events-table" class="tickets-table" role="grid" aria-label="Your hosted events">
+          <thead>
+            <tr>
+              <th>Event</th>
+              <th>Date & Time</th>
+              <th>Venue</th>
+              <th>Status</th>
+              <th>Tickets Sold</th>
+              <th>Revenue</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="events-tbody">
+            <tr data-status="upcoming">
+              <td><strong><a href="host-event-management.html?id=1" class="main-card-link">Summer Beats Festival</a></strong></td>
+              <td>Aug 21, 2026 • 6:00 PM</td>
+              <td>Central Park, New York</td>
+              <td><span class="status-badge upcoming">📅 Upcoming</span></td>
+              <td>342 / 500</td>
+              <td>$17,100.00</td>
+              <td>
+                <div class="table-actions">
+                  <span class="btn-link-sm">Manage</span>
+                  <a href="host-ticket-verification.html" class="btn-link-sm secondary-action">Verify</a>
+                </div>
+              </td>
+            </tr>
+            <tr data-status="upcoming">
+              <td><strong><a href="host-event-management.html?id=2" class="main-card-link">Broadway Nights</a></strong></td>
+              <td>Sep 12, 2026 • 8:00 PM</td>
+              <td>Downtown Theater, New York</td>
+              <td><span class="status-badge upcoming">📅 Upcoming</span></td>
+              <td>245 / 300</td>
+              <td>$14,700.00</td>
+              <td>
+                <div class="table-actions">
+                  <span class="btn-link-sm">Manage</span>
+                  <a href="host-ticket-verification.html" class="btn-link-sm secondary-action">Verify</a>
+                </div>
+              </td>
+            </tr>
+            <tr data-status="upcoming">
+              <td><strong><a href="host-event-management.html?id=3" class="main-card-link">Championship Game</a></strong></td>
+              <td>Oct 3, 2026 • 7:30 PM</td>
+              <td>City Stadium, Los Angeles</td>
+              <td><span class="status-badge upcoming">📅 Upcoming</span></td>
+              <td>6,543 / 8,000</td>
+              <td>$393,180.00</td>
+              <td>
+                <div class="table-actions">
+                  <span class="btn-link-sm">Manage</span>
+                  <a href="host-ticket-verification.html" class="btn-link-sm secondary-action">Verify</a>
+                </div>
+              </td>
+            </tr>
+            <tr data-status="live">
+              <td><strong><a href="host-event-management.html?id=4" class="main-card-link">Indie Rock Night</a></strong></td>
+              <td>Jul 7, 2026 • 9:00 PM</td>
+              <td>The Garden Stage, Chicago</td>
+              <td><span class="status-badge live">🔴 Live</span></td>
+              <td>248 / 250</td>
+              <td>$9,920.00</td>
+              <td>
+                <div class="table-actions">
+                  <span class="btn-link-sm">Manage</span>
+                  <a href="host-ticket-verification.html" class="btn-link-sm secondary-action">Verify</a>
+                </div>
+              </td>
+            </tr>
+            <tr data-status="past">
+              <td><strong><a href="host-event-management.html?id=5" class="main-card-link">Comedy Gala</a></strong></td>
+              <td>Jun 15, 2026 • 8:00 PM</td>
+              <td>Laugh House, Los Angeles</td>
+              <td><span class="status-badge past">✓ Past</span></td>
+              <td>145 / 150</td>
+              <td>$5,075.00</td>
+              <td>
+                <div class="table-actions">
+                  <span class="btn-link-sm">Manage</span>
+                  <a href="host-ticket-verification.html" class="btn-link-sm secondary-action">Verify</a>
+                </div>
+              </td>
+            </tr>
+            <tr data-status="upcoming">
+              <td><strong><a href="host-event-management.html?id=6" class="main-card-link">Tech Innovators Summit</a></strong></td>
+              <td>Nov 14, 2026 • 9:00 AM</td>
+              <td>Convention Center, San Francisco</td>
+              <td><span class="status-badge upcoming">📅 Upcoming</span></td>
+              <td>180 / 200</td>
+              <td>$27,000.00</td>
+              <td>
+                <div class="table-actions">
+                  <span class="btn-link-sm">Manage</span>
+                  <a href="host-ticket-verification.html" class="btn-link-sm secondary-action">Verify</a>
+                </div>
+              </td>
+            </tr>
+            <tr data-status="past">
+              <td><strong><a href="host-event-management.html?id=7" class="main-card-link">Food & Wine Expo</a></strong></td>
+              <td>May 22, 2026 • 11:00 AM</td>
+              <td>Exhibition Hall, Miami</td>
+              <td><span class="status-badge past">✓ Past</span></td>
+              <td>420 / 500</td>
+              <td>$18,900.00</td>
+              <td>
+                <div class="table-actions">
+                  <span class="btn-link-sm">Manage</span>
+                  <a href="host-ticket-verification.html" class="btn-link-sm secondary-action">Verify</a>
+                </div>
+              </td>
+            </tr>
+            <tr data-status="upcoming">
+              <td><strong><a href="host-event-management.html?id=8" class="main-card-link">Jazz Under the Stars</a></strong></td>
+              <td>Dec 5, 2026 • 7:00 PM</td>
+              <td>Botanical Gardens, Austin</td>
+              <td><span class="status-badge upcoming">📅 Upcoming</span></td>
+              <td>95 / 120</td>
+              <td>$3,800.00</td>
+              <td>
+                <div class="table-actions">
+                  <span class="btn-link-sm">Manage</span>
+                  <a href="host-ticket-verification.html" class="btn-link-sm secondary-action">Verify</a>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div id="events-pagination" class="pagination" aria-label="Events pagination"></div>
       <div id="empty-events" class="empty-state" style="display:none;">
         <p>You haven't hosted any events yet.</p>
         <a href="create-event.html" class="btn-primary">Create Your First Event</a>
