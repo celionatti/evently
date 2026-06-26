@@ -150,6 +150,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
       venue: document.getElementById('event-venue').value.trim(),
       city: document.getElementById('event-city').value.trim(),
       description: document.getElementById('event-description').value.trim(),
+      passFeeToAttendee: document.getElementById('pass-fee') ? document.getElementById('pass-fee').checked : true,
       organizer: {
         phone: organizerPhone ? organizerPhone.value.trim() : '',
         social: organizerSocial ? organizerSocial.value.trim() : ''

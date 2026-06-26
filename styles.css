@@ -2,11 +2,11 @@
   --bg: 255 255 255;
   --text: 20 20 20;
   --muted: 100 100 110;
-  --brand: 220 38 38;
+  --brand: 11 115 102;
   --card: 250 250 252;
   --glass: 255 255 255 / 0.6;
-  --accent: 99 91 255;
-  --accent-soft: 99 91 255 / 0.15;
+  --accent: 16 185 129;
+  --accent-soft: 16 185 129 / 0.15;
   --info: 61 140 255;
   --info-text: 15 79 170;
   --success: 58 178 116;
@@ -46,7 +46,9 @@
   --bg: 12 12 13;
   --text: 235 235 237;
   --muted: 160 160 170;
-  --brand: 255 159 67;
+  --brand: 45 212 191;
+  --accent: 52 211 153;
+  --accent-soft: 52 211 153 / 0.15;
   --card: 28 28 30;
   --glass: 255 255 255 / 0.04;
 }
@@ -661,11 +663,11 @@ body{animation:fade-up 0.4s var(--ease-out) backwards}
 .form-card h2{margin:0;font-size:clamp(1.8rem,2.5vw,2.4rem)}
 .create-event-page label{display:block;gap:.5rem;color:rgb(var(--text));font-size:1rem}
 .form-card label{display:grid;gap:.5rem}
-.form-card input, .form-card select, .form-card textarea{width:100%;max-width:100%;box-sizing:border-box;padding:.85rem 1rem;border-radius:14px;border:1px solid rgba(var(--muted),0.18);background:rgba(var(--bg),0.92);color:rgb(var(--text));font-family:inherit;font-size:inherit}
-.form-card input:focus, .form-card select:focus, .form-card textarea:focus{outline:0;border-color:rgb(var(--brand));box-shadow:0 0 0 3px rgba(var(--brand),0.12)}
+.form-card input:not([type="checkbox"]), .form-card select, .form-card textarea{width:100%;max-width:100%;box-sizing:border-box;padding:.85rem 1rem;border-radius:14px;border:1px solid rgba(var(--muted),0.18);background:rgba(var(--bg),0.92);color:rgb(var(--text));font-family:inherit;font-size:inherit}
+.form-card input:not([type="checkbox"]):focus, .form-card select:focus, .form-card textarea:focus{outline:0;border-color:rgb(var(--brand));box-shadow:0 0 0 3px rgba(var(--brand),0.12)}
 .contact-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
 .bank-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
-.create-event-page input,
+.create-event-page input:not([type="checkbox"]),
 .create-event-page textarea{width:100%;padding:1rem;border-radius:16px;border:1px solid rgba(var(--muted),0.18);background:rgba(var(--bg),0.92);color:rgb(var(--text));}
 .create-event-page textarea{resize:vertical;min-height:120px}
 .form-actions{display:grid;grid-template-columns:1fr auto;gap:.75rem;align-items:center}
@@ -919,7 +921,10 @@ body{animation:fade-up 0.4s var(--ease-out) backwards}
 .form-card{display:grid;gap:1rem;padding:1.25rem;border-radius:22px;background:rgb(var(--card));box-shadow:0 10px 30px rgba(0,0,0,0.06)}
 .form-card + .form-card{margin-top:1.5rem}
 .form-card label{display:grid;gap:.5rem;color:rgb(var(--text));font-size:.95rem}
-.form-card input{width:100%;padding:.85rem 1rem;border-radius:14px;border:1px solid rgba(var(--muted),0.18);background:rgb(var(--card));color:rgb(var(--text));}
+.form-card input:not([type="checkbox"]){width:100%;padding:.85rem 1rem;border-radius:14px;border:1px solid rgba(var(--muted),0.18);background:rgb(var(--card));color:rgb(var(--text));}
+.form-card input[type="checkbox"]{width:20px;height:20px;border-radius:6px;border:2px solid rgba(var(--muted),0.3);background:rgb(var(--card));cursor:pointer;accent-color:rgb(var(--brand));transition:border-color var(--duration-fast) var(--ease-out), background-color var(--duration-fast) var(--ease-out);}
+.form-card input[type="checkbox"]:hover{border-color:rgba(var(--brand),0.6);}
+.form-card input[type="checkbox"]:focus-visible{outline:0;box-shadow:0 0 0 3px rgba(var(--brand),0.25);}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
 .checkout-actions{display:grid;gap:.75rem}
 .checkout-note{color:rgb(var(--muted));font-size:.95rem;margin:0}
@@ -1672,4 +1677,24 @@ button {
 .btn-secondary:active,
 button:active {
   transform: scale(0.97);
+}
+
+/* Custom styled premium select dropdowns with inline arrow */
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364646e' stroke-width='2.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1rem;
+  padding-right: 2.6rem !important;
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out), background-color var(--duration-fast) var(--ease-out);
+}
+:root[data-theme='dark'] select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23a0a0aa' stroke-width='2.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5'/%3E%3C/svg%3E");
+}
+select::-ms-expand {
+  display: none;
 }

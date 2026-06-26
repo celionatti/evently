@@ -76,3 +76,56 @@ document.addEventListener('DOMContentLoaded', ()=>{
     }
   });
 });
+
+// Render dynamic order summary based on selected tickets and fee settings
+document.addEventListener('DOMContentLoaded', () => {
+  const orderDataStr = localStorage.getItem('current_checkout_order');
+  if (!orderDataStr) return;
+  
+  try {
+    const orderData = JSON.parse(orderDataStr);
+    const summaryCard = document.querySelector('.summary-card');
+    if (!summaryCard) return;
+    
+    let html = `<div class="summary-row" style="font-weight: 700; font-size: 1.1rem; color: rgb(var(--text));"><span>${orderData.eventName}</span><span>${orderData.eventDate}</span></div>`;
+    let subtotal = 0;
+    
+    // List tickets
+    if (orderData.tickets && orderData.tickets.length > 0) {
+      orderData.tickets.forEach(t => {
+        const lineTotal = t.price * t.quantity;
+        subtotal += lineTotal;
+        html += `<div class="summary-row"><span>${t.name} × ${t.quantity}</span><span>$${lineTotal.toFixed(2)}</span></div>`;
+      });
+    } else {
+      // Default fallback if no tickets selected (static fallback matching HTML default)
+      subtotal = 45.00;
+      html += `<div class="summary-row"><span>General Admission × 1</span><span>$45.00</span></div>`;
+    }
+    
+    // Check fee configuration: default is to pass fee to attendee (checked)
+    const passFee = orderData.passFeeToAttendee !== false;
+    const fee = passFee ? (subtotal * 0.05) : 0;
+    const total = subtotal + fee;
+    
+    html += `<div class="summary-divider"></div>`;
+    
+    if (passFee) {
+      html += `<div class="summary-row"><span>Subtotal</span><span>$${subtotal.toFixed(2)}</span></div>`;
+      html += `<div class="summary-row" style="color: rgb(var(--brand)); font-weight: 600;"><span>Ticketing Fee (5%)</span><span>$${fee.toFixed(2)}</span></div>`;
+      html += `<div class="summary-divider"></div>`;
+    } else {
+      html += `<div class="summary-row" style="color: rgb(var(--muted)); font-style: italic;"><span>Ticketing Fee</span><span>Absorbed by Host</span></div>`;
+      html += `<div class="summary-divider"></div>`;
+    }
+    
+    html += `<div class="summary-total">
+      <span>Total</span>
+      <strong>$${total.toFixed(2)}</strong>
+    </div>`;
+    
+    summaryCard.innerHTML = html;
+  } catch (e) {
+    console.error('Error rendering checkout order summary:', e);
+  }
+});

@@ -52,6 +52,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
   updateSummary();
 
+  // Save selected tickets and event configuration to localStorage on checkout click
+  const checkoutBtn = document.querySelector('.checkout-btn');
+  if (checkoutBtn) {
+    checkoutBtn.addEventListener('click', () => {
+      const selectedTickets = [];
+      ticketRows.forEach(row => {
+        const price = Number(row.dataset.price || 0);
+        const label = row.dataset.label || '';
+        const quantity = Number(row.querySelector('.qty-value').textContent.trim() || 0);
+        if (quantity > 0) {
+          selectedTickets.push({ name: label, price: price, quantity: quantity });
+        }
+      });
+      
+      const events = getEvents();
+      const ev = events && events.length ? events[0] : null;
+      
+      const checkoutOrder = {
+        eventName: document.querySelector('.detail-hero-copy h1') ? document.querySelector('.detail-hero-copy h1').textContent.trim() : (ev ? ev.name : 'Summer Beats Festival'),
+        eventDate: ev ? ev.date : 'Aug 21',
+        tickets: selectedTickets,
+        passFeeToAttendee: ev ? (ev.passFeeToAttendee !== false) : true
+      };
+      
+      localStorage.setItem('current_checkout_order', JSON.stringify(checkoutOrder));
+    });
+  }
+
   // Render guests from mock events if available
   function getEvents(){ try{ return JSON.parse(localStorage.getItem('mock_events')||'[]'); }catch(e){ return []; } }
   const guestsContainer = document.getElementById('guests-list');
