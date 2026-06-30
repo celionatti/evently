@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   const pmBtns = document.querySelectorAll('.pm-btn');
   const checkoutNote = document.querySelector('.checkout-note');
+  const selectedMethodInput = document.getElementById('selected-payment-method');
   if(!pmBtns || pmBtns.length === 0) return;
 
   pmBtns.forEach(btn => {
@@ -8,13 +9,19 @@ document.addEventListener('DOMContentLoaded', () => {
       pmBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       const label = btn.textContent.trim();
+      const method = btn.dataset.method;
+      
       if(checkoutNote) checkoutNote.textContent = `Pay with ${label} — you'll be redirected to complete payment.`;
+      if(selectedMethodInput) selectedMethodInput.value = method;
     });
   });
 
   // default selection
   const defaultBtn = document.querySelector('.pm-btn[data-method="stripe"]');
-  if(defaultBtn) defaultBtn.classList.add('active');
+  if(defaultBtn) {
+    defaultBtn.classList.add('active');
+    if(selectedMethodInput) selectedMethodInput.value = 'stripe';
+  }
 });
 
 // Toggle card fields visibility when third-party payment methods are selected
@@ -55,24 +62,32 @@ function checkoutMessage(container, text, type='info'){
   if(!msg){ msg = document.createElement('div'); msg.className='checkout-message'; container.prepend(msg); }
   msg.textContent = text;
   msg.className = 'checkout-message ' + type;
+  msg.style.display = 'block';
 }
 
 document.addEventListener('DOMContentLoaded', ()=>{
-  const checkoutBtn = document.querySelector('.checkout-btn');
-  const checkoutForm = document.querySelector('.form-card');
-  if(!checkoutBtn) return;
-  checkoutBtn.addEventListener('click', (e)=>{
-    // if link anchor, let it navigate normally
-    if(checkoutBtn.tagName.toLowerCase() === 'a') return;
-    e.preventDefault();
+  const checkoutFormMain = document.getElementById('checkout-form-main');
+  if(!checkoutFormMain) return;
+  
+  checkoutFormMain.addEventListener('submit', (e)=>{
     const active = document.querySelector('.pm-btn.active');
     const method = active ? active.dataset.method : 'stripe';
     const redirectProviders = ['stripe','paystack','flutterwave'];
-    if(redirectProviders.includes(method)){
-      // in real app we'd send order to server and get a provider url
-      window.location.href = `${method}-redirect.html?order=12345`;
-    } else {
-      checkoutMessage(checkoutForm, 'Proceeding with local payment flow (mock)', 'info');
+    
+    // Check if running on local file system or empty action for static preview fallback
+    const isStaticPreview = window.location.protocol === 'file:' || 
+                            checkoutFormMain.getAttribute('action') === '' || 
+                            checkoutFormMain.getAttribute('action').endsWith('.html');
+                            
+    if(isStaticPreview){
+      e.preventDefault();
+      if(redirectProviders.includes(method)){
+        // in static preview fallback we redirect to provider's redirect file
+        window.location.href = `${method}-redirect.html?order=12345`;
+      } else {
+        const checkoutFormEl = document.querySelector('.form-card');
+        checkoutMessage(checkoutFormEl, 'Proceeding with local payment flow (mock)', 'info');
+      }
     }
   });
 });

@@ -32,99 +32,124 @@
       <p class="lede">Finish your purchase securely and get ready for an unforgettable experience.</p>
     </section>
 
-    <div class="checkout-grid">
-      <section class="checkout-form">
-        <div class="section-header">
-          <div>
-            <h2>Payment details</h2>
-            <p class="section-note">Enter your billing information to complete the order.</p>
+    <!-- Unified Form Wrapper -->
+    <form id="checkout-form-main" method="POST" action="">
+      <input type="hidden" name="action" value="process_checkout" />
+      <input type="hidden" name="payment_method" id="selected-payment-method" value="stripe" />
+      
+      <div class="checkout-grid">
+        <section class="checkout-form">
+          <div class="section-header">
+            <div>
+              <h2>Payment details</h2>
+              <p class="section-note">Enter your billing information to complete the order.</p>
+            </div>
           </div>
-        </div>
 
-        <div class="form-card">
-          <div class="checkout-message" aria-live="polite"></div>
-          <label>
-            Full name
-            <input type="text" placeholder="Jane Doe" aria-label="Full name" />
-          </label>
-          <label>
-            Email address
-            <input type="email" placeholder="jane@example.com" aria-label="Email address" />
-          </label>
-          <div class="payment-methods" role="tablist" aria-label="Payment methods">
-            <button type="button" class="pm-btn" data-method="stripe" aria-pressed="true">
-              <span class="logo" aria-hidden>
-                <!-- simple Stripe-like mark -->
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="6" width="20" height="12" rx="2" fill="currentColor"/></svg>
-              </span>
-              <span>Stripe</span>
-            </button>
-            <button type="button" class="pm-btn" data-method="paystack">
-              <span class="logo" aria-hidden>
-                <!-- simple Paystack-like mark -->
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" fill="currentColor"/></svg>
-              </span>
-              <span>Paystack</span>
-            </button>
-            <button type="button" class="pm-btn" data-method="flutterwave">
-              <span class="logo" aria-hidden>
-                <!-- simple Flutterwave-like mark -->
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 12h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-              </span>
-              <span>Flutterwave</span>
-            </button>
-          </div>
-          <div class="card-fields" aria-hidden="false">
-            <label class="card-number">
-              Card number
-              <input type="text" placeholder="1234 5678 9012 3456" aria-label="Card number" />
+          <div class="form-card">
+            <!-- Alert message block -->
+            <div class="checkout-message" id="checkout-alert-msg" style="display:none;" aria-live="polite"></div>
+            
+            <label>
+              Full name
+              <input type="text" name="name" id="billing-name" placeholder="Jane Doe" required autocomplete="name" />
             </label>
-            <div class="form-row">
-              <label>
-                Expiry
-                <input type="text" placeholder="MM/YY" aria-label="Expiry date" />
+            <label>
+              Email address
+              <input type="email" name="email" id="billing-email" placeholder="jane@example.com" required autocomplete="email" />
+            </label>
+            
+            <!-- Payment Provider Selection Toggle -->
+            <div class="payment-methods" role="tablist" aria-label="Payment methods">
+              <button type="button" class="pm-btn" data-method="stripe" aria-pressed="true">
+                <span class="logo" aria-hidden>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="6" width="20" height="12" rx="2" fill="currentColor"/></svg>
+                </span>
+                <span>Stripe</span>
+              </button>
+              <button type="button" class="pm-btn" data-method="paystack">
+                <span class="logo" aria-hidden>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" fill="currentColor"/></svg>
+                </span>
+                <span>Paystack</span>
+              </button>
+              <button type="button" class="pm-btn" data-method="flutterwave">
+                <span class="logo" aria-hidden>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 12h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                </span>
+                <span>Flutterwave</span>
+              </button>
+            </div>
+            
+            <!-- Conditional Card Input Fields (hides for redirect providers in JS) -->
+            <div class="card-fields" aria-hidden="false">
+              <label class="card-number">
+                Card number
+                <input type="text" name="card_number" id="card-number" placeholder="1234 5678 9012 3456" autocomplete="cc-number" />
               </label>
+              <div class="form-row">
+                <label>
+                  Expiry
+                  <input type="text" name="card_expiry" id="card-expiry" placeholder="MM/YY" autocomplete="cc-exp" />
+                </label>
+                <label>
+                  CVC
+                  <input type="text" name="card_cvc" id="card-cvc" placeholder="123" autocomplete="cc-csc" />
+                </label>
+              </div>
               <label>
-                CVC
-                <input type="text" placeholder="123" aria-label="CVC" />
+                Billing zip
+                <input type="text" name="card_zip" id="card-zip" placeholder="10001" autocomplete="postal-code" />
               </label>
             </div>
-            <label>
-              Billing zip
-              <input type="text" placeholder="10001" aria-label="Billing zip code" />
-            </label>
           </div>
-        </div>
 
-        <div class="checkout-actions">
-          <button class="checkout-btn">Complete purchase</button>
-          <p class="checkout-note">You will be redirected to your tickets after payment.</p>
-        </div>
-      </section>
-
-      <aside class="order-summary">
-        <div class="summary-head">
-          <h3>Order summary</h3>
-          <p class="meta">Review selected tickets before purchase.</p>
-        </div>
-        <div class="summary-card">
-          <div class="summary-row"><span>Summer Beats Festival</span><span>Aug 21</span></div>
-          <div class="summary-row"><span>General Admission × 1</span><span>$45</span></div>
-          <div class="summary-row"><span>VIP Access × 0</span><span>$0</span></div>
-          <div class="summary-row"><span>Premium Lounge × 0</span><span>$0</span></div>
-          <div class="summary-divider"></div>
-          <div class="summary-total">
-            <span>Total</span>
-            <strong>$45</strong>
+          <div class="checkout-actions">
+            <button type="submit" class="checkout-btn" style="border:none; cursor:pointer;">Complete purchase</button>
+            <p class="checkout-note">You will be redirected to your tickets after payment.</p>
           </div>
-        </div>
+        </section>
 
-        <div class="summary-info">
-          <h4>Secure checkout</h4>
-          <p class="meta">Your details are protected with industry-standard encryption.</p>
-        </div>
-      </aside>
-    </div>
+        <!-- Right Sidebar Order Summary -->
+        <aside class="order-summary">
+          <div class="summary-head">
+            <h3>Order summary</h3>
+            <p class="meta">Review selected tickets before purchase.</p>
+          </div>
+          
+          <div class="summary-card">
+            <!-- PHP: foreach ($selected_tickets as $ticket): -->
+            <div class="summary-row" style="font-weight: 700; font-size: 1.1rem; color: rgb(var(--text));">
+              <span>Summer Beats Festival</span>
+              <span>Aug 21</span>
+            </div>
+            <div class="summary-row">
+              <span>General Admission × 1</span>
+              <span>$45.00</span>
+            </div>
+            <!-- PHP: endforeach; -->
+            
+            <div class="summary-divider"></div>
+            
+            <div class="summary-row" style="color: rgb(var(--brand)); font-weight: 600;">
+              <span>Ticketing Fee (5%)</span>
+              <span>$2.25</span>
+            </div>
+            <div class="summary-divider"></div>
+            
+            <div class="summary-total">
+              <span>Total</span>
+              <strong>$47.25</strong>
+            </div>
+          </div>
+
+          <div class="summary-info">
+            <h4>Secure checkout</h4>
+            <p class="meta">Your details are protected with industry-standard encryption.</p>
+          </div>
+        </aside>
+      </div>
+    </form>
   </main>
 
   <footer class="footer">

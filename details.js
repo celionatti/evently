@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const ticketRows = document.querySelectorAll('.ticket-row');
   const summaryItems = document.getElementById('summary-items');
   const orderTotal = document.getElementById('order-total');
+  const ticketsForm = document.getElementById('tickets-form');
 
   function updateSummary() {
     let total = 0;
@@ -36,7 +37,9 @@ document.addEventListener('DOMContentLoaded', () => {
     row.addEventListener('click', event => {
       const btn = event.target.closest('.qty-btn');
       if (!btn) return;
+      
       const valueEl = row.querySelector('.qty-value');
+      const inputEl = row.querySelector('.qty-input');
       let quantity = Number(valueEl.textContent.trim() || 0);
 
       if (btn.dataset.action === 'increase') {
@@ -46,16 +49,20 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       valueEl.textContent = String(quantity);
+      if (inputEl) {
+        inputEl.value = String(quantity);
+      }
+      
       updateSummary();
     });
   });
 
+  // Calculate initial summary on page load
   updateSummary();
 
-  // Save selected tickets and event configuration to localStorage on checkout click
-  const checkoutBtn = document.querySelector('.checkout-btn');
-  if (checkoutBtn) {
-    checkoutBtn.addEventListener('click', () => {
+  // Save selected tickets and event configuration to localStorage on checkout form submit
+  if (ticketsForm) {
+    ticketsForm.addEventListener('submit', () => {
       const selectedTickets = [];
       ticketRows.forEach(row => {
         const price = Number(row.dataset.price || 0);

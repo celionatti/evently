@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Your Ticket Confirmation</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f8fafc;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    table {
+      border-spacing: 0;
+      width: 100%;
+    }
+    td {
+      padding: 0;
+    }
+    .wrapper {
+      width: 100%;
+      table-layout: fixed;
+      background-color: #f8fafc;
+      padding-bottom: 40px;
+    }
+    .main {
+      background-color: #ffffff;
+      margin: 0 auto;
+      width: 100%;
+      max-width: 600px;
+      border-spacing: 0;
+      color: #334155;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+    }
+    .header {
+      background-color: #0B7366;
+      padding: 32px 24px;
+      text-align: center;
+    }
+    .brand-letter {
+      display: inline-block;
+      width: 36px;
+      height: 36px;
+      line-height: 36px;
+      background-color: #ffffff;
+      color: #0B7366;
+      font-weight: 900;
+      font-size: 22px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .brand-name {
+      display: inline-block;
+      color: #ffffff;
+      font-size: 20px;
+      font-weight: 700;
+      margin-left: 10px;
+      vertical-align: middle;
+    }
+    .content {
+      padding: 36px 32px;
+      background-color: #ffffff;
+    }
+    h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-top: 0;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+    .subtitle {
+      font-size: 15px;
+      color: #64748b;
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .ticket-pass {
+      background-color: #f8fafc;
+      border: 2px dashed #cbd5e1;
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 32px;
+      position: relative;
+    }
+    .event-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #0f172a;
+      margin: 0 0 12px 0;
+    }
+    .meta-grid {
+      width: 100%;
+      margin-bottom: 20px;
+    }
+    .meta-grid td {
+      padding: 6px 0;
+      font-size: 14px;
+    }
+    .meta-grid td.label {
+      color: #64748b;
+      font-weight: 600;
+      width: 100px;
+    }
+    .meta-grid td.value {
+      color: #334155;
+    }
+    .order-table {
+      width: 100%;
+      border-top: 1px solid #e2e8f0;
+      border-bottom: 1px solid #e2e8f0;
+      margin: 20px 0;
+    }
+    .order-table th {
+      text-align: left;
+      font-size: 12px;
+      color: #64748b;
+      padding: 10px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .order-table td {
+      padding: 12px 0;
+      font-size: 14px;
+      color: #334155;
+    }
+    .order-table td.price {
+      text-align: right;
+      font-weight: 600;
+    }
+    .order-table th.price {
+      text-align: right;
+    }
+    .total-row td {
+      font-size: 16px;
+      font-weight: 700;
+      color: #0f172a;
+      padding-top: 16px;
+    }
+    .btn-wrap {
+      text-align: center;
+      margin: 24px 0;
+    }
+    .btn {
+      background-color: #0B7366;
+      color: #ffffff !important;
+      text-decoration: none;
+      padding: 14px 32px;
+      font-weight: 700;
+      font-size: 14px;
+      border-radius: 12px;
+      display: inline-block;
+      box-shadow: 0 8px 16px rgba(11, 115, 102, 0.15);
+    }
+    .footer {
+      padding: 24px 32px;
+      background-color: #f8fafc;
+      border-top: 1px solid #e2e8f0;
+      text-align: center;
+      font-size: 12px;
+      color: #64748b;
+    }
+    .footer a {
+      color: #0B7366;
+      text-decoration: none;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <center class="wrapper">
+    <table width="100%" cellpadding="0" cellspacing="0" border="0">
+      <tr>
+        <td align="center" style="padding: 40px 10px 20px 10px;">
+          <table class="main" cellpadding="0" cellspacing="0" border="0">
+            <!-- Header -->
+            <tr>
+              <td class="header">
+                <span class="brand-letter">E</span>
+                <span class="brand-name">Eventlyy</span>
+              </td>
+            </tr>
+            <!-- Content -->
+            <tr>
+              <td class="content">
+                <h1>Your tickets are confirmed!</h1>
+                <p class="subtitle">Order ID: #EV-982347</p>
+                <!-- PHP: Order ID variable: <?= $order['id'] ?> -->
+                
+                <p>Hi there,</p>
+                <p>Thank you for purchasing tickets on Eventlyy. Below is your event pass. You can access your full ticket codes and details by logging into your profile dashboard.</p>
+                
+                <!-- Ticket Pass Container -->
+                <div class="ticket-pass">
+                  <!-- PHP: <?= htmlspecialchars($event['name']) ?> -->
+                  <h2 class="event-title">Summer Beats Festival</h2>
+                  
+                  <table class="meta-grid" cellpadding="0" cellspacing="0">
+                    <tr>
+                      <td class="label">Date</td>
+                      <!-- PHP: <?= date('F d, Y', strtotime($event['date'])) ?> -->
+                      <td class="value">August 21, 2026</td>
+                    </tr>
+                    <tr>
+                      <td class="label">Time</td>
+                      <td class="value">5:00 PM</td>
+                    </tr>
+                    <tr>
+                      <td class="label">Location</td>
+                      <!-- PHP: <?= htmlspecialchars($event['location']) ?> -->
+                      <td class="value">Central Park, New York</td>
+                    </tr>
+                  </table>
+                  
+                  <table class="order-table" cellpadding="0" cellspacing="0">
+                    <thead>
+                      <tr>
+                        <th>Ticket Type</th>
+                        <th style="text-align: center;">Qty</th>
+                        <th class="price">Subtotal</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <!-- PHP: foreach ($order['items'] as $item): -->
+                      <tr>
+                        <td>General Admission</td>
+                        <td style="text-align: center;">1</td>
+                        <td class="price">$45.00</td>
+                      </tr>
+                      <!-- PHP: endforeach; -->
+                      
+                      <!-- PHP: if ($order['fees'] > 0): -->
+                      <tr>
+                        <td colspan="2" style="color: #64748b; font-size: 13px;">Ticketing Fee (5%)</td>
+                        <td class="price" style="color: #64748b; font-size: 13px;">$2.25</td>
+                      </tr>
+                      <!-- PHP: endif; -->
+                      
+                      <tr class="total-row">
+                        <td colspan="2">Total Paid</td>
+                        <!-- PHP: <?= htmlspecialchars($order['total']) ?> -->
+                        <td class="price">$47.25</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                
+                <div class="btn-wrap">
+                  <!-- PHP: Link target: href="<?= $tickets_dashboard_url ?>" -->
+                  <a href="#" class="btn">View Mobile Tickets</a>
+                </div>
+                
+                <p>Present your mobile ticket QR code at the gate venue for quick scanning and validation access.</p>
+              </td>
+            </tr>
+            <!-- Footer -->
+            <tr>
+              <td class="footer">
+                <p style="margin-bottom: 8px;">&copy; 2026 Eventlyy. All rights reserved.</p>
+                <p style="margin: 0;">123 Event Street, City, State 12345</p>
+                <p style="margin-top: 12px;"><a href="#">Privacy Policy</a> &bull; <a href="#">Terms of Service</a> &bull; <a href="mailto:support@eventlyy.com">Support</a></p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </center>
+</body>
+</html>

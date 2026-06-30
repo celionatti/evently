@@ -13,41 +13,97 @@
   <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
+  <!-- Floating decorative background elements -->
+  <div class="hero-orb hero-orb-1" style="top: -10%; left: -10%; width: 50vw; height: 50vw; opacity: 0.15;" aria-hidden="true"></div>
+  <div class="hero-orb hero-orb-2" style="bottom: -10%; right: -10%; width: 40vw; height: 40vw; opacity: 0.1;" aria-hidden="true"></div>
+
   <main class="container auth-container">
-    <a href="../index.html" class="brand-link">← Back</a>
+    <div class="auth-top-bar">
+      <a href="../index.html" class="auth-back-link">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Back to home
+      </a>
+      <button id="theme-toggle" data-theme-toggle="true" class="auth-theme-btn" aria-label="Toggle theme" aria-pressed="false">🌓</button>
+    </div>
+
     <div class="auth-split">
+      <!-- Left Panel: Brand info / Promo -->
       <section class="auth-panel">
-        <span class="panel-badge">Create account</span>
-        <h2>Join Eventlyy in seconds</h2>
-        <p>Set up your account and manage events, tickets, and preferences from one polished dashboard.</p>
-        <ul>
-          <li>Fast sign-up with inline feedback</li>
-          <li>Secure mock auth flows for demos</li>
-          <li>Responsive design for every device</li>
+        <div class="auth-brand-badge">
+          <span class="brand-letter">E</span>
+          <span>Eventlyy Platform</span>
+        </div>
+        <div class="auth-panel-hero">
+          <span class="panel-badge">Create Account</span>
+          <h2>Join Eventlyy in seconds</h2>
+          <p class="lede">Set up your account and manage events, ticket distribution, and payment payouts from one polished dashboard.</p>
+        </div>
+        
+        <ul class="auth-features-list">
+          <li>
+            <span class="feature-icon">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </span>
+            <div>
+              <strong>Fast host registration</strong>
+              <span>Instantly verify and configure bank payouts.</span>
+            </div>
+          </li>
+          <li>
+            <span class="feature-icon">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </span>
+            <div>
+              <strong>Interactive features</strong>
+              <span>Live scanning console and physical ticket pass.</span>
+            </div>
+          </li>
+          <li>
+            <span class="feature-icon">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </span>
+            <div>
+              <strong>Fully responsive</strong>
+              <span>Access your admin panel on desktop, tablet, or phone.</span>
+            </div>
+          </li>
         </ul>
       </section>
+
+      <!-- Right Panel: Form Card -->
       <div class="auth-card">
-        <h1>Create account</h1>
-        <div class="auth-message" aria-live="polite"></div>
-        <form id="register-form">
-          <label>Full name
-            <input type="text" id="reg-name" required placeholder="Jane Doe">
+        <div class="auth-card-header">
+          <h1>Create account</h1>
+          <p>Get started with your free organizer account today.</p>
+        </div>
+        
+        <div class="auth-message" aria-live="polite" style="display:none;"></div>
+        
+        <form id="register-form" method="POST" action="">
+          <label>Full Name
+            <input type="text" name="name" id="reg-name" required placeholder="Jane Doe" autocomplete="name">
           </label>
-          <label>Email
-            <input type="email" id="reg-email" required placeholder="you@example.com">
+          <label>Email Address
+            <input type="email" name="email" id="reg-email" required placeholder="you@example.com" autocomplete="email">
           </label>
           <label>Password
-            <input type="password" id="reg-password" required placeholder="At least 8 characters">
+            <input type="password" name="password" id="reg-password" required placeholder="At least 8 characters" autocomplete="new-password">
           </label>
-          <button type="submit" class="checkout-btn">Create account</button>
+          
+          <button type="submit" class="admin-action-btn primary" style="width:100%; height:48px; font-weight:700; font-size:0.95rem; margin-top:1rem; border-radius:14px; justify-content:center;">
+            Create Account
+          </button>
         </form>
+
         <div class="auth-foot">
-          <a href="login.html">Already have an account? Sign in</a>
+          <p>Already have an account? <a href="login.html" class="auth-link">Sign in</a></p>
         </div>
       </div>
     </div>
   </main>
+
   <script src="auth.js" defer></script>
   <script src="../app.js" defer></script>
+  <div id="theme-announcer" class="visually-hidden" aria-live="polite"></div>
 </body>
 </html>

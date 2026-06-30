@@ -25,20 +25,25 @@
     </nav>
   </header>
 
+  <!-- PHP: Load details of event here -->
   <main class="container event-detail-page">
     <section class="detail-hero">
       <div class="detail-hero-copy">
         <span class="eyebrow">Event details</span>
         <h1>Summer Beats Festival</h1>
+        <!-- PHP: <?= htmlspecialchars($event['name']) ?> -->
         <p class="lede">Experience a full day of live music, food vendors, and sunset performances at Central Park.</p>
+        <!-- PHP: <?= htmlspecialchars($event['description']) ?> -->
+        
         <div class="detail-hero-meta">
           <div><strong>Date</strong><span>Aug 21, 2026</span></div>
+          <!-- PHP: <span><?= date('M d, Y', strtotime($event['date'])) ?></span> -->
           <div><strong>Time</strong><span>5:00 PM</span></div>
           <div><strong>Location</strong><span>Central Park, New York</span></div>
         </div>
       </div>
       <aside class="detail-card">
-        <div class="detail-image" style="background-image:url('https://images.unsplash.com/photo-1506157786151-b8491531f063?w=1200&q=80&auto=format&fit=crop&ixlib=rb-4.0.3&s=1')"></div>
+        <div class="detail-image" style="background-image:linear-gradient(0deg,rgba(0,0,0,0.1),rgba(0,0,0,0.1)), url('https://images.unsplash.com/photo-1506157786151-b8491531f063?w=1200&q=80&auto=format&fit=crop')"></div>
         <div class="detail-card-content">
           <p class="meta">Outdoor festival with headline artists, food stalls, and after-party access.</p>
           <div class="detail-tags">
@@ -50,70 +55,84 @@
       </aside>
     </section>
 
-    <section class="tickets-section">
-      <div class="tickets-main">
-        <div class="section-header">
-          <div>
-            <h2>Tickets</h2>
-            <p class="section-note">Select tickets and preview your order before checkout.</p>
-          </div>
-        </div>
-
-        <div class="ticket-card">
-          <div class="ticket-row" data-price="45" data-label="General Admission">
+    <!-- Tickets selection form -->
+    <form id="tickets-form" method="POST" action="checkout.html">
+      <input type="hidden" name="action" value="select_tickets" />
+      <input type="hidden" name="event_id" value="1" />
+      
+      <section class="tickets-section">
+        <div class="tickets-main">
+          <div class="section-header">
             <div>
-              <h3>General Admission</h3>
-              <p class="meta">Entry to festival grounds and daytime performances.</p>
+              <h2>Tickets</h2>
+              <p class="section-note">Select tickets and preview your order before checkout.</p>
             </div>
-            <div class="ticket-controls">
-              <button type="button" class="qty-btn" data-action="decrease" aria-label="Decrease General Admission quantity">−</button>
-              <span class="qty-value" aria-live="polite">1</span>
-              <button type="button" class="qty-btn" data-action="increase" aria-label="Increase General Admission quantity">+</button>
-            </div>
-            <div class="ticket-price">$45</div>
           </div>
 
-          <div class="ticket-row" data-price="95" data-label="VIP Access">
-            <div>
-              <h3>VIP Access</h3>
-              <p class="meta">Front-stage views, premium lounge, and express entry.</p>
+          <div class="ticket-card">
+            <!-- PHP: foreach ($event['tickets'] as $t): -->
+            
+            <div class="ticket-row" data-price="45" data-label="General Admission" data-ticket-id="t-1">
+              <div>
+                <h3>General Admission</h3>
+                <p class="meta">Entry to festival grounds and daytime performances.</p>
+              </div>
+              <div class="ticket-controls">
+                <button type="button" class="qty-btn" data-action="decrease" aria-label="Decrease General Admission quantity">−</button>
+                <span class="qty-value" aria-live="polite">1</span>
+                <input type="hidden" name="qty[t-1]" class="qty-input" value="1">
+                <button type="button" class="qty-btn" data-action="increase" aria-label="Increase General Admission quantity">+</button>
+              </div>
+              <div class="ticket-price">$45</div>
             </div>
-            <div class="ticket-controls">
-              <button type="button" class="qty-btn" data-action="decrease" aria-label="Decrease VIP Access quantity">−</button>
-              <span class="qty-value" aria-live="polite">0</span>
-              <button type="button" class="qty-btn" data-action="increase" aria-label="Increase VIP Access quantity">+</button>
-            </div>
-            <div class="ticket-price">$95</div>
-          </div>
 
-          <div class="ticket-row" data-price="160" data-label="Premium Lounge">
-            <div>
-              <h3>Premium Lounge</h3>
-              <p class="meta">Exclusive lounge seating, complimentary drinks, and private restrooms.</p>
+            <div class="ticket-row" data-price="95" data-label="VIP Access" data-ticket-id="t-2">
+              <div>
+                <h3>VIP Access</h3>
+                <p class="meta">Front-stage views, premium lounge, and express entry.</p>
+              </div>
+              <div class="ticket-controls">
+                <button type="button" class="qty-btn" data-action="decrease" aria-label="Decrease VIP Access quantity">−</button>
+                <span class="qty-value" aria-live="polite">0</span>
+                <input type="hidden" name="qty[t-2]" class="qty-input" value="0">
+                <button type="button" class="qty-btn" data-action="increase" aria-label="Increase VIP Access quantity">+</button>
+              </div>
+              <div class="ticket-price">$95</div>
             </div>
-            <div class="ticket-controls">
-              <button type="button" class="qty-btn" data-action="decrease" aria-label="Decrease Premium Lounge quantity">−</button>
-              <span class="qty-value" aria-live="polite">0</span>
-              <button type="button" class="qty-btn" data-action="increase" aria-label="Increase Premium Lounge quantity">+</button>
+
+            <div class="ticket-row" data-price="160" data-label="Premium Lounge" data-ticket-id="t-3">
+              <div>
+                <h3>Premium Lounge</h3>
+                <p class="meta">Exclusive lounge seating, complimentary drinks, and private restrooms.</p>
+              </div>
+              <div class="ticket-controls">
+                <button type="button" class="qty-btn" data-action="decrease" aria-label="Decrease Premium Lounge quantity">−</button>
+                <span class="qty-value" aria-live="polite">0</span>
+                <input type="hidden" name="qty[t-3]" class="qty-input" value="0">
+                <button type="button" class="qty-btn" data-action="increase" aria-label="Increase Premium Lounge quantity">+</button>
+              </div>
+              <div class="ticket-price">$160</div>
             </div>
-            <div class="ticket-price">$160</div>
+            
+            <!-- PHP: endforeach; -->
           </div>
         </div>
-      </div>
 
-      <aside class="summary-card">
-        <div class="summary-head">
-          <h3>Your order</h3>
-          <p class="meta">Review ticket quantities and total cost.</p>
-        </div>
-        <div class="summary-items" id="summary-items"></div>
-        <div class="summary-total">
-          <span>Total</span>
-          <strong id="order-total">$45</strong>
-        </div>
-        <a href="checkout.html" class="checkout-btn">Continue to checkout</a>
-      </aside>
-    </section>
+        <!-- Order summary sidebar -->
+        <aside class="summary-card">
+          <div class="summary-head">
+            <h3>Your order</h3>
+            <p class="meta">Review ticket quantities and total cost.</p>
+          </div>
+          <div class="summary-items" id="summary-items"></div>
+          <div class="summary-total">
+            <span>Total</span>
+            <strong id="order-total">$45</strong>
+          </div>
+          <button type="submit" class="checkout-btn" style="border:none;">Continue to checkout</button>
+        </aside>
+      </section>
+    </form>
 
     <section class="detail-copy">
       <div>
@@ -128,11 +147,26 @@
       </div>
     </section>
 
+    <!-- Guest / Artist Appearances -->
     <section class="guests-section">
       <div>
         <h2>Special Guests</h2>
         <p class="section-note">Meet the artists, speakers, and special guests appearing at this event.</p>
-        <div id="guests-list" class="guest-cards"></div>
+        
+        <div id="guests-list" class="guest-cards">
+          <!-- PHP: foreach ($event['guests'] as $g): -->
+          <div class="guest-card">
+            <h3>DJ Nova</h3>
+            <p class="meta">Headline DJ</p>
+            <p class="meta">@djnova</p>
+          </div>
+          <div class="guest-card">
+            <h3>Luna Rose</h3>
+            <p class="meta">Guest Artist</p>
+            <p class="meta">—</p>
+          </div>
+          <!-- PHP: endforeach; -->
+        </div>
       </div>
     </section>
   </main>

@@ -16,7 +16,7 @@
   <header class="top-nav" role="banner">
     <a href="index.html" class="brand" aria-label="Eventlyy home"><span class="brand-letter">E</span></a>
     <nav class="nav-desktop" role="navigation" aria-label="Top navigation">
-      <a href="#" class="nav-link" data-nav-index="0">Browse</a>
+      <a href="index.html" class="nav-link active" data-nav-index="0" aria-current="true">Browse</a>
       <a href="#" class="nav-link" data-nav-index="1">Venues</a>
       <a href="#" class="nav-link" data-nav-index="2">Pricing</a>
       <a href="#" class="nav-link" data-nav-index="3">Support</a>
@@ -34,14 +34,20 @@
         <p class="hero-eyebrow">Your next night out starts here</p>
         <h1>Find live events, concerts &amp; experiences</h1>
         <p class="lede">Search, compare and buy tickets — fast and secure.</p>
-        <form id="search-form" class="search" role="search" aria-label="Search events">
-          <input id="search-input" type="search" placeholder="Search events, artists, venues" aria-label="Search" />
-          <select aria-label="Location">
-            <option>Nearby</option>
-            <option>New York</option>
-            <option>Los Angeles</option>
-            <option>Chicago</option>
+        
+        <!-- PHP: form method="GET" action="" to run server-side search -->
+        <form id="search-form" class="search" role="search" aria-label="Search events" method="GET" action="">
+          <input name="q" id="search-input" type="search" placeholder="Search events, artists, venues" aria-label="Search" value="">
+          <!-- PHP: value="<?= htmlspecialchars($_GET['q'] ?? '') ?>" -->
+          
+          <select name="location" aria-label="Location">
+            <option value="">Nearby</option>
+            <option value="New York">New York</option>
+            <option value="Los Angeles">Los Angeles</option>
+            <option value="Chicago">Chicago</option>
           </select>
+          <!-- PHP: <option value="New York" <?= ($_GET['location'] ?? '') === 'New York' ? 'selected' : '' ?>>New York</option> -->
+          
           <button type="submit">Search</button>
         </form>
       </div>
@@ -52,17 +58,20 @@
       </div>
     </section>
 
+    <!-- Popular Categories -->
     <section class="categories reveal">
       <h2>Popular categories</h2>
       <div class="chips">
-        <button class="reveal-child">Concerts</button>
-        <button class="reveal-child">Sports</button>
-        <button class="reveal-child">Comedy</button>
-        <button class="reveal-child">Theater</button>
-        <button class="reveal-child">Family</button>
+        <!-- PHP: links to filter search by category -->
+        <a href="?category=Concerts" class="chip-btn">Concerts</a>
+        <a href="?category=Sports" class="chip-btn">Sports</a>
+        <a href="?category=Comedy" class="chip-btn">Comedy</a>
+        <a href="?category=Theater" class="chip-btn">Theater</a>
+        <a href="?category=Family" class="chip-btn">Family</a>
       </div>
     </section>
 
+    <!-- Featured Events Carousel -->
     <section class="featured-events">
       <h2>Featured</h2>
       <div class="carousel" id="carousel">
@@ -71,10 +80,12 @@
           <button class="carousel-next" aria-label="Next">▶</button>
         </div>
         <div class="slides" id="slides" aria-live="polite">
+          
+          <!-- PHP: foreach ($featured_events as $event): -->
           <!-- Slide 1 -->
           <a href="details.html" class="event-card-link">
             <article class="event-card">
-              <div class="image" style="background-image:linear-gradient(0deg,rgba(0,0,0,.35),rgba(0,0,0,.08)), url('https://images.unsplash.com/photo-1506157786151-b8491531f063?w=1200&q=80&auto=format&fit=crop&ixlib=rb-4.0.3&s=1')"></div>
+              <div class="image" style="background-image:linear-gradient(0deg,rgba(0,0,0,.35),rgba(0,0,0,.08)), url('https://images.unsplash.com/photo-1506157786151-b8491531f063?w=1200&q=80&auto=format&fit=crop')"></div>
               <div class="meta">
                 <h3>Summer Beats Festival</h3>
                 <p>Aug 21 • Central Park</p>
@@ -85,7 +96,7 @@
           <!-- Slide 2 -->
           <a href="details.html" class="event-card-link">
             <article class="event-card">
-              <div class="image" style="background-image:linear-gradient(0deg,rgba(0,0,0,.35),rgba(0,0,0,.08)), url('https://images.unsplash.com/photo-1518972559570-6c07c1c4f9f7?w=1200&q=80&auto=format&fit=crop&ixlib=rb-4.0.3&s=2')"></div>
+              <div class="image" style="background-image:linear-gradient(0deg,rgba(0,0,0,.35),rgba(0,0,0,.08)), url('https://images.unsplash.com/photo-1518972559570-6c07c1c4f9f7?w=1200&q=80&auto=format&fit=crop')"></div>
               <div class="meta">
                 <h3>Broadway Nights</h3>
                 <p>Sep 12 • Downtown Theater</p>
@@ -96,13 +107,15 @@
           <!-- Slide 3 -->
           <a href="details.html" class="event-card-link">
             <article class="event-card">
-              <div class="image" style="background-image:linear-gradient(0deg,rgba(0,0,0,.35),rgba(0,0,0,.08)), url('https://images.unsplash.com/photo-1517649763962-0c623066013b?w=1200&q=80&auto=format&fit=crop&ixlib=rb-4.0.3&s=3')"></div>
+              <div class="image" style="background-image:linear-gradient(0deg,rgba(0,0,0,.35),rgba(0,0,0,.08)), url('https://images.unsplash.com/photo-1517649763962-0c623066013b?w=1200&q=80&auto=format&fit=crop')"></div>
               <div class="meta">
                 <h3>Championship Game</h3>
                 <p>Oct 3 • City Stadium</p>
               </div>
             </article>
           </a>
+          <!-- PHP: endforeach; -->
+
         </div>
         <div class="carousel-bottom">
           <div class="indicators" id="carousel-indicators" role="tablist" aria-label="Carousel indicators">
@@ -114,18 +127,22 @@
       </div>
     </section>
 
+    <!-- All Events Section -->
     <section class="event-listing">
       <div class="section-header">
         <div>
           <h2>All events</h2>
           <p class="section-note">Browse all available events with search and pagination.</p>
         </div>
-        <div class="list-meta" id="list-meta"></div>
+        <div class="list-meta" id="list-meta">Showing 4 events</div>
       </div>
+      
       <div id="event-list" class="event-list">
-        <!-- Event Card Template 1 -->
+        <!-- PHP: foreach ($events as $event): -->
+        
+        <!-- Event Card 1 -->
         <article class="event-item">
-          <div class="image" style="background-image:url('https://images.unsplash.com/photo-1506157786151-b8491531f063?w=1200&q=80&auto=format&fit=crop&ixlib=rb-4.0.3&s=1')"></div>
+          <div class="image" style="background-image:url('https://images.unsplash.com/photo-1506157786151-b8491531f063?w=1200&q=80&auto=format&fit=crop')"></div>
           <div class="details">
             <div>
               <h3>Summer Beats Festival</h3>
@@ -135,9 +152,9 @@
           </div>
         </article>
 
-        <!-- Event Card Template 2 -->
+        <!-- Event Card 2 -->
         <article class="event-item">
-          <div class="image" style="background-image:url('https://images.unsplash.com/photo-1518972559570-6c07c1c4f9f7?w=1200&q=80&auto=format&fit=crop&ixlib=rb-4.0.3&s=2')"></div>
+          <div class="image" style="background-image:url('https://images.unsplash.com/photo-1518972559570-6c07c1c4f9f7?w=1200&q=80&auto=format&fit=crop')"></div>
           <div class="details">
             <div>
               <h3>Broadway Nights</h3>
@@ -147,9 +164,9 @@
           </div>
         </article>
 
-        <!-- Event Card Template 3 -->
+        <!-- Event Card 3 -->
         <article class="event-item">
-          <div class="image" style="background-image:url('https://images.unsplash.com/photo-1517649763962-0c623066013b?w=1200&q=80&auto=format&fit=crop&ixlib=rb-4.0.3&s=3')"></div>
+          <div class="image" style="background-image:url('https://images.unsplash.com/photo-1517649763962-0c623066013b?w=1200&q=80&auto=format&fit=crop')"></div>
           <div class="details">
             <div>
               <h3>Championship Game</h3>
@@ -159,9 +176,9 @@
           </div>
         </article>
 
-        <!-- Event Card Template 4 -->
+        <!-- Event Card 4 -->
         <article class="event-item">
-          <div class="image" style="background-image:url('https://images.unsplash.com/photo-1507878866276-a947ef722fee?w=1200&q=80&auto=format&fit=crop&ixlib=rb-4.0.3&s=4')"></div>
+          <div class="image" style="background-image:url('https://images.unsplash.com/photo-1507878866276-a947ef722fee?w=1200&q=80&auto=format&fit=crop')"></div>
           <div class="details">
             <div>
               <h3>Indie Rock Night</h3>
@@ -170,14 +187,17 @@
             <a href="details.html" class="action">View Tickets</a>
           </div>
         </article>
+        
+        <!-- PHP: endforeach; -->
       </div>
 
-      <!-- Pagination Template -->
+      <!-- Pagination -->
       <div class="pagination" id="pagination">
-        <button class="page-button" disabled>Prev</button>
-        <button class="page-button" aria-current="true">1</button>
-        <button class="page-button">2</button>
-        <button class="page-button">Next</button>
+        <!-- PHP: Link pages dynamically -->
+        <a href="?page=1" class="page-button disabled" aria-disabled="true">Prev</a>
+        <span class="page-button" aria-current="true">1</span>
+        <a href="?page=2" class="page-button">2</a>
+        <a href="?page=2" class="page-button">Next</a>
       </div>
     </section>
 
