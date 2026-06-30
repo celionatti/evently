@@ -41,44 +41,44 @@
       <div class="form-card">
         <h2>Create event</h2>
         <div class="auth-message" aria-live="polite"></div>
-        <form id="create-event-form">
+        <form id="create-event-form" method="POST" action="" enctype="multipart/form-data">
           <label>Event name
-            <input type="text" id="event-name" required placeholder="Summer Beats Festival">
+            <input type="text" id="event-name" name="event_name" required placeholder="Summer Beats Festival">
           </label>
           <label>Custom URL (optional)
             <div style="display:flex;gap:.5rem;align-items:center;">
               <span style="white-space:nowrap;color:rgb(var(--muted));">/events/</span>
-              <input type="text" id="custom-url" placeholder="summer-beats-festival" aria-label="Custom URL slug">
+              <input type="text" id="custom-url" name="custom_url" placeholder="summer-beats-festival" aria-label="Custom URL slug">
             </div>
             <small class="muted">Starts with the event title; left empty to auto-generate.</small>
           </label>
           <div class="field-grid">
             <label>Event date
-              <input type="date" id="event-date" required>
+              <input type="date" id="event-date" name="event_date" required>
             </label>
             <label>Start time
-              <input type="time" id="event-time" required>
+              <input type="time" id="event-time" name="event_time" required>
             </label>
           </div>
           <div class="field-grid">
             <label>Venue
-              <input type="text" id="event-venue" required placeholder="Central Park">
+              <input type="text" id="event-venue" name="event_venue" required placeholder="Central Park">
             </label>
             <label>City
-              <input type="text" id="event-city" required placeholder="New York">
+              <input type="text" id="event-city" name="event_city" required placeholder="New York">
             </label>
           </div>
           <div class="contact-row">
             <label>Organizer phone
-              <input type="tel" id="organizer-phone" placeholder="+1 555 555 5555">
+              <input type="tel" id="organizer-phone" name="organizer_phone" placeholder="+1 555 555 5555">
             </label>
             <label>Organizer website / social
-              <input type="url" id="organizer-social" placeholder="https://... or @handle">
+              <input type="url" id="organizer-social" name="organizer_social" placeholder="https://... or @handle">
             </label>
           </div>
 
           <label>Description
-            <textarea id="event-description" rows="4" required placeholder="Share what makes this event special."></textarea>
+            <textarea id="event-description" name="event_description" rows="4" required placeholder="Share what makes this event special."></textarea>
           </label>
 
           <div class="guest-section">
@@ -99,7 +99,7 @@
           <div class="fee-settings-section" style="margin: 1.5rem 0; padding: 1.25rem; border-radius: 16px; background: rgba(var(--muted), 0.05); border: 1px solid rgba(var(--muted), 0.12);">
             <h3 style="margin: 0 0 0.75rem; font-size: 1.1rem; font-weight: 600;">Ticketing Fee Settings</h3>
             <label style="display: flex; align-items: flex-start; gap: 0.75rem; cursor: pointer; font-weight: 500; font-size: 0.95rem; user-select: none;">
-              <input type="checkbox" id="pass-fee" checked style="margin-top: 0.15rem;">
+              <input type="checkbox" id="pass-fee" name="pass_fee" value="1" checked style="margin-top: 0.15rem;">
               <span>
                 Pass 5% platform fee to attendees
                 <small class="muted" style="display: block; margin-top: 0.25rem; font-size: 0.8rem; font-weight: 400; color: rgb(var(--muted)); line-height: 1.4;">

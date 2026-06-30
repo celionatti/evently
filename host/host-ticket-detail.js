@@ -1,138 +1,119 @@
-// Ticket detail page script
+/**
+ * Host Ticket Detail — UI interactions only.
+ * All ticket data is rendered server-side by PHP.
+ * This script handles: toast notifications, confirmation modals,
+ * and wiring the action buttons (resend / refund / flag).
+ *
+ * In your PHP integration, update the action URLs in the
+ * data-action-url attributes or the fetch endpoints below.
+ */
 (function(){
-  function qs(name){
-    const url = new URL(window.location.href);
-    return url.searchParams.get(name);
-  }
+  'use strict';
 
-  function loadEventFromStorage(eventId){
-    try{
-      const raw = localStorage.getItem('event_' + eventId);
-      if(!raw) return null;
-      return JSON.parse(raw);
-    }catch(e){
-      return null;
-    }
-  }
-
-  function saveEventToStorage(ev){
-    try{ localStorage.setItem('event_' + ev.id, JSON.stringify(ev)); }catch(e){ console.error(e); }
-  }
-
-  function showToast(message, type='info', timeout=3000){
-    const tc = document.getElementById('toast-container');
-    const t = document.createElement('div');
+  // ── Toast notifications ──────────────────────────────
+  function showToast(message, type, timeout){
+    type = type || 'info';
+    timeout = timeout || 3000;
+    var tc = document.getElementById('toast-container');
+    if(!tc) return;
+    var t = document.createElement('div');
     t.className = 'toast ' + type;
     t.textContent = message;
     tc.appendChild(t);
-    setTimeout(()=>{ t.classList.add('visible'); }, 10);
-    setTimeout(()=>{ t.classList.remove('visible'); setTimeout(()=>t.remove(),300); }, timeout);
+    setTimeout(function(){ t.classList.add('visible'); }, 10);
+    setTimeout(function(){
+      t.classList.remove('visible');
+      setTimeout(function(){ t.remove(); }, 300);
+    }, timeout);
   }
 
+  // ── Confirmation modal ───────────────────────────────
+  var backdrop   = document.getElementById('modal-backdrop');
+  var confirmMsg = document.getElementById('confirm-message');
+  var confirmYes = document.getElementById('confirm-yes');
+  var confirmNo  = document.getElementById('confirm-no');
+  var pendingAction = null;
+
   function openConfirm(message, onConfirm){
-    const backdrop = document.getElementById('modal-backdrop');
-    backdrop.innerHTML = `
-      <div class="modal">
-        <h3>Confirm</h3>
-        <p>${message}</p>
-        <div class="modal-actions">
-          <button id="confirm-yes" class="admin-action-btn">Yes</button>
-          <button id="confirm-no" class="admin-action-btn">No</button>
-        </div>
-      </div>
-    `;
+    if(!backdrop) return onConfirm();
+    confirmMsg.textContent = message;
+    pendingAction = onConfirm;
     backdrop.classList.remove('hidden');
-    document.getElementById('confirm-yes').onclick = () => { closeModal(); onConfirm(); };
-    document.getElementById('confirm-no').onclick = closeModal;
   }
 
   function closeModal(){
-    const backdrop = document.getElementById('modal-backdrop');
-    backdrop.classList.add('hidden');
-    backdrop.innerHTML = '';
+    if(backdrop) backdrop.classList.add('hidden');
+    pendingAction = null;
   }
 
-  function renderTicket(ticket, event){
-    document.getElementById('ticket-id').textContent = ticket.id || '—';
-    const evLink = document.getElementById('event-link');
-    evLink.textContent = event.title || 'Event';
-    evLink.href = `host-event-management.html?eventId=${event.id}`;
-    document.getElementById('holder-name').textContent = ticket.holderName || ticket.name || '—';
-    const emailEl = document.getElementById('holder-email');
-    emailEl.textContent = ticket.email || '—';
-    emailEl.href = 'mailto:' + (ticket.email || '');
-    document.getElementById('ticket-type').textContent = ticket.type || '—';
-    document.getElementById('ticket-price').textContent = ticket.price ? '$' + (ticket.price/100).toFixed(2) : '—';
-
-    const statusEl = document.getElementById('ticket-status');
-    statusEl.className = 'status-badge ' + (ticket.status || 'pending');
-    statusEl.textContent = (ticket.status || 'pending').toUpperCase();
-
-    const sd = document.getElementById('status-detail');
-    sd.textContent = ticket.statusDetail || (ticket.status==='refunded'? 'Refunded to original payment method' : ticket.status==='cancelled'? 'Order cancelled' : ticket.status==='confirmed' ? 'Payment confirmed' : 'Awaiting payment confirmation');
-
-    // QR placeholder: generate a data URI with basic text
-    const qrImg = document.getElementById('qr-img');
-    const qrText = `T:${ticket.id}|E:${event.id}|H:${ticket.holderName||''}`;
-    qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(qrText);
-  }
-
-  function findTicket(eventObj, ticketId){
-    if(!eventObj) return null;
-    return (eventObj.soldTickets || []).find(t=>String(t.id) === String(ticketId));
-  }
-
-  // Wire up actions
-  function setupActions(ticket, eventObj){
-    document.getElementById('action-resend').addEventListener('click', (e)=>{
-      e.preventDefault();
-      showToast('Resent ticket to ' + (ticket.email || ticket.holderName));
+  if(confirmYes){
+    confirmYes.addEventListener('click', function(){
+      closeModal();
+      if(typeof pendingAction === 'function') pendingAction();
     });
-    document.getElementById('action-flag').addEventListener('click', (e)=>{
-      e.preventDefault();
-      ticket.flagged = true; saveEventToStorage(eventObj); showToast('Ticket flagged');
+  }
+  if(confirmNo){
+    confirmNo.addEventListener('click', closeModal);
+  }
+  // Close modal on backdrop click
+  if(backdrop){
+    backdrop.addEventListener('click', function(e){
+      if(e.target === backdrop) closeModal();
     });
-    document.getElementById('action-refund').addEventListener('click', (e)=>{
+  }
+
+  // ── Action buttons ───────────────────────────────────
+  // These buttons trigger lightweight UI feedback.
+  // For actual server operations, either:
+  //   a) Use PHP form submissions (wrap each in a <form>), or
+  //   b) Use fetch() calls below pointed at your PHP endpoints.
+
+  var resendBtn = document.getElementById('action-resend');
+  var refundBtn = document.getElementById('action-refund');
+  var flagBtn   = document.getElementById('action-flag');
+
+  if(resendBtn){
+    resendBtn.addEventListener('click', function(e){
       e.preventDefault();
-      openConfirm('Refund this ticket? This will mark it as refunded.', ()=>{
-        ticket.status = 'refunded';
-        ticket.statusDetail = 'Refund issued by host';
-        saveEventToStorage(eventObj);
-        renderTicket(ticket, eventObj);
-        showToast('Ticket refunded');
+      // PHP integration: POST to your resend endpoint
+      // Example: fetch('actions/resend-ticket.php', { method:'POST', body: formData })
+      showToast('Ticket resent successfully.', 'success');
+    });
+  }
+
+  if(flagBtn){
+    flagBtn.addEventListener('click', function(e){
+      e.preventDefault();
+      // PHP integration: POST to your flag endpoint
+      showToast('Ticket has been flagged for review.', 'info');
+    });
+  }
+
+  if(refundBtn){
+    refundBtn.addEventListener('click', function(e){
+      e.preventDefault();
+      openConfirm('Refund this ticket? This action cannot be undone.', function(){
+        // PHP integration: POST to your refund endpoint
+        // Example:
+        // fetch('actions/refund-ticket.php', {
+        //   method: 'POST',
+        //   headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        //   body: 'ticket_id=' + encodeURIComponent(ticketId)
+        // })
+        // .then(res => res.json())
+        // .then(data => { ... update UI or redirect ... });
+
+        // Update status badge visually after refund
+        var statusEl = document.getElementById('ticket-status');
+        if(statusEl){
+          statusEl.className = 'status-badge refunded';
+          statusEl.textContent = 'REFUNDED';
+        }
+        var detailEl = document.getElementById('status-detail');
+        if(detailEl) detailEl.textContent = 'Refund issued by host';
+
+        showToast('Ticket refunded successfully.', 'success');
       });
     });
   }
-
-  // Init
-  document.addEventListener('DOMContentLoaded', ()=>{
-    const ticketId = qs('ticketId');
-    const eventId = qs('eventId');
-    const pageBack = document.getElementById('back-link');
-    if(eventId) pageBack.href = `host-event-management.html?eventId=${eventId}`;
-
-    let eventObj = null;
-    if(eventId) eventObj = loadEventFromStorage(eventId);
-
-    // fallback sample event if none in storage
-    if(!eventObj){
-      eventObj = {
-        id: eventId || '1',
-        title: 'Sample Event',
-        soldTickets: [
-          { id: 'A1', holderName: 'Jane Doe', email: 'jane@example.com', type: 'General', price: 2500, status: 'confirmed' },
-          { id: 'B2', holderName: 'John Smith', email: 'john@example.com', type: 'VIP', price: 5000, status: 'pending' }
-        ]
-      };
-    }
-
-    const ticket = ticketId ? findTicket(eventObj, ticketId) : (eventObj.soldTickets && eventObj.soldTickets[0]);
-    if(!ticket){
-      document.getElementById('ticket-card').innerHTML = '<p>Ticket not found.</p>';
-      return;
-    }
-
-    renderTicket(ticket, eventObj);
-    setupActions(ticket, eventObj);
-  });
 })();
