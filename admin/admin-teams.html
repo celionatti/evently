@@ -6,7 +6,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="mobile-web-app-capable" content="yes" />
-  <title>Admin — Teams — Eventlyy</title>
+  <title>Admin — Teams</title>
   <meta name="description" content="View and manage administrative team members and event assignments." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,7 +23,7 @@
       <a href="admin-events.html" class="nav-link">Events</a>
       <a href="admin-payouts.html" class="nav-link">Payouts</a>
       <a href="admin-settings.html" class="nav-link">Settings</a>
-      <a href="admin-teams.html" class="nav-link" aria-current="true">Teams</a>
+      <a href="admin-teams.html" class="nav-link active">Teams</a>
       <button id="theme-toggle" data-theme-toggle="true" aria-label="Toggle theme" aria-pressed="false">🌓</button>
     </nav>
   </header>
@@ -32,88 +32,341 @@
     <section class="page-hero">
       <div>
         <span class="panel-badge">Admin — Teams</span>
-        <h1>Team coordination & assignments</h1>
-        <p class="lede">Register organization staff and assign them as coordinators or helpers to specific events.</p>
+        <h1>Team Coordination & Assignments</h1>
+        <p class="lede">Register organization staff and assign them as coordinators, technical leads, or helpers to specific events.</p>
       </div>
     </section>
 
-    <section class="admin-summary-grid">
-      <article class="admin-summary-card">
-        <span class="section-note">Total staff</span>
-        <h2 id="total-staff">0</h2>
-        <p>Registered team members</p>
-      </article>
-      <article class="admin-summary-card">
-        <span class="section-note">Staff assigned</span>
-        <h2 id="assigned-staff">0</h2>
-        <p>Staff currently coordinating events</p>
-      </article>
-      <article class="admin-summary-card">
-        <span class="section-note">Unassigned helpers</span>
-        <h2 id="unassigned-staff">0</h2>
-        <p>Staff members ready to assist</p>
-      </article>
-      <article class="admin-summary-card">
-        <span class="section-note">Active events</span>
-        <h2 id="active-events-staff">0</h2>
-        <p>Events with assigned staff</p>
-      </article>
+    <!-- Summary Stats -->
+    <section class="admin-users-stats">
+      <!-- PHP: Replace values with dynamic php counts -->
+      <div class="au-stat-card">
+        <span class="au-stat-icon">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </span>
+        <div class="au-stat-body">
+          <span class="au-stat-num" id="total-staff">6</span>
+          <span class="au-stat-lbl">Total Staff</span>
+        </div>
+      </div>
+      <div class="au-stat-card">
+        <span class="au-stat-icon au-stat-icon--brand">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </span>
+        <div class="au-stat-body">
+          <span class="au-stat-num" id="assigned-staff">4</span>
+          <span class="au-stat-lbl">Staff Assigned</span>
+        </div>
+      </div>
+      <div class="au-stat-card">
+        <span class="au-stat-icon au-stat-icon--success">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </span>
+        <div class="au-stat-body">
+          <span class="au-stat-num" id="unassigned-staff">2</span>
+          <span class="au-stat-lbl">Unassigned</span>
+        </div>
+      </div>
+      <div class="au-stat-card">
+        <span class="au-stat-icon au-stat-icon--warning">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </span>
+        <div class="au-stat-body">
+          <span class="au-stat-num" id="active-events-staff">3</span>
+          <span class="au-stat-lbl">Active Events</span>
+        </div>
+      </div>
     </section>
 
-    <section class="admin-grid">
+    <!-- Admin Content Panels Grid -->
+    <div class="admin-grid">
+      <!-- Left Column: Forms -->
       <div class="admin-panel" style="display:flex; flex-direction:column; gap:1.5rem;">
-        <div class="form-card" style="margin-bottom:0;">
-          <h2>Add team member</h2>
+        
+        <!-- Add Staff Form -->
+        <div class="form-card" style="margin-bottom:0; border-radius:22px; padding:1.5rem 1.75rem;">
+          <h2>Add Team Member</h2>
+          <!-- PHP: Display session/post messages here -->
           <div id="add-message" class="auth-message" style="margin-bottom:1rem; display:none;" aria-live="polite"></div>
-          <form id="add-team-form">
-            <label>Full name
-              <input type="text" id="member-name" required placeholder="Alex Carter">
+          
+          <form id="add-team-form" method="POST" action="">
+            <input type="hidden" name="action" value="add_member" />
+            <label>Full Name
+              <input type="text" name="name" id="member-name" required placeholder="Alex Carter">
             </label>
-            <label>Email address
-              <input type="email" id="member-email" required placeholder="alex@eventlyy.com">
+            <label>Email Address
+              <input type="email" name="email" id="member-email" required placeholder="alex@eventlyy.com">
             </label>
-            <label>Assigned role
-              <select id="member-role">
+            <label>Assigned Role
+              <select name="role" id="member-role">
                 <option value="Coordinator">Coordinator</option>
                 <option value="Security">Security</option>
                 <option value="Support">Guest Support</option>
                 <option value="Technical">Technical Operations</option>
               </select>
             </label>
-            <button type="submit" class="checkout-btn" style="width:100%; margin-top:1rem;">Add Member</button>
+            <button type="submit" class="admin-action-btn primary" style="width:100%; margin-top:1.25rem; height:46px; border-radius:12px;">Add Member</button>
           </form>
         </div>
 
-        <div class="form-card">
-          <h2>Assign to event</h2>
+        <!-- Assign Event Form -->
+        <div class="form-card" style="margin-bottom:0; border-radius:22px; padding:1.5rem 1.75rem;">
+          <h2>Assign to Event</h2>
           <div id="assign-message" class="auth-message" style="margin-bottom:1rem; display:none;" aria-live="polite"></div>
-          <form id="assign-team-form">
-            <label>Select team member
-              <select id="assign-member-select" required>
+          
+          <form id="assign-team-form" method="POST" action="">
+            <input type="hidden" name="action" value="assign_member" />
+            <label>Select Team Member
+              <select name="member_id" id="assign-member-select" required>
                 <option value="">-- Choose staff --</option>
+                <!-- PHP: foreach ($teams as $m): -->
+                <option value="staff-1">Alex Carter (Coordinator)</option>
+                <option value="staff-2">Sarah Connor (Security) - Assigned</option>
+                <option value="staff-3">David Miller (Support) - Assigned</option>
+                <option value="staff-4">Elena Rostova (Technical)</option>
+                <option value="staff-5">John Doe (Security)</option>
+                <option value="staff-6">Jane Smith (Support) - Assigned</option>
+                <!-- PHP: endforeach; -->
               </select>
             </label>
-            <label>Select event
-              <select id="assign-event-select" required>
+            <label>Select Event
+              <select name="event_name" id="assign-event-select" required>
                 <option value="">-- Choose event --</option>
+                <!-- PHP: foreach ($events as $ev): -->
+                <option value="Summer Beats Festival">Summer Beats Festival</option>
+                <option value="Broadway Nights">Broadway Nights</option>
+                <option value="Championship Game">Championship Game</option>
+                <option value="Indie Rock Night">Indie Rock Night</option>
+                <option value="Comedy Gala">Comedy Gala</option>
+                <!-- PHP: endforeach; -->
               </select>
             </label>
-            <button type="submit" class="checkout-btn" style="width:100%; margin-top:1rem;">Assign Staff</button>
+            <button type="submit" class="admin-action-btn primary" style="width:100%; margin-top:1.25rem; height:46px; border-radius:12px;">Assign Staff</button>
           </form>
         </div>
+
       </div>
 
+      <!-- Right Column: Staff Registry -->
       <div class="admin-panel">
-        <div class="section-header">
-          <div>
-            <h2>Staff registry</h2>
-            <p class="section-note">Registered team members and their current assignments.</p>
+        <div class="form-card" style="margin-bottom:0; border-radius:22px; padding:1.5rem;">
+          <div class="au-table-header" style="margin-bottom:1rem; border-bottom:1px solid rgba(var(--muted),0.08); padding-bottom:1rem;">
+            <div>
+              <h2 style="margin:0;">Staff Registry</h2>
+              <p class="section-note" style="margin:0.25rem 0 0; font-size:0.8rem;">All organization staff profiles and assignments.</p>
+            </div>
           </div>
+
+          <!-- Staff Table (Desktop) -->
+          <div class="au-table-wrap">
+            <table class="au-table">
+              <thead>
+                <tr>
+                  <th>Staff Member</th>
+                  <th>Role</th>
+                  <th>Assignment Status</th>
+                  <th class="au-th-actions">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="team-tbody">
+                <!-- PHP: foreach ($teams as $m): -->
+
+                <tr>
+                  <td>
+                    <div class="au-user-cell">
+                      <span class="au-avatar" style="--avatar-hue:220">AC</span>
+                      <div>
+                        <span class="au-user-name">Alex Carter</span>
+                        <span class="au-card-email">alex.carter@eventlyy.com</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="au-role-badge au-role--host">Coordinator</span></td>
+                  <td>
+                    <span class="au-status-badge au-status--unverified">Unassigned</span>
+                  </td>
+                  <td>
+                    <div class="admin-actions">
+                      <button type="button" class="admin-action-btn danger au-remove-staff-btn" data-member-id="staff-1" data-member-name="Alex Carter">
+                        Remove
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <div class="au-user-cell">
+                      <span class="au-avatar" style="--avatar-hue:300">SC</span>
+                      <div>
+                        <span class="au-user-name">Sarah Connor</span>
+                        <span class="au-card-email">sarah.c@eventlyy.com</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="au-role-badge au-role--admin">Security</span></td>
+                  <td>
+                    <span class="au-status-badge au-status--active" style="text-transform:none;">Coordinating: Summer Beats Festival</span>
+                  </td>
+                  <td>
+                    <div class="admin-actions">
+                      <button type="button" class="admin-action-btn au-unassign-staff-btn" data-member-id="staff-2" data-member-name="Sarah Connor" data-event-name="Summer Beats Festival">
+                        Unassign
+                      </button>
+                      <button type="button" class="admin-action-btn danger au-remove-staff-btn" data-member-id="staff-2" data-member-name="Sarah Connor">
+                        Remove
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <div class="au-user-cell">
+                      <span class="au-avatar" style="--avatar-hue:30">DM</span>
+                      <div>
+                        <span class="au-user-name">David Miller</span>
+                        <span class="au-card-email">d.miller@eventlyy.com</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="au-role-badge au-role--attendee">Guest Support</span></td>
+                  <td>
+                    <span class="au-status-badge au-status--active" style="text-transform:none;">Coordinating: Broadway Nights</span>
+                  </td>
+                  <td>
+                    <div class="admin-actions">
+                      <button type="button" class="admin-action-btn au-unassign-staff-btn" data-member-id="staff-3" data-member-name="David Miller" data-event-name="Broadway Nights">
+                        Unassign
+                      </button>
+                      <button type="button" class="admin-action-btn danger au-remove-staff-btn" data-member-id="staff-3" data-member-name="David Miller">
+                        Remove
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <div class="au-user-cell">
+                      <span class="au-avatar" style="--avatar-hue:140">ER</span>
+                      <div>
+                        <span class="au-user-name">Elena Rostova</span>
+                        <span class="au-card-email">elena.r@eventlyy.com</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="au-role-badge au-role--admin" style="background:rgba(var(--stripe),0.1); color:rgb(var(--stripe))">Technical Ops</span></td>
+                  <td>
+                    <span class="au-status-badge au-status--unverified">Unassigned</span>
+                  </td>
+                  <td>
+                    <div class="admin-actions">
+                      <button type="button" class="admin-action-btn danger au-remove-staff-btn" data-member-id="staff-4" data-member-name="Elena Rostova">
+                        Remove
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- PHP: endforeach; -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Staff Cards (Mobile) -->
+          <div class="au-cards-list" id="team-cards" style="margin-top: 1rem;">
+            <!-- PHP: foreach ($teams as $m): -->
+            <article class="au-user-card">
+              <div class="au-card-top">
+                <div class="au-user-cell">
+                  <span class="au-avatar" style="--avatar-hue:220">AC</span>
+                  <div>
+                    <span class="au-user-name">Alex Carter</span>
+                    <span class="au-card-email">alex.carter@eventlyy.com</span>
+                  </div>
+                </div>
+                <span class="au-role-badge au-role--host">Coordinator</span>
+              </div>
+              <div class="au-card-meta">
+                <span class="au-status-badge au-status--unverified">Unassigned</span>
+              </div>
+              <div class="admin-actions au-card-actions">
+                <button type="button" class="admin-action-btn danger au-remove-staff-btn" data-member-id="staff-1" data-member-name="Alex Carter">Remove</button>
+              </div>
+            </article>
+
+            <article class="au-user-card">
+              <div class="au-card-top">
+                <div class="au-user-cell">
+                  <span class="au-avatar" style="--avatar-hue:300">SC</span>
+                  <div>
+                    <span class="au-user-name">Sarah Connor</span>
+                    <span class="au-card-email">sarah.c@eventlyy.com</span>
+                  </div>
+                </div>
+                <span class="au-role-badge au-role--admin">Security</span>
+              </div>
+              <div class="au-card-meta">
+                <span class="au-status-badge au-status--active" style="text-transform:none;">Coordinating: Summer Beats Festival</span>
+              </div>
+              <div class="admin-actions au-card-actions">
+                <button type="button" class="admin-action-btn au-unassign-staff-btn" data-member-id="staff-2" data-member-name="Sarah Connor" data-event-name="Summer Beats Festival">Unassign</button>
+                <button type="button" class="admin-action-btn danger au-remove-staff-btn" data-member-id="staff-2" data-member-name="Sarah Connor">Remove</button>
+              </div>
+            </article>
+            <!-- PHP: endforeach; -->
+          </div>
+
+          <!-- Pagination -->
+          <nav class="au-pagination" aria-label="Team pagination" id="team-pagination">
+            <a href="?page=1" class="au-page-btn disabled" aria-disabled="true">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+              Prev
+            </a>
+            <span class="au-page-num active" aria-current="page">1</span>
+            <a href="?page=2" class="au-page-num">2</a>
+            <a href="?page=2" class="au-page-btn">
+              Next
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </a>
+          </nav>
         </div>
-        <div id="team-list" class="event-list scrollable-list"></div>
-        <div id="team-pagination" class="pagination" aria-label="Team pagination"></div>
       </div>
-    </section>
+    </div>
+
+    <!-- Confirm Remove Staff Modal -->
+    <div class="modal-overlay hidden" id="remove-modal" role="dialog" aria-modal="true" aria-labelledby="remove-modal-title">
+      <div class="modal-card">
+        <h3 id="remove-modal-title">Remove Team Member</h3>
+        <p>Are you sure you want to remove <strong id="remove-member-name">this staff member</strong> from the registry? They will lose all coordinator privileges and assignments.</p>
+        <form method="POST" action="">
+          <input type="hidden" name="action" value="remove_member" />
+          <input type="hidden" name="member_id" id="remove-member-id" value="" />
+          <div class="modal-actions">
+            <button type="button" class="admin-action-btn" id="remove-cancel-btn">Cancel</button>
+            <button type="submit" class="admin-action-btn danger">Yes, Remove</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Confirm Unassign Staff Modal -->
+    <div class="modal-overlay hidden" id="unassign-modal" role="dialog" aria-modal="true" aria-labelledby="unassign-modal-title">
+      <div class="modal-card">
+        <h3 id="unassign-modal-title">Unassign Staff Member</h3>
+        <p>Are you sure you want to remove <strong id="unassign-member-name">this staff member</strong> from the event <strong id="unassign-event-name">this event</strong>?</p>
+        <form method="POST" action="">
+          <input type="hidden" name="action" value="unassign_member" />
+          <input type="hidden" name="member_id" id="unassign-member-id" value="" />
+          <div class="modal-actions">
+            <button type="button" class="admin-action-btn" id="unassign-cancel-btn">Cancel</button>
+            <button type="submit" class="admin-action-btn primary">Yes, Unassign</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
   </main>
 
   <footer class="footer">

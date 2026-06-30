@@ -21,7 +21,7 @@
       <a href="admin.html" class="nav-link">Overview</a>
       <a href="admin-users.html" class="nav-link">Users</a>
       <a href="admin-events.html" class="nav-link">Events</a>
-      <a href="admin-payouts.html" class="nav-link">Payouts</a>
+      <a href="admin-payouts.html" class="nav-link active">Payouts</a>
       <a href="admin-settings.html" class="nav-link">Settings</a>
       <a href="admin-teams.html" class="nav-link">Teams</a>
       <button id="theme-toggle" data-theme-toggle="true" aria-label="Toggle theme" aria-pressed="false">🌓</button>
@@ -32,42 +32,359 @@
     <section class="page-hero">
       <div>
         <span class="panel-badge">Admin — Payouts</span>
-        <h1>Payout readiness</h1>
-        <p class="lede">Review which hosts are payout-ready and inspect bank details.</p>
+        <h1>Payout Coordination</h1>
+        <p class="lede">Review payout readiness, inspect host bank details, and process disbursements.</p>
       </div>
     </section>
 
-    <section class="admin-summary-grid">
-      <article class="admin-summary-card">
-        <span class="section-note">Pending payouts</span>
-        <h2>$24,120</h2>
-        <p>Amount waiting to be disbursed</p>
-      </article>
-      <article class="admin-summary-card">
-        <span class="section-note">Hosts ready</span>
-        <h2>12</h2>
-        <p>Verified payout details complete</p>
-      </article>
-      <article class="admin-summary-card">
-        <span class="section-note">Hosts flagged</span>
-        <h2>3</h2>
-        <p>Need account or compliance review</p>
-      </article>
-      <article class="admin-summary-card">
-        <span class="section-note">Next payout</span>
-        <h2>June 12</h2>
-        <p>Scheduled payout run date</p>
-      </article>
-    </section>
-
-    <section>
-      <div class="form-card">
-        <h2>Payout queue</h2>
-        <div id="payouts-list" class="event-list scrollable-list"></div>
-
-        <div id="payouts-pagination" class="pagination" aria-label="Payouts pagination"></div>
+    <!-- Summary Stats -->
+    <section class="admin-users-stats">
+      <!-- PHP: Replace values with dynamic php payouts stats -->
+      <div class="au-stat-card">
+        <span class="au-stat-icon au-stat-icon--brand">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </span>
+        <div class="au-stat-body">
+          <span class="au-stat-num">$24,120</span>
+          <span class="au-stat-lbl">Pending Payouts</span>
+        </div>
+      </div>
+      <div class="au-stat-card">
+        <span class="au-stat-icon au-stat-icon--success">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </span>
+        <div class="au-stat-body">
+          <span class="au-stat-num">12</span>
+          <span class="au-stat-lbl">Hosts Ready</span>
+        </div>
+      </div>
+      <div class="au-stat-card">
+        <span class="au-stat-icon au-stat-icon--warning">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </span>
+        <div class="au-stat-body">
+          <span class="au-stat-num">3</span>
+          <span class="au-stat-lbl">Hosts Flagged</span>
+        </div>
+      </div>
+      <div class="au-stat-card">
+        <span class="au-stat-icon">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </span>
+        <div class="au-stat-body">
+          <span class="au-stat-num">June 12</span>
+          <span class="au-stat-lbl">Next Run Date</span>
+        </div>
       </div>
     </section>
+
+    <!-- Toolbar: Search & Filter -->
+    <section class="admin-users-toolbar">
+      <!-- PHP: form method="GET" action="" to filter server-side -->
+      <form method="GET" action="" class="au-toolbar-form">
+        <div class="au-search-wrap">
+          <svg class="au-search-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input
+            type="search"
+            name="q"
+            id="payouts-search"
+            placeholder="Search by host name, email, or bank details..."
+            aria-label="Search payouts"
+            value=""
+          />
+          <!-- PHP: value="<?= htmlspecialchars($_GET['q'] ?? '') ?>" -->
+        </div>
+        <div class="au-filter-group">
+          <select name="status" id="payouts-status-filter" aria-label="Filter by status">
+            <option value="">All Statuses</option>
+            <option value="ready">Ready to Pay</option>
+            <option value="flagged">Flagged</option>
+            <option value="completed">Processed</option>
+          </select>
+          <!-- PHP: <option value="ready" <?= ($_GET['status'] ?? '') === 'ready' ? 'selected' : '' ?>>Ready to Pay</option> -->
+        </div>
+        <button type="submit" class="admin-action-btn primary">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Filter
+        </button>
+      </form>
+    </section>
+
+    <!-- Payout Queue Section -->
+    <section class="admin-users-table-section">
+      <div class="au-table-header">
+        <h2>Payout Queue</h2>
+        <!-- PHP: href="export-payouts.php?format=csv" -->
+        <a href="#" class="admin-action-btn">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export CSV
+        </a>
+      </div>
+
+      <!-- Desktop Table View -->
+      <div class="au-table-wrap">
+        <table class="au-table">
+          <thead>
+            <tr>
+              <th>Host</th>
+              <th>Bank Account</th>
+              <th>Account Details</th>
+              <th>Pending Amount</th>
+              <th>Status</th>
+              <th class="au-th-actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="payouts-tbody">
+            <!-- PHP: foreach ($payouts as $p): -->
+
+            <tr>
+              <td>
+                <div class="au-user-cell">
+                  <span class="au-avatar" style="--avatar-hue:220">MP</span>
+                  <div>
+                    <span class="au-user-name">Melody Productions</span>
+                    <span class="au-card-email">host@example.com</span>
+                  </div>
+                </div>
+              </td>
+              <td class="au-date-cell">
+                Chase Bank<br />
+                <span style="font-size:0.8rem;color:rgb(var(--muted))">Checking Account</span>
+              </td>
+              <td>
+                <span style="font-family:monospace;font-size:0.9rem">
+                  Acc: ****5678<br />
+                  Rout: 121000248
+                </span>
+              </td>
+              <td>
+                <strong style="color:rgb(var(--text));font-size:0.95rem">$18,640.00</strong>
+              </td>
+              <td><span class="au-status-badge au-status--active">Ready</span></td>
+              <td>
+                <div class="admin-actions">
+                  <!-- PHP: Action forms to trigger payout/flag -->
+                  <button type="button" class="admin-action-btn primary au-process-btn" data-payout-id="1" data-host-name="Melody Productions" data-amount="$18,640.00">
+                    Process Payout
+                  </button>
+                  <button type="button" class="admin-action-btn danger au-flag-btn" data-payout-id="1" data-host-name="Melody Productions">
+                    Flag
+                  </button>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                <div class="au-user-cell">
+                  <span class="au-avatar" style="--avatar-hue:340">SF</span>
+                  <div>
+                    <span class="au-user-name">Sports Club Association</span>
+                    <span class="au-card-email">finance@sportsclub.org</span>
+                  </div>
+                </div>
+              </td>
+              <td class="au-date-cell">
+                Wells Fargo<br />
+                <span style="font-size:0.8rem;color:rgb(var(--muted))">Business Checking</span>
+              </td>
+              <td>
+                <span style="font-family:monospace;font-size:0.9rem">
+                  Acc: ****1122<br />
+                  Rout: 121000248
+                </span>
+              </td>
+              <td>
+                <strong style="color:rgb(var(--text));font-size:0.95rem">$5,480.00</strong>
+              </td>
+              <td><span class="au-status-badge au-status--active">Ready</span></td>
+              <td>
+                <div class="admin-actions">
+                  <button type="button" class="admin-action-btn primary au-process-btn" data-payout-id="2" data-host-name="Sports Club Association" data-amount="$5,480.00">
+                    Process Payout
+                  </button>
+                  <button type="button" class="admin-action-btn danger au-flag-btn" data-payout-id="2" data-host-name="Sports Club Association">
+                    Flag
+                  </button>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                <div class="au-user-cell">
+                  <span class="au-avatar" style="--avatar-hue:30">AG</span>
+                  <div>
+                    <span class="au-user-name">Art Gallery Collective</span>
+                    <span class="au-card-email">artcollective@events.com</span>
+                  </div>
+                </div>
+              </td>
+              <td class="au-date-cell">
+                Bank of America<br />
+                <span style="font-size:0.8rem;color:rgb(var(--muted))">Checking Account</span>
+              </td>
+              <td>
+                <span style="font-family:monospace;font-size:0.9rem">
+                  Acc: ****9012<br />
+                  Rout: 026009593
+                </span>
+              </td>
+              <td>
+                <strong style="color:rgb(var(--text));font-size:0.95rem">$0.00</strong>
+              </td>
+              <td><span class="au-status-badge au-status--suspended">Flagged</span></td>
+              <td>
+                <div class="admin-actions">
+                  <button type="button" class="admin-action-btn primary au-unflag-btn" data-payout-id="3" data-host-name="Art Gallery Collective">
+                    Resolve / Unflag
+                  </button>
+                </div>
+              </td>
+            </tr>
+
+            <!-- PHP: endforeach; -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Mobile Card View -->
+      <div class="au-cards-list" id="payouts-cards">
+        <!-- PHP: foreach ($payouts as $p): -->
+
+        <article class="au-user-card">
+          <div class="au-card-top">
+            <div class="au-user-cell">
+              <span class="au-avatar" style="--avatar-hue:220">MP</span>
+              <div>
+                <span class="au-user-name">Melody Productions</span>
+                <span class="au-card-email">host@example.com</span>
+              </div>
+            </div>
+            <span class="au-status-badge au-status--active">Ready</span>
+          </div>
+          <div class="au-card-meta" style="flex-direction: column; align-items: flex-start; gap: 0.25rem;">
+            <span class="au-card-date">🏦 Chase Bank (****5678)</span>
+            <span style="font-weight:700;font-size:0.9rem;color:rgb(var(--text))">Pending Payout: $18,640.00</span>
+          </div>
+          <div class="admin-actions au-card-actions">
+            <button type="button" class="admin-action-btn primary au-process-btn" data-payout-id="1" data-host-name="Melody Productions" data-amount="$18,640.00">Process Payout</button>
+            <button type="button" class="admin-action-btn danger au-flag-btn" data-payout-id="1" data-host-name="Melody Productions">Flag</button>
+          </div>
+        </article>
+
+        <article class="au-user-card">
+          <div class="au-card-top">
+            <div class="au-user-cell">
+              <span class="au-avatar" style="--avatar-hue:340">SF</span>
+              <div>
+                <span class="au-user-name">Sports Club Association</span>
+                <span class="au-card-email">finance@sportsclub.org</span>
+              </div>
+            </div>
+            <span class="au-status-badge au-status--active">Ready</span>
+          </div>
+          <div class="au-card-meta" style="flex-direction: column; align-items: flex-start; gap: 0.25rem;">
+            <span class="au-card-date">🏦 Wells Fargo (****1122)</span>
+            <span style="font-weight:700;font-size:0.9rem;color:rgb(var(--text))">Pending Payout: $5,480.00</span>
+          </div>
+          <div class="admin-actions au-card-actions">
+            <button type="button" class="admin-action-btn primary au-process-btn" data-payout-id="2" data-host-name="Sports Club Association" data-amount="$5,480.00">Process Payout</button>
+            <button type="button" class="admin-action-btn danger au-flag-btn" data-payout-id="2" data-host-name="Sports Club Association">Flag</button>
+          </div>
+        </article>
+
+        <article class="au-user-card">
+          <div class="au-card-top">
+            <div class="au-user-cell">
+              <span class="au-avatar" style="--avatar-hue:30">AG</span>
+              <div>
+                <span class="au-user-name">Art Gallery Collective</span>
+                <span class="au-card-email">artcollective@events.com</span>
+              </div>
+            </div>
+            <span class="au-status-badge au-status--suspended">Flagged</span>
+          </div>
+          <div class="au-card-meta" style="flex-direction: column; align-items: flex-start; gap: 0.25rem;">
+            <span class="au-card-date">🏦 Bank of America (****9012)</span>
+            <span style="font-weight:700;font-size:0.9rem;color:rgb(var(--text))">Pending Payout: $0.00</span>
+          </div>
+          <div class="admin-actions au-card-actions">
+            <button type="button" class="admin-action-btn primary au-unflag-btn" data-payout-id="3" data-host-name="Art Gallery Collective">Resolve / Unflag</button>
+          </div>
+        </article>
+
+        <!-- PHP: endforeach; -->
+      </div>
+
+      <!-- Empty State -->
+      <div id="payouts-empty" class="empty-state hidden">
+        <p>No payout accounts found matching your search.</p>
+      </div>
+
+      <!-- Pagination -->
+      <nav class="au-pagination" aria-label="Payouts pagination" id="payouts-pagination">
+        <a href="?page=1" class="au-page-btn disabled" aria-disabled="true">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          Prev
+        </a>
+        <span class="au-page-num active" aria-current="page">1</span>
+        <a href="?page=2" class="au-page-num">2</a>
+        <a href="?page=2" class="au-page-btn">
+          Next
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </a>
+      </nav>
+    </section>
+
+    <!-- Confirm Process Payout Modal -->
+    <div class="modal-overlay hidden" id="process-modal" role="dialog" aria-modal="true" aria-labelledby="process-modal-title">
+      <div class="modal-card">
+        <h3 id="process-modal-title">Process Payout</h3>
+        <p>Are you sure you want to disburse <strong id="process-payout-amount">$0.00</strong> to <strong id="process-host-name">this host</strong>? This will transfer funds to their registered bank details via the active gateway.</p>
+        <!-- PHP: form action="admin-payouts.php" method="POST" -->
+        <form method="POST" action="">
+          <input type="hidden" name="action" value="process_payout" />
+          <input type="hidden" name="payout_id" id="process-payout-id" value="" />
+          <div class="modal-actions">
+            <button type="button" class="admin-action-btn" id="process-cancel-btn">Cancel</button>
+            <button type="submit" class="admin-action-btn primary">Disburse Funds</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Confirm Flag Host Payout Modal -->
+    <div class="modal-overlay hidden" id="flag-modal" role="dialog" aria-modal="true" aria-labelledby="flag-modal-title">
+      <div class="modal-card">
+        <h3 id="flag-modal-title">Flag Payout Account</h3>
+        <p>Are you sure you want to flag <strong id="flag-host-name">this host</strong>'s payout account? All pending disbursements will be frozen until resolved.</p>
+        <form method="POST" action="">
+          <input type="hidden" name="action" value="flag_account" />
+          <input type="hidden" name="payout_id" id="flag-payout-id" value="" />
+          <div class="modal-actions">
+            <button type="button" class="admin-action-btn" id="flag-cancel-btn">Cancel</button>
+            <button type="submit" class="admin-action-btn danger">Yes, Flag Account</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Confirm Resolve / Unflag Host Modal -->
+    <div class="modal-overlay hidden" id="unflag-modal" role="dialog" aria-modal="true" aria-labelledby="unflag-modal-title">
+      <div class="modal-card">
+        <h3 id="unflag-modal-title">Resolve Payout Issue</h3>
+        <p>Are you sure you want to resolve the hold on <strong id="unflag-host-name">this host</strong>'s account? Their status will be restored to "Ready".</p>
+        <form method="POST" action="">
+          <input type="hidden" name="action" value="unflag_account" />
+          <input type="hidden" name="payout_id" id="unflag-payout-id" value="" />
+          <div class="modal-actions">
+            <button type="button" class="admin-action-btn" id="unflag-cancel-btn">Cancel</button>
+            <button type="submit" class="admin-action-btn primary">Resolve Hold</button>
+          </div>
+        </form>
+      </div>
+    </div>
   </main>
 
   <footer class="footer">
@@ -121,7 +438,7 @@
       <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z" fill="currentColor"/></svg>
       <span>Teams</span>
     </a>
-    <a href="admin-settings.html" class="nav-item nav-link active" data-nav-index="3" aria-current="true">
+    <a href="admin-settings.html" class="nav-item nav-link" data-nav-index="3">
       <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" fill="currentColor"/></svg>
       <span>Settings</span>
     </a>

@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="mobile-web-app-capable" content="yes" />
   <title>Admin — Users</title>
-  <meta name="description" content="View registered user accounts and organizer profiles." />
+  <meta name="description" content="View and manage registered user accounts and organizer profiles." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
@@ -19,7 +19,7 @@
     <button id="admin-mobile-menu" class="mobile-menu-btn" aria-label="Open menu" aria-expanded="false">☰</button>
     <nav class="nav-desktop" role="navigation" aria-label="Top navigation">
       <a href="admin.html" class="nav-link">Overview</a>
-      <a href="admin-users.html" class="nav-link">Users</a>
+      <a href="admin-users.html" class="nav-link active">Users</a>
       <a href="admin-events.html" class="nav-link">Events</a>
       <a href="admin-payouts.html" class="nav-link">Payouts</a>
       <a href="admin-settings.html" class="nav-link">Settings</a>
@@ -32,18 +32,469 @@
     <section class="page-hero">
       <div>
         <span class="panel-badge">Admin — Users</span>
-        <h1>Registered accounts</h1>
-        <p class="lede">List of all registered users and organizer profiles.</p>
+        <h1>Registered Accounts</h1>
+        <p class="lede">View and manage all registered users and organizer profiles.</p>
       </div>
     </section>
 
-    <section>
-      <div class="form-card">
-        <h2>Users</h2>
-        <div id="users-list" class="event-list scrollable-list"></div>
-        <div id="users-pagination" class="pagination" aria-label="Users pagination"></div>
+    <!-- Summary Stats -->
+    <section class="admin-users-stats">
+      <!-- PHP: Replace values with <?= $total_users ?>, <?= $total_hosts ?>, etc. -->
+      <div class="au-stat-card">
+        <span class="au-stat-icon">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+        </span>
+        <div class="au-stat-body">
+          <span class="au-stat-num">1,248</span>
+          <span class="au-stat-lbl">Total Users</span>
+        </div>
+      </div>
+      <div class="au-stat-card">
+        <span class="au-stat-icon au-stat-icon--brand">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6"/><path d="M23 11h-6"/></svg>
+        </span>
+        <div class="au-stat-body">
+          <span class="au-stat-num">87</span>
+          <span class="au-stat-lbl">Hosts / Organizers</span>
+        </div>
+      </div>
+      <div class="au-stat-card">
+        <span class="au-stat-icon au-stat-icon--success">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </span>
+        <div class="au-stat-body">
+          <span class="au-stat-num">1,161</span>
+          <span class="au-stat-lbl">Verified Accounts</span>
+        </div>
+      </div>
+      <div class="au-stat-card">
+        <span class="au-stat-icon au-stat-icon--warning">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </span>
+        <div class="au-stat-body">
+          <span class="au-stat-num">14</span>
+          <span class="au-stat-lbl">Suspended</span>
+        </div>
       </div>
     </section>
+
+    <!-- Toolbar: Search & Filter -->
+    <section class="admin-users-toolbar">
+      <!-- PHP: form method="GET" action="" to filter server-side -->
+      <form method="GET" action="" class="au-toolbar-form">
+        <div class="au-search-wrap">
+          <svg class="au-search-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input
+            type="search"
+            name="q"
+            id="users-search"
+            placeholder="Search by name or email..."
+            aria-label="Search users"
+            value=""
+          />
+          <!-- PHP: value="<?= htmlspecialchars($_GET['q'] ?? '') ?>" -->
+        </div>
+        <div class="au-filter-group">
+          <select name="role" id="users-role-filter" aria-label="Filter by role">
+            <option value="">All Roles</option>
+            <option value="attendee">Attendee</option>
+            <option value="host">Host / Organizer</option>
+            <option value="admin">Admin</option>
+          </select>
+          <!-- PHP: <option value="host" <?= ($_GET['role'] ?? '') === 'host' ? 'selected' : '' ?>>Host</option> -->
+
+          <select name="status" id="users-status-filter" aria-label="Filter by status">
+            <option value="">All Statuses</option>
+            <option value="active">Active</option>
+            <option value="suspended">Suspended</option>
+            <option value="unverified">Unverified</option>
+          </select>
+        </div>
+        <button type="submit" class="admin-action-btn primary">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Filter
+        </button>
+      </form>
+    </section>
+
+    <!-- Users Table -->
+    <section class="admin-users-table-section">
+      <div class="au-table-header">
+        <h2>Users</h2>
+        <!-- PHP: href="export-users.php?format=csv" -->
+        <a href="#" class="admin-action-btn">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export CSV
+        </a>
+      </div>
+
+      <!-- Desktop Table View -->
+      <div class="au-table-wrap">
+        <table class="au-table" id="users-table">
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Status</th>
+              <th>Joined</th>
+              <th class="au-th-actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="users-tbody">
+            <!-- PHP: foreach ($users as $user): -->
+
+            <tr>
+              <td>
+                <div class="au-user-cell">
+                  <span class="au-avatar" style="--avatar-hue:160">JS</span>
+                  <!-- PHP: initials from <?= $user['first_name'][0] . $user['last_name'][0] ?> -->
+                  <span class="au-user-name">John Smith</span>
+                </div>
+              </td>
+              <td class="au-email-cell">john.smith@example.com</td>
+              <td><span class="au-role-badge au-role--attendee">Attendee</span></td>
+              <td><span class="au-status-badge au-status--active">Active</span></td>
+              <td class="au-date-cell">Jun 12, 2026</td>
+              <td>
+                <div class="admin-actions">
+                  <!-- PHP: href="admin-user-detail.php?id=<?= $user['id'] ?>" -->
+                  <a href="#" class="admin-action-btn" title="View user details">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    View
+                  </a>
+                  <!-- PHP: href="admin-users.php?action=suspend&id=<?= $user['id'] ?>" -->
+                  <button type="button" class="admin-action-btn danger au-suspend-btn" data-user-id="1" data-user-name="John Smith">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+                    Suspend
+                  </button>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                <div class="au-user-cell">
+                  <span class="au-avatar" style="--avatar-hue:220">EJ</span>
+                  <span class="au-user-name">Emma Johnson</span>
+                </div>
+              </td>
+              <td class="au-email-cell">emma.j@example.com</td>
+              <td><span class="au-role-badge au-role--host">Host</span></td>
+              <td><span class="au-status-badge au-status--active">Active</span></td>
+              <td class="au-date-cell">May 28, 2026</td>
+              <td>
+                <div class="admin-actions">
+                  <a href="#" class="admin-action-btn" title="View user details">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    View
+                  </a>
+                  <button type="button" class="admin-action-btn danger au-suspend-btn" data-user-id="2" data-user-name="Emma Johnson">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+                    Suspend
+                  </button>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                <div class="au-user-cell">
+                  <span class="au-avatar" style="--avatar-hue:30">MD</span>
+                  <span class="au-user-name">Marcus Davis</span>
+                </div>
+              </td>
+              <td class="au-email-cell">marcus.d@example.com</td>
+              <td><span class="au-role-badge au-role--admin">Admin</span></td>
+              <td><span class="au-status-badge au-status--active">Active</span></td>
+              <td class="au-date-cell">Jan 05, 2026</td>
+              <td>
+                <div class="admin-actions">
+                  <a href="#" class="admin-action-btn" title="View user details">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    View
+                  </a>
+                  <button type="button" class="admin-action-btn danger au-suspend-btn" data-user-id="3" data-user-name="Marcus Davis">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+                    Suspend
+                  </button>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                <div class="au-user-cell">
+                  <span class="au-avatar" style="--avatar-hue:280">SA</span>
+                  <span class="au-user-name">Sarah Adebayo</span>
+                </div>
+              </td>
+              <td class="au-email-cell">sarah.ade@example.com</td>
+              <td><span class="au-role-badge au-role--host">Host</span></td>
+              <td><span class="au-status-badge au-status--suspended">Suspended</span></td>
+              <td class="au-date-cell">Apr 14, 2026</td>
+              <td>
+                <div class="admin-actions">
+                  <a href="#" class="admin-action-btn" title="View user details">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    View
+                  </a>
+                  <!-- Show Reactivate instead of Suspend for suspended users -->
+                  <button type="button" class="admin-action-btn primary au-reactivate-btn" data-user-id="4" data-user-name="Sarah Adebayo">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+                    Reactivate
+                  </button>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                <div class="au-user-cell">
+                  <span class="au-avatar" style="--avatar-hue:90">LW</span>
+                  <span class="au-user-name">Liam Williams</span>
+                </div>
+              </td>
+              <td class="au-email-cell">liam.w@example.com</td>
+              <td><span class="au-role-badge au-role--attendee">Attendee</span></td>
+              <td><span class="au-status-badge au-status--unverified">Unverified</span></td>
+              <td class="au-date-cell">Jun 29, 2026</td>
+              <td>
+                <div class="admin-actions">
+                  <a href="#" class="admin-action-btn" title="View user details">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    View
+                  </a>
+                  <button type="button" class="admin-action-btn danger au-suspend-btn" data-user-id="5" data-user-name="Liam Williams">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+                    Suspend
+                  </button>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                <div class="au-user-cell">
+                  <span class="au-avatar" style="--avatar-hue:340">ON</span>
+                  <span class="au-user-name">Olivia Nwosu</span>
+                </div>
+              </td>
+              <td class="au-email-cell">olivia.n@example.com</td>
+              <td><span class="au-role-badge au-role--attendee">Attendee</span></td>
+              <td><span class="au-status-badge au-status--active">Active</span></td>
+              <td class="au-date-cell">Jun 20, 2026</td>
+              <td>
+                <div class="admin-actions">
+                  <a href="#" class="admin-action-btn" title="View user details">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    View
+                  </a>
+                  <button type="button" class="admin-action-btn danger au-suspend-btn" data-user-id="6" data-user-name="Olivia Nwosu">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+                    Suspend
+                  </button>
+                </div>
+              </td>
+            </tr>
+
+            <!-- PHP: endforeach; -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Mobile Card View (hidden on desktop, shown on mobile) -->
+      <div class="au-cards-list" id="users-cards">
+        <!-- PHP: foreach ($users as $user): -->
+
+        <article class="au-user-card">
+          <div class="au-card-top">
+            <div class="au-user-cell">
+              <span class="au-avatar" style="--avatar-hue:160">JS</span>
+              <div>
+                <span class="au-user-name">John Smith</span>
+                <span class="au-card-email">john.smith@example.com</span>
+              </div>
+            </div>
+            <span class="au-status-badge au-status--active">Active</span>
+          </div>
+          <div class="au-card-meta">
+            <span class="au-role-badge au-role--attendee">Attendee</span>
+            <span class="au-card-date">Joined Jun 12, 2026</span>
+          </div>
+          <div class="admin-actions au-card-actions">
+            <a href="#" class="admin-action-btn">View</a>
+            <button type="button" class="admin-action-btn danger au-suspend-btn" data-user-id="1" data-user-name="John Smith">Suspend</button>
+          </div>
+        </article>
+
+        <article class="au-user-card">
+          <div class="au-card-top">
+            <div class="au-user-cell">
+              <span class="au-avatar" style="--avatar-hue:220">EJ</span>
+              <div>
+                <span class="au-user-name">Emma Johnson</span>
+                <span class="au-card-email">emma.j@example.com</span>
+              </div>
+            </div>
+            <span class="au-status-badge au-status--active">Active</span>
+          </div>
+          <div class="au-card-meta">
+            <span class="au-role-badge au-role--host">Host</span>
+            <span class="au-card-date">Joined May 28, 2026</span>
+          </div>
+          <div class="admin-actions au-card-actions">
+            <a href="#" class="admin-action-btn">View</a>
+            <button type="button" class="admin-action-btn danger au-suspend-btn" data-user-id="2" data-user-name="Emma Johnson">Suspend</button>
+          </div>
+        </article>
+
+        <article class="au-user-card">
+          <div class="au-card-top">
+            <div class="au-user-cell">
+              <span class="au-avatar" style="--avatar-hue:30">MD</span>
+              <div>
+                <span class="au-user-name">Marcus Davis</span>
+                <span class="au-card-email">marcus.d@example.com</span>
+              </div>
+            </div>
+            <span class="au-status-badge au-status--active">Active</span>
+          </div>
+          <div class="au-card-meta">
+            <span class="au-role-badge au-role--admin">Admin</span>
+            <span class="au-card-date">Joined Jan 05, 2026</span>
+          </div>
+          <div class="admin-actions au-card-actions">
+            <a href="#" class="admin-action-btn">View</a>
+            <button type="button" class="admin-action-btn danger au-suspend-btn" data-user-id="3" data-user-name="Marcus Davis">Suspend</button>
+          </div>
+        </article>
+
+        <article class="au-user-card">
+          <div class="au-card-top">
+            <div class="au-user-cell">
+              <span class="au-avatar" style="--avatar-hue:280">SA</span>
+              <div>
+                <span class="au-user-name">Sarah Adebayo</span>
+                <span class="au-card-email">sarah.ade@example.com</span>
+              </div>
+            </div>
+            <span class="au-status-badge au-status--suspended">Suspended</span>
+          </div>
+          <div class="au-card-meta">
+            <span class="au-role-badge au-role--host">Host</span>
+            <span class="au-card-date">Joined Apr 14, 2026</span>
+          </div>
+          <div class="admin-actions au-card-actions">
+            <a href="#" class="admin-action-btn">View</a>
+            <button type="button" class="admin-action-btn primary au-reactivate-btn" data-user-id="4" data-user-name="Sarah Adebayo">Reactivate</button>
+          </div>
+        </article>
+
+        <article class="au-user-card">
+          <div class="au-card-top">
+            <div class="au-user-cell">
+              <span class="au-avatar" style="--avatar-hue:90">LW</span>
+              <div>
+                <span class="au-user-name">Liam Williams</span>
+                <span class="au-card-email">liam.w@example.com</span>
+              </div>
+            </div>
+            <span class="au-status-badge au-status--unverified">Unverified</span>
+          </div>
+          <div class="au-card-meta">
+            <span class="au-role-badge au-role--attendee">Attendee</span>
+            <span class="au-card-date">Joined Jun 29, 2026</span>
+          </div>
+          <div class="admin-actions au-card-actions">
+            <a href="#" class="admin-action-btn">View</a>
+            <button type="button" class="admin-action-btn danger au-suspend-btn" data-user-id="5" data-user-name="Liam Williams">Suspend</button>
+          </div>
+        </article>
+
+        <article class="au-user-card">
+          <div class="au-card-top">
+            <div class="au-user-cell">
+              <span class="au-avatar" style="--avatar-hue:340">ON</span>
+              <div>
+                <span class="au-user-name">Olivia Nwosu</span>
+                <span class="au-card-email">olivia.n@example.com</span>
+              </div>
+            </div>
+            <span class="au-status-badge au-status--active">Active</span>
+          </div>
+          <div class="au-card-meta">
+            <span class="au-role-badge au-role--attendee">Attendee</span>
+            <span class="au-card-date">Joined Jun 20, 2026</span>
+          </div>
+          <div class="admin-actions au-card-actions">
+            <a href="#" class="admin-action-btn">View</a>
+            <button type="button" class="admin-action-btn danger au-suspend-btn" data-user-id="6" data-user-name="Olivia Nwosu">Suspend</button>
+          </div>
+        </article>
+
+        <!-- PHP: endforeach; -->
+      </div>
+
+      <!-- Empty State (shown when no users match) -->
+      <!-- PHP: if (empty($users)): -->
+      <div id="users-empty" class="empty-state hidden">
+        <p>No users found matching your criteria.</p>
+      </div>
+      <!-- PHP: endif; -->
+
+      <!-- Pagination -->
+      <!-- PHP: Server-side pagination links -->
+      <nav class="au-pagination" aria-label="Users pagination" id="users-pagination">
+        <!-- PHP: Generate links like <a href="?page=1&q=...&role=..."> -->
+        <a href="?page=1" class="au-page-btn disabled" aria-disabled="true">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          Prev
+        </a>
+        <span class="au-page-num active" aria-current="page">1</span>
+        <a href="?page=2" class="au-page-num">2</a>
+        <a href="?page=3" class="au-page-num">3</a>
+        <span class="au-page-ellipsis">…</span>
+        <a href="?page=12" class="au-page-num">12</a>
+        <a href="?page=2" class="au-page-btn">
+          Next
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </a>
+      </nav>
+    </section>
+
+    <!-- Confirm Suspend Modal -->
+    <div class="modal-overlay hidden" id="suspend-modal" role="dialog" aria-modal="true" aria-labelledby="suspend-modal-title">
+      <div class="modal-card">
+        <h3 id="suspend-modal-title">Suspend User</h3>
+        <p>Are you sure you want to suspend <strong id="suspend-user-name">this user</strong>? They will not be able to log in until reactivated.</p>
+        <!-- PHP: form action="admin-users.php" method="POST" -->
+        <form method="POST" action="">
+          <input type="hidden" name="action" value="suspend" />
+          <input type="hidden" name="user_id" id="suspend-user-id" value="" />
+          <div class="modal-actions">
+            <button type="button" class="admin-action-btn" id="suspend-cancel-btn">Cancel</button>
+            <button type="submit" class="admin-action-btn danger">Yes, Suspend</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Confirm Reactivate Modal -->
+    <div class="modal-overlay hidden" id="reactivate-modal" role="dialog" aria-modal="true" aria-labelledby="reactivate-modal-title">
+      <div class="modal-card">
+        <h3 id="reactivate-modal-title">Reactivate User</h3>
+        <p>Are you sure you want to reactivate <strong id="reactivate-user-name">this user</strong>?</p>
+        <form method="POST" action="">
+          <input type="hidden" name="action" value="reactivate" />
+          <input type="hidden" name="user_id" id="reactivate-user-id" value="" />
+          <div class="modal-actions">
+            <button type="button" class="admin-action-btn" id="reactivate-cancel-btn">Cancel</button>
+            <button type="submit" class="admin-action-btn primary">Yes, Reactivate</button>
+          </div>
+        </form>
+      </div>
+    </div>
   </main>
 
   <footer class="footer">
@@ -97,7 +548,7 @@
       <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z" fill="currentColor"/></svg>
       <span>Teams</span>
     </a>
-    <a href="admin-settings.html" class="nav-item nav-link active" data-nav-index="3" aria-current="true">
+    <a href="admin-settings.html" class="nav-item nav-link" data-nav-index="3">
       <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" fill="currentColor"/></svg>
       <span>Settings</span>
     </a>

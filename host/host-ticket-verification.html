@@ -38,158 +38,227 @@
       </div>
     </section>
 
-    <div class="ticket-verification-container">
-      <!-- Event Selection -->
-      <section class="form-card">
-        <h2>Select Your Event</h2>
-        <div class="form-group">
-          <label for="event-select">Choose an event:</label>
-          <select id="event-select" aria-label="Select event">
-            <option value="">-- Select Event --</option>
-          </select>
-        </div>
-        <div id="event-stats" class="event-stats" style="display:none;">
-          <div class="stat">
-            <span class="stat-label">Event:</span>
-            <span id="selected-event-name" class="stat-value"></span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Total Tickets:</span>
-            <span id="total-tickets-count" class="stat-value">0</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Verified:</span>
-            <span id="verified-tickets-count" class="stat-value">0</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Remaining:</span>
-            <span id="remaining-tickets-count" class="stat-value">0</span>
-          </div>
-        </div>
-      </section>
-
-      <!-- Ticket Verification -->
-      <section class="form-card" id="verification-section" style="display:none;">
-        <h2>Verify Ticket</h2>
+    <div class="ticket-verification-layout">
+      
+      <!-- Left Column: Settings, Stats, and Verification Actions -->
+      <div class="verification-main-panel">
         
-        <div class="scanner-toggle">
-          <button id="toggle-scanner-btn" class="btn-secondary" title="Toggle camera scanner">📷 Use Scanner</button>
-          <button id="toggle-manual-input-btn" class="btn-secondary" style="display:none;" title="Switch to manual entry">⌨️ Manual Entry</button>
-        </div>
-
-        <!-- Scanner View -->
-        <div id="scanner-view" style="display:none;" class="scanner-container">
-          <div id="qr-scanner" class="qr-scanner"></div>
-          <div class="scanner-info">
-            <p>Point your camera at a barcode or QR code</p>
-            <small>Make sure the code is clearly visible in the frame</small>
-          </div>
-          <div id="scanner-status" class="scanner-status"></div>
-        </div>
-
-        <!-- Manual Input View -->
-        <div id="manual-input-view" class="form-group">
-          <label for="ticket-code-input">Scan or enter ticket code:</label>
-          <div class="input-action-group">
-            <input 
-              id="ticket-code-input" 
-              type="text" 
-              placeholder="Scan ticket barcode or enter code..." 
-              autocomplete="off"
-              aria-label="Ticket code input"
-            />
-            <button id="verify-ticket-btn" class="btn-primary">Verify</button>
-          </div>
-          <small class="form-hint">Use a barcode scanner or manually enter the ticket code</small>
-        </div>
-        
-        <div id="verification-result" class="verification-result" style="display:none;">
-          <!-- Success Ticket Card Template -->
-          <div id="ticket-success-card" class="ticket-display-card ticket-verified" style="display:none;">
-            <div class="ticket-card-header">
-              <div>
-                <div class="ticket-event-name" id="ticket-success-event-title">Event Title</div>
-                <div class="ticket-event-meta" id="ticket-success-event-location">Venue · City</div>
-              </div>
-              <span class="ticket-status-badge badge-verified">✓ Verified</span>
+        <!-- Event Selection & Metrics -->
+        <section class="form-card">
+          <h2>Select Event</h2>
+          <form id="event-select-form" method="GET" action="">
+            <div class="form-group">
+              <label for="event-select">Active Event:</label>
+              <select id="event-select" name="event_id" onchange="this.form.submit()" aria-label="Select event">
+                <!-- PHP: foreach ($events as $event): -->
+                <!-- <option value="<?= $event['id'] ?>" <?= $event['id'] == $selected_event_id ? 'selected' : '' ?>><?= htmlspecialchars($event['title']) ?></option> -->
+                <!-- PHP: endforeach; -->
+                <option value="">-- Select Event --</option>
+                <option value="1" selected>Summer Beats Festival (Aug 21)</option>
+                <option value="2">Broadway Nights (Sep 12)</option>
+                <option value="3">Championship Game (Oct 3)</option>
+              </select>
+              <noscript><button type="submit" class="btn-secondary" style="margin-top: 0.5rem; width: 100%;">Select Event</button></noscript>
             </div>
-            <hr class="ticket-perforation" />
-            <div class="ticket-card-body">
-              <div class="ticket-attendee-row">
-                <div class="ticket-avatar" id="ticket-success-avatar">AB</div>
-                <div class="ticket-attendee-info">
-                  <h3 id="ticket-success-attendee-name">Attendee Name</h3>
-                  <p id="ticket-success-ticket-type">General Ticket</p>
-                </div>
-              </div>
-              <div class="ticket-details-grid">
-                <div class="ticket-detail-item">
-                  <div class="detail-label">Ticket Code</div>
-                  <div class="detail-value" id="ticket-success-code">SBF001</div>
-                </div>
-                <div class="ticket-detail-item">
-                  <div class="detail-label">Event Date</div>
-                  <div class="detail-value" id="ticket-success-date">Aug 21</div>
-                </div>
-                <div class="ticket-detail-item">
-                  <div class="detail-label">Verified At</div>
-                  <div class="detail-value" id="ticket-success-time">12:00:00 PM</div>
-                </div>
-                <div class="ticket-detail-item">
-                  <div class="detail-label">Check-in Date</div>
-                  <div class="detail-value" id="ticket-success-checkin-date">Jun 12</div>
-                </div>
-              </div>
+          </form>
+
+          <!-- Metrics Dashboard -->
+          <div id="event-stats" class="verification-stats-row">
+            <div class="verification-stat-card">
+              <span class="lbl">Total Capacity</span>
+              <span id="total-tickets-count" class="num">500</span>
             </div>
-            <div class="ticket-barcode-section">
-              <div class="ticket-barcode" id="ticket-success-barcode"></div>
-              <div class="ticket-barcode-code" id="ticket-success-barcode-code">SBF001</div>
+            <div class="verification-stat-card">
+              <span class="lbl">Checked In</span>
+              <span id="verified-tickets-count" class="num">342</span>
+            </div>
+            <div class="verification-stat-card">
+              <span class="lbl">Remaining</span>
+              <span id="remaining-tickets-count" class="num">158</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Verification Panel -->
+        <section class="form-card" id="verification-section">
+          <div class="section-title-row">
+            <h2>Scan &amp; Verify</h2>
+            <div class="scanner-toggle">
+              <button type="button" id="toggle-scanner-btn" class="btn-secondary" title="Use Camera Scanner">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle;margin-right:4px;"><path d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Camera Scanner
+              </button>
+              <button type="button" id="toggle-manual-input-btn" class="btn-secondary hidden" title="Use Manual Entry">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle;margin-right:4px;"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Manual Entry
+              </button>
             </div>
           </div>
 
-          <!-- Error Ticket Card Template -->
-          <div id="ticket-error-card" class="ticket-display-card ticket-error" style="display:none;">
-            <div class="ticket-card-header">
-              <div>
-                <div class="ticket-event-name" id="ticket-error-event-title">Verification Error</div>
-                <div class="ticket-event-meta" id="ticket-error-event-location">Venue · City</div>
-              </div>
-              <span class="ticket-status-badge badge-invalid" id="ticket-error-badge">Invalid</span>
+          <!-- Camera Scanner View -->
+          <div id="scanner-view" class="scanner-container hidden">
+            <div class="scanner-preview-wrapper">
+              <div id="qr-scanner" class="qr-scanner"></div>
             </div>
-            <div class="ticket-error-card">
-              <span class="ticket-error-icon" id="ticket-error-icon">❌</span>
-              <h3 id="ticket-error-title">Invalid Ticket</h3>
-              <p id="ticket-error-message">Error message details go here</p>
+            <div class="scanner-info">
+              <p>Point device camera at a ticket QR code</p>
+              <small>Align code within the camera scanner frame</small>
             </div>
+            <div id="scanner-status" class="scanner-status"></div>
           </div>
 
-          <button id="clear-result-btn" class="btn-secondary">Clear</button>
+          <!-- Manual Code Entry View -->
+          <div id="manual-input-view" class="form-group">
+            <form id="manual-verify-form" method="POST" action="">
+              <label for="ticket-code-input">Scan or enter ticket code:</label>
+              <div class="input-action-group">
+                <input 
+                  id="ticket-code-input" 
+                  name="ticket_code"
+                  type="text" 
+                  placeholder="Enter alphanumeric code..." 
+                  required
+                  autocomplete="off"
+                  aria-label="Ticket code input"
+                />
+                <button type="submit" id="verify-ticket-btn" class="btn-primary">Verify</button>
+              </div>
+              <small class="form-hint">Submit to trigger server check-in validation</small>
+            </form>
+          </div>
+
+          <!-- Verification Result display container (PHP condition placeholder) -->
+          <!-- PHP: if (isset($verification_status)): -->
+          <div id="verification-result" class="verification-result">
+            
+            <!-- Success Ticket Card Template -->
+            <div id="ticket-success-card" class="ticket-display-card ticket-verified">
+              <div class="ticket-card-header">
+                <div>
+                  <div class="ticket-event-name" id="ticket-success-event-title">Summer Beats Festival</div>
+                  <div class="ticket-event-meta" id="ticket-success-event-location">Central Park · New York</div>
+                </div>
+                <span class="ticket-status-badge badge-verified">✓ Checked In</span>
+              </div>
+              <hr class="ticket-perforation" />
+              <div class="ticket-card-body">
+                <div class="ticket-attendee-row">
+                  <div class="ticket-avatar" id="ticket-success-avatar">JD</div>
+                  <div class="ticket-attendee-info">
+                    <h3 id="ticket-success-attendee-name">Jane Doe</h3>
+                    <p id="ticket-success-ticket-type">General Admission Ticket</p>
+                  </div>
+                </div>
+                <div class="ticket-details-grid">
+                  <div class="ticket-detail-item">
+                    <div class="detail-label">Ticket Code</div>
+                    <div class="detail-value" id="ticket-success-code">SBF-001</div>
+                  </div>
+                  <div class="ticket-detail-item">
+                    <div class="detail-label">Event Date</div>
+                    <div class="detail-value" id="ticket-success-date">Aug 21</div>
+                  </div>
+                  <div class="ticket-detail-item">
+                    <div class="detail-label">Verified At</div>
+                    <div class="detail-value" id="ticket-success-time">02:15 PM</div>
+                  </div>
+                  <div class="ticket-detail-item">
+                    <div class="detail-label">Check-in Date</div>
+                    <div class="detail-value" id="ticket-success-checkin-date">Jun 30</div>
+                  </div>
+                </div>
+              </div>
+              <div class="ticket-barcode-section">
+                <div class="ticket-barcode" id="ticket-success-barcode">
+                  <!-- Decorative barcode visual generated dynamically by JS / PHP -->
+                  <span style="height:25px;width:3px"></span>
+                  <span style="height:20px;width:2px"></span>
+                  <span style="height:28px;width:3px"></span>
+                  <span style="height:22px;width:1px"></span>
+                  <span style="height:24px;width:2px"></span>
+                  <span style="height:26px;width:3px"></span>
+                </div>
+                <div class="ticket-barcode-code" id="ticket-success-barcode-code">SBF-001</div>
+              </div>
+            </div>
+
+            <!-- Error Ticket Card Template (Hidden by default in static view) -->
+            <div id="ticket-error-card" class="ticket-display-card ticket-error hidden">
+              <div class="ticket-card-header">
+                <div>
+                  <div class="ticket-event-name" id="ticket-error-event-title">Verification Warning</div>
+                  <div class="ticket-event-meta" id="ticket-error-event-location">Central Park · New York</div>
+                </div>
+                <span class="ticket-status-badge badge-invalid" id="ticket-error-badge">Duplicate</span>
+              </div>
+              <div class="ticket-error-card">
+                <span class="ticket-error-icon" id="ticket-error-icon">⚠️</span>
+                <h3 id="ticket-error-title">Duplicate Scan</h3>
+                <p id="ticket-error-message">This ticket code SBF-001 has already been verified today at 02:15 PM.</p>
+              </div>
+            </div>
+
+            <button type="button" id="clear-result-btn" class="btn-secondary">Clear Result</button>
+          </div>
+          <!-- PHP: endif; -->
+
+          <div id="no-event-message" class="empty-state hidden">
+            <p>Please select an active event to start check-in.</p>
+          </div>
+        </section>
+      </div>
+
+      <!-- Right Column: Checked-In Log list -->
+      <aside class="verification-side-log" id="tickets-log-section">
+        <div class="log-header-row">
+          <h2>Checked In Log</h2>
+          <!-- PHP: link dynamically, e.g. href="export-log.php?event_id=<?= $selected_event_id ?>" -->
+          <a href="export-log.php?event_id=1" id="export-log-btn" class="btn-secondary log-export-btn">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle;margin-right:4px;"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Export
+          </a>
         </div>
 
-        <div id="no-event-message" class="empty-state">
-          <p>Select an event above to start verifying tickets</p>
-        </div>
-      </section>
-
-      <!-- Verified Tickets Log -->
-      <section class="form-card" id="tickets-log-section" style="display:none;">
-        <h2>Verified Tickets Today</h2>
         <div class="tickets-log-controls">
           <div class="search-box">
             <input 
               id="search-verified-tickets" 
               type="text" 
-              placeholder="Search by attendee name or ticket code..." 
-              aria-label="Search verified tickets"
+              placeholder="Search attendee or code..." 
+              aria-label="Search checked-in log"
             />
           </div>
-          <button id="export-log-btn" class="btn-secondary">Export Log</button>
         </div>
-        <div id="verified-tickets-list" class="verified-tickets-list scrollable-list"></div>
-        <div id="empty-log" class="empty-state">
-          <p>No tickets verified yet</p>
+
+        <!-- Checked in list scrolling block -->
+        <div id="verified-tickets-list" class="verified-tickets-list scrollable-list log-scroll-area">
+          <!-- PHP: foreach ($verified_tickets as $ticket): -->
+          <article class="verified-ticket-item" data-code="SBF001">
+            <div class="ticket-info">
+              <h4>John Smith</h4>
+              <p class="ticket-meta">Code: <strong>SBF001</strong> | General Admission</p>
+              <p class="ticket-time">Checked in at 01:45 PM</p>
+            </div>
+            <!-- PHP: Action form or link to remove check-in status -->
+            <button class="btn-icon remove-checkin-btn" aria-label="Remove check-in status" onclick="removeVerifiedTicket('SBF001')">✕</button>
+          </article>
+
+          <article class="verified-ticket-item" data-code="SBF002">
+            <div class="ticket-info">
+              <h4>Emma Johnson</h4>
+              <p class="ticket-meta">Code: <strong>SBF002</strong> | VIP Admission</p>
+              <p class="ticket-time">Checked in at 02:02 PM</p>
+            </div>
+            <button class="btn-icon remove-checkin-btn" aria-label="Remove check-in status" onclick="removeVerifiedTicket('SBF002')">✕</button>
+          </article>
+          <!-- PHP: endforeach; -->
         </div>
-      </section>
+
+        <div id="empty-log" class="empty-state hidden">
+          <p>No attendees checked in yet today.</p>
+        </div>
+      </aside>
+
     </div>
   </main>
 

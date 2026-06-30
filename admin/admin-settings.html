@@ -22,7 +22,7 @@
       <a href="admin-users.html" class="nav-link">Users</a>
       <a href="admin-events.html" class="nav-link">Events</a>
       <a href="admin-payouts.html" class="nav-link">Payouts</a>
-      <a href="admin-settings.html" class="nav-link">Settings</a>
+      <a href="admin-settings.html" class="nav-link active">Settings</a>
       <a href="admin-teams.html" class="nav-link">Teams</a>
       <button id="theme-toggle" data-theme-toggle="true" aria-label="Toggle theme" aria-pressed="false">🌓</button>
     </nav>
@@ -32,45 +32,89 @@
     <section class="page-hero">
       <div>
         <span class="panel-badge">Admin — Settings</span>
-        <h1>Admin settings</h1>
-        <p class="lede">Basic site settings and feature toggles (mock).</p>
+        <h1>Admin Settings</h1>
+        <p class="lede">Configure general site options, payment gateway configurations, and maintenance toggles.</p>
       </div>
     </section>
 
-    <section style="display:grid; gap:1.5rem;">
-      <div class="form-card">
-        <h2>General settings</h2>
-        <label>Site title
-          <input type="text" value="Eventlyy">
+    <!-- PHP: Display settings saved success message here -->
+    <div id="settings-status-msg" class="auth-message" style="margin-bottom:1.5rem; display:none;" aria-live="polite"></div>
+
+    <form method="POST" action="" class="admin-settings-layout" style="display:grid; gap:1.5rem;">
+      <input type="hidden" name="action" value="update_settings" />
+      
+      <!-- General Settings -->
+      <div class="form-card" style="border-radius:22px; padding:1.5rem 1.75rem;">
+        <h2>General Configuration</h2>
+        <p class="section-note" style="margin-bottom:1.25rem;">Set up basic information and system mode.</p>
+        
+        <label>Site Title
+          <input type="text" name="site_title" value="Eventlyy" required>
         </label>
-        <label>Maintenance mode
-          <select><option>No</option><option>Yes</option></select>
+        <label>Support Email Address
+          <input type="email" name="support_email" value="support@eventlyy.com" required>
+        </label>
+        <label>Maintenance Mode
+          <select name="maintenance_mode">
+            <option value="no">Disabled (Website Live)</option>
+            <option value="yes">Enabled (Maintenance Splash Screen)</option>
+          </select>
+          <!-- PHP: <option value="yes" <?= $settings['maintenance'] === 'yes' ? 'selected' : '' ?>>Enabled</option> -->
         </label>
       </div>
 
-      <div class="form-card">
+      <!-- Payment Gateways Configuration -->
+      <div class="form-card" style="border-radius:22px; padding:1.5rem 1.75rem;">
+        <h2>Payment & Billing</h2>
+        <p class="section-note" style="margin-bottom:1.25rem;">Manage merchant integrations and commission cuts.</p>
+        
+        <label>Default Payment Gateway
+          <select name="default_gateway">
+            <option value="stripe">Stripe Payments</option>
+            <option value="paystack">Paystack Gateway</option>
+            <option value="flutterwave">Flutterwave Gateway</option>
+          </select>
+          <!-- PHP: <option value="paystack" <?= $settings['gateway'] === 'paystack' ? 'selected' : '' ?>>Paystack</option> -->
+        </label>
+        
+        <label>Platform Commission Fee (%)
+          <input type="number" name="platform_fee" value="2.5" min="0" max="100" step="0.1" required>
+        </label>
+      </div>
+
+      <!-- Save Actions Row -->
+      <div class="form-card" style="border-radius:22px; padding:1.25rem 1.75rem; display:flex; justify-content:flex-end;">
+        <button type="submit" class="admin-action-btn primary" style="padding:0.75rem 2rem; border-radius:12px; height:46px; font-weight:700;">
+          Save Configurations
+        </button>
+      </div>
+
+      <!-- Admin Navigation Shortcuts -->
+      <div class="form-card" style="border-radius:22px; padding:1.5rem 1.75rem;">
         <h2>Admin Panels</h2>
-        <p class="section-note" style="margin-bottom:0.5rem;">Access secondary admin modules:</p>
+        <p class="section-note" style="margin-bottom:1rem;">Access secondary admin modules:</p>
         <div class="admin-actions" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:1rem; width:100%;">
-          <a href="admin-users.html" class="checkout-btn secondary" style="display:flex; align-items:center; justify-content:center; gap:0.5rem; text-decoration:none; font-weight:600; padding:0.85rem 1rem;">
+          <a href="admin-users.html" class="admin-action-btn" style="display:flex; align-items:center; justify-content:center; gap:0.5rem; text-decoration:none; font-weight:600; padding:0.85rem 1rem; border-radius:12px;">
             👤 Users Management
           </a>
-          <a href="admin-payouts.html" class="checkout-btn secondary" style="display:flex; align-items:center; justify-content:center; gap:0.5rem; text-decoration:none; font-weight:600; padding:0.85rem 1rem;">
+          <a href="admin-payouts.html" class="admin-action-btn" style="display:flex; align-items:center; justify-content:center; gap:0.5rem; text-decoration:none; font-weight:600; padding:0.85rem 1rem; border-radius:12px;">
             💳 Payout Queue
           </a>
         </div>
       </div>
 
-      <div class="form-card">
+      <!-- Preferences Theme Toggler -->
+      <div class="form-card" style="border-radius:22px; padding:1.5rem 1.75rem;">
         <h2>Preferences</h2>
-        <p class="section-note" style="margin-bottom:0.5rem;">Choose your visual interface style:</p>
+        <p class="section-note" style="margin-bottom:1rem;">Choose your visual interface style:</p>
         <div>
-          <button class="checkout-btn secondary" data-theme-toggle="true" aria-label="Toggle theme" style="display:inline-flex; align-items:center; justify-content:center; gap:0.5rem; width:100%; border:1px solid rgba(var(--brand),0.12); padding:0.85rem 1rem;">
+          <button type="button" class="admin-action-btn" data-theme-toggle="true" aria-label="Toggle theme" style="display:inline-flex; align-items:center; justify-content:center; gap:0.5rem; width:100%; padding:0.85rem 1rem; border-radius:12px;">
             🌓 Toggle Dark / Light Mode
           </button>
         </div>
       </div>
-    </section>
+
+    </form>
   </main>
 
   <footer class="footer">

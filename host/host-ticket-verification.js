@@ -1,108 +1,75 @@
-// Host Ticket Verification System
-(function(){
-  const eventSelect = document.getElementById('event-select');
-  const ticketCodeInput = document.getElementById('ticket-code-input');
-  const verifyTicketBtn = document.getElementById('verify-ticket-btn');
-  const verificationSection = document.getElementById('verification-section');
-  const ticketsLogSection = document.getElementById('tickets-log-section');
-  const eventStats = document.getElementById('event-stats');
-  const verificationResult = document.getElementById('verification-result');
-  const ticketSuccessCard = document.getElementById('ticket-success-card');
-  const ticketErrorCard = document.getElementById('ticket-error-card');
-  const clearResultBtn = document.getElementById('clear-result-btn');
-  const noEventMessage = document.getElementById('no-event-message');
-  const verifiedTicketsList = document.getElementById('verified-tickets-list');
-  const emptyLog = document.getElementById('empty-log');
-  const exportLogBtn = document.getElementById('export-log-btn');
-  const searchVerifiedTickets = document.getElementById('search-verified-tickets');
+/**
+ * Host Ticket Verification — UI & Scanner interaction script.
+ * 
+ * In your PHP template, the verification logic, checked-in log list, 
+ * and metrics stats are rendered server-side.
+ * 
+ * This script handles:
+ * 1. Initializing and managing the device camera scanner (via html5-qrcode library).
+ * 2. Autocomplete scan input values and submitting the verification form.
+ * 3. Client-side search filtering of the checked-in log list.
+ */
+(function() {
+  'use strict';
+
+  // DOM Elements
+  var toggleScannerBtn = document.getElementById('toggle-scanner-btn');
+  var toggleManualInputBtn = document.getElementById('toggle-manual-input-btn');
+  var scannerView = document.getElementById('scanner-view');
+  var manualInputView = document.getElementById('manual-input-view');
+  var ticketCodeInput = document.getElementById('ticket-code-input');
+  var verifyForm = document.getElementById('manual-verify-form');
+  var scannerStatus = document.getElementById('scanner-status');
+  var searchInput = document.getElementById('search-verified-tickets');
+  var logList = document.getElementById('verified-tickets-list');
+  var emptyLogMsg = document.getElementById('empty-log');
+  var clearResultBtn = document.getElementById('clear-result-btn');
+  var verificationResult = document.getElementById('verification-result');
+
+  // Scanner state variables
+  var html5QrcodeScanner = null;
+  var isScannerActive = false;
+
+  // ─── Camera Scanner Logic ───────────────────────────────
   
-  // Scanner elements
-  const toggleScannerBtn = document.getElementById('toggle-scanner-btn');
-  const toggleManualInputBtn = document.getElementById('toggle-manual-input-btn');
-  const scannerView = document.getElementById('scanner-view');
-  const manualInputView = document.getElementById('manual-input-view');
-  const qrScannerElement = document.getElementById('qr-scanner');
-  const scannerStatus = document.getElementById('scanner-status');
-
-  let html5QrcodeScanner = null;
-  let isScannerActive = false;
-
-  // Mock data for events and tickets
-  const mockEvents = [
-    {
-      id: 1,
-      title: 'Summer Beats Festival',
-      date: 'Aug 21',
-      venue: 'Central Park',
-      city: 'New York',
-      totalTickets: 500,
-      tickets: [
-        { code: 'SBF001', attendee: 'John Smith', type: 'General' },
-        { code: 'SBF002', attendee: 'Emma Johnson', type: 'VIP' },
-        { code: 'SBF003', attendee: 'Michael Brown', type: 'General' },
-        { code: 'SBF004', attendee: 'Sarah Davis', type: 'General' },
-        { code: 'SBF005', attendee: 'James Wilson', type: 'VIP' }
-      ]
-    },
-    {
-      id: 2,
-      title: 'Broadway Nights',
-      date: 'Sep 12',
-      venue: 'Downtown Theater',
-      city: 'New York',
-      totalTickets: 300,
-      tickets: [
-        { code: 'BRW001', attendee: 'Lisa Anderson', type: 'Orchestra' },
-        { code: 'BRW002', attendee: 'David Miller', type: 'Mezzanine' },
-        { code: 'BRW003', attendee: 'Rachel Garcia', type: 'Orchestra' }
-      ]
-    },
-    {
-      id: 3,
-      title: 'Championship Game',
-      date: 'Oct 3',
-      venue: 'City Stadium',
-      city: 'Los Angeles',
-      totalTickets: 8000,
-      tickets: [
-        { code: 'CHG001', attendee: 'Tom Martinez', type: 'Lower Bowl' },
-        { code: 'CHG002', attendee: 'Jessica Lee', type: 'Upper Bowl' },
-        { code: 'CHG003', attendee: 'Chris Taylor', type: 'Club' }
-      ]
-    }
-  ];
-
-  let currentEvent = null;
-  let verifiedTickets = [];
-
-  // Load events into select
-  function loadEvents(){
-    mockEvents.forEach(event => {
-      const option = document.createElement('option');
-      option.value = event.id;
-      option.textContent = `${event.title} (${event.date})`;
-      eventSelect.appendChild(option);
-    });
+  function updateScannerStatus(message, type) {
+    type = type || 'info';
+    if (!scannerStatus) return;
+    scannerStatus.textContent = message;
+    scannerStatus.className = 'scanner-status scanner-' + type;
+    scannerStatus.style.display = 'block';
   }
 
-  // Initialize QR code scanner
-  function initializeScanner(){
-    if(html5QrcodeScanner) return;
-    
+  function initializeScanner() {
+    if (html5QrcodeScanner) return;
+
+    // Initialize scanner class (Html5Qrcode uses the raw video stream)
     html5QrcodeScanner = new Html5Qrcode('qr-scanner');
-    
-    const qrCodeSuccessCallback = (decodedText) => {
-      if(currentEvent){
-        processTicketCode(decodedText.trim().toUpperCase());
+
+    var onScanSuccess = function(decodedText) {
+      var code = (decodedText || '').trim();
+      if (code) {
+        // Set scanned value in code input field
+        if (ticketCodeInput) {
+          ticketCodeInput.value = code;
+        }
+        updateScannerStatus('🟢 Code Scanned: ' + code + '. Verifying...', 'success');
+
+        // Automatically submit the form to the PHP backend
+        if (verifyForm) {
+          setTimeout(function() {
+            verifyForm.submit();
+          }, 600);
+        }
       }
     };
-    
-    const qrCodeErrorCallback = () => {
-      // Suppress error logs during scanning
+
+    var onScanError = function() {
+      // Suppress console spam during real-time scan frames
     };
 
-    const config = {
-      fps: 10,
+    var config = {
+      fps: 12,
       qrbox: { width: 250, height: 250 },
       aspectRatio: 1.0
     };
@@ -110,314 +77,122 @@
     html5QrcodeScanner.start(
       { facingMode: 'environment' },
       config,
-      qrCodeSuccessCallback,
-      qrCodeErrorCallback
-    ).catch(err => {
-      updateScannerStatus(`❌ Camera access denied or unavailable: ${err.message}`, 'error');
+      onScanSuccess,
+      onScanError
+    ).catch(function(err) {
+      updateScannerStatus('❌ Camera access error: ' + err.message, 'error');
     });
   }
 
-  // Stop scanner
-  function stopScanner(){
-    if(html5QrcodeScanner){
-      html5QrcodeScanner.stop().catch(err => console.log('Error stopping scanner:', err));
+  function stopScanner() {
+    if (html5QrcodeScanner) {
+      html5QrcodeScanner.stop().then(function() {
+        html5QrcodeScanner = null;
+      }).catch(function(err) {
+        console.error('Error stopping scanner:', err);
+      });
     }
   }
 
-  // Update scanner status
-  function updateScannerStatus(message, type = 'info'){
-    scannerStatus.textContent = message;
-    scannerStatus.className = 'scanner-status scanner-' + type;
-    scannerStatus.style.display = 'block';
-  }
-
-  // Toggle scanner view
-  toggleScannerBtn.addEventListener('click', () => {
-    if(!currentEvent){
-      alert('Please select an event first');
-      return;
-    }
-    
-    isScannerActive = true;
-    scannerView.style.display = 'block';
-    manualInputView.style.display = 'none';
-    toggleScannerBtn.style.display = 'none';
-    toggleManualInputBtn.style.display = 'inline-block';
-    updateScannerStatus('🟢 Scanner ready - point camera at barcode', 'info');
-    
-    setTimeout(() => initializeScanner(), 100);
-  });
-
-  // Toggle manual input view
-  toggleManualInputBtn.addEventListener('click', () => {
-    isScannerActive = false;
-    stopScanner();
-    scannerView.style.display = 'none';
-    manualInputView.style.display = 'block';
-    toggleScannerBtn.style.display = 'inline-block';
-    toggleManualInputBtn.style.display = 'none';
-    ticketCodeInput.focus();
-  });
-
-  // Process ticket code (extracted for reuse)
-  function processTicketCode(code){
-    if(!code){
-      showResult('Please enter a ticket code', 'error');
-      return;
-    }
-
-    // Check if already verified
-    if(verifiedTickets.some(t => t.code === code)){
-      const prev = verifiedTickets.find(t => t.code === code);
-      showResult(`Ticket ${code} was already verified at ${prev.verifiedAt}`, 'error');
-      if(isScannerActive) ticketCodeInput.value = '';
-      return;
-    }
-
-    // Find ticket in current event
-    const ticket = currentEvent.tickets.find(t => t.code === code);
-    if(!ticket){
-      showResult(`Ticket code "${code}" was not found for this event`, 'error');
-      if(isScannerActive) ticketCodeInput.value = '';
-      return;
-    }
-
-    // Verify the ticket
-    const now = new Date();
-    const verifiedTicket = {
-      ...ticket,
-      verifiedAt: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      verifiedDate: now.toLocaleDateString()
-    };
-
-    verifiedTickets.push(verifiedTicket);
-    localStorage.setItem(`verified-tickets-${currentEvent.id}`, JSON.stringify(verifiedTickets));
-
-    showResult(`Welcome ${ticket.attendee}!`, 'success', ticket);
-    updateEventStats();
-    updateVerifiedTicketsList();
-    ticketCodeInput.value = '';
-    ticketCodeInput.focus();
-  }
-
-  // Handle event selection
-  eventSelect.addEventListener('change', (e) => {
-    const eventId = parseInt(e.target.value);
-    if(!eventId){
-      currentEvent = null;
-      stopScanner();
-      isScannerActive = false;
-      verificationSection.style.display = 'none';
-      ticketsLogSection.style.display = 'none';
-      eventStats.style.display = 'none';
-      ticketCodeInput.value = '';
-      verificationResult.style.display = 'none';
-      scannerView.style.display = 'none';
-      manualInputView.style.display = 'block';
-      toggleScannerBtn.style.display = 'inline-block';
-      toggleManualInputBtn.style.display = 'none';
-      return;
-    }
-
-    currentEvent = mockEvents.find(ev => ev.id === eventId);
-    if(currentEvent){
-      verifiedTickets = JSON.parse(localStorage.getItem(`verified-tickets-${eventId}`)) || [];
-      updateEventStats();
-      updateVerifiedTicketsList();
-      verificationSection.style.display = 'block';
-      ticketsLogSection.style.display = 'block';
-      eventStats.style.display = 'grid';
-      scannerView.style.display = 'none';
-      manualInputView.style.display = 'block';
-      toggleScannerBtn.style.display = 'inline-block';
-      toggleManualInputBtn.style.display = 'none';
-      ticketCodeInput.focus();
-    }
-  });
-
-  // Update event statistics
-  function updateEventStats(){
-    if(!currentEvent) return;
-    document.getElementById('selected-event-name').textContent = currentEvent.title;
-    document.getElementById('total-tickets-count').textContent = currentEvent.totalTickets;
-    document.getElementById('verified-tickets-count').textContent = verifiedTickets.length;
-    document.getElementById('remaining-tickets-count').textContent = currentEvent.totalTickets - verifiedTickets.length;
-  }
-
-  // Handle ticket code verification
-  ticketCodeInput.addEventListener('keypress', (e) => {
-    if(e.key !== 'Enter' || !currentEvent) return;
-    e.preventDefault();
-    
-    const code = ticketCodeInput.value.trim().toUpperCase();
-    processTicketCode(code);
-  });
-
-  verifyTicketBtn.addEventListener('click', (e) => {
-    if(!currentEvent) return;
-    e.preventDefault();
-    
-    const code = ticketCodeInput.value.trim().toUpperCase();
-    processTicketCode(code);
-  });
-
-  // Generate a decorative barcode visual from a code string
-  function generateBarcodeHTML(code){
-    const bars = [];
-    // Create a deterministic barcode pattern from the ticket code
-    for(let i = 0; i < code.length; i++){
-      const charCode = code.charCodeAt(i);
-      for(let j = 0; j < 3; j++){
-        const height = 20 + ((charCode * (j + 1)) % 20);
-        const width = (charCode + j) % 2 === 0 ? 2 : 3;
-        bars.push(`<span style="height:${height}px;width:${width}px"></span>`);
-      }
-      // Gap between character groups
-      bars.push(`<span style="height:0;width:2px"></span>`);
-    }
-    return bars.join('');
-  }
-
-  // Get initials from a name
-  function getInitials(name){
-    return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
-  }
-
-  // Show verification result with a rich ticket card
-  function showResult(message, type, ticketData){
-    if(type === 'success' && ticketData){
-      const event = currentEvent;
-      const now = new Date();
-      const verifyTime = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-      const verifyDate = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-
-      // Populate Success Card Fields
-      document.getElementById('ticket-success-event-title').textContent = event.title;
-      document.getElementById('ticket-success-event-location').textContent = `${event.venue} · ${event.city}`;
-      document.getElementById('ticket-success-avatar').textContent = getInitials(ticketData.attendee);
-      document.getElementById('ticket-success-attendee-name').textContent = ticketData.attendee;
-      document.getElementById('ticket-success-ticket-type').textContent = `${ticketData.type} Ticket`;
-      document.getElementById('ticket-success-code').textContent = ticketData.code;
-      document.getElementById('ticket-success-date').textContent = event.date;
-      document.getElementById('ticket-success-time').textContent = verifyTime;
-      document.getElementById('ticket-success-checkin-date').textContent = verifyDate;
-      document.getElementById('ticket-success-barcode').innerHTML = generateBarcodeHTML(ticketData.code);
-      document.getElementById('ticket-success-barcode-code').textContent = ticketData.code;
-
-      ticketSuccessCard.style.display = 'block';
-      ticketErrorCard.style.display = 'none';
-    } else if(type === 'error'){
-      // Determine the error subtype
-      let icon = '❌';
-      let title = 'Invalid Ticket';
-      let subtitle = message;
-      let badgeClass = 'badge-invalid';
-      let badgeText = 'Invalid';
-
-      if(message.includes('already verified')){
-        icon = '⚠️';
-        title = 'Duplicate Scan';
-        badgeClass = 'badge-duplicate';
-        badgeText = 'Already Used';
-      } else if(message.includes('not found')){
-        icon = '🔍';
-        title = 'Ticket Not Found';
-      }
-
-      // Populate Error Card Fields
-      document.getElementById('ticket-error-event-title').textContent = currentEvent ? currentEvent.title : 'Verification Error';
-      document.getElementById('ticket-error-event-location').textContent = currentEvent ? `${currentEvent.venue} · ${currentEvent.city}` : '';
+  // Bind scanner toggles
+  if (toggleScannerBtn) {
+    toggleScannerBtn.addEventListener('click', function() {
+      isScannerActive = true;
+      if (scannerView) scannerView.classList.remove('hidden');
+      if (manualInputView) manualInputView.classList.add('hidden');
+      toggleScannerBtn.classList.add('hidden');
+      if (toggleManualInputBtn) toggleManualInputBtn.classList.remove('hidden');
       
-      const badge = document.getElementById('ticket-error-badge');
-      badge.textContent = badgeText;
-      badge.className = `ticket-status-badge ${badgeClass}`;
+      updateScannerStatus('📷 Scanner starting, please grant camera permissions...', 'info');
+      // Give DOM time to update display state before camera init
+      setTimeout(initializeScanner, 100);
+    });
+  }
 
-      document.getElementById('ticket-error-icon').textContent = icon;
-      document.getElementById('ticket-error-title').textContent = title;
-      document.getElementById('ticket-error-message').textContent = subtitle;
+  if (toggleManualInputBtn) {
+    toggleManualInputBtn.addEventListener('click', function() {
+      isScannerActive = false;
+      stopScanner();
+      if (scannerView) scannerView.classList.add('hidden');
+      if (manualInputView) manualInputView.classList.remove('hidden');
+      if (toggleScannerBtn) toggleScannerBtn.classList.remove('hidden');
+      toggleManualInputBtn.classList.add('hidden');
+      if (ticketCodeInput) ticketCodeInput.focus();
+    });
+  }
 
-      ticketSuccessCard.style.display = 'none';
-      ticketErrorCard.style.display = 'block';
+  // Clear Result display block
+  if (clearResultBtn) {
+    clearResultBtn.addEventListener('click', function() {
+      if (verificationResult) {
+        verificationResult.classList.add('hidden');
+      }
+      if (ticketCodeInput) {
+        ticketCodeInput.focus();
+      }
+    });
+  }
+
+  // ─── Checked In Log Filter ─────────────────────────────
+  
+  if (searchInput && logList) {
+    searchInput.addEventListener('input', function(e) {
+      var query = (e.target.value || '').toLowerCase().trim();
+      var items = logList.querySelectorAll('.verified-ticket-item');
+      var visibleCount = 0;
+
+      items.forEach(function(item) {
+        var attendeeName = (item.querySelector('h4') ? item.querySelector('h4').textContent : '').toLowerCase();
+        var ticketCode = (item.querySelector('strong') ? item.querySelector('strong').textContent : '').toLowerCase();
+        
+        if (attendeeName.indexOf(query) !== -1 || ticketCode.indexOf(query) !== -1) {
+          item.style.display = '';
+          visibleCount++;
+        } else {
+          item.style.display = 'none';
+        }
+      });
+
+      if (emptyLogMsg) {
+        if (items.length > 0 && visibleCount === 0) {
+          emptyLogMsg.classList.remove('hidden');
+        } else {
+          emptyLogMsg.classList.add('hidden');
+        }
+      }
+    });
+  }
+
+  // ─── Checked In Ticket Removal ──────────────────────────
+  // Note: For production backend database sync, wrap this in a form post
+  // or AJAX request to delete the check-in status on the server.
+  window.removeVerifiedTicket = function(code) {
+    if (!code) return;
+    
+    // UI removal placeholder
+    var itemToRemove = logList ? logList.querySelector('[data-code="' + code + '"]') : null;
+    if (itemToRemove) {
+      itemToRemove.remove();
+      
+      // Update check-in counts in DOM header metrics
+      var checkinCountEl = document.getElementById('verified-tickets-count');
+      var remainingCountEl = document.getElementById('remaining-tickets-count');
+      if (checkinCountEl && remainingCountEl) {
+        var currentChecked = parseInt(checkinCountEl.textContent) || 0;
+        var currentRemaining = parseInt(remainingCountEl.textContent) || 0;
+        
+        if (currentChecked > 0) {
+          checkinCountEl.textContent = currentChecked - 1;
+          remainingCountEl.textContent = currentRemaining + 1;
+        }
+      }
+      
+      // If list is now empty, toggle empty log label
+      var remainingItems = logList ? logList.querySelectorAll('.verified-ticket-item') : [];
+      if (remainingItems.length === 0 && emptyLogMsg) {
+        emptyLogMsg.classList.remove('hidden');
+      }
     }
-
-    verificationResult.style.display = 'flex';
-  }
-
-  // Clear result
-  clearResultBtn.addEventListener('click', () => {
-    verificationResult.style.display = 'none';
-    ticketSuccessCard.style.display = 'none';
-    ticketErrorCard.style.display = 'none';
-    ticketCodeInput.focus();
-  });
-
-  // Update verified tickets list
-  function updateVerifiedTicketsList(){
-    if(verifiedTickets.length === 0){
-      verifiedTicketsList.innerHTML = '';
-      emptyLog.style.display = 'block';
-      return;
-    }
-
-    emptyLog.style.display = 'none';
-    renderVerifiedTickets(verifiedTickets);
-  }
-
-  // Render verified tickets
-  function renderVerifiedTickets(tickets){
-    verifiedTicketsList.innerHTML = tickets.map(ticket => `
-      <article class="verified-ticket-item">
-        <div class="ticket-info">
-          <h4>${ticket.attendee}</h4>
-          <p class="ticket-meta">Code: <strong>${ticket.code}</strong> | ${ticket.type}</p>
-          <p class="ticket-time">Verified at ${ticket.verifiedAt}</p>
-        </div>
-        <button class="btn-icon" onclick="removeVerifiedTicket('${ticket.code}')" aria-label="Remove entry">✕</button>
-      </article>
-    `).join('');
-  }
-
-  // Remove verified ticket (exposed globally)
-  window.removeVerifiedTicket = function(code){
-    verifiedTickets = verifiedTickets.filter(t => t.code !== code);
-    localStorage.setItem(`verified-tickets-${currentEvent.id}`, JSON.stringify(verifiedTickets));
-    updateEventStats();
-    updateVerifiedTicketsList();
   };
 
-  // Search verified tickets
-  searchVerifiedTickets.addEventListener('input', (e) => {
-    const query = e.target.value.toLowerCase();
-    const filtered = verifiedTickets.filter(t => 
-      t.attendee.toLowerCase().includes(query) || 
-      t.code.toLowerCase().includes(query)
-    );
-    renderVerifiedTickets(filtered);
-  });
-
-  // Export log
-  exportLogBtn.addEventListener('click', () => {
-    if(verifiedTickets.length === 0){
-      alert('No tickets to export');
-      return;
-    }
-
-    let csv = 'Ticket Code,Attendee Name,Ticket Type,Verified Time\n';
-    verifiedTickets.forEach(ticket => {
-      csv += `${ticket.code},"${ticket.attendee}",${ticket.type},${ticket.verifiedAt}\n`;
-    });
-
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `verified-tickets-${currentEvent.title}-${new Date().toLocaleDateString()}.csv`;
-    document.body.appendChild(a);
-    a.click();
-    window.URL.revokeObjectURL(url);
-    document.body.removeChild(a);
-  });
-
-  // Initialize
-  loadEvents();
 })();

@@ -1,60 +1,160 @@
-function getUsers(){ try{ return JSON.parse(localStorage.getItem('mock_users')||'{}'); }catch(e){ return {}; } }
-function saveUsers(u){ localStorage.setItem('mock_users', JSON.stringify(u)); }
+/**
+ * Admin Payouts — UI interaction script.
+ * 
+ * In your PHP template, host bank accounts, pending balances, metrics, 
+ * and the payouts queue table are all rendered server-side.
+ * 
+ * This script handles:
+ * 1. Process Payout confirmation modal overlay.
+ * 2. Flag Account confirmation modal overlay.
+ * 3. Resolve Hold (Unflag) confirmation modal overlay.
+ * 4. Client-side instant search filtering of table rows & mobile cards.
+ */
+(function() {
+  'use strict';
 
-document.addEventListener('DOMContentLoaded', ()=>{
-  const list = document.getElementById('payouts-list');
-  const pager = document.getElementById('payouts-pagination');
-  const pageSize = 6; let currentPage = 1;
+  // ─── Modal Elements ──────────────────────────────────────
+  var processModal = document.getElementById('process-modal');
+  var processPayoutAmount = document.getElementById('process-payout-amount');
+  var processHostName = document.getElementById('process-host-name');
+  var processPayoutId = document.getElementById('process-payout-id');
+  var processCancelBtn = document.getElementById('process-cancel-btn');
 
-  function render(){
-    const usersObj = getUsers();
-    const users = Object.entries(usersObj);
-    if(users.length === 0){ list.innerHTML = '<p class="empty-state">No users available.</p>'; pager.innerHTML = ''; return; }
-    const totalPages = Math.max(1, Math.ceil(users.length / pageSize));
-    currentPage = Math.min(Math.max(1, currentPage), totalPages);
-    const start = (currentPage - 1) * pageSize;
-    const pageItems = users.slice(start, start + pageSize);
-    list.innerHTML = '';
-    pageItems.forEach(([email, u])=>{
-      const bank = (u.organizer && u.organizer.bank) || {};
-      const item = document.createElement('article');
-      item.className = 'event-item';
-      item.innerHTML = `
-        <div class="details">
-          <div><h3>${u.name || 'Unnamed'}</h3><p class="meta">${email}</p></div>
-          <p class="meta">Bank: ${bank.name || 'Not configured'}</p>
-          <p class="meta">Account: ${bank.account || '—'}</p>
-          <p class="meta">Routing: ${bank.routing || '—'}</p>
-          <p class="meta">Holder: ${bank.holder || '—'}</p>
-          <div class="admin-actions">
-            <button class="admin-action-btn" data-action="export" data-email="${email}">Export</button>
-            <button class="admin-action-btn danger" data-action="delete" data-email="${email}">Delete</button>
-          </div>
-        </div>
-      `;
-      list.appendChild(item);
-    });
+  var flagModal = document.getElementById('flag-modal');
+  var flagHostName = document.getElementById('flag-host-name');
+  var flagPayoutId = document.getElementById('flag-payout-id');
+  var flagCancelBtn = document.getElementById('flag-cancel-btn');
 
-    pager.innerHTML = '';
-    const prev = document.createElement('button'); prev.className = 'page-button'; prev.textContent = 'Prev'; prev.disabled = currentPage===1; prev.addEventListener('click', ()=>{ currentPage--; render(); });
-    pager.appendChild(prev);
-    for(let i=1;i<=totalPages;i++){ const p = document.createElement('button'); p.className='page-button'; p.textContent=String(i); if(i===currentPage) p.setAttribute('aria-current','true'); p.addEventListener('click', ()=>{ currentPage = i; render(); }); pager.appendChild(p); }
-    const next = document.createElement('button'); next.className = 'page-button'; next.textContent = 'Next'; next.disabled = currentPage===totalPages; next.addEventListener('click', ()=>{ currentPage++; render(); }); pager.appendChild(next);
-  }
+  var unflagModal = document.getElementById('unflag-modal');
+  var unflagHostName = document.getElementById('unflag-host-name');
+  var unflagPayoutId = document.getElementById('unflag-payout-id');
+  var unflagCancelBtn = document.getElementById('unflag-cancel-btn');
 
-  list.addEventListener('click', (e)=>{
-    const btn = e.target.closest('button[data-action]'); if(!btn) return;
-    const action = btn.dataset.action; const email = btn.dataset.email;
-    if(action === 'delete'){
-      if(!confirm(`Delete payout info for ${email}?`)) return;
-      const users = getUsers(); delete users[email]; saveUsers(users); render();
+  // Delegate action button clicks
+  document.addEventListener('click', function(e) {
+    var processBtn = e.target.closest('.au-process-btn');
+    if (processBtn) {
+      e.preventDefault();
+      var payoutId = processBtn.getAttribute('data-payout-id') || '';
+      var hostName = processBtn.getAttribute('data-host-name') || 'this host';
+      var amountVal = processBtn.getAttribute('data-amount') || '$0.00';
+      
+      if (processPayoutAmount) processPayoutAmount.textContent = amountVal;
+      if (processHostName) processHostName.textContent = hostName;
+      if (processPayoutId) processPayoutId.value = payoutId;
+      if (processModal) processModal.classList.remove('hidden');
+      return;
     }
-    if(action === 'export'){
-      const users = getUsers(); const user = users[email]; if(!user) return;
-      const blob = new Blob([JSON.stringify({email, bank: user.organizer?.bank||{}}, null, 2)], {type:'application/json'});
-      const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `payout-${email}.json`; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+
+    var flagBtn = e.target.closest('.au-flag-btn');
+    if (flagBtn) {
+      e.preventDefault();
+      var fPayoutId = flagBtn.getAttribute('data-payout-id') || '';
+      var fHostName = flagBtn.getAttribute('data-host-name') || 'this host';
+      
+      if (flagHostName) flagHostName.textContent = fHostName;
+      if (flagPayoutId) flagPayoutId.value = fPayoutId;
+      if (flagModal) flagModal.classList.remove('hidden');
+      return;
+    }
+
+    var unflagBtn = e.target.closest('.au-unflag-btn');
+    if (unflagBtn) {
+      e.preventDefault();
+      var uPayoutId = unflagBtn.getAttribute('data-payout-id') || '';
+      var uHostName = unflagBtn.getAttribute('data-host-name') || 'this host';
+
+      if (unflagHostName) unflagHostName.textContent = uHostName;
+      if (unflagPayoutId) unflagPayoutId.value = uPayoutId;
+      if (unflagModal) unflagModal.classList.remove('hidden');
+      return;
     }
   });
 
-  render();
-});
+  // Cancel buttons
+  if (processCancelBtn) {
+    processCancelBtn.addEventListener('click', function() {
+      if (processModal) processModal.classList.add('hidden');
+    });
+  }
+  if (flagCancelBtn) {
+    flagCancelBtn.addEventListener('click', function() {
+      if (flagModal) flagModal.classList.add('hidden');
+    });
+  }
+  if (unflagCancelBtn) {
+    unflagCancelBtn.addEventListener('click', function() {
+      if (unflagModal) unflagModal.classList.add('hidden');
+    });
+  }
+
+  // Close modals on overlay clicks
+  [processModal, flagModal, unflagModal].forEach(function(modal) {
+    if (!modal) return;
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) {
+        modal.classList.add('hidden');
+      }
+    });
+  });
+
+  // Close modals on Escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      [processModal, flagModal, unflagModal].forEach(function(modal) {
+        if (modal && !modal.classList.contains('hidden')) {
+          modal.classList.add('hidden');
+        }
+      });
+    }
+  });
+
+  // ─── Client-Side Instant Search ─────────────────────────
+  var searchInput = document.getElementById('payouts-search');
+  var tableBody = document.getElementById('payouts-tbody');
+  var cardsList = document.getElementById('payouts-cards');
+  var emptyState = document.getElementById('payouts-empty');
+
+  if (searchInput) {
+    searchInput.addEventListener('input', function() {
+      var query = (searchInput.value || '').toLowerCase().trim();
+
+      // Filter table rows
+      if (tableBody) {
+        var rows = tableBody.querySelectorAll('tr');
+        var visibleRows = 0;
+
+        rows.forEach(function(row) {
+          var name = (row.querySelector('.au-user-name') || {}).textContent || '';
+          var email = (row.querySelector('.au-card-email') || {}).textContent || '';
+          var bankDetails = (row.querySelector('.au-date-cell') || {}).textContent || '';
+          var match = name.toLowerCase().indexOf(query) !== -1 ||
+                      email.toLowerCase().indexOf(query) !== -1 ||
+                      bankDetails.toLowerCase().indexOf(query) !== -1;
+
+          row.style.display = match ? '' : 'none';
+          if (match) visibleRows++;
+        });
+
+        if (emptyState) {
+          emptyState.classList.toggle('hidden', visibleRows > 0 || query === '');
+        }
+      }
+
+      // Filter mobile cards
+      if (cardsList) {
+        var cards = cardsList.querySelectorAll('.au-user-card');
+        cards.forEach(function(card) {
+          var name = (card.querySelector('.au-user-name') || {}).textContent || '';
+          var email = (card.querySelector('.au-card-email') || {}).textContent || '';
+          var bank = (card.querySelector('.au-card-meta') || {}).textContent || '';
+          var match = name.toLowerCase().indexOf(query) !== -1 ||
+                      email.toLowerCase().indexOf(query) !== -1 ||
+                      bank.toLowerCase().indexOf(query) !== -1;
+          card.style.display = match ? '' : 'none';
+        });
+      }
+    });
+  }
+
+})();

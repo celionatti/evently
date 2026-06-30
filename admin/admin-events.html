@@ -20,7 +20,7 @@
     <nav class="nav-desktop" role="navigation" aria-label="Top navigation">
       <a href="admin.html" class="nav-link">Overview</a>
       <a href="admin-users.html" class="nav-link">Users</a>
-      <a href="admin-events.html" class="nav-link">Events</a>
+      <a href="admin-events.html" class="nav-link active">Events</a>
       <a href="admin-payouts.html" class="nav-link">Payouts</a>
       <a href="admin-settings.html" class="nav-link">Settings</a>
       <a href="admin-teams.html" class="nav-link">Teams</a>
@@ -32,18 +32,347 @@
     <section class="page-hero">
       <div>
         <span class="panel-badge">Admin — Events</span>
-        <h1>Published events</h1>
-        <p class="lede">View and inspect events saved to the mock store.</p>
+        <h1>Published Events</h1>
+        <p class="lede">Monitor event performance, tickets, and organizer profiles across the platform.</p>
       </div>
     </section>
 
-    <section>
-      <div class="form-card">
-        <h2>Events</h2>
-        <div id="events-list" class="event-list scrollable-list"></div>
-        <div id="events-pagination" class="pagination" aria-label="Events pagination"></div>
+    <!-- Summary Stats -->
+    <section class="admin-users-stats">
+      <!-- PHP: Replace values with <?= $total_events ?>, <?= $active_events ?>, etc. -->
+      <div class="au-stat-card">
+        <span class="au-stat-icon">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </span>
+        <div class="au-stat-body">
+          <span class="au-stat-num">342</span>
+          <span class="au-stat-lbl">Total Events</span>
+        </div>
+      </div>
+      <div class="au-stat-card">
+        <span class="au-stat-icon au-stat-icon--brand">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </span>
+        <div class="au-stat-body">
+          <span class="au-stat-num">185</span>
+          <span class="au-stat-lbl">Active & Live</span>
+        </div>
+      </div>
+      <div class="au-stat-card">
+        <span class="au-stat-icon au-stat-icon--success">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><rect x="12" y="4" width="0" height="16"/><line x1="2" y1="10" x2="22" y2="10"/><line x1="6" y1="14" x2="6.01" y2="14"/><line x1="10" y1="14" x2="10.01" y2="14"/><line x1="14" y1="14" x2="14.01" y2="14"/><line x1="18" y1="14" x2="18.01" y2="14"/></svg>
+        </span>
+        <div class="au-stat-body">
+          <span class="au-stat-num">8,420</span>
+          <span class="au-stat-lbl">Tickets Sold</span>
+        </div>
+      </div>
+      <div class="au-stat-card">
+        <span class="au-stat-icon au-stat-icon--warning">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+        </span>
+        <div class="au-stat-body">
+          <span class="au-stat-num">$245.6K</span>
+          <span class="au-stat-lbl">Total Gross</span>
+        </div>
       </div>
     </section>
+
+    <!-- Toolbar: Search & Filter -->
+    <section class="admin-users-toolbar">
+      <!-- PHP: form method="GET" action="" to filter server-side -->
+      <form method="GET" action="" class="au-toolbar-form">
+        <div class="au-search-wrap">
+          <svg class="au-search-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input
+            type="search"
+            name="q"
+            id="events-search"
+            placeholder="Search by title, venue, or owner..."
+            aria-label="Search events"
+            value=""
+          />
+          <!-- PHP: value="<?= htmlspecialchars($_GET['q'] ?? '') ?>" -->
+        </div>
+        <div class="au-filter-group">
+          <select name="status" id="events-status-filter" aria-label="Filter by status">
+            <option value="">All Statuses</option>
+            <option value="active">Active / Live</option>
+            <option value="draft">Draft</option>
+            <option value="past">Past</option>
+          </select>
+          <!-- PHP: <option value="active" <?= ($_GET['status'] ?? '') === 'active' ? 'selected' : '' ?>>Active / Live</option> -->
+
+          <select name="category" id="events-category-filter" aria-label="Filter by category">
+            <option value="">All Categories</option>
+            <option value="Music">Music</option>
+            <option value="Arts">Arts</option>
+            <option value="Food">Food</option>
+            <option value="Business">Business</option>
+          </select>
+        </div>
+        <button type="submit" class="admin-action-btn primary">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Filter
+        </button>
+      </form>
+    </section>
+
+    <!-- Events List Section -->
+    <section class="admin-users-table-section">
+      <div class="au-table-header">
+        <h2>Events</h2>
+        <!-- PHP: href="export-events.php?format=csv" -->
+        <a href="#" class="admin-action-btn">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export CSV
+        </a>
+      </div>
+
+      <!-- Desktop Table View -->
+      <div class="au-table-wrap">
+        <table class="au-table">
+          <thead>
+            <tr>
+              <th>Event</th>
+              <th>Date & Venue</th>
+              <th>Owner</th>
+              <th>Capacity / Sales</th>
+              <th>Status</th>
+              <th class="au-th-actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="events-tbody">
+            <!-- PHP: foreach ($events as $ev): -->
+
+            <tr>
+              <td>
+                <div class="au-user-cell">
+                  <span class="au-avatar" style="--avatar-hue:340">SF</span>
+                  <!-- PHP: initials from <?= substr($ev['name'], 0, 2) ?> -->
+                  <div>
+                    <span class="au-user-name">Summer Sound Festival</span>
+                    <span class="au-card-email">Music</span>
+                  </div>
+                </div>
+              </td>
+              <td class="au-date-cell">
+                Aug 18, 2026<br />
+                <span style="font-size:0.8rem;color:rgb(var(--muted))">Open Air Pavilion</span>
+              </td>
+              <td class="au-email-cell">host@example.com</td>
+              <td>
+                <div style="width: 140px;">
+                  <span style="font-weight:600;font-size:0.85rem">682 / 800 sold</span>
+                  <div class="progress-bar-bg" style="height: 6px; background: rgba(var(--muted), 0.1); border-radius: 3px; margin-top: 4px; overflow: hidden;">
+                    <div class="progress-bar-fill" style="height: 100%; width: 85%; background: rgb(var(--brand));"></div>
+                  </div>
+                </div>
+              </td>
+              <td><span class="au-role-badge au-role--host">Active</span></td>
+              <td>
+                <div class="admin-actions">
+                  <!-- PHP: href="admin-event-detail.php?id=<?= $ev['id'] ?>" -->
+                  <a href="admin-event-detail.html" class="admin-action-btn">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    View
+                  </a>
+                  <button type="button" class="admin-action-btn danger au-delete-btn" data-event-id="1" data-event-name="Summer Sound Festival">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                    Delete
+                  </button>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                <div class="au-user-cell">
+                  <span class="au-avatar" style="--avatar-hue:220">TC</span>
+                  <div>
+                    <span class="au-user-name">Tech Conference 2026</span>
+                    <span class="au-card-email">Business</span>
+                  </div>
+                </div>
+              </td>
+              <td class="au-date-cell">
+                Oct 05, 2026<br />
+                <span style="font-size:0.8rem;color:rgb(var(--muted))">Grand Ballroom</span>
+              </td>
+              <td class="au-email-cell">organizer@tech.org</td>
+              <td>
+                <div style="width: 140px;">
+                  <span style="font-weight:600;font-size:0.85rem">120 / 500 sold</span>
+                  <div class="progress-bar-bg" style="height: 6px; background: rgba(var(--muted), 0.1); border-radius: 3px; margin-top: 4px; overflow: hidden;">
+                    <div class="progress-bar-fill" style="height: 100%; width: 24%; background: rgb(var(--brand));"></div>
+                  </div>
+                </div>
+              </td>
+              <td><span class="au-role-badge au-role--host">Active</span></td>
+              <td>
+                <div class="admin-actions">
+                  <a href="admin-event-detail.html" class="admin-action-btn">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    View
+                  </a>
+                  <button type="button" class="admin-action-btn danger au-delete-btn" data-event-id="2" data-event-name="Tech Conference 2026">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                    Delete
+                  </button>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                <div class="au-user-cell">
+                  <span class="au-avatar" style="--avatar-hue:120">WG</span>
+                  <div>
+                    <span class="au-user-name">Wine & Gourmet Tasting</span>
+                    <span class="au-card-email">Food</span>
+                  </div>
+                </div>
+              </td>
+              <td class="au-date-cell">
+                Nov 12, 2026<br />
+                <span style="font-size:0.8rem;color:rgb(var(--muted))">The Cellar Gallery</span>
+              </td>
+              <td class="au-email-cell">taste@vintage.com</td>
+              <td>
+                <div style="width: 140px;">
+                  <span style="font-weight:600;font-size:0.85rem">45 / 50 sold</span>
+                  <div class="progress-bar-bg" style="height: 6px; background: rgba(var(--muted), 0.1); border-radius: 3px; margin-top: 4px; overflow: hidden;">
+                    <div class="progress-bar-fill" style="height: 100%; width: 90%; background: rgb(var(--brand));"></div>
+                  </div>
+                </div>
+              </td>
+              <td><span class="au-role-badge au-role--attendee">Draft</span></td>
+              <td>
+                <div class="admin-actions">
+                  <a href="admin-event-detail.html" class="admin-action-btn">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    View
+                  </a>
+                  <button type="button" class="admin-action-btn danger au-delete-btn" data-event-id="3" data-event-name="Wine & Gourmet Tasting">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                    Delete
+                  </button>
+                </div>
+              </td>
+            </tr>
+
+            <!-- PHP: endforeach; -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Mobile Card View -->
+      <div class="au-cards-list" id="events-cards">
+        <!-- PHP: foreach ($events as $ev): -->
+
+        <article class="au-user-card">
+          <div class="au-card-top">
+            <div class="au-user-cell">
+              <span class="au-avatar" style="--avatar-hue:340">SF</span>
+              <div>
+                <span class="au-user-name">Summer Sound Festival</span>
+                <span class="au-card-email">Music • host@example.com</span>
+              </div>
+            </div>
+            <span class="au-role-badge au-role--host">Active</span>
+          </div>
+          <div class="au-card-meta" style="flex-direction: column; align-items: flex-start; gap: 0.25rem;">
+            <span class="au-card-date">🗓 Aug 18, 2026 | 📍 Open Air Pavilion</span>
+            <span style="font-weight:600;font-size:0.8rem;color:rgb(var(--text))">Tickets Sold: 682 / 800 (85%)</span>
+          </div>
+          <div class="admin-actions au-card-actions">
+            <a href="admin-event-detail.html" class="admin-action-btn">View</a>
+            <button type="button" class="admin-action-btn danger au-delete-btn" data-event-id="1" data-event-name="Summer Sound Festival">Delete</button>
+          </div>
+        </article>
+
+        <article class="au-user-card">
+          <div class="au-card-top">
+            <div class="au-user-cell">
+              <span class="au-avatar" style="--avatar-hue:220">TC</span>
+              <div>
+                <span class="au-user-name">Tech Conference 2026</span>
+                <span class="au-card-email">Business • organizer@tech.org</span>
+              </div>
+            </div>
+            <span class="au-role-badge au-role--host">Active</span>
+          </div>
+          <div class="au-card-meta" style="flex-direction: column; align-items: flex-start; gap: 0.25rem;">
+            <span class="au-card-date">🗓 Oct 05, 2026 | 📍 Grand Ballroom</span>
+            <span style="font-weight:600;font-size:0.8rem;color:rgb(var(--text))">Tickets Sold: 120 / 500 (24%)</span>
+          </div>
+          <div class="admin-actions au-card-actions">
+            <a href="admin-event-detail.html" class="admin-action-btn">View</a>
+            <button type="button" class="admin-action-btn danger au-delete-btn" data-event-id="2" data-event-name="Tech Conference 2026">Delete</button>
+          </div>
+        </article>
+
+        <article class="au-user-card">
+          <div class="au-card-top">
+            <div class="au-user-cell">
+              <span class="au-avatar" style="--avatar-hue:120">WG</span>
+              <div>
+                <span class="au-user-name">Wine & Gourmet Tasting</span>
+                <span class="au-card-email">Food • taste@vintage.com</span>
+              </div>
+            </div>
+            <span class="au-role-badge au-role--attendee">Draft</span>
+          </div>
+          <div class="au-card-meta" style="flex-direction: column; align-items: flex-start; gap: 0.25rem;">
+            <span class="au-card-date">🗓 Nov 12, 2026 | 📍 The Cellar Gallery</span>
+            <span style="font-weight:600;font-size:0.8rem;color:rgb(var(--text))">Tickets Sold: 45 / 50 (90%)</span>
+          </div>
+          <div class="admin-actions au-card-actions">
+            <a href="admin-event-detail.html" class="admin-action-btn">View</a>
+            <button type="button" class="admin-action-btn danger au-delete-btn" data-event-id="3" data-event-name="Wine & Gourmet Tasting">Delete</button>
+          </div>
+        </article>
+
+        <!-- PHP: endforeach; -->
+      </div>
+
+      <!-- Empty State -->
+      <div id="events-empty" class="empty-state hidden">
+        <p>No events found matching your criteria.</p>
+      </div>
+
+      <!-- Pagination -->
+      <nav class="au-pagination" aria-label="Events pagination" id="events-pagination">
+        <a href="?page=1" class="au-page-btn disabled" aria-disabled="true">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          Prev
+        </a>
+        <span class="au-page-num active" aria-current="page">1</span>
+        <a href="?page=2" class="au-page-num">2</a>
+        <a href="?page=3" class="au-page-num">3</a>
+        <a href="?page=2" class="au-page-btn">
+          Next
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </a>
+      </nav>
+    </section>
+
+    <!-- Confirm Delete Modal -->
+    <div class="modal-overlay hidden" id="delete-modal" role="dialog" aria-modal="true" aria-labelledby="delete-modal-title">
+      <div class="modal-card">
+        <h3 id="delete-modal-title">Delete Event</h3>
+        <p>Are you sure you want to delete <strong id="delete-event-name">this event</strong>? All attendee records, ticket configurations, and sales logs will be permanently deleted. This action cannot be undone.</p>
+        <!-- PHP: form action="admin-events.php" method="POST" -->
+        <form method="POST" action="">
+          <input type="hidden" name="action" value="delete" />
+          <input type="hidden" name="event_id" id="delete-event-id" value="" />
+          <div class="modal-actions">
+            <button type="button" class="admin-action-btn" id="delete-cancel-btn">Cancel</button>
+            <button type="submit" class="admin-action-btn danger">Yes, Delete Event</button>
+          </div>
+        </form>
+      </div>
+    </div>
   </main>
 
   <footer class="footer">

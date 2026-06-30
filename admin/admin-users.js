@@ -1,65 +1,132 @@
-function getUsers(){ try{ return JSON.parse(localStorage.getItem('mock_users')||'{}'); }catch(e){ return {}; } }
-function saveUsers(u){ localStorage.setItem('mock_users', JSON.stringify(u)); }
+/**
+ * Admin Users — UI interaction script.
+ *
+ * In your PHP template, the user list, stats, pagination, and filtering
+ * are all rendered server-side. This script only handles:
+ *
+ * 1. Suspend / Reactivate confirmation modals.
+ * 2. Client-side instant search filtering of table rows & mobile cards.
+ */
+(function () {
+  'use strict';
 
-document.addEventListener('DOMContentLoaded', ()=>{
-  const list = document.getElementById('users-list');
-  const pager = document.getElementById('users-pagination');
-  const pageSize = 6;
-  let currentPage = 1;
+  // ─── Modal Logic ────────────────────────────────────────
 
-  function render(){
-    const usersObj = getUsers();
-    const users = Object.entries(usersObj);
-    if(users.length === 0){ list.innerHTML = '<p class="empty-state">No users found.</p>'; pager.innerHTML = ''; return; }
-    const totalPages = Math.max(1, Math.ceil(users.length / pageSize));
-    currentPage = Math.min(Math.max(1, currentPage), totalPages);
-    const start = (currentPage - 1) * pageSize;
-    const pageItems = users.slice(start, start + pageSize);
+  var suspendModal = document.getElementById('suspend-modal');
+  var suspendUserName = document.getElementById('suspend-user-name');
+  var suspendUserId = document.getElementById('suspend-user-id');
+  var suspendCancelBtn = document.getElementById('suspend-cancel-btn');
 
-    list.innerHTML = '';
-    pageItems.forEach(([email, u])=>{
-      const item = document.createElement('article');
-      item.className = 'event-item';
-      const bank = (u.organizer && u.organizer.bank) || {};
-      item.innerHTML = `
-        <div class="details">
-          <div><h3>${u.name || 'Unnamed'}</h3><p class="meta">${email}</p></div>
-          <p class="meta">Phone: ${u.organizer && u.organizer.phone ? u.organizer.phone : '—'}</p>
-          <p class="meta">Social: ${u.organizer && u.organizer.social ? u.organizer.social : '—'}</p>
-          <p class="meta">Bank: ${bank.name ? bank.name + ' • ' + (bank.account||'') : 'Not configured'}</p>
-          <div class="admin-actions">
-            <button class="admin-action-btn" data-action="export" data-email="${email}">Export</button>
-            <button class="admin-action-btn danger" data-action="delete" data-email="${email}">Delete</button>
-          </div>
-        </div>
-      `;
-      list.appendChild(item);
-    });
+  var reactivateModal = document.getElementById('reactivate-modal');
+  var reactivateUserName = document.getElementById('reactivate-user-name');
+  var reactivateUserId = document.getElementById('reactivate-user-id');
+  var reactivateCancelBtn = document.getElementById('reactivate-cancel-btn');
 
-    // render pagination
-    pager.innerHTML = '';
-    const prev = document.createElement('button'); prev.className = 'page-button'; prev.textContent = 'Prev'; prev.disabled = currentPage===1; prev.addEventListener('click', ()=>{ currentPage--; render(); });
-    pager.appendChild(prev);
-    for(let i=1;i<=totalPages;i++){
-      const p = document.createElement('button'); p.className = 'page-button'; p.textContent = String(i); if(i===currentPage) p.setAttribute('aria-current','true'); p.addEventListener('click', ()=>{ currentPage = i; render(); }); pager.appendChild(p);
+  // Delegate suspend button clicks
+  document.addEventListener('click', function (e) {
+    var suspendBtn = e.target.closest('.au-suspend-btn');
+    if (suspendBtn) {
+      e.preventDefault();
+      var userId = suspendBtn.getAttribute('data-user-id') || '';
+      var userName = suspendBtn.getAttribute('data-user-name') || 'this user';
+      if (suspendUserName) suspendUserName.textContent = userName;
+      if (suspendUserId) suspendUserId.value = userId;
+      if (suspendModal) suspendModal.classList.remove('hidden');
+      return;
     }
-    const next = document.createElement('button'); next.className = 'page-button'; next.textContent = 'Next'; next.disabled = currentPage===totalPages; next.addEventListener('click', ()=>{ currentPage++; render(); }); pager.appendChild(next);
-  }
 
-  // actions: export, delete
-  list.addEventListener('click', (e)=>{
-    const btn = e.target.closest('button[data-action]'); if(!btn) return;
-    const action = btn.dataset.action; const email = btn.dataset.email;
-    if(action === 'delete'){
-      if(!confirm(`Delete user ${email}? This cannot be undone.`)) return;
-      const users = getUsers(); delete users[email]; saveUsers(users); render();
-    }
-    if(action === 'export'){
-      const users = getUsers(); const user = users[email]; if(!user) return;
-      const blob = new Blob([JSON.stringify({email, user}, null, 2)], {type:'application/json'});
-      const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `user-${email}.json`; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    var reactivateBtn = e.target.closest('.au-reactivate-btn');
+    if (reactivateBtn) {
+      e.preventDefault();
+      var rUserId = reactivateBtn.getAttribute('data-user-id') || '';
+      var rUserName = reactivateBtn.getAttribute('data-user-name') || 'this user';
+      if (reactivateUserName) reactivateUserName.textContent = rUserName;
+      if (reactivateUserId) reactivateUserId.value = rUserId;
+      if (reactivateModal) reactivateModal.classList.remove('hidden');
+      return;
     }
   });
 
-  render();
-});
+  // Cancel buttons
+  if (suspendCancelBtn) {
+    suspendCancelBtn.addEventListener('click', function () {
+      if (suspendModal) suspendModal.classList.add('hidden');
+    });
+  }
+  if (reactivateCancelBtn) {
+    reactivateCancelBtn.addEventListener('click', function () {
+      if (reactivateModal) reactivateModal.classList.add('hidden');
+    });
+  }
+
+  // Close modals on overlay click
+  [suspendModal, reactivateModal].forEach(function (modal) {
+    if (!modal) return;
+    modal.addEventListener('click', function (e) {
+      if (e.target === modal) {
+        modal.classList.add('hidden');
+      }
+    });
+  });
+
+  // Close modals on Escape key
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      if (suspendModal && !suspendModal.classList.contains('hidden')) {
+        suspendModal.classList.add('hidden');
+      }
+      if (reactivateModal && !reactivateModal.classList.contains('hidden')) {
+        reactivateModal.classList.add('hidden');
+      }
+    }
+  });
+
+  // ─── Client-Side Instant Search ─────────────────────────
+  // This provides instant filtering while the user types.
+  // The form also submits to the server via GET for full server-side search.
+
+  var searchInput = document.getElementById('users-search');
+  var tableBody = document.getElementById('users-tbody');
+  var cardsList = document.getElementById('users-cards');
+  var emptyState = document.getElementById('users-empty');
+
+  if (searchInput) {
+    searchInput.addEventListener('input', function () {
+      var query = (searchInput.value || '').toLowerCase().trim();
+
+      // Filter table rows
+      if (tableBody) {
+        var rows = tableBody.querySelectorAll('tr');
+        var visibleRows = 0;
+
+        rows.forEach(function (row) {
+          var name = (row.querySelector('.au-user-name') || {}).textContent || '';
+          var email = (row.querySelector('.au-email-cell') || {}).textContent || '';
+          var match = name.toLowerCase().indexOf(query) !== -1 ||
+                      email.toLowerCase().indexOf(query) !== -1;
+
+          row.style.display = match ? '' : 'none';
+          if (match) visibleRows++;
+        });
+
+        // Toggle empty state
+        if (emptyState) {
+          emptyState.classList.toggle('hidden', visibleRows > 0 || query === '');
+        }
+      }
+
+      // Filter mobile cards
+      if (cardsList) {
+        var cards = cardsList.querySelectorAll('.au-user-card');
+        cards.forEach(function (card) {
+          var name = (card.querySelector('.au-user-name') || {}).textContent || '';
+          var email = (card.querySelector('.au-card-email') || {}).textContent || '';
+          var match = name.toLowerCase().indexOf(query) !== -1 ||
+                      email.toLowerCase().indexOf(query) !== -1;
+          card.style.display = match ? '' : 'none';
+        });
+      }
+    });
+  }
+
+})();
