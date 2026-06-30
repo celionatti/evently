@@ -3466,3 +3466,160 @@ select::-ms-expand {
     gap: 1.5rem;
   }
 }
+
+/* ═══════════════════════════════════════════
+   Admin Teams — Responsive Fixes
+   ═══════════════════════════════════════════ */
+
+/* Tablet: ≤900px — switch table to cards, adjust panels */
+@media (max-width: 900px) {
+  .admin-grid .au-table-wrap {
+    display: none;
+  }
+
+  .admin-grid .au-cards-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .admin-panel .form-card {
+    padding: 1.25rem !important;
+  }
+
+  .admin-panel .form-card h2 {
+    font-size: 1.05rem;
+  }
+
+  /* Stack card-top content when role badge crowds user info */
+  .au-card-top {
+    flex-wrap: wrap;
+  }
+}
+
+/* Small tablet: ≤768px — compact stat cards */
+@media (max-width: 768px) {
+  .admin-users-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  .au-stat-card {
+    padding: 1rem;
+  }
+
+  .au-stat-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+  }
+
+  .au-stat-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+/* Mobile: ≤500px — full single-column stack */
+@media (max-width: 500px) {
+  .admin-users-stats {
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+  }
+
+  .au-stat-card {
+    padding: 0.85rem 1rem;
+    border-radius: 14px;
+  }
+
+  .admin-panel {
+    padding: 0.85rem !important;
+    border-radius: 16px !important;
+  }
+
+  .admin-panel .form-card {
+    padding: 1rem !important;
+    border-radius: 16px !important;
+  }
+
+  .admin-panel .form-card label {
+    font-size: 0.88rem;
+  }
+
+  .admin-panel .form-card input,
+  .admin-panel .form-card select {
+    font-size: 0.9rem;
+    padding: 0.7rem 0.85rem;
+  }
+
+  .admin-panel .form-card select {
+    padding-right: 2.4rem;
+  }
+
+  /* Stack card-top so badge goes below name on narrow widths */
+  .au-card-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  /* Ensure user name and email don't overflow */
+  .au-user-cell {
+    min-width: 0;
+  }
+
+  .au-user-name {
+    word-break: break-word;
+  }
+
+  .au-card-email {
+    word-break: break-all;
+  }
+
+  /* Stack assignment status badge */
+  .au-status-badge {
+    white-space: normal;
+    word-break: break-word;
+    line-height: 1.35;
+  }
+
+  /* Stack action buttons vertically */
+  .au-card-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .au-card-actions .admin-action-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 0.6rem 0.75rem;
+  }
+
+  .admin-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .admin-actions .admin-action-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Pagination compact */
+  .au-pagination {
+    gap: 0.25rem;
+    padding-top: 1rem;
+  }
+
+  .au-page-btn {
+    padding: 0.4rem 0.65rem;
+    font-size: 0.78rem;
+  }
+
+  .au-page-num {
+    width: 32px;
+    height: 32px;
+    font-size: 0.82rem;
+  }
+}
