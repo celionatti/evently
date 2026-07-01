@@ -39,60 +39,7 @@
   });
   obs.observe(root, {attributes:true, attributeFilter:['data-theme']});
 
-  // NAV active-state sync between desktop links and bottom nav
-  const navLinks = Array.from(document.querySelectorAll('.nav-link'));
-  const bottomItems = Array.from(document.querySelectorAll('.bottom-nav .nav-item[data-nav-index]'));
-
-  // Highlight desktop top-nav links based on current pathname
-  const currentPath = window.location.pathname.split('/').pop() || 'index.html';
-  navLinks.forEach(a => {
-    if (a.dataset.navIndex === undefined) {
-      const href = a.getAttribute('href');
-      if (href && (href === currentPath || href.endsWith('/' + currentPath))) {
-        a.setAttribute('aria-current', 'true');
-      } else {
-        a.removeAttribute('aria-current');
-      }
-    }
-  });
-
-  function setActive(index){
-    navLinks.forEach(a=>{
-      if (a.dataset.navIndex !== undefined) {
-        if(a.dataset.navIndex === String(index)) a.setAttribute('aria-current','true');
-        else a.removeAttribute('aria-current');
-      }
-    });
-    bottomItems.forEach(b=>{
-      if(b.dataset.navIndex === String(index)) b.classList.add('active');
-      else b.classList.remove('active');
-      if(b.dataset.navIndex === String(index)) b.setAttribute('aria-current','true');
-      else b.removeAttribute('aria-current');
-    });
-  }
-
-  // init active based on existing active item or default 0
-  (function initActive(){
-    const cur = document.querySelector('.bottom-nav .nav-item.active');
-    if(cur) setActive(cur.dataset.navIndex || 0);
-    else setActive(0);
-  })();
-
-  // clicks on desktop links
-  navLinks.forEach(a=>{
-    a.addEventListener('click', (e)=>{
-      if (a.dataset.navIndex !== undefined) {
-        const idx = a.dataset.navIndex; setActive(idx);
-      }
-    });
-    a.addEventListener('keydown', (e)=>{ if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); a.click(); } });
-  });
-
-  // clicks on bottom nav
-  bottomItems.forEach(b=>{
-    b.addEventListener('click', ()=> setActive(b.dataset.navIndex));
-    b.addEventListener('keydown', (e)=>{ if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); b.click(); } });
-  });
+  // Active navigation states are handled natively in the HTML/CSS markup (e.g. by adding class="active" or aria-current="true" dynamically from the PHP backend). This avoids JS overriding the server-rendered templates.
 
   // Mobile menu toggle helper
   function setupMobileMenu(btnId, bottomClass){
